@@ -6,6 +6,9 @@ const metaMaskWallet=require('../entity/MetaMaskWallet.js');
 const MetaMaskWallet=metaMaskWallet.MetaMaskWallet;
 const metaMask=require('../pages/MetaMask.js');
 const MetaMask=metaMask.MetaMask;
+by = require('selenium-webdriver/lib/by');
+const By=by.By;
+
 class Test3 extends BaseTest
 {
     constructor(driver) {
@@ -25,11 +28,12 @@ class Test3 extends BaseTest
         metaMask.switchToAnotherPage();
 
         var e=new InvestPage(this.driver);
-this.driver.get("https://wizard.poa.network/invest?addr=0xcB82AF7fD8Baa5A144Eaa90101c4901D987f9bf5&networkID=4")
-this.driver.sleep(1000);
-       console.log(await e.getTokenAddress());
-       console.log(await e.getContractAddress());
-       console.log(await e.getURL());
+        this.driver.get("https://wizard.poa.network/invest?addr=0xcB82AF7fD8Baa5A144Eaa90101c4901D987f9bf5&networkID=4")
+
+        e.waitUntilLoaderGone().then().catch();
+        console.log(await e.getTokenAddress());
+        console.log(await e.getContractAddress());
+        console.log(await e.getURL());
     }
 
 }

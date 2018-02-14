@@ -58,9 +58,9 @@ function createPOACrowdsale(configFile) {
 
 
     var testWizard = new Test1(driver);
-    testWizard.run().then().catch();
-   // var test = new Test3(driver);
-   // test.run().then().catch();
+  //  testWizard.run().then().catch();
+    var test = new Test3(driver);
+    test.run().then().catch();
 
 
 

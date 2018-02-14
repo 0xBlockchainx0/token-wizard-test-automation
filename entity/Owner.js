@@ -1,7 +1,6 @@
 const user=require("./User.js");
 const User=user.User;
-const by = require('selenium-webdriver/lib/by');
-const By=by.By;
+
 const wizardWelcome=require('../pages/WizardWelcome.js');
 const meta=require('../pages/MetaMask.js');
 
@@ -32,14 +31,11 @@ const timeLimitTransactions=80;
 const buttonSubmit=require('../pages/MetaMask.js');
 const buttonContinue=require('../pages/WizardStep4.js');
 
-class Owner
+class Owner extends User
 {
     constructor(driver,file){
-        this.driver=driver;
-        var obj=JSON.parse(fs.readFileSync(file,"utf8"));
-        this.account=obj.account;
-        this.privateKey=obj.privateKey;
-        this.networkID=obj.networkID;
+        super(driver,file);
+
     }
 
     print(){
@@ -178,7 +174,7 @@ class Owner
         fs.appendFileSync(outputDirectory+'/result.log',s+'\n');
         fs.appendFileSync(outputDirectory+'/result.log', "Test end time:"+new Date().getTime()+'\n');
 
-
+        e.waitUntilLoaderGone().then().catch();
         return
            await new Crowdsale(cur,
                                await investPage.getTokenAddress(),

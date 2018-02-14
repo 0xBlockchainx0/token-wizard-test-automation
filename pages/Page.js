@@ -3,6 +3,9 @@ const webdriver = require('selenium-webdriver'),
       chrome = require('selenium-webdriver/chrome'),
       firefox = require('selenium-webdriver/firefox'),
       by = require('selenium-webdriver/lib/by');
+const By=by.By;
+const loader=By.className("loading-container");
+
 const key = require('selenium-webdriver').Key;
 const Twait=20000;
 
@@ -69,6 +72,15 @@ oneClick(element){
         this.driver.navigate().refresh();
     }
 
+
+    async  isDisplayedLoader(){
+        var s=await this.driver.findElement(loader).getAttribute("className");
+        if (s=="loading-container notdisplayed") return true;
+        else return false;
+    }
+async waitUntilLoaderGone(){
+    do{ this.driver.sleep(1000);await this.isDisplayedLoader();}while(!(await this.isDisplayedLoader()));
+}
     switchToAnotherPage(){
         let dr=this.driver;
 

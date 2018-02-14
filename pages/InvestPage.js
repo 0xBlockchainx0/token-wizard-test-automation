@@ -9,6 +9,8 @@ const buttonContribute=By.xpath('//*[@id="root"]/div/div[1]/div[1]/div[2]/form/d
 const fieldTokenAddress=By.xpath("//*[@id=\"root\"]/div/div[1]/div[1]/div[1]/div[2]/div[2]/p[1]");
 const fieldContractAddress=By.xpath("//*[@id=\"root\"]/div/div[1]/div[1]/div[1]/div[2]/div[3]/p[1]");
 
+
+
 class InvestPage extends page.Page{
 
     constructor(driver){
@@ -22,11 +24,14 @@ class InvestPage extends page.Page{
     }
 
      getTokenAddress(){
+
         return  super.getText(fieldTokenAddress);
     }
     getContractAddress(){
+
         return  super.getText(fieldContractAddress);
     }
+
 
 
 
