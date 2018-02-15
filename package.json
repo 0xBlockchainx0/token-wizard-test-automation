@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "selenium-webdriver": "^3.6.0",
-    "web3": "^0.20.4"
+    "web3": "^0.20.5"
   }
 }

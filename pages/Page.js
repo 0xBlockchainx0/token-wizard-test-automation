@@ -19,10 +19,27 @@ class Page {
         this.header;
     }
 
+     async   findElementInArray(locator,className)
+        {
+            var arr=await this.driver.findElements(locator);
+            for (var i=0;i<arr.length;i++)
+            {
+                var s=await arr[i].getAttribute("className");
+                if (s.includes(className)) return arr[i];
+            }
+
+
+        }
+
+
  async  isElementPresent(element) {
      var q;
      try {
-         q = await this.driver.findElement(element).isDisplayed();
+        // q = await this.driver.findElement(element).isDisplayed();
+         var s=await this.driver.findElements(element);
+        // console.log("lengfth"+s.length);
+         if (s.length>0)q=true;
+         else q=false;
      } catch (err) {
          q = false;
      }
@@ -58,7 +75,9 @@ clearField(element){
 oneClick(element){
       this.driver.findElement(element).click();
 }
-
+    waitUntilLocated(element){
+        this.driver.wait(webdriver.until.elementLocated(element), Twait);
+    }
     clickWithWait(element) {
         let button = this.driver.wait(webdriver.until.elementLocated(element), Twait);
         button.click();

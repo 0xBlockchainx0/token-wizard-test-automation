@@ -144,6 +144,29 @@ activate(user){
 
 }
 
+async doTransaction(){
+    this.switchToAnotherPage();
+    var counter=0;
+    var timeLimit=10;
+    do {
+
+        this.driver.sleep(4000);
+        this.refresh();
+        this.driver.sleep(500);
+        if (await this.isPresentButtonSubmit()) {
+            this.submitTransaction();
+            this.switchToAnotherPage();
+            return true;
+        }
+        counter++;
+        if (counter>=timeLimit) {
+            this.switchToAnotherPage();
+            return false;
+        }
+        } while(true);
+}
+
+
 async isPresentButtonSubmit()
 {
     return await super.isElementPresent(buttonSubmit);

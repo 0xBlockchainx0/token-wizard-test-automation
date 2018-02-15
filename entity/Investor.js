@@ -1,5 +1,7 @@
 const user=require("./User.js");
 const User=user.User;
+const invest=require('../pages/InvestPage.js');
+const InvestPage=invest.InvestPage;
 class Investor extends User
 {
     constructor(driver,file){
@@ -12,8 +14,13 @@ class Investor extends User
         console.log("networkID:"+this.networkID);
 
     }
-    contribute(){
-
+   async  contribute(amount){
+      var investPage = new InvestPage(this.driver);
+      investPage.fillInvest(amount);
+      investPage.waitUntilLoaderGone();
+      investPage.clickButtonContribute();
+      if (await investPage.isPresentWarning()) {investPage.clickButtonOK();return false;}
+      return true;
     }
 
     getTokensAmount(){
@@ -22,3 +29,4 @@ class Investor extends User
 
 
 }
+module.exports.Investor=Investor;

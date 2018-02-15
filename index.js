@@ -28,8 +28,12 @@ const TierPage=tierpage.TierPage;
 const Web3 = require('web3');
 const fs = require('fs');
 ///////////////////////////////////////
+
+
 createPOACrowdsale('config.json');
 //ttt();
+const rinkeby = new Web3.providers.HttpProvider("www.rinkeby.io/");
+
 
 function ttt(){
   var util=new Utils();
@@ -58,9 +62,9 @@ function createPOACrowdsale(configFile) {
 
 
     var testWizard = new Test1(driver);
-  //  testWizard.run().then().catch();
+   testWizard.run().then().catch();
     var test = new Test3(driver);
-    test.run().then().catch();
+    //test.run().then().catch();
 
 
 

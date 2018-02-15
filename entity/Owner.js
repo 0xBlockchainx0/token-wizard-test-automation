@@ -2,6 +2,10 @@ const user=require("./User.js");
 const User=user.User;
 
 const wizardWelcome=require('../pages/WizardWelcome.js');
+const WizardWelcome=wizardWelcome.WizardWelcome;
+const by = require('selenium-webdriver/lib/by');
+const By=by.By;
+
 const meta=require('../pages/MetaMask.js');
 
 const wizStep1=require('../pages/WizardStep1.js');
@@ -28,9 +32,11 @@ const startBrowserWithMetamask=StartBrowserWithMetamask.startBrowserWithMetamask
 const crowdsale=require('../entity/Crowdsale.js');
 const Crowdsale=crowdsale.Crowdsale;
 const timeLimitTransactions=80;
-const buttonSubmit=require('../pages/MetaMask.js');
-const buttonContinue=require('../pages/WizardStep4.js');
+const managePage=require('../pages/ManagePage.js');
+const ManagePage=managePage.ManagePage;
 
+
+const startURL="https://wizard.poa.network/";
 class Owner extends User
 {
     constructor(driver,file){
@@ -45,13 +51,55 @@ class Owner extends User
 
 }
 
-   openManage(){
+  async openManagePage(crowdsale){
+       var welcomePage=new WizardWelcome(this.driver);
+       welcomePage.URL=startURL;
+       welcomePage.open();
+       welcomePage.clickButtonChooseContract();
+       var mngPage=new ManagePage(this.driver);
+       do {this.driver.sleep(1000);} while(!await  mngPage.isAvailable());
+       mngPage.URL=startURL+"manage/"+crowdsale.contractAddress;
+       mngPage.open();
+       await mngPage.waitUntilLoaderGone();
+
+       return mngPage.URL;
 
    }
 
-    distribute(){}
+    async distribute(crowdsale){
 
-    finalize(){}
+        this.openManagePage(crowdsale);
+        var mngPage=new ManagePage(this.driver);
+        this.driver.sleep(3000);
+        //console.log("Present:"+await mngPage.isPresentButtonDistribute());
+        // console.log("Enabled"+await mngPage.isEnabledDistribute());
+        if ( await mngPage.isEnabledDistribute())
+                 {
+                     mngPage.clickButtonDistribute();
+                 }
+           else  {return false;}
+        var metaMask = new meta.MetaMask(this.driver);
+        metaMask.doTransaction();
+        mngPage.waitUntilLoaderGone();
+        return await mngPage.confirmPopup();
+      }
+
+    async finalize(crowdsale){
+
+        this.openManagePage(crowdsale);
+        var mngPage=new ManagePage(this.driver);
+        this.driver.sleep(3000);
+        if ( await mngPage.isEnabledFinalize())
+        {
+            await mngPage.clickButtonFinalize();
+        }
+        else  {return false;}
+        mngPage.clickButtonYesFinalize();
+        var metaMask = new meta.MetaMask(this.driver);
+        metaMask.doTransaction();
+        mngPage.waitUntilLoaderGone();
+        return await mngPage.confirmPopup();
+    }
 
 
     getAmount(){}
@@ -64,7 +112,7 @@ class Owner extends User
         var outputDirectory="./results"+d.getTime();
         fs.mkdirSync(outputDirectory);
         fs.writeFileSync(outputDirectory+'/result.log', "Test start time:"+d.getTime());
-        const startURL="https://wizard.poa.network/";
+
         var welcomePage = new wizardWelcome.WizardWelcome(this.driver,startURL);
         var wallet=new MetaMaskWallet();
         wallet.account=this.account;

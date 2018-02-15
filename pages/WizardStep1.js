@@ -19,6 +19,11 @@ class WizardStep1 extends page.Page{
         super.clickWithWait(buttonContinue);
 
     }
+    open(){
+
+        this.driver.get(this.URL);
+
+    }
 
 
 

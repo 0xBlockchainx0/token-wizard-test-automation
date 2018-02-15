@@ -34,6 +34,12 @@ class Test3 extends BaseTest
         console.log(await e.getTokenAddress());
         console.log(await e.getContractAddress());
         console.log(await e.getURL());
+
+
+
+
+
+
     }
 
 }

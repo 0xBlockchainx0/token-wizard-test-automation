@@ -7,5 +7,7 @@ class Crowdsale {
         this.url=url;
     }
 
+
+
 }
 module.exports.Crowdsale=Crowdsale;
