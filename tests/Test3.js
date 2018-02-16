@@ -28,7 +28,7 @@ class Test3 extends BaseTest
         metaMask.switchToAnotherPage();
 
         var e=new InvestPage(this.driver);
-        this.driver.get("https://wizard.poa.network/invest?addr=0xcB82AF7fD8Baa5A144Eaa90101c4901D987f9bf5&networkID=4")
+        Utils.open("https://wizard.poa.network/invest?addr=0xcB82AF7fD8Baa5A144Eaa90101c4901D987f9bf5&networkID=4")
 
         e.waitUntilLoaderGone().then().catch();
         console.log(await e.getTokenAddress());

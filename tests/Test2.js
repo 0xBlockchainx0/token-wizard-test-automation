@@ -25,7 +25,6 @@ class Test2 extends baseTest.BaseTest {
     constructor(driver,configFile) {
         super(driver);
         this.configFile=configFile;
-
     }
     async run() {
 

@@ -50,7 +50,9 @@ class Owner extends User
         console.log("networkID:"+this.networkID);
 
 }
-
+  async balance(){
+        return 0;
+  }
   async openManagePage(crowdsale){
        var welcomePage=new WizardWelcome(this.driver);
        welcomePage.URL=startURL;
@@ -194,12 +196,13 @@ class Owner extends User
         } while (b);
 
         utils.takeScreenshoot(this.driver,outputDirectory);
+        this.driver.sleep(5000);
         wizardStep4.clickButtonContinue();
         this.driver.sleep(5000);
         utils.takeScreenshoot(this.driver,outputDirectory);
 
         b=true;
-        var counter=30;
+        var counter=50;
 
         do {
             try {
@@ -222,15 +225,13 @@ class Owner extends User
         fs.appendFileSync(outputDirectory+'/result.log',s+'\n');
         fs.appendFileSync(outputDirectory+'/result.log', "Test end time:"+new Date().getTime()+'\n');
 
-        e.waitUntilLoaderGone().then().catch();
-        return
-           await new Crowdsale(cur,
-                               await investPage.getTokenAddress(),
-                               await investPage.getContractAddress(),
-                               await investPage.getURL()
-                              );
-
-
+        investPage.waitUntilLoaderGone().then().catch();
+        this.driver.sleep(10000);
+        const addr=await investPage.getTokenAddress();
+        const contr=await investPage.getContractAddress();
+        const  ur=await investPage.getURL();
+        const  cr=new Crowdsale(cur,addr,contr,ur);
+       return cr;
     }
 
 

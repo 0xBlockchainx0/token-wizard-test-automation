@@ -1,6 +1,6 @@
 {
-  "name": "wizardautomation",
-  "version": "0.0.0",
+  "name": "token-wizard-test-automation",
+  "version": "0.0.1",
   "private": false,
   "scripts": {
     "start": "node ./bin/www"

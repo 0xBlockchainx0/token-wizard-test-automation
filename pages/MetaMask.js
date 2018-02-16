@@ -41,9 +41,10 @@ const fieldNewRPCURL=By.id("new_rpc");
 const buttonSave=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/div/div[2]/button");
 //const arrowBackRPCURL=By.className("fa fa-arrow-left fa-lg cursor-pointer");
 const arrowBackRPCURL=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[1]/i");
-var accN=2;
+var accN=1;
 var lengthNetworkMenu=6;
 var networks=[];
+
 
 
 
@@ -119,9 +120,9 @@ class MetaMask extends page.Page{
     setAccount(user){
         this.switchToAnotherPage();
         this.chooseProvider(user.networkID);
-        super.clickWithWait(popupAccount);
-        this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[2].click();");
-
+        //super.clickWithWait(popupAccount);
+       // this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[2].click();");
+        this.clickImportAccount();
 
         super.fillWithWait(fieldPrivateKey,user.privateKey);
         this.driver.sleep(1500);
@@ -129,14 +130,20 @@ class MetaMask extends page.Page{
         this.switchToAnotherPage();
     }
 
+    clickImportAccount(){
+        super.clickWithWait(popupAccount);
+        this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(accN+1)+"].click();");
+        accN++;
+
+    }
+
 activate(user){
 
 
     this.chooseProvider(user.networkID);
-
-    super.clickWithWait(popupAccount);
-    this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[2].click();");
-
+    this.clickImportAccount();
+   //super.clickWithWait(popupAccount);
+   //this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+accN+"].click();"););
 
     super.fillWithWait(fieldPrivateKey,this.owner.privateKey);
     this.driver.sleep(1500);
@@ -221,6 +228,7 @@ if (n<=4)this.driver.executeScript("document.getElementsByClassName('dropdown-me
         super.clickWithWait(popupAccount);
         this.driver.executeScript(
             "document.getElementsByClassName('dropdown-menu-item')["+accN+"].click();");
+        accN++;
 
     }
 

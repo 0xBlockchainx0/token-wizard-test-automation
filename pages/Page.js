@@ -35,11 +35,11 @@ class Page {
  async  isElementPresent(element) {
      var q;
      try {
-        // q = await this.driver.findElement(element).isDisplayed();
-         var s=await this.driver.findElements(element);
+         q = await this.driver.findElement(element).isDisplayed();
+        // var s=await this.driver.findElements(element);
         // console.log("lengfth"+s.length);
-         if (s.length>0)q=true;
-         else q=false;
+        // if (s.length>0)q=true;
+        // else q=false;
      } catch (err) {
          q = false;
      }

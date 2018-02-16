@@ -23,7 +23,8 @@ class Investor extends User
       return true;
     }
 
-    getTokensAmount(){
+    balanceTokens(tokenAddress){
+        return 0;
 
     }
 

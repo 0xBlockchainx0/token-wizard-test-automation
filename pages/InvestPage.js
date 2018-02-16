@@ -8,7 +8,9 @@ const webdriver = require('selenium-webdriver'),
 const By=by.By;
 const buttonContribute=By.xpath('//*[@id="root"]/div/div[1]/div[1]/div[2]/form/div[2]/a');
 const fieldTokenAddress=By.xpath("//*[@id=\"root\"]/div/div[1]/div[1]/div[1]/div[2]/div[2]/p[1]");
+
 const fieldContractAddress=By.xpath("//*[@id=\"root\"]/div/div[1]/div[1]/div[1]/div[2]/div[3]/p[1]");
+                                       //*[@id="root"]/div/div[1]/div[1]/div[1]/div[2]/div[3]/p[1]
 const fieldInvest=By.className("invest-form-input");
 const buttonOk=By.className("swal2-confirm swal2-styled");
 
@@ -37,13 +39,13 @@ class InvestPage extends Page{
         super.clickWithWait(buttonContribute);
     }
 
-     getTokenAddress(){
+     async getTokenAddress(){
 
-        return  super.getText(fieldTokenAddress);
+        return  await super.getText(fieldTokenAddress);
     }
-    getContractAddress(){
+    async getContractAddress(){
 
-        return  super.getText(fieldContractAddress);
+        return  await super.getText(fieldContractAddress);
     }
 
 
