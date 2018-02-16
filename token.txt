@@ -1,0 +1,8 @@
+token token-wizard-builds
+a1a9a14f4c1cb8c71dc0c3b0df3be1cc53f2303b   poanetwork/token-wizard-test-automation
+
+curl -u a1a9a14f4c1cb8c71dc0c3b0df3be1cc53f2303b: \
+     -d build_parameters[CIRCLE_JOB]=build \
+     https://circleci.com/api/v1.1/project/github/poanetwork/token-wizard-test-automation/tree/master
+
+
