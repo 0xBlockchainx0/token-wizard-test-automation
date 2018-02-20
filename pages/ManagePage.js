@@ -4,14 +4,14 @@ const Page=page.Page;
 const By=by.By;
 const utils=require('../utils//Utils.js');
 const Utils=utils.Utils;
-const firstContract=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[3]/div/div[1]/div/div[2]/div[1]/div");
 //const buttonOk=By.xpath("/html/body/div[2]/div/div[3]/button[1]");
+
+const modal=By.className("modal");
 const buttonOk=By.className("swal2-confirm swal2-styled");
 
-const buttonDistribute=By.xpath("//*[@id=\"root\"]/div/section/div[1]/div/a/span");
+const buttonDistribute=By.xpath("//*[contains(text(),'Distribute tokens')]");
 const buttonFinalize=By.xpath("//*[contains(text(),'Finalize Crowdsale')]");
 const buttonYesFinalize=By.className("swal2-confirm swal2-styled");
-
 
 class ManagePage extends Page
 {
@@ -28,7 +28,7 @@ this.driver.get(this.URL);
 }
 async isAvailable(){
 
-       return (await super.isElementPresent(firstContract));
+       return (await super.isElementPresent(modal));
 }
 /////////////////////////////////
 async isEnabledDistribute(){
@@ -46,8 +46,8 @@ async isPresentButtonDistribute(){
     return s;
 }
 
-clickButtonDistribute(){
-     super.clickWithWait(buttonDistribute);
+async clickButtonDistribute(){
+     await super.clickWithWait(buttonDistribute);
 }
 ////////////////////////////////////////////////////
     async isEnabledFinalize(){
@@ -74,32 +74,36 @@ clickButtonDistribute(){
     }
 
 
-    clickButtonYesFinalize(){
-        super.clickWithWait(buttonYesFinalize);
+    async clickButtonYesFinalize(){
+        await super.clickWithWait(buttonYesFinalize);
+    }
+
+    async isPresentPopupYesFinalize()
+    {
+        return await super.isElementPresent(buttonYesFinalize);
     }
 
 
 
-
-
 async isPresentButtonOK(){
-    return await super.isElementPresent(buttonFinalize);
+    return await super.isElementPresent(buttonOk);
 }
-clickButtonOK(){
-       super.clickWithWait(buttonOk);
+async clickButtonOK(){
+      await super.clickWithWait(buttonOk);
 
 }
-confirmPopup(){
+async confirmPopup(){
 
         var c=0;
-        var limit=10;
+        var limit=30;
         do {
-
-            if (this.isPresentButtonOK) {
-                this.clickButtonOK();
+            this.driver.sleep(1000);
+            if (await this.isPresentButtonOK) {
+                this.driver.sleep(2000);
+                await this.clickButtonOK();
                 return true;
             }
-            this.driver.sleep(1000);
+
             c++;
             if(c>=limit){return false;}
         }while(true);

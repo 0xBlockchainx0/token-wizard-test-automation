@@ -1,5 +1,6 @@
 {
-  "startURL" : "https://wizard.poa.network/",
+  "startURL" : "https://5a87189fefbe5d658ef89ee4--ico-wizard.netlify.com/",
+  "outputPath":"./results",
   "installMetaMask":true,
-  "scenario":"./scenarios/T2RnWyMy_0016.json"
+  "scenario":"./scenarios/T2RnWy_0001.json"
 }

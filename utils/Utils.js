@@ -1,4 +1,4 @@
-//console.log(module.filename);
+
 const webdriver = require('selenium-webdriver'),
       chrome = require('selenium-webdriver/chrome'),
       firefox = require('selenium-webdriver/firefox'),
@@ -8,6 +8,24 @@ const Web3 = require('web3');
 
 class Utils {
 
+    static getOutputPath(fileName) {
+        var obj = JSON.parse(fs.readFileSync(fileName, "utf8"));
+        return obj.outputPath;
+
+    }
+
+    static getScenarioFile(fileName) {
+        var obj = JSON.parse(fs.readFileSync(fileName, "utf8"));
+        return obj.scenario;
+
+    }
+
+    static getDate() {
+        var d = new Date();
+        var date = "_" + (d.getMonth() + 1) + "_" + d.getDate() + "_"
+            + d.getFullYear() + "_" + d.getHours() + "_" + d.getMinutes() + "_" + d.getSeconds();
+        return date;
+    }
 
      openAnotherTab(driver, URL) {
         driver.executeScript('window.open("' + URL + '");');
@@ -52,12 +70,12 @@ class Utils {
         driver.takeScreenshot()
             .then((res) => {
                 //console.log(res);
-                var d = new Date();
-                var buf = new Buffer(res, 'base64');
+               var buf = new Buffer(res, 'base64');
 
+                fs.writeFileSync(path + "/screenshoot" + Utils.getDate() + '.png', buf);
 
-                fs.writeFileSync('./artifacts/screenshoot' + d.getTime() + '.png', buf);//for circleci
-                fs.writeFileSync(path + "/screenshoot" + d.getTime() + '.png', buf);
+               //fs.writeFileSync('./artifacts/screenshoot' + d.getTime() + '.png', buf);//for circleci
+                //fs.writeFileSync(path + "/screenshoot" + d.getTime() + '.png', buf);
             });
 
     }

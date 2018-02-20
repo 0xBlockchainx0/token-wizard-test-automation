@@ -1,0 +1,36 @@
+{ "account": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+  "privateKey": "03c06a9fab22fe0add145e337c5a8251e140f74468d72eab17ec7419ab812cd0",
+  "networkID":4,
+
+  "name": "simple.json",
+  "ticker": "test",
+  "decimals": 3,
+  "reservedTokens":[
+    {
+    "address" :  "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+    "dimension": "percentage",
+    "value": 99
+  },
+    {
+      "address" :  "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+      "dimension": "tokens",
+      "value":333
+    }
+  ],
+  "walletAddress":"0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+  "gasprice":40,
+  "mincap": 1,
+  "whitelisting":false,
+  "tiers":[
+    {
+      "name":"###1",
+      "allowModify": true,
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
+      "rate":100,
+      "supply": 20,
+      "whitelist":[]
+    }]
+}

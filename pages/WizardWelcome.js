@@ -4,21 +4,15 @@ const webdriver = require('selenium-webdriver'),
       chrome = require('selenium-webdriver/chrome'),
       firefox = require('selenium-webdriver/firefox'),
       by = require('selenium-webdriver/lib/by');
-
-const buttonNewCrowdsale=by.By.css("#root > div > div:nth-child(2) > section > div.crowdsale > div > div > a > span");
-const buttonChooseContract=by.By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[1]/div/div/div");
+const By=by.By;
+const buttonNewCrowdsale=By.className("button button_fill");
+const buttonChooseContract=By.className("button button_outline");
 
 class WizardWelcome extends page.Page{
 
     constructor(driver,URL){
         super(driver);
         this.URL=URL;
-
-    }
-
-    open()
-    {
-        this.driver.get(this.URL);
 
     }
 

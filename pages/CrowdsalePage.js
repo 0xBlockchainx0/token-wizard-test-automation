@@ -5,8 +5,8 @@ const webdriver = require('selenium-webdriver'),
     firefox = require('selenium-webdriver/firefox'),
     by = require('selenium-webdriver/lib/by');
 const By=by.By;
-const buttonInvest=By.xpath('//*[@id="root"]/div/section/div[3]/a');
-
+//const buttonInvest=By.xpath('//*[@id="root"]/div/section/div[3]/a');
+const buttonInvest=By.className("button button_fill");
 
 class CrowdsalePage extends page.Page{
 

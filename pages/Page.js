@@ -19,6 +19,8 @@ class Page {
         this.header;
     }
 
+
+
      async   findElementInArray(locator,className)
         {
             var arr=await this.driver.findElements(locator);
@@ -47,6 +49,12 @@ class Page {
      return q;
 
      }
+async getTextElement(element)
+{return await element.getText();}
+
+
+
+
 
 async getText(element)
 {
@@ -59,8 +67,12 @@ async getURL()
 open (url){
         this.driver.get(url);
 }
-clearField(element){
-    let field = this.driver.wait(webdriver.until.elementLocated(element), Twait);
+clearField(element,n){
+    let field;
+    if (n!=1) {
+        field = this.driver.wait(webdriver.until.elementLocated(element), Twait);
+    }
+    else field=element;
     const c=key.chord(key.CONTROL,"a");
     const action=this.driver.actions();
     action.click(field).perform();
@@ -70,14 +82,20 @@ clearField(element){
     action.sendKeys(key.DELETE).perform();
     action.sendKeys(key.DELETE).perform();
 
-
 }
 oneClick(element){
       this.driver.findElement(element).click();
 }
-    waitUntilLocated(element){
-        this.driver.wait(webdriver.until.elementLocated(element), Twait);
+    clickElement(element){
+        element.click();
     }
+
+    fillField(field,address){
+        field.sendKeys(address);
+
+    }
+
+
     clickWithWait(element) {
         let button = this.driver.wait(webdriver.until.elementLocated(element), Twait);
         button.click();
@@ -90,7 +108,15 @@ oneClick(element){
     refresh(){
         this.driver.navigate().refresh();
     }
+    async findWithWait(element)
+    {
+        await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+        return await this.driver.findElements(element);
+    }
+    clickTo(element){
+        element.click();
 
+    }
 
     async  isDisplayedLoader(){
         var s=await this.driver.findElement(loader).getAttribute("className");

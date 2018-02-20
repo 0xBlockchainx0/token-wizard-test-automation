@@ -34,9 +34,9 @@ const Crowdsale=crowdsale.Crowdsale;
 const timeLimitTransactions=80;
 const managePage=require('../pages/ManagePage.js');
 const ManagePage=managePage.ManagePage;
-
-
 const startURL="https://wizard.poa.network/";
+
+
 class Owner extends User
 {
     constructor(driver,file){
@@ -55,52 +55,71 @@ class Owner extends User
   }
   async openManagePage(crowdsale){
        var welcomePage=new WizardWelcome(this.driver);
+
        welcomePage.URL=startURL;
        welcomePage.open();
        welcomePage.clickButtonChooseContract();
        var mngPage=new ManagePage(this.driver);
-       do {this.driver.sleep(1000);} while(!await  mngPage.isAvailable());
+      var counter=0;
+       do {this.driver.sleep(1000);
+       if(counter++>30) break;
+       } while(!await  mngPage.isAvailable());
        mngPage.URL=startURL+"manage/"+crowdsale.contractAddress;
        mngPage.open();
        await mngPage.waitUntilLoaderGone();
 
-       return mngPage.URL;
+       return mngPage;
 
    }
 
     async distribute(crowdsale){
 
-        this.openManagePage(crowdsale);
-        var mngPage=new ManagePage(this.driver);
-        this.driver.sleep(3000);
+        var mngPage=await this.openManagePage(crowdsale);
+
+        this.driver.sleep(5000);
         //console.log("Present:"+await mngPage.isPresentButtonDistribute());
         // console.log("Enabled"+await mngPage.isEnabledDistribute());
         if ( await mngPage.isEnabledDistribute())
                  {
-                     mngPage.clickButtonDistribute();
+                     await mngPage.clickButtonDistribute();
                  }
            else  {return false;}
         var metaMask = new meta.MetaMask(this.driver);
-        metaMask.doTransaction();
-        mngPage.waitUntilLoaderGone();
-        return await mngPage.confirmPopup();
+        await metaMask.doTransaction();
+        await mngPage.waitUntilLoaderGone();
+
+        var b= await mngPage.confirmPopup();
+        return b;
       }
 
     async finalize(crowdsale){
 
-        this.openManagePage(crowdsale);
+        await this.openManagePage(crowdsale);
         var mngPage=new ManagePage(this.driver);
-        this.driver.sleep(3000);
+        await mngPage.waitUntilLoaderGone();
+
         if ( await mngPage.isEnabledFinalize())
         {
             await mngPage.clickButtonFinalize();
         }
         else  {return false;}
-        mngPage.clickButtonYesFinalize();
+
+
+        var counter=0;
+        do{
+            if (counter++>50) return false;
+            this.driver.sleep(1000);
+
+        }
+        while(!(await mngPage.isPresentPopupYesFinalize()));
+        this.driver.sleep(1000);
+        await mngPage.clickButtonYesFinalize();
+        this.driver.sleep(3000);
         var metaMask = new meta.MetaMask(this.driver);
-        metaMask.doTransaction();
-        mngPage.waitUntilLoaderGone();
-        return await mngPage.confirmPopup();
+        await metaMask.doTransaction();
+        await mngPage.waitUntilLoaderGone();
+        var b= await mngPage.confirmPopup();
+        return b;
     }
 
 
@@ -108,12 +127,8 @@ class Owner extends User
 
 
 
-    async createCrowdsale(scenarioFile){
+    async createCrowdsale(scenarioFile,outputPath,logFile){
         var utils=new Utils();
-        var d=new Date();
-        var outputDirectory="./results"+d.getTime();
-        fs.mkdirSync(outputDirectory);
-        fs.writeFileSync(outputDirectory+'/result.log', "Test start time:"+d.getTime());
 
         var welcomePage = new wizardWelcome.WizardWelcome(this.driver,startURL);
         var wallet=new MetaMaskWallet();
@@ -133,7 +148,7 @@ class Owner extends User
         var tiers=[];
         for (var i=0;i<cur.tiers.length;i++)
             tiers.push(new TierPage(this.driver,cur.tiers[i]));
-        metaMask.setAccount(this);
+        metaMask.importAccount(this);
         welcomePage.open();
         welcomePage.clickButtonNewCrowdsale();
         this.driver.sleep(2000);
@@ -145,25 +160,30 @@ class Owner extends User
         for (var i=0;i<cur.reservedTokens.length;i++)
         {
             reservedTokens.fillReservedTokens(cur.reservedTokens[i]);
+            this.driver.sleep(1000);
             reservedTokens.clickButtonAddReservedTokens();
+            this.driver.sleep(1000);
+
         }
         utils.zoom(this.driver,0.5);
-        utils.takeScreenshoot(this.driver,outputDirectory);
+        utils.takeScreenshoot(this.driver,outputPath);
         utils.zoom(this.driver,1);
+
         wizardStep2.clickButtonContinue();
         wizardStep3.fillWalletAddress(cur.walletAddress);
+
         wizardStep3.setGasPrice(cur.gasPrice);
         if (cur.whitelisting) wizardStep3.clickCheckboWhitelistYes();
         else (wizardStep3.fillMinCap(cur.minCap));
-        utils.takeScreenshoot(this.driver,outputDirectory);
+        utils.takeScreenshoot(this.driver,outputPath);
         for (var i=0;i<cur.tiers.length-1;i++)
         {
             tiers[i].fillTier();
-            utils.takeScreenshoot(this.driver,outputDirectory);
+            utils.takeScreenshoot(this.driver,outputPath);
             wizardStep3.clickButtonAddTier();
         }
         tiers[cur.tiers.length-1].fillTier();
-        utils.takeScreenshoot(this.driver,outputDirectory);
+        utils.takeScreenshoot(this.driver,outputPath);
         wizardStep3.clickButtonContinue();
         this.driver.sleep(2000);
         if (!(await wizardStep4.isPage()))throw new Error('incorrect data in tiers');
@@ -190,16 +210,16 @@ class Owner extends User
             }
             if((timeLimit--)==0)
             {  var s="Deployment failed.Transaction were done:"+ trCounter;
-                fs.appendFileSync(outputDirectory+'/result.log',"\n"+s);
+                fs.appendFileSync(logFile,"\n"+s);
                 console.log(s);
                 b=false;}
         } while (b);
 
-        utils.takeScreenshoot(this.driver,outputDirectory);
+        utils.takeScreenshoot(this.driver,outputPath);
         this.driver.sleep(5000);
         wizardStep4.clickButtonContinue();
         this.driver.sleep(5000);
-        utils.takeScreenshoot(this.driver,outputDirectory);
+        utils.takeScreenshoot(this.driver,outputPath);
 
         b=true;
         var counter=50;
@@ -214,16 +234,16 @@ class Owner extends User
                 counter++;
             }
         } while (b);
-        utils.takeScreenshoot(this.driver,outputDirectory);
+        utils.takeScreenshoot(this.driver,outputPath);
         this.driver.getCurrentUrl().then((res)=>{
             console.log("Final invest page link: "+res);
-            fs.appendFileSync(outputDirectory+'/result.log', "\n\Final invest page link: \""+res);
-            fs.writeFileSync('./artifacts/result.log', res);//for circleci
+            fs.appendFileSync(logFile, "\n\ Final invest page link:  \n"+res+"\n");
+
         });
         s="Transaction were done: "+ trCounter;
         console.log(s);
-        fs.appendFileSync(outputDirectory+'/result.log',s+'\n');
-        fs.appendFileSync(outputDirectory+'/result.log', "Test end time:"+new Date().getTime()+'\n');
+        fs.appendFileSync(logFile,s+'\n');
+
 
         investPage.waitUntilLoaderGone().then().catch();
         this.driver.sleep(10000);

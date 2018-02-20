@@ -1,5 +1,7 @@
 const baseTest=require('./BaseTest.js');
 const BaseTest=baseTest.BaseTest;
+const owner=require('../entity/Owner.js');
+const Owner=owner.Owner;
 const investPage=require('../pages/InvestPage.js');
 const InvestPage=investPage.InvestPage;
 const metaMaskWallet=require('../entity/MetaMaskWallet.js');
@@ -8,6 +10,13 @@ const metaMask=require('../pages/MetaMask.js');
 const MetaMask=metaMask.MetaMask;
 by = require('selenium-webdriver/lib/by');
 const By=by.By;
+const utils=require('../utils/Utils.js');
+const Utils=utils.Utils;
+const crowdsale=require('../entity/Crowdsale.js');
+const Crowdsale=crowdsale.Crowdsale;
+const currency=require('../entity/Currency.js');
+const Currency=currency.Currency;
+const assert = require('assert');
 
 class Test3 extends BaseTest
 {
@@ -18,27 +27,21 @@ class Test3 extends BaseTest
     }
     async run()
     {
-        var wallet=new MetaMaskWallet();
-        wallet.account="0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411";
-        wallet.privateKey="03c06a9fab22fe0add145e337c5a8251e140f74468d72eab17ec7419ab812cd0";
-        wallet.networkID="4";
-        var metaMask = new MetaMask(this.driver,wallet);
-        metaMask.switchToAnotherPage();
-        metaMask.chooseProvider(4);
-        metaMask.switchToAnotherPage();
 
-        var e=new InvestPage(this.driver);
-        Utils.open("https://wizard.poa.network/invest?addr=0xcB82AF7fD8Baa5A144Eaa90101c4901D987f9bf5&networkID=4")
-
-        e.waitUntilLoaderGone().then().catch();
-        console.log(await e.getTokenAddress());
-        console.log(await e.getContractAddress());
-        console.log(await e.getURL());
+        var cr=new Crowdsale();
+        cr.contractAddress="0x5Aa23F2F974432Cd9a631F713944C9077bacb60f";
+        cr.tokenAddress="0xA293D65251E7690dB079489F34c2e541AF410e4d";//yes finalize,yes distribute button
 
 
+        var ownerFile='./owners/owner1.json';
+        var owner=new Owner(this.driver,ownerFile);
+        owner.setMetaMaskAccount();
+        var b;
 
-
-
+        //b=await owner.distribute(cr);
+        //assert.equal(b,true,"Test1->Owner->Distribution failed");
+        b=await owner.finalize(cr);
+        assert.equal(b,true,"Test1->Owner->Finalization failed");
 
     }
 

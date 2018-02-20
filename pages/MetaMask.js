@@ -117,16 +117,22 @@ class MetaMask extends page.Page{
         return this.driver.findElement(addrWallet).getText();
 
     }
-    setAccount(user){
+    importAccount(user){
         this.switchToAnotherPage();
         this.chooseProvider(user.networkID);
-        //super.clickWithWait(popupAccount);
-       // this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[2].click();");
         this.clickImportAccount();
-
         super.fillWithWait(fieldPrivateKey,user.privateKey);
         this.driver.sleep(1500);
         super.clickWithWait(buttonImport);
+        user.accN=accN-1;
+        this.switchToAnotherPage();
+    }
+
+    selectAccount(user){
+        this.switchToAnotherPage();
+       // this.clickImportAccount();
+        super.clickWithWait(popupAccount);
+        this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(user.accN)+"].click();");
         this.switchToAnotherPage();
     }
 
@@ -135,21 +141,20 @@ class MetaMask extends page.Page{
         this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(accN+1)+"].click();");
         accN++;
 
+
     }
 
-activate(user){
+/*activate(user){
 
 
     this.chooseProvider(user.networkID);
     this.clickImportAccount();
-   //super.clickWithWait(popupAccount);
-   //this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+accN+"].click();"););
 
     super.fillWithWait(fieldPrivateKey,this.owner.privateKey);
     this.driver.sleep(1500);
     super.clickWithWait(buttonImport);
 
-}
+}*/
 
 async doTransaction(){
     this.switchToAnotherPage();
@@ -171,6 +176,7 @@ async doTransaction(){
             return false;
         }
         } while(true);
+
 }
 
 

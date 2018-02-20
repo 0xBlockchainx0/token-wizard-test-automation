@@ -18,6 +18,8 @@ const fs = require('fs');
 const metaMaskWallet=require('../entity/MetaMaskWallet.js');
 const MetaMaskWallet=metaMaskWallet.MetaMaskWallet;
 
+const assert = require('assert');
+
 
 
 
@@ -38,7 +40,7 @@ class Test2 extends baseTest.BaseTest {
         var mngPage=new ManagePage(this.driver);
 
         metaMask.open();
-        metaMask.activate();
+        //metaMask.activate();
         welcomePage.switchToAnotherPage();
         welcomePage.open();
         welcomePage.clickButtonChooseContract();

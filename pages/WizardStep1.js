@@ -4,7 +4,8 @@ const webdriver = require('selenium-webdriver'),
     chrome = require('selenium-webdriver/chrome'),
     firefox = require('selenium-webdriver/firefox'),
     by = require('selenium-webdriver/lib/by');
-const  buttonContinue= by.By.xpath("//*[@id=\"root\"]/div/section/div[3]/a/span");
+const By=by.By;
+const  buttonContinue= By.className("button button_fill");
 
 
 class WizardStep1 extends page.Page{

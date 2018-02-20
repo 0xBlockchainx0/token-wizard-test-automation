@@ -15,6 +15,10 @@ const metaMaskWallet=require('../entity/MetaMaskWallet.js');
 const MetaMaskWallet=metaMaskWallet.MetaMaskWallet;
 const crowdsale=require('../entity/Crowdsale.js');
 const Crowdsale=crowdsale.Crowdsale;
+const utils=require('../utils/Utils.js');
+const Utils=utils.Utils;
+const assert = require('assert');
+
 
 
 class Test4 extends BaseTest {
@@ -24,22 +28,22 @@ class Test4 extends BaseTest {
 
     async run(){
 
-
-
-        var wallet=new MetaMaskWallet();
-        wallet.account="0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411";
-        wallet.privateKey="03c06a9fab22fe0add145e337c5a8251e140f74468d72eab17ec7419ab812cd0";
-        wallet.networkID="4";
-        var metaMask = new MetaMask(this.driver,wallet);
-        metaMask.switchToAnotherPage();
-        metaMask.createAccount();
-        metaMask.createAccount();
-        metaMask.switchToAnotherPage();
-
+        var b=false;
         var investorFile='./investors/investor1.json';
         var investor = new Investor(this.driver,investorFile);
+        var url="https://wizard.poa.network/invest?addr=0xF17ECacECD45c8e89906362Dd5573FD813C971Ab&networkID=4";
+        investor.setMetaMaskAccount();
+        investor.open(url);
 
-        metaMask.setAccount(investor);
+
+
+        var balance=await investor.getBalanceFromPage(url);
+        console.log(balance);
+        b=await investor.contribute(3);//buy ALL
+        var newBalance=await investor.getBalanceFromPage(url);
+        console.log(newBalance);
+
+        assert.equal(b,true,"Test1->Investor->Contribution failed");
 
 
 

@@ -7,49 +7,52 @@ const webdriver = require('selenium-webdriver'),
     by = require('selenium-webdriver/lib/by');
 const By=by.By;
 var COUNT_TIERS=0;
-const fieldAddressTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div[2]/div[2]/div/div[1]/div[1]/input");
-const fieldAddress1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const adj="div[1]/";
+//const adj="";
+const fieldAddressTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div[2]/div[2]/div/div[1]/div[1]/input");
+const fieldAddress1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldAddress2="]/div[2]/div[2]/div/div[1]/div[1]/input";
 
-const fieldMinTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div[2]/div[2]/div/div[1]/div[2]/input");
-const fieldMin1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const fieldMinTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div[2]/div[2]/div/div[1]/div[2]/input");
+const fieldMin1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldMin2="]/div[2]/div[2]/div/div[1]/div[2]/input";
 
-const fieldMaxTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div[2]/div[2]/div/div[1]/div[3]/input");
-const fieldMax1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const fieldMaxTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div[2]/div[2]/div/div[1]/div[3]/input");
+const fieldMax1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldMax2="]/div[2]/div[2]/div/div[1]/div[3]/input";
 
 const buttonAdd=By.className("button button_fill button_fill_plus");
-const buttonAdd1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const buttonAdd1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const buttonAdd2="]/div[2]/div[2]/div/div[2]/div";
 
-const fieldNameTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[1]/div[1]/input\n");
-const checkboxModifyOffTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[1]/div[2]/div/label[2]/span\n");
-const checkboxModifyOnTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[1]/div[2]/div/label[1]/span");
-const fieldRateTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[3]/div[1]/input");
-const fieldSupplyTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[3]/div[2]/input");
-const fieldStartTimeTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[2]/div[1]/input");
-const fieldEndTimeTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[2]/div[2]/input");
+const fieldNameTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[1]/div[1]/input\n");
+const checkboxModifyOffTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[1]/div[2]/div/label[2]/span\n");
+const checkboxModifyOnTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[1]/div[2]/div/label[1]/span");
+const fieldRateTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[3]/div[1]/input");
+const fieldSupplyTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[3]/div[2]/input");
+const fieldStartTimeTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[2]/div[1]/input");
+const fieldEndTimeTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[2]/div[2]/input");
 
-const fieldName1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const fieldName1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldName2="]/div/div[1]/div[1]/input";
-const fieldRate1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const fieldRate1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldRate2="]/div/div[3]/div[1]/input";
 
 
-const fieldSupply1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const fieldSupply1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldSupply2="]/div/div[3]/div[2]/input\n";
 
-const checkboxModifyOn1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const checkboxModifyOn1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const checkboxModifyOn2="]/div/div[1]/div[2]/div/label[1]/span\n";
-const checkboxModifyOff1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const checkboxModifyOff1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const checkboxModifyOff2="]/div/div[1]/div[2]/div/label[2]/span\n";
 
-const fieldStartTime1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const fieldStartTime1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldStartTime2="]/div/div[2]/div[1]/input";
 
-const fieldEndTime1="//*[@id=\"root\"]/div/section/div[4]/div[";
+const fieldEndTime1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldEndTime2="]/div/div[2]/div[2]/input";
+
 
 
 class TierPage extends page.Page{
@@ -59,8 +62,6 @@ class TierPage extends page.Page{
         this.URL;
         this.tier=tier;
         this.number=COUNT_TIERS++;
-
-
     }
     print(){
         console.log(typeof(this.tier));
@@ -72,6 +73,7 @@ class TierPage extends page.Page{
         this.fillRate();
         this.fillSupply();
         this.setModify();
+
         this.fillStartTime();
         this.fillEndTime();
         if (this.tier.whitelist!=null)
@@ -129,7 +131,7 @@ class TierPage extends page.Page{
 
     }
     fillStartTime()
-    {
+    {    if((this.tier.startDate==undefined)) return;
         let locator;
         if (this.number==0) {locator=fieldStartTimeTier1;}
         else {locator=by.By.xpath(fieldStartTime1+this.number+fieldStartTime2);}
@@ -143,6 +145,7 @@ class TierPage extends page.Page{
     }
     fillEndTime()
     {
+        if((this.tier.endDate==undefined)) return;
         let locator;
 
        if (this.number==0) {locator=fieldEndTimeTier1;}
