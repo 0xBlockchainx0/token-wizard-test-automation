@@ -1,3 +1,7 @@
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
+
 const key = require('selenium-webdriver').Key;
 const page=require('./Page.js');
 const webdriver = require('selenium-webdriver'),
@@ -17,6 +21,7 @@ const buttonSubmit=By.xpath("//*[@id=\"pending-tx-form\"]/div[3]/input");
 const fieldGasPrise=By.xpath("//*[@id=\"pending-tx-form\"]/div[1]/div[2]/div[3]/div[2]/div/div/input");
 ///////Imported from TestCircle//////
 const buttonAccept=By.xpath('//*[@id="app-content"]/div/div[4]/div/button');
+
 const agreement=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div/p[1]/strong");
 const fieldNewPass=By.xpath("//*[@id=\"password-box\"]");
 const fieldConfirmPass=By.xpath("//*[@id=\"password-box-confirm\"]");
@@ -33,7 +38,7 @@ const popupAccount=By.xpath("//*[@id=\"app-content\"]/div/div[1]/div/div[2]/span
 const popupImportAccount=By.xpath("//*[@id=\"app-content\"]/div/div[1]/div/div[2]/span/div/div/span/div/li[3]/span");
 const popupImportAccountCSS="#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > span";
 const fieldPrivateKey=By.xpath("//*[@id=\"private-key-box\"]");
-const pass="kindzadza";
+const pass="qwerty12345";
 const buttonImport=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/button");
 const secretWords="mask divorce brief insane improve effort ranch forest width accuse wall ride";
 const amountEth=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div[2]/div[1]/div/div/div[1]/div[1]");
@@ -42,137 +47,159 @@ const buttonSave=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/div/di
 //const arrowBackRPCURL=By.className("fa fa-arrow-left fa-lg cursor-pointer");
 const arrowBackRPCURL=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[1]/i");
 var accN=1;
-var lengthNetworkMenu=6;
-var networks=[];
-
+//var lengthNetworkMenu=6;
+//var sokolAdded=0;
+//var poaAdded=0;
+var networks=[0,3,42,4,8545]
 
 
 
 class MetaMask extends page.Page{
 
-    constructor(driver,wallet){
+    constructor(driver){
         super(driver);
         this.URL=URL;
-        this.wallet=wallet;
+       // this.wallet=wallet;
+        this.name="Metamask :"
 
 
     }
-    isButtonSubmitPresent(){}
-    setGasPriceTransaction(price){
-        super.fillWithWait(fieldGasPrise,price);
+
+
+    async setGasPriceTransaction(price){
+        logger.info(this.name+"field GasPrice :");
+        await super.fillWithWait(fieldGasPrise,price);
     }
 
 
-    clickButtonSubmit(){
-        super.clickWithWait(buttonSubmit);
+    async clickButtonSubmit(){
+        logger.info(this.name+"button Submit :");
+        await super.clickWithWait(buttonSubmit);
 
     }
-    clickPopupNetwork(){
-        super.clickWithWait(popupNetwork);
-
-    }
-     isReadyTransaction(){
-        return this.isElementPresent(buttonSubmit);
-    }
-    submitTransaction(){
-        this.clickButtonSubmit();
+    async clickPopupNetwork(){
+        logger.info(this.name+"menu Network :");
+        await super.clickWithWait(popupNetwork);
 
     }
 
-    unlock() {
-    //this.open();
-    super.fillWithWait(fieldEnterPass,passMetaMask);
-    super.clickWithWait(buttonUnlock);
+    async submitTransaction(){
+        logger.info(this.name+"button Submit Transaction :");
+        await this.clickButtonSubmit();
+
+    }
+
+    async unlock() {
+
+        await super.fillWithWait(fieldEnterPass,passMetaMask);
+        await super.clickWithWait(buttonUnlock);
 }
 
-    open()
+   async open()
     {
-
-        this.driver.get(this.URL);
-        super.clickWithWait(buttonAccept);
+        logger.info(this.name+"open: ");
+        await this.driver.get(this.URL);
+        await super.clickWithWait(buttonAccept);
+        var agr= await this.driver.findElement(agreement);
         const action=this.driver.actions();
+        await action.click(agr).perform();
 
-        action.click(this.driver.findElement(agreement)).perform();
 
         for (var i=0;i<9;i++) {
-            action.sendKeys(key.TAB).perform();
+
+           await action.sendKeys(key.TAB).perform();
 
         }
-        super.clickWithWait(buttonAccept);
-        super.fillWithWait(fieldNewPass,pass);
-        super.fillWithWait(fieldConfirmPass,pass);
-        super.clickWithWait(buttonCreate);
-        this.driver.sleep(1500);
-        super.clickWithWait(buttonIveCopied);
-        this.switchToAnotherPage();
+        await super.clickWithWait(buttonAccept);
+        await super.fillWithWait(fieldNewPass,pass);
+        await super.fillWithWait(fieldConfirmPass,pass);
+        await super.clickWithWait(buttonCreate);
+        await this.driver.sleep(500);
+        await super.clickWithWait(buttonIveCopied);
+        await this.switchToNextPage();
 
     }
-    clickDotMenu(){
-        super.clickWithWait(dotMenu);
+   async  clickDotMenu(){
+        await super.clickWithWait(dotMenu);
     }
 
 
-    getAddressWallet(){
-        //super.clickWithWait(addrWallet);
-        return this.driver.findElement(addrWallet).getText();
+    async setAccount(user){
+        let b=false;
+        for (var i=0;i<networks.length;i++)
+        {
+            if (networks[i]==user.networkID) {b=true;break;}
+        }
+        if (b) await this.selectAccount(user);
+        else await this.importAccount(user);
+
 
     }
-    importAccount(user){
-        this.switchToAnotherPage();
-        this.chooseProvider(user.networkID);
-        this.clickImportAccount();
-        super.fillWithWait(fieldPrivateKey,user.privateKey);
-        this.driver.sleep(1500);
-        super.clickWithWait(buttonImport);
+
+
+
+
+
+
+   async importAccount(user){
+        //this.driver.sleep(1000);
+
+       logger.info(this.name+"import account :");
+       await  this.switchToNextPage();
+
+       await  this.chooseProvider(user.networkID);
+
+       await  this.clickImportAccount();
+       await  super.fillWithWait(fieldPrivateKey,user.privateKey);
+       await  this.driver.sleep(1500);
+       await  super.clickWithWait(buttonImport);
         user.accN=accN-1;
-        this.switchToAnotherPage();
+
+
+       await this.switchToNextPage();
     }
 
-    selectAccount(user){
-        this.switchToAnotherPage();
+    async selectAccount(user){
+        logger.info(this.name+"select account :");
+         await  this.switchToNextPage();
        // this.clickImportAccount();
-        super.clickWithWait(popupAccount);
-        this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(user.accN)+"].click();");
-        this.switchToAnotherPage();
+        await  this.chooseProvider(user.networkID);
+        await super.clickWithWait(popupAccount);
+        await this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(user.accN)+"].click();");
+
+        await this.driver.sleep(5000);//!!!!!!!!!!!!!!!
+        await this.switchToNextPage();
     }
 
-    clickImportAccount(){
-        super.clickWithWait(popupAccount);
-        this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(accN+1)+"].click();");
+     async clickImportAccount(){
+        logger.info(this.name+" button ImportAccount :");
+        await  super.clickWithWait(popupAccount);
+        await this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(accN+1)+"].click();");
         accN++;
 
 
     }
 
-/*activate(user){
-
-
-    this.chooseProvider(user.networkID);
-    this.clickImportAccount();
-
-    super.fillWithWait(fieldPrivateKey,this.owner.privateKey);
-    this.driver.sleep(1500);
-    super.clickWithWait(buttonImport);
-
-}*/
 
 async doTransaction(){
-    this.switchToAnotherPage();
+    logger.info(this.name+"wait and submit transaction :");
+    await this.switchToNextPage();
     var counter=0;
     var timeLimit=10;
     do {
 
-        this.driver.sleep(4000);
-        this.refresh();
-        this.driver.sleep(500);
+        await this.driver.sleep(4000);
+        await this.refresh();
+        await this.driver.sleep(500);
         if (await this.isPresentButtonSubmit()) {
-            this.submitTransaction();
-            this.switchToAnotherPage();
+            await this.submitTransaction();
+            await  this.switchToNextPage();
             return true;
         }
         counter++;
         if (counter>=timeLimit) {
-            this.switchToAnotherPage();
+            await this.switchToNextPage();
+
             return false;
         }
         } while(true);
@@ -181,68 +208,55 @@ async doTransaction(){
 
 
 async isPresentButtonSubmit()
-{
+{   logger.info(this.name+"button Submit :");
     return await super.isElementPresent(buttonSubmit);
 }
 
-chooseProvider(provider){
-    super.clickWithWait(popupNetwork);
-
-        var n;
-switch(provider)
-{
-    case 0:{n=0;break;} //Olympic=>Main
-    case 1:{n=0;break;} //Main
-    case 2:{n=0;break;} //Mordern=>Main
-    case 3:{n=1;break;} //Ropsten
-    case 4:{n=3;break;} //Rinkeby
-    case 8545:{n=4;break;} //localhost8545
-    case 42:{n=2;break;} //Kovan
-    default:{
-
-        this.addNetwork(provider);
-    }
-}
-if (n<=4)this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')["+n+"].click();");
+ async chooseProvider(provider){
+    logger.info(this.name+"select provider :");
+    await super.clickWithWait(popupNetwork);
+    let n=networks.indexOf(provider);
+    //console.log("Provider="+provider+"  n="+n)
+    if (n<0) await this.addNetwork(provider);
+    else
+    await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')["+n+"].click();");
 
 }
-    addNetwork(provider){
+     async addNetwork(provider){
+         //this.driver.sleep(1000);
+        logger.info(this.name+"add network :");
         var url;
 
         switch(provider)
         {
-            case 77:{url="https://sokol.poa.network";break;}//Sokol
-            case 99:{url="https://core.poa.network";break;} //POA
+            case 77:{url="https://sokol.poa.network";
+            networks.push(77);
+            break;
+
+            }//Sokol
+            case 99:{
+                url="https://core.poa.network";
+                networks.push(99);
+                break;} //POA
             case 7762959:{url="https://sokol.poa.network";break;} //Musicoin=>SOKOL
             default:{throw("RPC Network not found. Check 'networkID' in scenario(owner,investor) file");}
         }
-        this.driver.executeScript("" +
-            "document.getElementsByClassName('dropdown-menu-item')["+(lengthNetworkMenu-1)+"].click();");
-        super.fillWithWait(fieldNewRPCURL,url);
-        super.clickWithWait(buttonSave);
+        await this.driver.executeScript("" +
+            "document.getElementsByClassName('dropdown-menu-item')["+(networks.length-1)+"].click();");
+         logger.info(this.name+"select network from menu :");
+        await super.fillWithWait(fieldNewRPCURL,url);
+        await super.clickWithWait(buttonSave);
 
-        this.driver.sleep(1000);
-        super.clickWithWait(arrowBackRPCURL);
-        lengthNetworkMenu++;
-
-
-
-
+        await this.driver.sleep(1000);
+        await super.clickWithWait(arrowBackRPCURL);
+        //lengthNetworkMenu++;
+        return;
     };
-
-    createAccount(){
-        super.clickWithWait(popupAccount);
-        this.driver.executeScript(
-            "document.getElementsByClassName('dropdown-menu-item')["+accN+"].click();");
-        accN++;
-
-    }
-
 
 }
 
 module.exports={
-    MetaMask:MetaMask,
-    buttonSubmit:buttonSubmit
+    MetaMask:MetaMask
+
 
 }

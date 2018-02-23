@@ -1,3 +1,8 @@
+
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
+
 const page=require('./Page.js');
 const webdriver = require('selenium-webdriver'),
       chrome = require('selenium-webdriver/chrome'),
@@ -11,6 +16,7 @@ const By=by.By;
 //const buttonContinue=By.xpath("//*[@id=\"root\"]/div/section/div[3]/a");
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
 
+
 class WizardStep2 extends page.Page {
 
     constructor(driver) {
@@ -19,6 +25,7 @@ class WizardStep2 extends page.Page {
         this.fieldName;
         this.fieldTicker;
         this.fieldDecimals;
+        this.name="WizardStep2 page: ";
 
     }
 
@@ -34,27 +41,26 @@ class WizardStep2 extends page.Page {
 
 
     async fillName(name){
+        logger.info(this.name+"field Name: ");
         await this.init();
-        super.fillField(this.fieldName,name);
+        await super.clearField(this.fieldName,1);
+        await super.fillField(this.fieldName,name);
 }
 async fillTicker(name){
+    logger.info(this.name+"field Ticker: ");
     await this.init();
-    super.fillField(this.fieldTicker,name);
+    await super.fillField(this.fieldTicker,name);
 }
 async fillDecimals(name){
+    logger.info(this.name+"field Decimals: ");
     await this.init();
-    super.fillField(this.fieldDecimals,name);
+    await super.fillField(this.fieldDecimals,name);
 }
 
 
-clickDecimals(){
-    super.clickWithWait(fieldDecimals);
-
-}
-
-
-clickButtonContinue(){
-    super.clickWithWait(buttonContinue);
+async clickButtonContinue(){
+    logger.info(this.name+"button Continue: ");
+    await super.clickWithWait(buttonContinue);
 }
 
 

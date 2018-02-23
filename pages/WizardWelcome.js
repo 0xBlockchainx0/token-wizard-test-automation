@@ -1,3 +1,6 @@
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
 
 const page=require('./Page.js');
 const webdriver = require('selenium-webdriver'),
@@ -13,22 +16,26 @@ class WizardWelcome extends page.Page{
     constructor(driver,URL){
         super(driver);
         this.URL=URL;
+        this.name="WizardWelcome page: ";
 
     }
 
-    clickButtonNewCrowdsale(){
-        super.clickWithWait(buttonNewCrowdsale);
+    async clickButtonNewCrowdsale(){
+        logger.info(this.name+"button NewCrowdsale");
+        await super.clickWithWait(buttonNewCrowdsale);
 
 
 
     }
-    clickButtonChooseContract(){
-        super.clickWithWait(buttonChooseContract);
+    async clickButtonChooseContract(){
+        logger.info(this.name+"button ChooseContract");
+       await  super.clickWithWait(buttonChooseContract);
         }
 
-    open()
+    async open()
     {
-        this.driver.get(this.URL);
+        logger.info(this.name+": ");
+      await   super.open(this.URL);
 
     }
 

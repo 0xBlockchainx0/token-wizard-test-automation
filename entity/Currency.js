@@ -1,3 +1,6 @@
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
 
 const fs = require('fs');
 const tier=require('./Tier.js');
@@ -32,7 +35,7 @@ class Currency{
     }
 
    parser(fileName){
-        console.log(fileName);
+       logger.info(fileName);
         var obj=JSON.parse(fs.readFileSync(fileName,"utf8"));
 
         this.name=obj.name;
@@ -81,44 +84,45 @@ class Currency{
     }
 
 print(){
-    console.log("name :"+this.name);
-    console.log("ticker :"+this.ticker);
-    console.log("decimals:"+this.decimals);
-    console.log("Reserved Tokens:"+this.reservedTokens.length);
+    logger.info("Crowdsale settings");
+    logger.log("name :"+this.name);
+    logger.log("ticker :"+this.ticker);
+    logger.log("decimals:"+this.decimals);
+    logger.log("Reserved Tokens:"+this.reservedTokens.length);
 
     for (var i=0;i<this.reservedTokens.length;i++)
     {
-        console.log("reserved tokens#:"+i);
-        console.log("Address:"+this.reservedTokens[i].address);
-        console.log("Dimension:"+this.reservedTokens[i].dimension);
-        console.log("Value:"+this.reservedTokens[i].value);
+        logger.log("reserved tokens#:"+i);
+        logger.log("Address:"+this.reservedTokens[i].address);
+        logger.log("Dimension:"+this.reservedTokens[i].dimension);
+        logger.log("Value:"+this.reservedTokens[i].value);
 
     }
-    console.log("Whitelisting:"+this.whitelisting);
-    console.log("WalletAddress:"+this.walletAddress);
-    console.log("gasprice:"+this.gasPrice);
-    console.log("mincap:"+this.minCap);
+    logger.log("Whitelisting:"+this.whitelisting);
+    logger.log("WalletAddress:"+this.walletAddress);
+    logger.log("gasprice:"+this.gasPrice);
+    logger.log("mincap:"+this.minCap);
 
 
-    console.log("Number of tiers:"+this.tiers.length);
+    logger.log("Number of tiers:"+this.tiers.length);
     for (var i=0;i<this.tiers.length;i++)
     {
-        console.log("Tier #"+i);
-        console.log("name:"+this.tiers[i].name);
-        console.log("allowModify:"+this.tiers[i].allowModify);
-        console.log("startDate:"+this.tiers[i].startDate);
-        console.log("startTime:"+this.tiers[i].startTime);
-        console.log("endDate:"+this.tiers[i].endDate);
-        console.log("endTime:"+this.tiers[i].endTime);
-        console.log("rate:"+this.tiers[i].rate);
-        console.log("supply:"+this.tiers[i].supply);
+        logger.log("Tier #"+i);
+        logger.log("name:"+this.tiers[i].name);
+        logger.log("allowModify:"+this.tiers[i].allowModify);
+        logger.log("startDate:"+this.tiers[i].startDate);
+        logger.log("startTime:"+this.tiers[i].startTime);
+        logger.log("endDate:"+this.tiers[i].endDate);
+        logger.log("endTime:"+this.tiers[i].endTime);
+        logger.log("rate:"+this.tiers[i].rate);
+        logger.log("supply:"+this.tiers[i].supply);
 if(this.tiers[i].whitelist!=null) {
-    console.log("Whitelist:" + this.tiers[i].whitelist.length);
+    logger.log("Whitelist:" + this.tiers[i].whitelist.length);
     for (var j = 0; j < this.tiers[i].whitelist.length; j++) {
-        console.log("whitelist#:" + j);
-        console.log("Address:" + this.tiers[i].whitelist[j].address);
-        console.log("Min:" + this.tiers[j].whitelist[j].min);
-        console.log("Max:" + this.tiers[j].whitelist[j].max);
+        logger.log("whitelist#:" + j);
+        logger.log("Address:" + this.tiers[i].whitelist[j].address);
+        logger.log("Min:" + this.tiers[j].whitelist[j].min);
+        logger.log("Max:" + this.tiers[j].whitelist[j].max);
 
     }
 }

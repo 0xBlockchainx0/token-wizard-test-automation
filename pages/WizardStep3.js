@@ -1,3 +1,6 @@
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
 
 const page=require('./Page.js');
 const webdriver = require('selenium-webdriver'),
@@ -25,70 +28,76 @@ class WizardStep3 extends page.Page{
         super(driver);
         this.URL;
         this.tier;
+        this.name="WizardStep3 page: ";
 
     }
 
-    clickButtonContinue(){
-        super.clickWithWait(buttonContinue);
+    async clickButtonContinue(){
+        logger.info(this.name+"button Continue: ");
+        await super.clickWithWait(buttonContinue);
 
     }
-    fillWalletAddress(address){
-        //console.log("QQQQQ1");
-        super.clearField(fieldWalletAddress);
-        super.fillWithWait(fieldWalletAddress,address);
+   async  fillWalletAddress(address){
+        logger.info(this.name+"field WalletAddress: ");
+        await super.clearField(fieldWalletAddress);
+        await super.fillWithWait(fieldWalletAddress,address);
     }
 
 
-    clickCheckboxGasPriceSafe()
+    async clickCheckboxGasPriceSafe()
     {
-        super.clickWithWait(boxGasPriceSafe);
+        logger.info(this.name+"CheckboxGasPriceSafe: ");
+        await super.clickWithWait(boxGasPriceSafe);
     }
-    clickCheckboxGasPriceNormal()
+    async clickCheckboxGasPriceNormal()
     {
-        super.clickWithWait(boxGasPriceNormal);
+        logger.info(this.name+"CheckboxGasPriceNormal: ");
+        await super.clickWithWait(boxGasPriceNormal);
     }
-    clickCheckboxGasPriceFast()
+    async clickCheckboxGasPriceFast()
     {
-    super.clickWithWait(boxGasPriceFast);
+        logger.info(this.name+"CheckboxGasPriceFast: ");
+        await super.clickWithWait(boxGasPriceFast);
     }
-    clickCheckboxGasPriceCustom()
+    async clickCheckboxGasPriceCustom()
     {
-        super.clickWithWait(boxGasPriceCustom);
+        logger.info(this.name+"CheckboxGasPriceCustom: ");
+        await super.clickWithWait(boxGasPriceCustom);
     }
-    fillGasPriceCustom(value){
-        super.clearField(fieldGasPriceCustom);
-        super.fillWithWait(fieldGasPriceCustom,value);
+    async fillGasPriceCustom(value){
+        logger.info(this.name+"GasPriceCustom: ");
+        await super.clearField(fieldGasPriceCustom);
+        await super.fillWithWait(fieldGasPriceCustom,value);
     }
-    clickCheckboWhitelistYes()
-    {
-        super.clickWithWait(boxWhitelistingYes);
-    }
-    clickCheckboWhitelistNo()
-    {
-        super.clickWithWait(boxWhitelistingNo);
+    async clickCheckboxWhitelistYes()
+    {   logger.info(this.name+"CheckboxWhitelistYes: ");
+        await super.clickWithWait(boxWhitelistingYes);
     }
 
-    clickButtonAddTier()
-    {
 
-        super.clickWithWait(buttonAddTier);
+    async clickButtonAddTier()
+    {
+        logger.info(this.name+"ButtonAddTier: ");
+        await super.clickWithWait(buttonAddTier);
     }
 
-    setGasPrice(value){
-switch(value){
-    case 2:{this.clickCheckboxGasPriceSafe();break;}
-    case 4:{this.clickCheckboxGasPriceNormal();break;}
-    case 30:{this.clickCheckboxGasPriceFast();break;}
-    default:{
-        this.clickCheckboxGasPriceCustom();
-        this.fillGasPriceCustom(value);
+    async setGasPrice(value){
+        logger.info(this.name+"setGasPrice: ");
+    switch(value){
+       case 2:{await this.clickCheckboxGasPriceSafe();break;}
+       case 4:{await this.clickCheckboxGasPriceNormal();break;}
+       case 30:{await this.clickCheckboxGasPriceFast();break;}
+       default:{
+           await this.clickCheckboxGasPriceCustom();
+           await this.fillGasPriceCustom(value);
             }
             }
     }
 
-    fillMinCap(value){
-        super.clearField(fieldMinCap);
-        super.fillWithWait(fieldMinCap,value);
+    async fillMinCap(value){
+        logger.info(this.name+"MinCap: ");
+        await super.clearField(fieldMinCap);
+        await super.fillWithWait(fieldMinCap,value);
     }
 
 

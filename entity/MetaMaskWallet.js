@@ -1,4 +1,7 @@
-const fs = require('fs');
+/*const fs = require('fs');
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
 
 
 
@@ -41,3 +44,4 @@ class MetaMaskWallet {
 module.exports={
     MetaMaskWallet:MetaMaskWallet
 }
+*/

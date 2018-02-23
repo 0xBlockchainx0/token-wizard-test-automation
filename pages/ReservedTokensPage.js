@@ -1,3 +1,8 @@
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
+
+
 const page=require('./Page.js');
 const Page=page.Page;
 const  by = require('selenium-webdriver/lib/by');
@@ -20,6 +25,7 @@ class ReservedTokensPage extends Page{
         this.URL;
         this.fieldAddress;
         this.fieldValue;
+        this.name="Reserved tokens :"
         //this.checkboxTokens;
       //  this.checkboxPercentage;
 
@@ -37,52 +43,57 @@ class ReservedTokensPage extends Page{
     }
 
 
-    fillReservedTokens(reservedTokens){
-
-          this.fillAddress(reservedTokens.address);
-          this.setDimension(reservedTokens.dimension);
-          this.fillValue(reservedTokens.value);
+    async fillReservedTokens(reservedTokens){
+          logger.info(this.name+": ");
+          await this.fillAddress(reservedTokens.address);
+          await this.setDimension(reservedTokens.dimension);
+          await this.fillValue(reservedTokens.value);
 
 
     }
 
 
     async setDimension(dimension){
+        logger.info(this.name+"field Dimension :");
         await this.init();
-        if (dimension==='percentage') this.clickCheckboxPercentage();
-        else this.clickCheckboxTokens();
+        if (dimension==='percentage') await this.clickCheckboxPercentage();
+        else await this.clickCheckboxTokens();
     }
-
 
     async fillAddress(address){
         // console.log(address);
-        if (address==undefined) return;
+        logger.info(this.name+"field Address :");
+        if (address=="") return;
         else {
-            console.log(address);
+            logger.info("Waallet address"+address);
             await this.init();
-            super.fillField(this.fieldAddress, address);
+            await super.fillField(this.fieldAddress, address);
         }
 
     }
     async fillValue(value){
+        logger.info(this.name+"field Value :");
         if (value==undefined) return;
         await this.init();
-        super.fillField(this.fieldValue,value);
+        await super.fillField(this.fieldValue,value);
     }
 
 
     async  clickCheckboxPercentage(){
+        logger.info(this.name+"checkbox Percentage :");
         await this.init();
-        super.clickTo(this.checkboxPercentage);
+        await super.clickTo(this.checkboxPercentage);
 
 
     }
     async clickCheckboxTokens() {
+        logger.info(this.name+"checkbox Tokens :");
         await this.init();
-        super.clickTo(this.checkboxTokens);
+        await super.clickTo(this.checkboxTokens);
     }
-    clickButtonAddReservedTokens(){
-        super.clickWithWait(buttonAdd);
+    async clickButtonAddReservedTokens(){
+        logger.info(this.name+"button AddReservedTokens :");
+        await super.clickWithWait(buttonAdd);
     }
 
 

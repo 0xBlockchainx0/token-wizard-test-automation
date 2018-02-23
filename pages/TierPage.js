@@ -1,3 +1,6 @@
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
 
 const key = require('selenium-webdriver').Key;
 const page=require('./Page.js');
@@ -6,6 +9,8 @@ const webdriver = require('selenium-webdriver'),
     firefox = require('selenium-webdriver/firefox'),
     by = require('selenium-webdriver/lib/by');
 const By=by.By;
+const utils=require('../utils/Utils.js');
+const Utils=utils.Utils;
 var COUNT_TIERS=0;
 const adj="div[1]/";
 //const adj="";
@@ -62,54 +67,54 @@ class TierPage extends page.Page{
         this.URL;
         this.tier=tier;
         this.number=COUNT_TIERS++;
+        this.name="Tier #"+this.number+": ";
     }
     print(){
-        console.log(typeof(this.tier));
+        //console.log(typeof(this.tier));
     }
 
-    fillTier()
-    {
-        this.fillSetupName();
-        this.fillRate();
-        this.fillSupply();
-        this.setModify();
-
-        this.fillStartTime();
-        this.fillEndTime();
-        if (this.tier.whitelist!=null)
-        this.fillWhitelist();
+    async fillTier()
+    {   logger.info(this.name+"fill tier: ");
+        await this.fillSetupName();
+        await this.fillRate();
+        await this.fillSupply();
+        await this.setModify();
+        await this.fillStartTime();
+        await this.fillEndTime();
+        if (this.tier.whitelist!=null) await this.fillWhitelist();
 
     }
 
-    fillSetupName()
+    async fillSetupName()
     {
-
+        logger.info(this.name+"field SetupName: ");
         let locator;
         if (this.number==0) {locator=fieldNameTier1;}
         else {locator=by.By.xpath(fieldName1+this.number+fieldName2);}
-        super.clearField(locator);
-        super.fillWithWait(locator,this.tier.name);
+        await super.clearField(locator);
+        await  super.fillWithWait(locator,this.tier.name);
 
     }
-    fillRate()
-    {
+    async fillRate()
+    {   logger.info(this.name+"field Rate: ");
         let locator;
         if (this.number==0) {locator=fieldRateTier1;}
         else {locator=by.By.xpath(fieldRate1+this.number+fieldRate2);}
-        super.clearField(locator);
-        super.fillWithWait(locator,this.tier.rate);
+        await super.clearField(locator);
+        await super.fillWithWait(locator,this.tier.rate);
     }
-    fillSupply()
-    {
+    async fillSupply()
+    {   logger.info(this.name+"field Supply: ");
         let locator;
         if (this.number==0) {locator=fieldSupplyTier1;}
         else {locator=by.By.xpath(fieldSupply1+this.number+fieldSupply2);}
-        super.clearField(locator);
-        super.fillWithWait(locator,this.tier.supply);
+        await super.clearField(locator);
+        await super.fillWithWait(locator,this.tier.supply);
 
     }
 
-    setModify() {
+    async setModify() {
+        logger.info(this.name+"checkbox Modify: ");
         let locator;
         if (this.number == 0)
             if (this.tier.allowModify) {
@@ -127,74 +132,87 @@ class TierPage extends page.Page{
             locator = by.By.xpath(checkboxModifyOff1 + this.number + checkboxModifyOff2);
                  }
              }
-        super.clickWithWait(locator);
+        await super.clickWithWait(locator);
 
     }
-    fillStartTime()
-    {    if((this.tier.startDate==undefined)) return;
+    async fillStartTime()
+    {
+        logger.info(this.name+"field StartTime: ");
+        if((this.tier.startDate==""))
+         {
+             this.tier.startDate=Utils.getDateNear();
+          this.tier.startTime=Utils.getTimeNear();
+
+        }
+
         let locator;
         if (this.number==0) {locator=fieldStartTimeTier1;}
         else {locator=by.By.xpath(fieldStartTime1+this.number+fieldStartTime2);}
-        super.fillWithWait(locator,this.tier.startDate);
+        await super.fillWithWait(locator,this.tier.startDate);
         const action=this.driver.actions();
-        action.sendKeys(key.TAB).perform();
-        super.fillWithWait(locator,this.tier.startTime);
+        await action.sendKeys(key.TAB).perform();
+        await super.fillWithWait(locator,this.tier.startTime);
 
-        //this.driver.findElement(locator).sendKeys(webdriver.Key.TAB);
-       // super.fillWithWait(locator,"06:59PM");
+
     }
-    fillEndTime()
+    async fillEndTime()
     {
-        if((this.tier.endDate==undefined)) return;
+        logger.info(this.name+"field EndTime: ");
+        if((this.tier.endDate=="")) return;
         let locator;
 
        if (this.number==0) {locator=fieldEndTimeTier1;}
         else {locator=by.By.xpath(fieldEndTime1+this.number+fieldEndTime2);}
-       super.fillWithWait(locator,this.tier.endDate);
+        await super.fillWithWait(locator,this.tier.endDate);
         const action=this.driver.actions();
-        action.sendKeys(key.TAB).perform();
-        super.fillWithWait(locator,this.tier.endTime);
+        await action.sendKeys(key.TAB).perform();
+        await super.fillWithWait(locator,this.tier.endTime);
     }
 
-    fillWhitelist(){
+    async fillWhitelist(){
+
         for (var i=0;i<this.tier.whitelist.length;i++) {
-            this.fillAddress(this.tier.whitelist[i].address);
-            this.fillMin(this.tier.whitelist[i].min);
-            this.fillMax(this.tier.whitelist[i].max);
-            this.clickButtonAdd();
+            logger.info(this.name+"whitelist #"+i+": ");
+            await this.fillAddress(this.tier.whitelist[i].address);
+            await this.fillMin(this.tier.whitelist[i].min);
+            await this.fillMax(this.tier.whitelist[i].max);
+            await this.clickButtonAdd();
 
 
         }
 
     }
-    fillAddress(address){
+    async fillAddress(address){
+        logger.info(this.name+"field Address: ");
         let locator;
         if (this.number==0) {locator=fieldAddressTier1;}
         else {locator=by.By.xpath(fieldAddress1+this.number+fieldAddress2);}
-        super.fillWithWait(locator,address);
-        this.driver.sleep(500);
+        await super.fillWithWait(locator,address);
+        //this.driver.sleep(500);
 
 
     }
-    fillMin(value){
+    async fillMin(value){
+        logger.info(this.name+"field Address: ");
         let locator;
         if (this.number==0) {locator=fieldMinTier1;}
         else {locator=by.By.xpath(fieldMin1+this.number+fieldMin2);}
-        super.fillWithWait(locator,value);
+        await super.fillWithWait(locator,value);
     }
-    fillMax(value){
-
+    async fillMax(value){
+        logger.info(this.name+"field Max: ");
         let locator;
         if (this.number==0) {locator=fieldMaxTier1;}
         else {locator=by.By.xpath(fieldMax1+this.number+fieldMax2);}
-        super.fillWithWait(locator,value);
+        await super.fillWithWait(locator,value);
     }
-    clickButtonAdd(){
+    async clickButtonAdd(){
+        logger.info(this.name+"button Add: ");
         let locator;
         if (this.number==0) {locator=buttonAdd}
         else {locator=By.xpath(buttonAdd1+this.number+buttonAdd2);}
 
-        super.clickWithWait(locator);
+        await super.clickWithWait(locator);
     }
 
 

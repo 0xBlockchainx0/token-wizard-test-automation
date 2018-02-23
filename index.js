@@ -29,31 +29,32 @@ const tierpage=require('./pages/TierPage.js');
 const TierPage=tierpage.TierPage;
 const Web3 = require('web3');
 const fs = require('fs');
+const assert = require('assert');
+const Logger= require('./entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
 ///////////////////////////////////////
-
-
 run();
 
-function run() {
+async function run() {
+
 
  // @Before Tests
-    if (!fs.existsSync("./artifacts"))
-    fs.mkdirSync("./artifacts");//for CIRCLECI
+
+
     var driver;
     var util=new Utils();
-    driver = util.startBrowserWithMetamask();
-
+    driver = Utils.startBrowserWithMetamask();
     var mtMask = new MetaMask(driver);
-    mtMask.open();//return activated Metamask and empty page
+    await mtMask.open();//return activated Metamask and empty page
 
     var test1 = new Test1(driver,Utils.getOutputPath("config.json"));
-    test1.run().then().catch();
+   // test1.run().then().catch();
 
     var test3 = new Test3(driver,Utils.getOutputPath("config.json"));
   //test3.run().then().catch();
-
     var test4 = new Test4(driver,Utils.getOutputPath("config.json"));
-    //test4.run().then().catch();
+   test4.run().then().catch();
 
   //@After suit
    // driver.close();

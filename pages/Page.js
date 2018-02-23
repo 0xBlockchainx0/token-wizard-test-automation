@@ -1,8 +1,12 @@
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
 
 const webdriver = require('selenium-webdriver'),
       chrome = require('selenium-webdriver/chrome'),
       firefox = require('selenium-webdriver/firefox'),
       by = require('selenium-webdriver/lib/by');
+
 const By=by.By;
 const loader=By.className("loading-container");
 
@@ -37,113 +41,128 @@ class Page {
  async  isElementPresent(element) {
      var q;
      try {
-         q = await this.driver.findElement(element).isDisplayed();
-        // var s=await this.driver.findElements(element);
+         //q = await this.driver.findElement(element).isDisplayed();
+
+         var s=await this.driver.findElements(element);
         // console.log("lengfth"+s.length);
-        // if (s.length>0)q=true;
-        // else q=false;
+         if (s.length>0){q=true;logger.info(" element present");}
+         else {q=false;logger.info(" element NOT present");}
      } catch (err) {
          q = false;
+         logger.info(" element NOT present");
      }
 
      return q;
 
      }
-async getTextElement(element)
-{return await element.getText();}
+async getTextByElement(element)
+{logger.info("get text ");
+    return await element.getText();}
 
 
 
 
 
-async getText(element)
+async getTextByLocator(element)
 {
+  logger.info("get text ");
   return await this.driver.findElement(element).getText();
 }
 async getURL()
 {
+    logger.info("get current page URL ");
     return await this.driver.getCurrentUrl();
 }
-open (url){
-        this.driver.get(url);
+async open (url){
+        logger.info("open  "+url);
+        await this.driver.get(url);
 }
-clearField(element,n){
+async clearField(element,n){
+    logger.info("clear");
     let field;
     if (n!=1) {
-        field = this.driver.wait(webdriver.until.elementLocated(element), Twait);
+        field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
     }
     else field=element;
     const c=key.chord(key.CONTROL,"a");
     const action=this.driver.actions();
-    action.click(field).perform();
-    //action.click(field).perform();
-    this.driver.sleep(500);
-    action.sendKeys(c).perform();
-    action.sendKeys(key.DELETE).perform();
-    action.sendKeys(key.DELETE).perform();
+    //await action.click(field).perform();
+    await action.click(field).perform();
+    await this.driver.sleep(300);
+    await action.sendKeys(c).perform();
+    await this.driver.sleep(300);
+    await action.sendKeys(key.DELETE).perform();
+    await action.sendKeys(key.DELETE).perform();
 
 }
-oneClick(element){
-      this.driver.findElement(element).click();
+async oneClick(element){
+     await  this.driver.findElement(element).click();
 }
-    clickElement(element){
-        element.click();
+async clickElement(element){
+        logger.info("click");
+        await element.click();
     }
 
-    fillField(field,address){
-        field.sendKeys(address);
+   async  fillField(field,address){
+        logger.info("fill: value = "+address);
+      await  field.sendKeys(address);
 
     }
 
 
-    clickWithWait(element) {
-        let button = this.driver.wait(webdriver.until.elementLocated(element), Twait);
-        button.click();
+    async clickWithWait(element) {
+        logger.info("click");
+        try{
+        let button = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+        await button.click();}
+        catch(err){logger.info("Can not click element"+ button)}
     }
-    fillWithWait(element,k) {
-        let field = this.driver.wait(webdriver.until.elementLocated(element), Twait);
-        field.sendKeys(k);
+
+
+    async fillWithWait(element,k) {
+        logger.info("fill: value = "+k);
+        let field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+        await field.sendKeys(k);
 
     }
-    refresh(){
-        this.driver.navigate().refresh();
+    async refresh(){
+        logger.info("refresh");
+        await this.driver.navigate().refresh();
     }
     async findWithWait(element)
     {
+        logger.info("find");
         await this.driver.wait(webdriver.until.elementLocated(element), Twait);
         return await this.driver.findElements(element);
     }
-    clickTo(element){
-        element.click();
+    async clickTo(element){
+        logger.info("click");
+       await  element.click();
 
     }
 
     async  isDisplayedLoader(){
         var s=await this.driver.findElement(loader).getAttribute("className");
-        if (s=="loading-container notdisplayed") return true;
-        else return false;
+        if (s=="loading-container notdisplayed") {logger.info("displayed");return true;}
+        else {logger.info("NOT displayed");return false;}
     }
 async waitUntilLoaderGone(){
+    logger.info("Modal :");
     do{ this.driver.sleep(1000);await this.isDisplayedLoader();}while(!(await this.isDisplayedLoader()));
 }
-    switchToAnotherPage(){
+
+async switchToNextPage(){
+        logger.info("switch to another tab");
         let dr=this.driver;
+        let allHandles=await dr.getAllWindowHandles();
+        let curHandle=await dr.getWindowHandle();
+        let handle;
+        for (let i=0;i<allHandles.length;i++)
+        {
+            if (curHandle!=allHandles[i]) handle=allHandles[i];
+        }
+        await dr.switchTo().window(handle);
 
-        dr.getWindowHandle().then(function (mainWindowHandle) {
-
-            dr.getAllWindowHandles().then(function (windowHandles) {
-
-                windowHandles.forEach(function(handle){
-
-                    if(!(handle===mainWindowHandle))
-                    {
-                        dr.switchTo().window(handle);
-
-                    }
-                });
-            });
-
-        });
 
 
     }

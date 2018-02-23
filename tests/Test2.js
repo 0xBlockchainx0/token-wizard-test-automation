@@ -1,4 +1,7 @@
-//const Web3 = require('web3');
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
+
 const key = require('selenium-webdriver').Key;
 const webdriver = require('selenium-webdriver'),
     chrome = require('selenium-webdriver/chrome'),
@@ -35,13 +38,13 @@ class Test2 extends baseTest.BaseTest {
 
         var welcomePage = new wizardWelcome.WizardWelcome(this.driver,startURL);
         var scenarioFile=utils.getScenarioFile(this.configFile);
-        var wallet=MetaMaskWallet.createMetaMaskWallet(scenarioFile);
+       // var wallet=MetaMaskWallet.createMetaMaskWallet(scenarioFile);
         var metaMask = new meta.MetaMask(this.driver,wallet);
         var mngPage=new ManagePage(this.driver);
 
         metaMask.open();
         //metaMask.activate();
-        welcomePage.switchToAnotherPage();
+        welcomePage.switchToNextPage();
         welcomePage.open();
         welcomePage.clickButtonChooseContract();
         do {} while(!await  mngPage.isAvailable());

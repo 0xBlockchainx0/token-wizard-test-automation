@@ -1,4 +1,9 @@
 
-tempAddr.txt
+.circleci
 results
 artifacts
+temp
+node_modules
+
+token.txt
+WhatToDo.txt

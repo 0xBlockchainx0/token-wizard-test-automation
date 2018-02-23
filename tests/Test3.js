@@ -1,3 +1,8 @@
+
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+const tempOutputPath=Logger.tempOutputPath;
+
 const baseTest=require('./BaseTest.js');
 const BaseTest=baseTest.BaseTest;
 const owner=require('../entity/Owner.js');
@@ -29,17 +34,17 @@ class Test3 extends BaseTest
     {
 
         var cr=new Crowdsale();
-        cr.contractAddress="0x5Aa23F2F974432Cd9a631F713944C9077bacb60f";
-        cr.tokenAddress="0xA293D65251E7690dB079489F34c2e541AF410e4d";//yes finalize,yes distribute button
+        cr.contractAddress="0xF00763dd8115729d973BB309b923633369f1B839";
+        cr.tokenAddress="0xC86FF8C0F81F7B15a07d49Ced99F971832BB6EcD";//yes finalize,yes distribute button
 
 
-        var ownerFile='./owners/owner1.json';
+        var ownerFile='./owners/owner3.json';
         var owner=new Owner(this.driver,ownerFile);
         owner.setMetaMaskAccount();
         var b;
 
-        //b=await owner.distribute(cr);
-        //assert.equal(b,true,"Test1->Owner->Distribution failed");
+        b=await owner.distribute(cr);
+        assert.equal(b,true,"Test1->Owner->Distribution failed");
         b=await owner.finalize(cr);
         assert.equal(b,true,"Test1->Owner->Finalization failed");
 
