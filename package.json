@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "test": "mocha"
+    "test1": "mocha ./test/testSuite1.js"
   },
   "dependencies": {
-    "geckodriver": "^1.10.0",
     "mocha": "^5.0.1",
     "selenium-webdriver": "^3.6.0",
     "web3": "^0.20.5",
