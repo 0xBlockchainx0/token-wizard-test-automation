@@ -8,6 +8,8 @@ const webdriver = require('selenium-webdriver'),
       by = require('selenium-webdriver/lib/by');
 const fs = require('fs');
 const Web3 = require('web3');
+const configFile='config.json';
+
 
 
 class Utils {
@@ -24,15 +26,9 @@ static getDateNear(){
     var q=(d.getMonth()+1)+"/"+d.getDate()+"/"+d.getFullYear();
 return q;
 }
-    static getOutputPath(fileName) {
-        var obj = JSON.parse(fs.readFileSync(fileName, "utf8"));
+    static getOutputPath() {
+        var obj = JSON.parse(fs.readFileSync(configFile, "utf8"));
         return obj.outputPath;
-
-    }
-
-    static getScenarioFile(fileName) {
-        var obj = JSON.parse(fs.readFileSync(fileName, "utf8"));
-        return obj.scenario;
 
     }
 
@@ -52,8 +48,8 @@ return q;
         driver.switchTo().alert().accept();
     }
 
-    getStartURL(fileName) {
-        var obj = JSON.parse(fs.readFileSync(fileName, "utf8"));
+    static getStartURL() {
+        var obj = JSON.parse(fs.readFileSync(configFile, "utf8"));
         return obj.startURL;
 
     }
@@ -81,17 +77,14 @@ return q;
         return n;
     }
 
-    takeScreenshoot(driver, path) {
+    static takeScreenshoot(driver) {
         driver.takeScreenshot()
             .then((res) => {
 
                var buf = new Buffer(res, 'base64');
 
-                fs.writeFileSync(path + "/screenshoot" + Utils.getDate() + '.png', buf);
-
-               //fs.writeFileSync('./artifacts/screenshoot' + d.getTime() + '.png', buf);//for circleci
-                //fs.writeFileSync(path + "/screenshoot" + d.getTime() + '.png', buf);
-            });
+                fs.writeFileSync(tempOutputPath + "/screenshoot" + Utils.getDate() + '.png', buf);
+                });
 
     }
 
@@ -112,7 +105,7 @@ return q;
      static   startBrowserWithMetamask() {
         var source = 'MetaMask.crx';
         if (!fs.existsSync(source)) source = './node_modules/create-poa-crowdsale/MetaMask.crx';
-        logger.log("Metamask source:"+source);
+        logger.info("Metamask source:"+source);
         var options = new chrome.Options();
         options.addExtensions(source);
         //options.addArguments("user-data-dir=/home/d/GoogleProfile");

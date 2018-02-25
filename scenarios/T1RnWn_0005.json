@@ -6,12 +6,7 @@
   "ticker": "test",
   "decimals": 3,
   "reservedTokens":[
-    {
-
-    },
-    {
-
-    }],
+    ],
   "walletAddress":"0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
   "gasprice": 40,
   "mincap": 1,
@@ -20,10 +15,10 @@
     {
       "name":"###1",
       "allowModify": true,
-      "startDate": "02/10/2018",
-      "startTime": "03:15pm",
-      "endDate":"02/10/2018",
-      "endTime":"03:30pm",
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
       "rate":100,
       "supply": 200,
       "whitelist":[

@@ -33,36 +33,6 @@ class Test2 extends baseTest.BaseTest {
     }
     async run() {
 
-        const utils=new Utils();
-        var startURL=utils.getStartURL(this.configFile);
-
-        var welcomePage = new wizardWelcome.WizardWelcome(this.driver,startURL);
-        var scenarioFile=utils.getScenarioFile(this.configFile);
-       // var wallet=MetaMaskWallet.createMetaMaskWallet(scenarioFile);
-        var metaMask = new meta.MetaMask(this.driver,wallet);
-        var mngPage=new ManagePage(this.driver);
-
-        metaMask.open();
-        //metaMask.activate();
-        welcomePage.switchToNextPage();
-        welcomePage.open();
-        welcomePage.clickButtonChooseContract();
-        do {} while(!await  mngPage.isAvailable());
-        var contract="0x7eB29E0922C87D728c81A9FAB66e97668c917108";
-        mngPage.URL=startURL+"manage/"+contract;
-        mngPage.open();
-        //this.driver.sleep(5000);
-
-        do{
-
-        } while(!await mngPage.isPresentButtonFinalize());
-        console.log(await mngPage.isAvailableDistribute());
-
-        mngPage.clickButtonFinalize();
-       // if (mngPage.isAvailableDistribute())mngPage.clickButtonDistribute();
-        //if (mngPage.isAvailableFinalize()) mngPage.clickButtonFinalize();
-
-
 
 
 

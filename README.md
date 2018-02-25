@@ -1,4 +1,5 @@
 ### Automated tests for token-wizard 
+Start URL, path for results in ```config.json```
 
 Test suite #1 , starts with command ```npm run -script test1```
 ```

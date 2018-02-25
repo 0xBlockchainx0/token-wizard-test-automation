@@ -6,9 +6,11 @@
     "test1": "mocha ./test/testSuite1.js"
   },
   "dependencies": {
+    "fs-extra": "^5.0.0",
     "mocha": "^5.0.1",
+    "moment": "^2.20.1",
     "selenium-webdriver": "^3.6.0",
     "web3": "^0.20.5",
-    "winston": "^2.4.0"
+    "winston": "^3.0.0-rc1"
   }
 }

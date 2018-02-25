@@ -85,44 +85,44 @@ class Currency{
 
 print(){
     logger.info("Crowdsale settings");
-    logger.log("name :"+this.name);
-    logger.log("ticker :"+this.ticker);
-    logger.log("decimals:"+this.decimals);
-    logger.log("Reserved Tokens:"+this.reservedTokens.length);
+    logger.info("name :"+this.name);
+    logger.info("ticker :"+this.ticker);
+    logger.info("decimals:"+this.decimals);
+    logger.info("Reserved Tokens:"+this.reservedTokens.length);
 
     for (var i=0;i<this.reservedTokens.length;i++)
     {
-        logger.log("reserved tokens#:"+i);
-        logger.log("Address:"+this.reservedTokens[i].address);
-        logger.log("Dimension:"+this.reservedTokens[i].dimension);
-        logger.log("Value:"+this.reservedTokens[i].value);
+        logger.info("reserved tokens#:"+i);
+        logger.info("Address:"+this.reservedTokens[i].address);
+        logger.info("Dimension:"+this.reservedTokens[i].dimension);
+        logger.info("Value:"+this.reservedTokens[i].value);
 
     }
-    logger.log("Whitelisting:"+this.whitelisting);
-    logger.log("WalletAddress:"+this.walletAddress);
-    logger.log("gasprice:"+this.gasPrice);
-    logger.log("mincap:"+this.minCap);
+    logger.info("Whitelisting:"+this.whitelisting);
+    logger.info("WalletAddress:"+this.walletAddress);
+    logger.info("gasprice:"+this.gasPrice);
+    logger.info("mincap:"+this.minCap);
 
 
-    logger.log("Number of tiers:"+this.tiers.length);
+    logger.info("Number of tiers:"+this.tiers.length);
     for (var i=0;i<this.tiers.length;i++)
     {
-        logger.log("Tier #"+i);
-        logger.log("name:"+this.tiers[i].name);
-        logger.log("allowModify:"+this.tiers[i].allowModify);
-        logger.log("startDate:"+this.tiers[i].startDate);
-        logger.log("startTime:"+this.tiers[i].startTime);
-        logger.log("endDate:"+this.tiers[i].endDate);
-        logger.log("endTime:"+this.tiers[i].endTime);
-        logger.log("rate:"+this.tiers[i].rate);
-        logger.log("supply:"+this.tiers[i].supply);
+        logger.info("Tier #"+i);
+        logger.info("name:"+this.tiers[i].name);
+        logger.info("allowModify:"+this.tiers[i].allowModify);
+        logger.info("startDate:"+this.tiers[i].startDate);
+        logger.info("startTime:"+this.tiers[i].startTime);
+        logger.info("endDate:"+this.tiers[i].endDate);
+        logger.info("endTime:"+this.tiers[i].endTime);
+        logger.info("rate:"+this.tiers[i].rate);
+        logger.info("supply:"+this.tiers[i].supply);
 if(this.tiers[i].whitelist!=null) {
-    logger.log("Whitelist:" + this.tiers[i].whitelist.length);
+    logger.info("Whitelist:" + this.tiers[i].whitelist.length);
     for (var j = 0; j < this.tiers[i].whitelist.length; j++) {
-        logger.log("whitelist#:" + j);
-        logger.log("Address:" + this.tiers[i].whitelist[j].address);
-        logger.log("Min:" + this.tiers[j].whitelist[j].min);
-        logger.log("Max:" + this.tiers[j].whitelist[j].max);
+        logger.info("whitelist#:" + j);
+        logger.info("Address:" + this.tiers[i].whitelist[j].address);
+        logger.info("Min:" + this.tiers[j].whitelist[j].min);
+        logger.info("Max:" + this.tiers[j].whitelist[j].max);
 
     }
 }

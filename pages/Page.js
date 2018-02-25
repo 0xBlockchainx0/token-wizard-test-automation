@@ -148,7 +148,8 @@ async clickElement(element){
     }
 async waitUntilLoaderGone(){
     logger.info("Modal :");
-    do{ this.driver.sleep(1000);await this.isDisplayedLoader();}while(!(await this.isDisplayedLoader()));
+    do{ this.driver.sleep(1000);await this.isDisplayedLoader();}
+    while(!(await this.isDisplayedLoader()));
 }
 
 async switchToNextPage(){

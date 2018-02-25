@@ -4,7 +4,8 @@ const tempOutputPath=Logger.tempOutputPath;
 
 const meta=require('../pages/MetaMask.js');
 const MetaMask=meta.MetaMask;
-
+const page=require('../pages/Page.js');
+const Page=page.Page;
 const wizardWelcome=require('../pages/WizardWelcome.js');
 const WizardWelcome=wizardWelcome.WizardWelcome;
 const wizStep1=require('../pages/WizardStep1.js');
@@ -35,7 +36,7 @@ const Currency=currency.Currency;
 const crowdsale=require('../entity/Crowdsale.js');
 const Crowdsale=crowdsale.Crowdsale;
 const timeLimitTransactions=80;
-const startURL="https://wizard.poa.network/";
+
 
 class User {
     constructor(driver,file,resultFile){
@@ -79,10 +80,11 @@ class User {
     }
     async openManagePage(crowdsale){
         var welcomePage=new WizardWelcome(this.driver);
-
+        const  startURL=Utils.getStartURL();
         welcomePage.URL=startURL;
         await welcomePage.open();
         await  welcomePage.clickButtonChooseContract();
+        Utils.takeScreenshoot(this.driver);
         var mngPage=new ManagePage(this.driver);
         var counter=0;
 
@@ -93,6 +95,7 @@ class User {
         mngPage.URL=startURL+"manage/"+crowdsale.contractAddress;
         await mngPage.open();
         await mngPage.waitUntilLoaderGone();
+        Utils.takeScreenshoot(this.driver);
 
         return mngPage;
 
@@ -101,7 +104,7 @@ class User {
     async distribute(crowdsale){
 
         var mngPage=await this.openManagePage(crowdsale);
-
+        Utils.takeScreenshoot(this.driver);
         this.driver.sleep(5000);
         // logger.info(("Present:"+await mngPage.isPresentButtonDistribute());
         //  logger.info(("Enabled"+await mngPage.isEnabledDistribute());
@@ -113,7 +116,7 @@ class User {
         var metaMask = new meta.MetaMask(this.driver);
         await metaMask.doTransaction();
         await mngPage.waitUntilLoaderGone();
-
+        Utils.takeScreenshoot(this.driver);
         var b= await mngPage.confirmPopup();
         return true;
     }
@@ -121,9 +124,10 @@ class User {
     async finalize(crowdsale){
 
         await this.openManagePage(crowdsale);
+        Utils.takeScreenshoot(this.driver);
         var mngPage=new ManagePage(this.driver);
         await mngPage.waitUntilLoaderGone();
-
+        Utils.takeScreenshoot(this.driver);
         if ( await mngPage.isEnabledFinalize())
         {
             await mngPage.clickButtonFinalize();
@@ -138,12 +142,14 @@ class User {
 
         }
         while(!(await mngPage.isPresentPopupYesFinalize()));
+        Utils.takeScreenshoot(this.driver);
         this.driver.sleep(1000);
         await mngPage.clickButtonYesFinalize();
         this.driver.sleep(3000);
         var metaMask = new meta.MetaMask(this.driver);
         await metaMask.doTransaction();
         await mngPage.waitUntilLoaderGone();
+        Utils.takeScreenshoot(this.driver);
         var b= await mngPage.confirmPopup();
         return true;
     }
@@ -153,13 +159,10 @@ class User {
 
     async createCrowdsale(scenarioFile){
 
-        var utils=new Utils();
 
+        const  startURL=Utils.getStartURL();
         var welcomePage = new wizardWelcome.WizardWelcome(this.driver,startURL);
-        // var wallet=new MetaMaskWallet();
-        // wallet.account=this.account;
-        // wallet.privateKey=this.privateKey;
-        // wallet.networkID=this.networkID;
+
         var metaMask = new MetaMask(this.driver);
         var wizardStep1 = new WizardStep1(this.driver);
         var wizardStep2 = new WizardStep2(this.driver);
@@ -174,11 +177,13 @@ class User {
         for (var i=0;i<cur.tiers.length;i++)
             tiers.push(new TierPage(this.driver,cur.tiers[i]));
 
-        //await metaMask.importAccount(this);
+
 
         await  welcomePage.open();
         // this.driver.sleep(1000);
+        Utils.takeScreenshoot(this.driver);
         await  welcomePage.clickButtonNewCrowdsale();
+        Utils.takeScreenshoot(this.driver);
         await this.driver.sleep(3000);
         await  wizardStep1.clickButtonContinue();
         //this.driver.sleep(500);
@@ -194,7 +199,7 @@ class User {
 
         }
         await Utils.zoom(this.driver,0.5);
-        utils.takeScreenshoot(this.driver,tempOutputPath);
+        Utils.takeScreenshoot(this.driver);
         await Utils.zoom(this.driver,1);
 
         await wizardStep2.clickButtonContinue();
@@ -203,15 +208,15 @@ class User {
         await wizardStep3.setGasPrice(cur.gasPrice);
         if (cur.whitelisting) await wizardStep3.clickCheckboxWhitelistYes();
         else (await wizardStep3.fillMinCap(cur.minCap));
-        utils.takeScreenshoot(this.driver,tempOutputPath);
+        Utils.takeScreenshoot(this.driver);
         for (var i=0;i<cur.tiers.length-1;i++)
         {
             await tiers[i].fillTier();
-            utils.takeScreenshoot(this.driver,tempOutputPath);
+            Utils.takeScreenshoot(this.driver);
             await wizardStep3.clickButtonAddTier();
         }
         await tiers[cur.tiers.length-1].fillTier();
-        utils.takeScreenshoot(this.driver,tempOutputPath);
+        Utils.takeScreenshoot(this.driver);
         await wizardStep3.clickButtonContinue();
         await this.driver.sleep(5000);
 
@@ -246,11 +251,11 @@ class User {
                 b=false;}
         } while (b);
 //////////////////////////////////////////////////////////////////
-        utils.takeScreenshoot(this.driver,tempOutputPath);
+        Utils.takeScreenshoot(this.driver);
         await this.driver.sleep(5000);
         await wizardStep4.clickButtonContinue();
         this.driver.sleep(5000);
-        utils.takeScreenshoot(this.driver,tempOutputPath);
+        Utils.takeScreenshoot(this.driver);
         await wizardStep4.waitUntilLoaderGone();
         b=true;
         var counter=50;
@@ -265,7 +270,7 @@ class User {
                 counter++;
             }
         } while (b);
-        utils.takeScreenshoot(this.driver,tempOutputPath);
+        Utils.takeScreenshoot(this.driver);
 
         const  ur=await investPage.getURL();
         logger.info("Final invest page link: "+ur);
@@ -273,10 +278,11 @@ class User {
 
         await investPage.waitUntilLoaderGone();
         //await  this.driver.sleep(10000);
+        Utils.takeScreenshoot(this.driver);
         const addr=await investPage.getTokenAddress();
         const contr=await investPage.getContractAddress();
-
         const  cr=new Crowdsale(cur,addr,contr,ur);
+
         return cr;
     }
     async confirmPopup(){
@@ -287,9 +293,11 @@ class User {
         while(c-->0) {
             await this.driver.sleep(1000);
             if (await investPage.isPresentWarning()) {
+                Utils.takeScreenshoot(this.driver);
                 await investPage.clickButtonOK();
                 return true;
             }
+            Utils.takeScreenshoot(this.driver);
             return false;
         }
 
@@ -300,6 +308,7 @@ class User {
         var investPage = new InvestPage(this.driver);
         await investPage.waitUntilLoaderGone();
         await investPage.fillInvest(amount);
+        Utils.takeScreenshoot(this.driver);
         await investPage.clickButtonContribute();
 
         // await investPage.waitUntilLoaderGone();
@@ -313,17 +322,20 @@ class User {
             if (await investPage.isPresentWarning()) {
                 var text=await investPage.getWarningText();
                 logger.info(this.name+text);
+                Utils.takeScreenshoot(this.driver);
                 //await investPage.clickButtonOK();
                 return false;}
             //Check if Error present(transaction failed)->return false
             if (await investPage.isPresentError()) {
                 var text=await investPage.getErrorText();
                 logger.info(this.name+text);
+                Utils.takeScreenshoot(this.driver);
                 //await investPage.clickButtonOK();
                 return false;}
 
             counter++;
             if (counter>=timeLimit) {
+                Utils.takeScreenshoot(this.driver);
                 d=false;
             }
         } while(d);
@@ -340,11 +352,13 @@ class User {
         while(counter++<timeLimit) {
             this.driver.sleep(1000);
             if (await investPage.isPresentWarning()) {
+                Utils.takeScreenshoot(this.driver);
                 await investPage.clickButtonOK();
                 return true;
             }
 
         }
+        Utils.takeScreenshoot(this.driver);
         return false;
     }
     async getBalanceFromPage(url)
@@ -353,6 +367,7 @@ class User {
         var curURL=await investPage.getURL();
         if(url!=curURL) await investPage.open(url);
         await investPage.waitUntilLoaderGone();
+        Utils.takeScreenshoot(this.driver);
         await this.driver.sleep(2000);
         let s=await investPage.getBalance();
         let arr=s.split(" ");

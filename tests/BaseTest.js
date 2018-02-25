@@ -1,6 +1,3 @@
-const Logger= require('../entity/Logger.js');
-const logger=Logger.logger;
-const tempOutputPath=Logger.tempOutputPath;
 
 const webdriver = require('selenium-webdriver'),
       chrome = require('selenium-webdriver/chrome'),

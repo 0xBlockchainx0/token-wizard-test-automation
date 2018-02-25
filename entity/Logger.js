@@ -1,22 +1,42 @@
-var winston = require('winston');
-const fs = require('fs');
+const winston = require('winston');
+const fs = require('fs-extra');
 
-if (!fs.existsSync('./temp'))
-    fs.mkdirSync('./temp');
+const { createLogger, format, transports } = require('winston');
 
-    var tempOutputPath='./temp/';
-    var logger = new (winston.Logger)({
-        transports: [
-            //new (winston.transports.Console)(),
-            new (winston.transports.File)({filename: './temp/result.log'})
-        ]
-    });
+const { combine, timestamp, label, printf } = format;
 
-//logger.log('info', 'Hello distributed log files!');
-//logger.info('Hello again distributed logs');
+const myFormat = printf(info => {
+    return `[${info.timestamp}]  ${info.message} `;
+    //return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
+});
 
-//logger.level = 'debug';
-//logger.log('debug', 'Now my debug messages are written to console!');
+
+const tempOutputPath='./temp/';
+fs.ensureDirSync(tempOutputPath);//create if doesn't exist
+tempOutputFile=tempOutputPath+'result.log';
+fs.ensureFileSync(tempOutputFile);
+//const moment = require('moment');
+//function tsFormat (){ return moment().format('YY-MM-DD hh:mm:ss').trim();}
+//console.log(tsFormat());
+const logger = createLogger({
+
+   format: combine(
+        label({ label: '' }),
+        timestamp(),
+        myFormat
+    ),
+   transports: [
+       // new (winston.transports.Console)(),
+        new (winston.transports.File)({filename: tempOutputFile})
+
+    ]
+});
+
 
 exports.logger=logger;
 exports.tempOutputPath=tempOutputPath;
+
+
+
+
+
