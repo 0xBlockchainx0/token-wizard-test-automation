@@ -104,7 +104,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
 
     });
 
-    test.it('Warning present if investor try to buy from foreign network', async function() {
+    test.it('Warning presents if investor try to buy from foreign network', async function() {
         investor=user4_40cA;
         await investor.setMetaMaskAccount();
         await investor.open(crowdsale.url);

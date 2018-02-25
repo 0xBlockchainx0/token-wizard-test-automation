@@ -4,11 +4,11 @@ Start URL, path for results in ```config.json```
 Test suite #1 , starts with command ```npm run -script test1```
 ```
 1.  'Owner  can create crowdsale,no whitelist,reserved'
-2.  'Investor can NOT contribute from another network'
-3.  'Investor can NOT contribute less than minCap in first transaction'
-4.  'Investor can NOT contribute more than supply in tier'
-5.  'Investor can contribute minCap'
-6.  'Investor can contribute less than minCap after first transaction'
+2.  'Warning presents if investor try to buy from foreign network'
+3.  'Investor can NOT buy less than minCap in first transaction'
+4.  'Investor can NOT buy more than total supply in tier'
+5.  'Investor can buy amount equals minCap'
+6.  'Investor can buy  less than minCap after first transaction'
 7.  'Owner can NOT distribute before  all tokens were sold'
 8.  'Owner can NOT finalize before  all tokens were sold & if crowdsale NOT ended'
 9.  'Investor can contribute maximum'
