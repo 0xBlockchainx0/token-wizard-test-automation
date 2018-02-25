@@ -81,9 +81,11 @@ async clearField(element,n){
     logger.info("clear");
     let field;
     if (n!=1) {
-        field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
-    }
+
+        field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);}
     else field=element;
+    await field.clear();
+    /*
     const c=key.chord(key.CONTROL,"a");
     const action=this.driver.actions();
     //await action.click(field).perform();
@@ -92,7 +94,7 @@ async clearField(element,n){
     await action.sendKeys(c).perform();
     await this.driver.sleep(300);
     await action.sendKeys(key.DELETE).perform();
-    await action.sendKeys(key.DELETE).perform();
+    await action.sendKeys(key.DELETE).perform();*/
 
 }
 async oneClick(element){
