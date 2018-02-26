@@ -77,13 +77,13 @@ return q;
         return n;
     }
 
-    static takeScreenshoot(driver) {
+   static takeScreenshoot(driver) {
         driver.takeScreenshot()
             .then((res) => {
 
                var buf = new Buffer(res, 'base64');
 
-                fs.writeFileSync(tempOutputPath + "/screenshoot" + Utils.getDate() + '.png', buf);
+                fs.writeFileSync(tempOutputPath + "screenshoot" + Utils.getDate() + '.png', buf);
                 });
 
     }

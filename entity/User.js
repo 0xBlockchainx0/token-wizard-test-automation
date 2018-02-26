@@ -149,7 +149,7 @@ class User {
         var metaMask = new meta.MetaMask(this.driver);
         await metaMask.doTransaction();
         await mngPage.waitUntilLoaderGone();
-        Utils.takeScreenshoot(this.driver);
+        //Utils.takeScreenshoot(this.driver);
         var b= await mngPage.confirmPopup();
         return true;
     }
