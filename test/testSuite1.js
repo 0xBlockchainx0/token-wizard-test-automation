@@ -1,11 +1,8 @@
-var {Builder, By, Key, until} = require('selenium-webdriver');
+//var {Builder, By, Key, until} = require('selenium-webdriver');
 webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var assert = require('assert');
 const fs = require('fs-extra');
-////////// PAGES ///////////////////////////////////////
-const wizardWelcome=require('../pages/WizardWelcome.js');
-const WizardWelcome=wizardWelcome.WizardWelcome;
 
 ////////////////////////////////////////////////////////
 const Logger= require('../entity/Logger.js');
@@ -40,7 +37,13 @@ test.describe('POA token-wizard. Test suite #1', function() {
     var user4_40cA;
     var user77_27F2;
     var owner;
+
+
+
+
     var investor;
+
+    //var scenario="./scenarios/T1RyWn_0008.json";//'./scenarios/simple.json';
     var scenario='./scenarios/simple.json';
     var mtMask;
     var crowdsale=new Crowdsale();
@@ -65,17 +68,17 @@ test.describe('POA token-wizard. Test suite #1', function() {
     });
 
     test.after(async function() {
-
+        driver.sleep(10000);
        let outputPath=Utils.getOutputPath();
         outputPath=outputPath+"/result"+Utils.getDate();
         fs.ensureDirSync(outputPath);
         fs.copySync(tempOutputPath,outputPath);
         fs.remove(tempOutputPath);
 
-        //driver.quit();
+        driver.quit();
     });
 //////////////////////////////////////////////////////////////////////////////
-    test.it.skip('Self test', async function() {
+   // test.it.skip('Self test', async function() {
       // await  investor.setMetaMaskAccount();
       // await  owner1.setMetaMaskAccount();
       //owner.createCrowdsale(scenario);
@@ -88,10 +91,10 @@ test.describe('POA token-wizard. Test suite #1', function() {
         //driver.get("https://wizard.poa.network/");
    //investor1.setMetaMaskAccount();
 
-    });
+   // });
 
 
-    test.it('Owner  can create crowdsale,no whitelist,reserved', async function() {
+    test.it('Owner  can create crowdsale,no whitelist,reserved, not modifiable', async function() {
         owner=user77_56B2;
         await owner.setMetaMaskAccount();
         crowdsale = await owner.createCrowdsale(scenario);
@@ -166,6 +169,10 @@ test.describe('POA token-wizard. Test suite #1', function() {
         logger.warn("Test PASSED. Investor can buy less than minCap after first transaction" );
 
     });
+    test.it('Owner can not modify crowdsale if allow modify is false', async function() {
+
+    });
+
     test.it('Owner can NOT distribute before  all tokens are sold', async function() {
         owner=user77_56B2;
         await owner.setMetaMaskAccount();
@@ -212,6 +219,11 @@ test.describe('POA token-wizard. Test suite #1', function() {
         logger.warn("Test PASSED.Owner can distribute (after all tokens were sold).");
 
     });
+
+    test.it('Reserved addresses receive right amount of tokens after distribution)', async function() {
+
+    });
+
     test.it('NOT Owner can NOT finalize (after all tokens were sold)', async function() {
         owner=user77_27F2;
         await owner.setMetaMaskAccount();
@@ -227,6 +239,12 @@ test.describe('POA token-wizard. Test suite #1', function() {
         b = await owner.finalize(crowdsale);
         assert.equal(b, true, "Test FAILED.'Owner can NOT finalize (after all tokens were sold)");
         logger.warn("Test PASSED.'Owner can  finalize (after all tokens were sold) ");
+
+    });
+
+//New
+
+    test.it('Investors receive right amount of tokens after finalization)', async function() {
 
     });
 

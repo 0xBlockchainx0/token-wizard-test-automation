@@ -22,7 +22,7 @@
   "tiers":[
     {
       "name":"###1",
-      "allowModify": true,
+      "allowModify": false,
       "startDate": "",
       "startTime": "",
       "endDate":"",

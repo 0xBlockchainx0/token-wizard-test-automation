@@ -37,12 +37,10 @@ const tempOutputPath=Logger.tempOutputPath;
 //logger.foo("qqqqqqqqqq");
 //logger.bar("wwwwwwwwww");
 //logger.baz("zzzzzzzzzz");
-logger.info("info");
-logger.warn("warn");
-logger.error("error");
 
 
-//run();
+
+run();
 
 async function run() {
 
@@ -62,7 +60,7 @@ async function run() {
     var test3 = new Test3(driver,Utils.getOutputPath());
   //test3.run().then().catch();
     var test4 = new Test4(driver,Utils.getOutputPath());
-   test4.run().then().catch();
+  // test4.run().then().catch();
 
   //@After suit
    // driver.close();

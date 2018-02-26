@@ -17,7 +17,7 @@
       "address" :"0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
       "dimension": "tokens",
       "value": 99.9999
-    },
+    }
 
 
 
@@ -31,10 +31,10 @@
     {
       "name":"###1",
       "allowModify": true,
-      "startDate": "02/12/2018",
-      "startTime": "05:59pm",
-      "endDate":"02/12/2018",
-      "endTime":"06:59pm",
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
       "rate":100,
       "supply": 20,
       "whitelist":[

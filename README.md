@@ -13,10 +13,23 @@ Test suite #1 , starts with command ```npm run -script test1```
 8.  'Owner can NOT finalize before  all tokens were sold & if crowdsale NOT ended'
 9.  'Investor can contribute maximum'
 10. 'NOT Owner can NOT distribute (after all tokens were sold)'
-11. 'NOT Owner can NOT finalize (after all tokens were sold)'
 12. 'Owner can distribute (after all tokens were sold)'
-13. 'Owner can  finalize (after all tokens were sold)'
+13. 'Reserved addresses receive right amount of tokens after distribution'
+14. 'NOT Owner can NOT finalize (after all tokens were sold)'
+15. 'Owner can  finalize (after all tokens were sold)'
+16. 'Investors receive right amount of tokens after finalization)'
 ```
+Test suite #2 , starts with command ```npm run -script test2```
+
+```
+1.  'Owner  can create crowdsale, whitelist, reserved'
+
+
+
+
+
+```
+
 
 
 
