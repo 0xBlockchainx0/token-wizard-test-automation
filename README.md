@@ -19,16 +19,6 @@ Test suite #1 , starts with command ```npm run -script test1```
 15. 'Owner can  finalize (after all tokens were sold)'
 16. 'Investors receive right amount of tokens after finalization)'
 ```
-Test suite #2 , starts with command ```npm run -script test2```
-
-```
-1.  'Owner  can create crowdsale, whitelist, reserved'
-
-
-
-
-
-```
 
 
 
