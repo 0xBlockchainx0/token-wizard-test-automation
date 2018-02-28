@@ -150,10 +150,10 @@ class TierPage extends page.Page{
 		    this.tier.startDate=Utils.getDateNear(120000,format);
 		    this.tier.startTime=Utils.getTimeNear(120000,format);
 
-	    }
+	    } else
 	    if (format=="mdy") {
-	        this.tier.startDate=Utils.convertDateToUtc(this.tier.startDate);
-		    this.tier.startTime=Utils.convertDateToUtc(this.tier.startTime);
+	        this.tier.startDate=Utils.convertDateToMdy(this.tier.startDate);
+		    this.tier.startTime=Utils.convertTimeToMdy(this.tier.startTime);
 
 	    }
 
@@ -172,10 +172,19 @@ class TierPage extends page.Page{
 
         let locator;
 
+
        if (this.number==0) {locator=fieldEndTimeTier1;}
         else {locator=by.By.xpath(fieldEndTime1+this.number+fieldEndTime2);}
 
+	    var format=await Utils.getDateFormat(this.driver);
+
 	    if((this.tier.endDate=="")) return;
+	    else
+	    if (format=="mdy") {
+		    this.tier.endDate=Utils.convertDateToMdy(this.tier.endDate);
+		    this.tier.endTime=Utils.convertTimeToMdy(this.tier.endTime);
+
+	    }
 
 	    await super.fillWithWait(locator,this.tier.endDate);
         const action=this.driver.actions();

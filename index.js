@@ -35,12 +35,12 @@ const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
 ///////////////////////////////////////
 
-//var d=Utils.getTimeNear(12135230,"utc");
+//var d=Utils.getTimeNear(1213000,"utc");
 //console.log(d);
-//console.log(Utils.convertTimeToMdy("00:34"));
+console.log(Utils.convertTimeToMdy("01:10"));
 
 
-run();
+//run();
 
 async function run() {
 
