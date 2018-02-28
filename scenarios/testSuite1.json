@@ -1,14 +1,14 @@
 {
 
-  "name": "simple.json",
+  "name": "testSuite#1.json",
   "ticker": "test",
   "decimals": 18,
   "reservedTokens":[
     {
-    "address" :  "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
-    "dimension": "percentage",
-    "value": 99
-  },
+      "address" :  "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+      "dimension": "percentage",
+      "value": 99
+    },
     {
       "address" :  "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
       "dimension": "tokens",
@@ -23,10 +23,10 @@
     {
       "name":"###1",
       "allowModify": false,
-      "startDate": "28/02/2018",
-      "startTime": "12:34",
-      "endDate":"03/04/2019",
-      "endTime":"23:45",
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
       "rate":100,
       "supply": 20,
       "whitelist":[]

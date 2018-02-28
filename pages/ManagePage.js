@@ -1,7 +1,7 @@
 const Logger= require('../entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
-
+const key = require('selenium-webdriver').Key;
 const by = require('selenium-webdriver/lib/by');
 const page=require('./Page.js');
 const Page=page.Page;
@@ -16,6 +16,25 @@ const modal=By.className("modal");
 const buttonDistribute=By.xpath("//*[contains(text(),'Distribute tokens')]");
 const buttonFinalize=By.xpath("//*[contains(text(),'Finalize Crowdsale')]");
 const buttonYesFinalize=By.className("swal2-confirm swal2-styled");
+const buttonSave=By.className("no-arrow button button_fill");
+
+const fieldStartTimeTier1=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[3]/div/div[2]/div[2]/div[1]/input");
+const fieldEndTimeTier1=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[3]/div/div[2]/div[2]/div[2]/input");
+
+const fieldWhAddressTier1=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[3]/div/div[3]/div[2]/div[1]/div[1]/div[1]/input");
+const fieldWhMinTier1=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[3]/div/div[3]/div[2]/div[1]/div[1]/div[2]/input");
+const fieldWhMaxTier1=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[3]/div/div[3]/div[2]/div[1]/div[1]/div[3]/input");
+
+const warningEndTimeTier1=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[3]/div/div[2]/div[2]/div[2]/p[2]");
+const warningEndTimeTier2=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[4]/div/div[1]/div[2]/div[2]/p[2]");
+const warningStartTimeTier2=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[4]/div/div[1]/div[2]/div[1]/p[2]");
+const warningStartTimeTier1=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[4]/div/div[2]/div[2]/div[1]/p[2]");
+
+const fieldStartTimeTier2=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[4]/div/div[1]/div[2]/div[1]/input");
+const fieldEndTimeTier2=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[4]/div/div[1]/div[2]/div[2]/input");
+const fieldWhAddressTier2=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[4]/div/div[2]/div[2]/div[1]/div[1]/div[1]/input");
+const fieldWhMinTier2=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[4]/div/div[2]/div[2]/div[1]/div[1]/div[2]/input");
+const fieldWhMaxTier2=By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[4]/div/div[2]/div[2]/div[1]/div[1]/div[3]/input");
 
 class ManagePage extends Page
 {
@@ -25,8 +44,95 @@ class ManagePage extends Page
         this.name="Manage page: ";
 
     }
-    //https://wizard.poa.network/manage/0x7eB29E0922C87D728c81A9FAB66e97668c917108
-async open(){
+
+
+    async clickButtonSave(){
+	    logger.info(this.name+"button Save :");
+	    await super.clickWithWait(buttonSave);
+
+
+    }
+	async isPresentWarningStartTimeTier1(){
+		logger.info(this.name+"red warning if data wrong :");
+		this.driver.sleep(1000);
+		var s=await super.getTextByLocator(warningStartTimeTier1);
+		logger.info("Text="+s);
+
+		return (s!="");
+	}
+	async isPresentWarningStartTimeTier2(){
+		logger.info(this.name+"red warning if data wrong :");
+		this.driver.sleep(1000);
+		var s=await super.getTextByLocator(warningStartTimeTier2);
+		logger.info("Text="+s);
+
+		return (s!="");
+	}
+
+	async isPresentWarningEndTimeTier2(){
+		logger.info(this.name+"red warning if data wrong :");
+		this.driver.sleep(1000);
+		var s=await super.getTextByLocator(warningEndTimeTier2);
+		logger.info("Text="+s);
+
+		return (s!="");
+	}
+    async isPresentWarningEndTimeTier1(){
+	    logger.info(this.name+"red warning if data wrong :");
+    	this.driver.sleep(1000);
+    	var s=await super.getTextByLocator(warningEndTimeTier1);
+    	logger.info("Text="+s);
+
+    	return (s!="");
+    }
+async fillWhitelist1(address,min,max)
+   {
+        logger.info(this.name+"add address in whitelist, tier #1 :");
+	    await super.fillWithWait(fieldWhAddressTier1,address);
+	    await super.fillWithWait(fieldWhMinTier1,min);
+	    await super.fillWithWait(fieldWhMaxTier1,max);
+   }
+async fillWhitelist2(address,min,max)
+	{
+		logger.info(this.name+"add address in whitelist, tier #2 :");
+		await super.fillWithWait(fieldWhAddressTier2,address);
+		await super.fillWithWait(fieldWhMinTier2,min);
+		await super.fillWithWait(fieldWhMaxTier2,max);
+
+	}
+    async fillEndTimeTier1(date,time){
+          logger.info(this.name+"fill end time, tier #1 :");
+	    await super.fillWithWait(fieldEndTimeTier1,date);
+          const action=this.driver.actions();
+	    await action.sendKeys(key.TAB).perform();
+	await super.fillWithWait(fieldEndTimeTier1,time);
+    }
+
+    async fillEndTimeTier2(date,time){
+	    logger.info(this.name+"fill end time, tier #2 :");
+	    await super.fillWithWait(fieldEndTimeTier2,date);
+	    const action=this.driver.actions();
+	    await action.sendKeys(key.TAB).perform();
+		await super.fillWithWait(fieldEndTimeTier2,time);
+	}
+	async fillStartTimeTier1(date,time){
+		logger.info(this.name+"fill start time, tier #1 :");
+		await super.fillWithWait(fieldStartTimeTier1,date);
+		const action=this.driver.actions();
+		await action.sendKeys(key.TAB).perform();
+		await super.fillWithWait(fieldStartTimeTier1,time);
+	}
+	async fillStartTimeTier2(date,time){
+		logger.info(this.name+"fill end time, tier #2 :");
+		await super.fillWithWait(fieldStartTimeTier2,date);
+		const action=this.driver.actions();
+		await action.sendKeys(key.TAB).perform();
+		await super.fillWithWait(fieldStartTimeTier2,time);
+	}
+
+
+
+	async open(){
     logger.info(this.name+":");
     await super.open(this.URL);
 
@@ -53,13 +159,13 @@ async isEnabledDistribute(){
 
 }
 async isPresentButtonDistribute(){
-    logger.info(this.name+"button Distribute :")
+    logger.info(this.name+"button Distribute :");
     var s=await super.isElementPresent(buttonDistribute);
     return s;
 }
 
 async clickButtonDistribute(){
-     logger.info(this.name+"button Distribute :")
+     logger.info(this.name+"button Distribute :");
      await super.clickWithWait(buttonDistribute);
 }
 ////////////////////////////////////////////////////
@@ -130,6 +236,7 @@ async confirmPopup(){
 
             c++;
             if(c>=limit){return false;}
+
         }while(true);
 }
 

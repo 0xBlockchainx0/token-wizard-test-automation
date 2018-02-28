@@ -13,17 +13,82 @@ const configFile='config.json';
 
 
 class Utils {
-    static getTimeNear(){
-        var d=new Date(Date.now()+120000);
-        var r="";
+
+    static async getDateFormat(driver){
+
+	    var d=await driver.executeScript("var d=new Date(1999,11,28);return d.toLocaleDateString();");
+	    d=(""+d).substring(0,2);
+	    if (d=='28') return "utc";
+	    else return "mdy";
+
+
+    }
+
+	static convertDateToMdy(date){
+		let s=date.split("/");
+		return ""+s[1]+"/"+s[0]+"/"+s[2];
+	}
+
+	static convertTimeToMdy(date){
+		let s=date.split(":");
+		let r="am";
+		s[1]=s[1].substring(0,2);
+
+		if (s[0]>12) {s[0]=parseInt(s[0])-12; r="pm";}
+		else if ((s[0])=="12") r="pm";
+                else if(parseInt(s[0])==0) {s[0]="12";r="am";}
+		return ""+s[0]+":"+s[1]+r;
+
+	}
+    static convertDateToUtc(date){
+        let s=date.split("/");
+        return ""+s[1]+"/"+s[0]+"/"+s[2];
+  }
+
+	static convertTimeToUtc(date){
+		let s=date.split(":");
+		let r=s[1].charAt(2);
+		if (r=='p') {
+			s[0] = parseInt(s[0]) + 12;
+			if (s[0] > 23) s[0]=12;
+		}
+		else if (s[0]=="12") s[0]="00";
+return s[0]+":"+s[1].substring(0,2);
+
+    }
+
+
+
+    static getTimeNear(adj,format){
+
+        var d=new Date(Date.now()+adj);
+        var r="am";
         var h=d.getHours();
-        if (h>19) {h=h-12;r="pm";}
-        var q=h+":"+d.getMinutes();
+        if (format=='mdy')
+            if (h>12) {h=h-12;r="pm";}
+
+        if (format=='utc')  r="";
+
+        h=""+h;
+        if (h.length<2) h="0"+h;
+        var min=""+(d.getMinutes()+1);
+	    if (min.length<2) min="0"+min;
+        var q=h+":"+min+r;
         return q;
     }
-static getDateNear(){
-    var d=new Date(Date.now()+120000);
-    var q=(d.getMonth()+1)+"/"+d.getDate()+"/"+d.getFullYear();
+static getDateNear(adj,format){
+    var d=new Date(Date.now()+adj);
+	var q;
+
+
+	var day=""+d.getDate();
+	if (day.length<2) day="0"+day;
+	var month=""+(d.getMonth()+1);
+	if (month.length<2) month="0"+month;
+
+    if (format=='mdy') q=month+"/"+day+"/"+d.getFullYear();
+      else if (format=='utc') q=(day+"/"+month+"/"+d.getFullYear());
+
 return q;
 }
     static getOutputPath() {
@@ -77,7 +142,7 @@ return q;
         return n;
     }
 
-   static takeScreenshoot(driver) {
+    static takeScreenshoot(driver) {
         driver.takeScreenshot()
             .then((res) => {
 

@@ -59,7 +59,11 @@ async getTextByElement(element)
 {logger.info("get text ");
     return await element.getText();}
 
+async getAttributeByLocator(locator,attr){
+	logger.info("get attribute value ");
+	return await this.driver.findElement(locator).getAttribute(attr);
 
+}
 
 
 

@@ -1,4 +1,4 @@
-//var {Builder, By, Key, until} = require('selenium-webdriver');
+
 webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var assert = require('assert');
@@ -14,10 +14,6 @@ const metaMask=require('../pages/MetaMask.js');
 const MetaMask=metaMask.MetaMask;
 const user=require("../entity/User.js");
 const User=user.User;
-const owner=require('../entity/Owner.js');
-const Owner=owner.Owner;
-const investor=require('../entity/Investor.js');
-const Investor=investor.Investor;
 const crowdsale=require('../entity/Crowdsale.js');
 const Crowdsale=crowdsale.Crowdsale;
 
@@ -44,11 +40,10 @@ test.describe('POA token-wizard. Test suite #1', function() {
     var investor;
 
     //var scenario="./scenarios/T1RyWn_0008.json";//'./scenarios/simple.json';
-    var scenario='./scenarios/simple.json';
+    var scenario='./scenarios/testSuite1.json';
     var mtMask;
     var crowdsale=new Crowdsale();
     var b=false;
-    var s="";
     var balance;
     var newBalance;
     var contribution;

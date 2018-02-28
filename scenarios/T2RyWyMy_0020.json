@@ -1,0 +1,56 @@
+{
+
+  "name": "T2RyWyMy_20.json",
+  "ticker": "sc20",
+  "decimals": 6,
+  "reservedTokens":[
+    {
+      "address" :"0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+      "dimension": "percentage",
+      "value": 20
+    }],
+  "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+  "gasprice": 40,
+  "mincap": 1,
+  "whitelisting":true,
+  "tiers":[
+    {
+      "name":"###1",
+      "allowModify": true,
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
+      "rate":100,
+      "supply": 200,
+      "whitelist":[
+        {
+          "address":"0x27F2f56e6Ee35E4995A965337ba2A7b4ec492FcC",
+          "min":6,
+          "max":100
+        },
+        {
+          "address":"0xd13c7924241E51Eb013003490736e6169a15786a",
+          "min":1,
+          "max":100
+        }
+      ]
+    },
+    {
+      "name":"###2",
+      "allowModify": true,
+      "startDate": "03/28/2018",
+      "startTime": "11:15pm",
+      "endDate":"03/28/2018",
+      "endTime":"11:45pm",
+      "rate":100,
+      "supply": 200,
+      "whitelist":[
+        {
+          "address":"0x41B4073E966c169dB22185805A951A0f1b805320",
+          "min":6,
+          "max":100
+        }]
+    }]
+
+}

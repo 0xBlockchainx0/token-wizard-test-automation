@@ -8,8 +8,9 @@ const webdriver = require('selenium-webdriver'),
     firefox = require('selenium-webdriver/firefox'),
     by = require('selenium-webdriver/lib/by');
 const By=by.By;
-const adj="div[1]/";
-//const adj="";
+//const adj="div[1]/";
+const adj="";
+
 const fieldWalletAddress=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[1]/input");
 
 const fieldMinCap=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[3]/div[1]/input");
@@ -18,6 +19,7 @@ const boxGasPriceNormal=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/di
 const boxGasPriceFast=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[3]/label/span");
 const boxGasPriceCustom=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[4]/label/span");
 const fieldGasPriceCustom=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[5]/input");
+                                           //*[@id="root"]/div/section/div[2]/div[2]/div[2]/div[2]/div[4]/label/span
 
 const buttonContinue=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[5]/div/a");
 const buttonAddTier=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[5]/div/div");

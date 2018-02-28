@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "test1": "mocha ./test/testSuite1.js"
+    "test1": "mocha ./test/testSuite1.js",
+    "test2": "mocha ./test/testSuite2.js",
+    "ind": "node ./index.js"
   },
   "dependencies": {
     "chromedriver": "^2.35.0",

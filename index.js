@@ -1,5 +1,5 @@
 
-
+const os = require('os');
 const test1=require('./tests/Test1.js');
 const Test1=test1.Test1;
 const test2=require('./tests/Test2.js');
@@ -34,10 +34,10 @@ const Logger= require('./entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
 ///////////////////////////////////////
-//logger.foo("qqqqqqqqqq");
-//logger.bar("wwwwwwwwww");
-//logger.baz("zzzzzzzzzz");
 
+//var d=Utils.getTimeNear(12135230,"utc");
+//console.log(d);
+//console.log(Utils.convertTimeToMdy("00:34"));
 
 
 run();
@@ -55,12 +55,14 @@ async function run() {
     await mtMask.open();//return activated Metamask and empty page
 
     var test1 = new Test1(driver,Utils.getOutputPath());
-   test1.run().then().catch();
+  // var d=await Utils.getDateFormat(driver);
+ //  console.log(d);
+    test1.run().then().catch();
 
     var test3 = new Test3(driver,Utils.getOutputPath());
   //test3.run().then().catch();
     var test4 = new Test4(driver,Utils.getOutputPath());
-  // test4.run().then().catch();
+   //test4.run().then().catch();
 
   //@After suit
    // driver.close();

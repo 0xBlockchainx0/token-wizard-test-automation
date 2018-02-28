@@ -100,6 +100,89 @@ class User {
         return mngPage;
 
     }
+	async changeEndTime(crowdsale,tier,newDate,newTime) {
+		logger.info("Change EndTime for tier#" + tier)
+		var mngPage = await this.openManagePage(crowdsale);
+		Utils.takeScreenshoot(this.driver);
+		await mngPage.waitUntilLoaderGone();
+		try {
+			switch (tier) {
+				case 1: {
+					await mngPage.fillEndTimeTier1(newDate,newTime);
+					break;
+				}
+				case 2: {
+					await mngPage.fillEndTimeTier2(newDate,newTime);
+					break;
+				}
+				default:
+					return false;
+			}
+			Utils.takeScreenshoot(this.driver);
+
+			//console.log("wefwefwef"+await mngPage.isPresentWarningEndTimeTier1());
+
+
+			if (await mngPage.isPresentWarningEndTimeTier1()||await mngPage.isPresentWarningEndTimeTier2()) return false;
+			await mngPage.clickButtonSave();
+			var metaMask = new MetaMask(this.driver);
+			await metaMask.doTransaction();
+			await mngPage.waitUntilLoaderGone();
+			Utils.takeScreenshoot(this.driver);
+			var b = await mngPage.confirmPopup();
+			return b;
+
+
+			return true;
+		}
+		catch(err){
+			logger.info("Can not change end time for tier #"+ tier);
+			logger.error("Error:"+err);
+			return false;
+
+		}
+	}
+
+    async changeStartTime(crowdsale,tier,newDate,newTime)
+    {
+        logger.info("Change startTime for tier#"+tier)
+	    var mngPage=await this.openManagePage(crowdsale);
+	    Utils.takeScreenshoot(this.driver);
+	    await mngPage.waitUntilLoaderGone();
+	    try{
+	    switch (tier) {
+		    case 1: {
+			    await mngPage.fillStartTimeTier1(newDate,newTime);
+			    break;
+		    }
+		    case 2: {
+			    await mngPage.fillStartTimeTier2(newDate,newTime);
+			    break;
+		    }
+		    default:
+			    return false;
+	        }
+		    if (await mngPage.isPresentWarningStartTimeTier2()||await mngPage.isPresentWarningStartTimeTier2()) return false;
+		    await mngPage.clickButtonSave();
+		    var metaMask = new MetaMask(this.driver);
+		    await metaMask.doTransaction();
+		    await mngPage.waitUntilLoaderGone();
+		    Utils.takeScreenshoot(this.driver);
+		    //var b=await mngPage.confirmPopup();
+
+	        return true;
+	    }
+	    catch(err){
+	        logger.info("Can not change start time for tier #"+ tier);
+	        return false;
+
+            }
+
+
+
+    }
+
+
 
     async distribute(crowdsale){
 
@@ -172,7 +255,10 @@ class User {
         var investPage = new InvestPage(this.driver);
         var reservedTokens=new ReservedTokensPage(this.driver);
         var cur=Currency.createCurrency(scenarioFile);
-        cur.print();
+	     //console.log ("HSHHSHHSH"+cur.tiers[0].whitelist[0].min);
+	    //cur.print();
+	   // return;
+        //cur.print();
         var tiers=[];
         for (var i=0;i<cur.tiers.length;i++)
             tiers.push(new TierPage(this.driver,cur.tiers[i]));
@@ -217,6 +303,9 @@ class User {
         }
         await tiers[cur.tiers.length-1].fillTier();
         Utils.takeScreenshoot(this.driver);
+
+
+
         await wizardStep3.clickButtonContinue();
         await this.driver.sleep(5000);
 

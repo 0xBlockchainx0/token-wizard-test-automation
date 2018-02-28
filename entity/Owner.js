@@ -78,7 +78,7 @@ class Owner extends User
 
    }
 
-    async distribute(crowdsale){
+   /* async distribute(crowdsale){
 
         var mngPage=await this.openManagePage(crowdsale);
 
@@ -259,7 +259,7 @@ class Owner extends User
         const  cr=new Crowdsale(cur,addr,contr,ur);
        return cr;
     }
-
+    */
 
 
 

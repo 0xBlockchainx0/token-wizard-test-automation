@@ -10,10 +10,9 @@ const webdriver = require('selenium-webdriver'),
 const By=by.By;
 const baseTest=require('./BaseTest.js');
 const BaseTest=baseTest.BaseTest;
-const owner=require('../entity/Owner.js');
-const Owner=owner.Owner;
-const investor=require('../entity/Investor.js');
-const Investor=investor.Investor;
+const user=require('../entity/User.js');
+const User=user.User;
+
 const metaMask=require('../pages/MetaMask.js');
 const MetaMask=metaMask.MetaMask;
 const metaMaskWallet=require('../entity/MetaMaskWallet.js');
@@ -34,28 +33,29 @@ class Test4 extends BaseTest {
     async run(){
 
         var b=false;
-        var ownerFile='./owners/owner3.json';
-        var ownerFile1='./owners/owner1.json';
-        var investorFile='./investors/investor3.json';
+        var ownerFile='./users/user77_56B2.json';
+        var owner=new User(this.driver,ownerFile);
+        /*var investorFile='./investors/investor3.json';
         var investorFile1='./investors/investor1.json';
         var investorFile2='./investors/investor2.json';
         var owner=new Owner(this.driver,ownerFile);
         var owner1=new Owner(this.driver,ownerFile1);
         var investor = new Investor(this.driver,investorFile);
         var investor1 = new Investor(this.driver,investorFile1);
-        var investor2 = new Investor(this.driver,investorFile2);
-        var url="https://wizard.poa.network/invest?addr=0x3c740De3314880784A40255Ae8DdCe4c227D7eeb&networkID=77";
+        var investor2 = new Investor(this.driver,investorFile2);*/
+        var crowdsale=new Crowdsale();
+	    crowdsale.contractAddress="0x7195ECb520A68f79036cda121fd69Ad7Bf56C65F";
+	                             // 0x7195ECb520A68f79036cda121fd69Ad7Bf56C65F
+        //crowdsale.url="https://wizard.oracles.org/manage/0x7195ECb520A68f79036cda121fd69Ad7Bf56C65F";
 
-        await investor.setMetaMaskAccount();//77   5b2
+        await owner.setMetaMaskAccount();//77   5b2
 
-        await investor1.setMetaMaskAccount();//4   4ca
-        await investor.setMetaMaskAccount();//77   5b2
-
-        await investor2.setMetaMaskAccount();//77      27f
-//await owner.selectAccount()
+        b=await owner.changeEndTime(crowdsale,1,"03/21/2023","12:14am");
+	    //b=await owner.changeStartTime(crowdsale,2,"03/21/2010","12:16am");
 
 
-        await owner1.setMetaMaskAccount();//4      f16
+	    await owner.confirmPopup();
+        console.log("Bbbbbbbbb="+b);
 
 
         //  var balance=await investor.getBalanceFromPage(url);

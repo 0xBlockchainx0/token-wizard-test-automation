@@ -12,8 +12,8 @@ const By=by.By;
 const utils=require('../utils/Utils.js');
 const Utils=utils.Utils;
 var COUNT_TIERS=0;
-const adj="div[1]/";
-//const adj="";
+//const adj="div[1]/";
+const adj="";
 const fieldAddressTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div[2]/div[2]/div/div[1]/div[1]/input");
 const fieldAddress1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldAddress2="]/div[2]/div[2]/div/div[1]/div[1]/input";
@@ -34,6 +34,7 @@ const fieldNameTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/d
 const checkboxModifyOffTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[1]/div[2]/div/label[2]/span\n");
 const checkboxModifyOnTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[1]/div[2]/div/label[1]/span");
 const fieldRateTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[3]/div[1]/input");
+
 const fieldSupplyTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[3]/div[2]/input");
 const fieldStartTimeTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[2]/div[1]/input");
 const fieldEndTimeTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[2]/div[2]/input");
@@ -138,16 +139,26 @@ class TierPage extends page.Page{
     async fillStartTime()
     {
         logger.info(this.name+"field StartTime: ");
-        if((this.tier.startDate==""))
-         {
-             this.tier.startDate=Utils.getDateNear();
-          this.tier.startTime=Utils.getTimeNear();
 
-        }
-
-        let locator;
+	    let locator;
         if (this.number==0) {locator=fieldStartTimeTier1;}
         else {locator=by.By.xpath(fieldStartTime1+this.number+fieldStartTime2);}
+	    var format=await Utils.getDateFormat(this.driver);
+
+	    if((this.tier.startDate==""))
+	    {
+		    this.tier.startDate=Utils.getDateNear(120000,format);
+		    this.tier.startTime=Utils.getTimeNear(120000,format);
+
+	    }
+	    if (format=="mdy") {
+	        this.tier.startDate=Utils.convertDateToUtc(this.tier.startDate);
+		    this.tier.startTime=Utils.convertDateToUtc(this.tier.startTime);
+
+	    }
+
+
+
         await super.fillWithWait(locator,this.tier.startDate);
         const action=this.driver.actions();
         await action.sendKeys(key.TAB).perform();
@@ -158,12 +169,15 @@ class TierPage extends page.Page{
     async fillEndTime()
     {
         logger.info(this.name+"field EndTime: ");
-        if((this.tier.endDate=="")) return;
+
         let locator;
 
        if (this.number==0) {locator=fieldEndTimeTier1;}
         else {locator=by.By.xpath(fieldEndTime1+this.number+fieldEndTime2);}
-        await super.fillWithWait(locator,this.tier.endDate);
+
+	    if((this.tier.endDate=="")) return;
+
+	    await super.fillWithWait(locator,this.tier.endDate);
         const action=this.driver.actions();
         await action.sendKeys(key.TAB).perform();
         await super.fillWithWait(locator,this.tier.endTime);
