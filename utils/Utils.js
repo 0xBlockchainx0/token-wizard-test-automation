@@ -14,6 +14,15 @@ const configFile='config.json';
 
 class Utils {
 
+	static compare(ss,newDate,newTime){
+
+		let arr=ss.split("T");
+		let aww=arr[0].split("-");
+		let n=newDate.split("/");
+
+		return (arr[1]==newTime)&&(aww[0]==n[2])&&(aww[1]==n[1])&&(aww[2]==n[0]);
+	}
+
     static async getDateFormat(driver){
 
 	    var d=await driver.executeScript("var d=new Date(1999,11,28);return d.toLocaleDateString();");
@@ -175,7 +184,8 @@ return q;
         options.addExtensions(source);
         //options.addArguments("user-data-dir=/home/d/GoogleProfile");
         //options.addArguments("user-data-dir=/home/d/.config/google-chrome/");
-
+       //
+	     // options.addArguments('headless');
         options.addArguments('start-maximized');
         options.addArguments('disable-popup-blocking');
         //options.addArguments('test-type');

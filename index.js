@@ -37,10 +37,13 @@ const tempOutputPath=Logger.tempOutputPath;
 
 //var d=Utils.getTimeNear(1213000,"utc");
 //console.log(d);
-console.log(Utils.convertTimeToMdy("01:10"));
+//console.log(Utils.convertTimeToMdy("01:10"));
 
-
-//run();
+let newTime="12:29";
+let newDate="21/03/2020";
+let ss="2020-03-21T12:29";
+console.log(Utils.compare(ss,newDate,newTime));
+run();
 
 async function run() {
 
@@ -57,12 +60,12 @@ async function run() {
     var test1 = new Test1(driver,Utils.getOutputPath());
   // var d=await Utils.getDateFormat(driver);
  //  console.log(d);
-    test1.run().then().catch();
+   // test1.run().then().catch();
 
     var test3 = new Test3(driver,Utils.getOutputPath());
   //test3.run().then().catch();
     var test4 = new Test4(driver,Utils.getOutputPath());
-   //test4.run().then().catch();
+   test4.run().then().catch();
 
   //@After suit
    // driver.close();

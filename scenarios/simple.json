@@ -22,11 +22,11 @@
   "tiers":[
     {
       "name":"###1",
-      "allowModify": false,
-      "startDate": "28/02/2018",
-      "startTime": "12:34",
-      "endDate":"03/04/2019",
-      "endTime":"23:45",
+      "allowModify": true,
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
       "rate":100,
       "supply": 20,
       "whitelist":[]

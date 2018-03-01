@@ -50,6 +50,44 @@ class User {
         this.name=file;
     }
 
+    async addWhitelistMngPage(tier, min, max){
+try {
+	let mngPage = new ManagePage(this.driver);
+	switch (tier) {
+		case 1: {
+			await mngPage.fillWhitelistTier1(this.account, min, max);
+			break;
+		}
+		case 2: {
+			await mngPage.fillWhitelistTier2(this.account, min, max);
+			break;
+		}
+		default:
+			return false;
+	}
+
+	Utils.takeScreenshoot(this.driver);
+	await mngPage.clickButtonSave();
+	var metaMask = new MetaMask(this.driver);
+	await metaMask.doTransaction();
+	await mngPage.waitUntilLoaderGone();
+	Utils.takeScreenshoot(this.driver);
+	var b = await this.confirmPopup();
+	await mngPage.waitUntilLoaderGone();
+	return b;
+}
+catch(err){
+	logger.info("Can not fill out whitelist for tier #"+ tier);
+	logger.error("Error:"+err);
+	return false;
+
+}
+
+
+
+    }
+
+
     async setMetaMaskAccount(){
         var metaMask = new MetaMask(this.driver);
 
@@ -88,7 +126,7 @@ class User {
         var mngPage=new ManagePage(this.driver);
         var counter=0;
 
-        do {this.driver.sleep(1000);
+        do {await this.driver.sleep(1000);
             if(counter++>30) break;
         } while(!await  mngPage.isAvailable());
 
@@ -100,9 +138,44 @@ class User {
         return mngPage;
 
     }
+	async getStartTime(tier){ //get endTime from tierpage,manage page should be open
+		let mngPage=new ManagePage(this.driver);
+		let s="";
+		switch(tier)
+		{
+			case 1:{s=await mngPage.getStartTimeTier1();break;}
+			case 2:{s=await mngPage.getStartTimeTier2();break;}
+			default: break;
+		}
+		return s;
+
+	}
+
+    async getEndTime(tier){ //get endTime from tierpage,manage page should be open
+		let mngPage=new ManagePage(this.driver);
+		let s="";
+		switch(tier)
+		{
+			case 1:{s=await mngPage.getEndTimeTier1();break;}
+			case 2:{s=await mngPage.getEndTimeTier2();break;}
+			default: break;
+		}
+		return s;
+
+	}
+
 	async changeEndTime(crowdsale,tier,newDate,newTime) {
-		logger.info("Change EndTime for tier#" + tier)
-		var mngPage = await this.openManagePage(crowdsale);
+		logger.info("Change EndTime for tier#" + tier);
+		var format=await Utils.getDateFormat(this.driver);
+    	if (format=="mdy") {
+			newDate=Utils.convertDateToMdy(newDate);
+			newTime=Utils.convertTimeToMdy(newTime);
+
+		}
+
+
+		//var mngPage = await this.openManagePage(crowdsale);
+		let mngPage=new ManagePage(this.driver);
 		Utils.takeScreenshoot(this.driver);
 		await mngPage.waitUntilLoaderGone();
 		try {
@@ -120,16 +193,16 @@ class User {
 			}
 			Utils.takeScreenshoot(this.driver);
 
-			//console.log("wefwefwef"+await mngPage.isPresentWarningEndTimeTier1());
 
-
+			//await this.driver.sleep(1000);
 			if (await mngPage.isPresentWarningEndTimeTier1()||await mngPage.isPresentWarningEndTimeTier2()) return false;
 			await mngPage.clickButtonSave();
 			var metaMask = new MetaMask(this.driver);
 			await metaMask.doTransaction();
 			await mngPage.waitUntilLoaderGone();
 			Utils.takeScreenshoot(this.driver);
-			var b = await mngPage.confirmPopup();
+			var b = await this.confirmPopup();
+			await mngPage.waitUntilLoaderGone();
 			return b;
 
 
@@ -145,8 +218,15 @@ class User {
 
     async changeStartTime(crowdsale,tier,newDate,newTime)
     {
-        logger.info("Change startTime for tier#"+tier)
-	    var mngPage=await this.openManagePage(crowdsale);
+        logger.info("Change startTime for tier#"+tier);
+	    var format=await Utils.getDateFormat(this.driver);
+	    if (format=="mdy") {
+		    newDate=Utils.convertDateToMdy(newDate);
+		    newTime=Utils.convertTimeToMdy(newTime);
+
+	    }
+	    //var mngPage=await this.openManagePage(crowdsale);
+	    let mngPage=new ManagePage(this.driver);
 	    Utils.takeScreenshoot(this.driver);
 	    await mngPage.waitUntilLoaderGone();
 	    try{
@@ -162,18 +242,26 @@ class User {
 		    default:
 			    return false;
 	        }
-		    if (await mngPage.isPresentWarningStartTimeTier2()||await mngPage.isPresentWarningStartTimeTier2()) return false;
+
+		    Utils.takeScreenshoot(this.driver);
+//await this.driver.sleep(1000);
+		    if (await mngPage.isPresentWarningStartTimeTier1()||await mngPage.isPresentWarningStartTimeTier2())
+		    	    return false;
 		    await mngPage.clickButtonSave();
 		    var metaMask = new MetaMask(this.driver);
 		    await metaMask.doTransaction();
 		    await mngPage.waitUntilLoaderGone();
 		    Utils.takeScreenshoot(this.driver);
-		    //var b=await mngPage.confirmPopup();
+		    var b = await this.confirmPopup();
+		    await mngPage.waitUntilLoaderGone();
+		    return b;
 
-	        return true;
+
+		    return true;
 	    }
 	    catch(err){
 	        logger.info("Can not change start time for tier #"+ tier);
+		    logger.error("Error:"+err);
 	        return false;
 
             }
@@ -188,7 +276,7 @@ class User {
 
         var mngPage=await this.openManagePage(crowdsale);
         Utils.takeScreenshoot(this.driver);
-        this.driver.sleep(5000);
+       await  this.driver.sleep(5000);
         // logger.info(("Present:"+await mngPage.isPresentButtonDistribute());
         //  logger.info(("Enabled"+await mngPage.isEnabledDistribute());
         if ( await mngPage.isEnabledDistribute())
@@ -221,14 +309,14 @@ class User {
         var counter=0;
         do{
             if (counter++>50) return false;
-            this.driver.sleep(1000);
+            await this.driver.sleep(1000);
 
         }
         while(!(await mngPage.isPresentPopupYesFinalize()));
         Utils.takeScreenshoot(this.driver);
-        this.driver.sleep(1000);
+        await this.driver.sleep(1000);
         await mngPage.clickButtonYesFinalize();
-        this.driver.sleep(3000);
+        await this.driver.sleep(3000);
         var metaMask = new meta.MetaMask(this.driver);
         await metaMask.doTransaction();
         await mngPage.waitUntilLoaderGone();
@@ -266,22 +354,22 @@ class User {
 
 
         await  welcomePage.open();
-        // this.driver.sleep(1000);
+        // await this.driver.sleep(1000);
         Utils.takeScreenshoot(this.driver);
         await  welcomePage.clickButtonNewCrowdsale();
         Utils.takeScreenshoot(this.driver);
         await this.driver.sleep(3000);
         await  wizardStep1.clickButtonContinue();
-        //this.driver.sleep(500);
+        //await this.driver.sleep(500);
         await wizardStep2.fillName(cur.name);
         await wizardStep2.fillTicker(cur.ticker);
         await wizardStep2.fillDecimals(cur.decimals);
         for (var i=0;i<cur.reservedTokens.length;i++)
         {
             await reservedTokens.fillReservedTokens(cur.reservedTokens[i]);
-            // this.driver.sleep(1000);
+            // await this.driver.sleep(1000);
             await reservedTokens.clickButtonAddReservedTokens();
-            // this.driver.sleep(1000);
+            // await this.driver.sleep(1000);
 
         }
         await Utils.zoom(this.driver,0.5);
@@ -343,7 +431,7 @@ class User {
         Utils.takeScreenshoot(this.driver);
         await this.driver.sleep(5000);
         await wizardStep4.clickButtonContinue();
-        this.driver.sleep(5000);
+        await this.driver.sleep(5000);
         Utils.takeScreenshoot(this.driver);
         await wizardStep4.waitUntilLoaderGone();
         b=true;
@@ -351,7 +439,7 @@ class User {
 
         do {
             try {
-                this.driver.sleep(1000);
+               await  this.driver.sleep(1000);
                 await crowdsalePage.clickButtonInvest();
                 b=false;
             }
@@ -439,7 +527,7 @@ class User {
         counter=0;
         var timeLimit=50;
         while(counter++<timeLimit) {
-            this.driver.sleep(1000);
+            await this.driver.sleep(1000);
             if (await investPage.isPresentWarning()) {
                 Utils.takeScreenshoot(this.driver);
                 await investPage.clickButtonOK();

@@ -192,6 +192,7 @@ async doTransaction(){
         await this.refresh();
         await this.driver.sleep(500);
         if (await this.isPresentButtonSubmit()) {
+	        await this.driver.sleep(500);
             await this.submitTransaction();
             await  this.switchToNextPage();
             return true;
