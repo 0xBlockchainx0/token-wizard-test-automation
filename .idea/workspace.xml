@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40b9626d-5f4f-46c4-8096-7de331aaa15a" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.circleci/config.yml" afterPath="$PROJECT_DIR$/.circleci/config.yml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/test/testSuite1.js" afterPath="$PROJECT_DIR$/test/testSuite1.js" />
-      <change beforePath="$PROJECT_DIR$/utils/Utils.js" afterPath="$PROJECT_DIR$/utils/Utils.js" />
+      <change beforePath="$PROJECT_DIR$/pages/MetaMask.js" afterPath="$PROJECT_DIR$/pages/MetaMask.js" />
+      <change beforePath="$PROJECT_DIR$/token.txt" afterPath="$PROJECT_DIR$/token.txt" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -24,18 +25,18 @@
       <file leaf-file-name="User.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/entity/User.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="733">
-              <caret line="408" column="20" lean-forward="false" selection-start-line="408" selection-start-column="20" selection-end-line="408" selection-end-column="20" />
+            <state relative-caret-position="273">
+              <caret line="96" column="30" lean-forward="false" selection-start-line="96" selection-start-column="30" selection-end-line="96" selection-end-column="30" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MetaMask.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MetaMask.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pages/MetaMask.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2955">
-              <caret line="197" column="24" lean-forward="false" selection-start-line="197" selection-start-column="24" selection-end-line="197" selection-end-column="24" />
+            <state relative-caret-position="400">
+              <caret line="251" column="0" lean-forward="true" selection-start-line="251" selection-start-column="0" selection-end-line="251" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -45,7 +46,7 @@
         <entry file="file://$PROJECT_DIR$/utils/Utils.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="291">
-              <caret line="30" column="45" lean-forward="true" selection-start-line="30" selection-start-column="45" selection-end-line="30" selection-end-column="45" />
+              <caret line="30" column="45" lean-forward="false" selection-start-line="30" selection-start-column="45" selection-end-line="30" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -54,18 +55,38 @@
       <file leaf-file-name="Page.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pages/Page.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="164">
-              <caret line="154" column="6" lean-forward="false" selection-start-line="154" selection-start-column="6" selection-end-line="154" selection-end-column="6" />
+            <state relative-caret-position="212">
+              <caret line="123" column="17" lean-forward="false" selection-start-line="123" selection-start-column="17" selection-end-line="123" selection-end-column="17" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="testSuite1.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="config.yml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.circleci/config.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="330">
+              <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="token.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/token.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="12" column="87" lean-forward="false" selection-start-line="12" selection-start-column="87" selection-end-line="12" selection-end-column="87" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="testSuite1.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="58" column="47" lean-forward="false" selection-start-line="58" selection-start-column="47" selection-end-line="58" selection-end-column="47" />
+            <state relative-caret-position="144">
+              <caret line="94" column="33" lean-forward="false" selection-start-line="94" selection-start-column="33" selection-end-line="94" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -101,16 +122,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Test1.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/Test1.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="137">
-              <caret line="45" column="42" lean-forward="false" selection-start-line="45" selection-start-column="31" selection-end-line="45" selection-end-column="42" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -122,7 +133,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>buttonOk</find>
       <find>confirmPopup</find>
       <find>strong</find>
       <find>private</find>
@@ -152,6 +162,7 @@
       <find>sleep</find>
       <find>select</find>
       <find>minCap</find>
+      <find>add network</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/temp</dir>
@@ -164,8 +175,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/pages/CrowdsalePage.js" />
-        <option value="$PROJECT_DIR$/owners/owner3.json" />
         <option value="$PROJECT_DIR$/investors/investor3.json" />
         <option value="$PROJECT_DIR$/pages/WizardWelcome.js" />
         <option value="$PROJECT_DIR$/pages/WizardStep1.js" />
@@ -210,11 +219,13 @@
         <option value="$PROJECT_DIR$/tests/Test4.js" />
         <option value="$PROJECT_DIR$/entity/User.js" />
         <option value="$PROJECT_DIR$/pages/ManagePage.js" />
-        <option value="$PROJECT_DIR$/pages/MetaMask.js" />
         <option value="$PROJECT_DIR$/test/testSuite2.js" />
         <option value="$PROJECT_DIR$/entity/Logger.js" />
         <option value="$PROJECT_DIR$/utils/Utils.js" />
         <option value="$PROJECT_DIR$/test/testSuite1.js" />
+        <option value="$PROJECT_DIR$/token.txt" />
+        <option value="$PROJECT_DIR$/.circleci/config.yml" />
+        <option value="$PROJECT_DIR$/pages/MetaMask.js" />
       </list>
     </option>
   </component>
@@ -235,10 +246,9 @@
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="136" />
+  <component name="ProjectFrameBounds" fullScreen="true">
     <option name="y" value="23" />
-    <option name="width" value="1304" />
+    <option name="width" value="1440" />
     <option name="height" value="797" />
   </component>
   <component name="ProjectLevelVcsManager">
@@ -270,18 +280,12 @@
             <path>
               <item name="token-wizard-test-automation" type="b2602c69:ProjectViewProjectNode" />
               <item name="token-wizard-test-automation" type="462c0819:PsiDirectoryNode" />
+              <item name=".circleci" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="token-wizard-test-automation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="token-wizard-test-automation" type="462c0819:PsiDirectoryNode" />
               <item name="entity" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="token-wizard-test-automation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="token-wizard-test-automation" type="462c0819:PsiDirectoryNode" />
-              <item name="results" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="token-wizard-test-automation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="token-wizard-test-automation" type="462c0819:PsiDirectoryNode" />
-              <item name="results" type="462c0819:PsiDirectoryNode" />
-              <item name="result_3_2_2018_13_39_7" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="token-wizard-test-automation" type="b2602c69:ProjectViewProjectNode" />
@@ -373,7 +377,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="365638000" />
+    <option name="totallyTimeSpent" value="367542000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -386,10 +390,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="136" y="23" width="1304" height="797" extended-state="0" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19251753" sideWeight="0.49213484" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17406625" sideWeight="0.49213484" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32970452" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
@@ -397,7 +401,7 @@
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20062208" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30044183" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" x="134" y="236" width="1254" height="290" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25373134" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" x="134" y="236" width="1254" height="290" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27391976" sideWeight="0.5078652" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -456,8 +460,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/results/result_2_24_2018_15_39_33/screenshoot_2_24_2018_15_39_6.png" />
-    <entry file="file://$PROJECT_DIR$/results/result_2_24_2018_15_39_33/screenshoot_2_24_2018_15_39_17.png" />
     <entry file="file://$PROJECT_DIR$/scenarios/T1RnWn_0005.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
@@ -613,14 +615,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pages/MetaMask.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2955">
-          <caret line="197" column="24" lean-forward="false" selection-start-line="197" selection-start-column="24" selection-end-line="197" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="361">
@@ -633,22 +627,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="464">
           <caret line="181" column="27" lean-forward="false" selection-start-line="181" selection-start-column="27" selection-end-line="181" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pages/Page.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="154" column="6" lean-forward="false" selection-start-line="154" selection-start-column="6" selection-end-line="154" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/entity/User.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="733">
-          <caret line="408" column="20" lean-forward="false" selection-start-line="408" selection-start-column="20" selection-end-line="408" selection-end-column="20" />
           <folding />
         </state>
       </provider>
@@ -693,15 +671,55 @@
     <entry file="file://$PROJECT_DIR$/utils/Utils.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="291">
-          <caret line="30" column="45" lean-forward="true" selection-start-line="30" selection-start-column="45" selection-end-line="30" selection-end-column="45" />
+          <caret line="30" column="45" lean-forward="false" selection-start-line="30" selection-start-column="45" selection-end-line="30" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/token.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="87" lean-forward="false" selection-start-line="12" selection-start-column="87" selection-end-line="12" selection-end-column="87" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.circleci/config.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/Page.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="123" column="17" lean-forward="false" selection-start-line="123" selection-start-column="17" selection-end-line="123" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="58" column="47" lean-forward="false" selection-start-line="58" selection-start-column="47" selection-end-line="58" selection-end-column="47" />
+        <state relative-caret-position="144">
+          <caret line="94" column="33" lean-forward="false" selection-start-line="94" selection-start-column="33" selection-end-line="94" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entity/User.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="96" column="30" lean-forward="false" selection-start-line="96" selection-start-column="30" selection-end-line="96" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/MetaMask.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="251" column="0" lean-forward="true" selection-start-line="251" selection-start-column="0" selection-end-line="251" selection-end-column="0" />
           <folding />
         </state>
       </provider>

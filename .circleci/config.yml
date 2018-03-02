@@ -21,22 +21,6 @@ jobs:
             # sudo mkdir ~/ddd/artifacts;
             # sudo echo "my artifact files in a dir" > ~/ddd/artifacts/artifact-2;
 
-      #- run:
-     #     command: |
-       #     cd /
-#
-        #    sudo mkdir -p /etc/opt/chrome/policies/managed
-        #    cd ~/ddd
-        #    ls -l
-         #   sudo cp test_policy.json /etc/opt/chrome/policies/managed
-        #    cd /etc/opt/chrome/policies/managed
-         #   ls -l
-          #  cat test_policy.json
-     # - run: google-chrome
-     # - run: sudo killall chrome
-
-     # - run: sudo mkdir /1 # sudo cp test_policy.json /etc/opt/chrome/policies/managed
-      #- run: cd /1
 
 
   test:
