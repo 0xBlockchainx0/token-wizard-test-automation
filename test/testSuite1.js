@@ -70,7 +70,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
         fs.copySync(tempOutputPath,outputPath);
         fs.remove(tempOutputPath);
 
-        driver.quit();
+        //driver.quit();
     });
 //////////////////////////////////////////////////////////////////////////////
    // test.it.skip('Self test', async function() {
