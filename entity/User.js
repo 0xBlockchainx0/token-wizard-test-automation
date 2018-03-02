@@ -407,17 +407,18 @@ catch(err){
         var timeLimit=timeLimitTransactions*cur.tiers.length;
         do {
             await metaMask.switchToNextPage();
-            await  this.driver.sleep(1000);//4000
+            await  this.driver.sleep(4000);//4000
             await metaMask.refresh();
             await this.driver.sleep(4000);//1000
             if ( await metaMask.isPresentButtonSubmit()) {
+	            await this.driver.sleep(2000);//----
                 await metaMask.submitTransaction();
                 trCounter++;
                 logger.info("Transaction# "+trCounter);
             }
-	        await this.driver.sleep(1000);
+	        await this.driver.sleep(1000);//1000
             await welcomePage.switchToNextPage();
-            await this.driver.sleep(1000);
+            await this.driver.sleep(4000);//1000
             if (!(await wizardStep4.isPage())) {
                 await this.driver.sleep(2000);
                 await wizardStep4.clickButtonOk();
