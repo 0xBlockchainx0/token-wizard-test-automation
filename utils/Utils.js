@@ -27,6 +27,8 @@ class Utils {
 
 	    var d=await driver.executeScript("var d=new Date(1999,11,28);return d.toLocaleDateString();");
 	    d=(""+d).substring(0,2);
+	    if (d=='28') logger.info( "Date format=UTC");
+	    else logger.info( "Date format=MDY");
 	    if (d=='28') return "utc";
 	    else return "mdy";
 
