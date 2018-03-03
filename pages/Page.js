@@ -128,7 +128,7 @@ async clickElement(element){
 
 
     async clickWithWait(element) {
-
+	    Utils.takeScreenshoot(this.driver);
 	    await this.driver.sleep(TTT);
         logger.info("click");
         try{
