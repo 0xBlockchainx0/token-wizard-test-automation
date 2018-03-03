@@ -12,7 +12,7 @@ const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
 const Twait=20000;
-
+const TTT=2000;
 
 class Page {
 
@@ -40,6 +40,8 @@ class Page {
 
  async  isElementPresent(element) {
      var q;
+
+     await this.driver.sleep(TTT);
      try {
          //q = await this.driver.findElement(element).isDisplayed();
 
@@ -57,9 +59,11 @@ class Page {
      }
 async getTextByElement(element)
 {logger.info("get text ");
+	await this.driver.sleep(TTT);
     return await element.getText();}
 
 async getAttributeByLocator(locator,attr){
+	await this.driver.sleep(TTT);
 	logger.info("get attribute value ");
 	return await this.driver.findElement(locator).getAttribute(attr);
 
@@ -69,19 +73,22 @@ async getAttributeByLocator(locator,attr){
 
 async getTextByLocator(element)
 {
+	await this.driver.sleep(TTT);
   logger.info("get text ");
   return await this.driver.findElement(element).getText();
 }
 async getURL()
-{
+{  await this.driver.sleep(TTT);
     logger.info("get current page URL ");
     return await this.driver.getCurrentUrl();
 }
 async open (url){
+	await this.driver.sleep(TTT);
         logger.info("open  "+url);
         await this.driver.get(url);
 }
 async clearField(element,n){
+	await this.driver.sleep(TTT);
     logger.info("clear");
     let field;
     if (n!=1) {
@@ -102,14 +109,17 @@ async clearField(element,n){
 
 }
 async oneClick(element){
+	await this.driver.sleep(TTT);
      await  this.driver.findElement(element).click();
 }
 async clickElement(element){
+	await this.driver.sleep(TTT);
         logger.info("click");
         await element.click();
     }
 
    async  fillField(field,address){
+	   await this.driver.sleep(TTT);
         logger.info("fill: value = "+address);
       await  field.sendKeys(address);
 
@@ -117,8 +127,10 @@ async clickElement(element){
 
 
     async clickWithWait(element) {
+	    await this.driver.sleep(TTT);
         logger.info("click");
         try{
+
         let button = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
         await button.click();}
         catch(err){logger.info("Can not click element"+ button)}
@@ -126,39 +138,46 @@ async clickElement(element){
 
 
     async fillWithWait(element,k) {
+	    await this.driver.sleep(TTT);
         logger.info("fill: value = "+k);
         let field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
         await field.sendKeys(k);
 
     }
     async refresh(){
+	    await this.driver.sleep(TTT);
         logger.info("refresh");
         await this.driver.navigate().refresh();
     }
     async findWithWait(element)
     {
+	    await this.driver.sleep(TTT);
         logger.info("find");
         await this.driver.wait(webdriver.until.elementLocated(element), Twait);
         return await this.driver.findElements(element);
     }
     async clickTo(element){
+	    await this.driver.sleep(TTT);
         logger.info("click");
        await  element.click();
 
     }
 
     async  isDisplayedLoader(){
+	    await this.driver.sleep(TTT);
         var s=await this.driver.findElement(loader).getAttribute("className");
         if (s=="loading-container notdisplayed") {logger.info("displayed");return true;}
         else {logger.info("NOT displayed");return false;}
     }
 async waitUntilLoaderGone(){
+	await this.driver.sleep(TTT);
     logger.info("Modal :");
     do{ this.driver.sleep(1000);await this.isDisplayedLoader();}
     while(!(await this.isDisplayedLoader()));
 }
 
 async switchToNextPage(){
+	await this.driver.sleep(TTT);
         logger.info("switch to another tab");
         let dr=this.driver;
         let allHandles=await dr.getAllWindowHandles();
