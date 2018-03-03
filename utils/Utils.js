@@ -190,7 +190,7 @@ return q;
 	     // options.addArguments('headless');
         options.addArguments('start-maximized');
         options.addArguments('disable-popup-blocking');
-        options.addArguments('test-type');
+        //options.addArguments('test-type');
         return  new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
 
     }
