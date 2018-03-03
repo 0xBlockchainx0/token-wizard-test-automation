@@ -12,7 +12,7 @@ const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
 const Twait=20000;
-const TTT=2000;
+const TTT=6000;
 
 class Page {
 
