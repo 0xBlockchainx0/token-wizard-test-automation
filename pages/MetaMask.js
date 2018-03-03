@@ -17,7 +17,11 @@ const fieldEnterPass= By.xpath("//*[@id=\"password-box\"]");
 const buttonUnlock=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[1]/button");
 const buttonBuy= By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div[2]/button[1]");
 const buttonSend= By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div[2]/button[2]");
-const buttonSubmit=By.xpath("//*[@id=\"pending-tx-form\"]/div[3]/input");
+
+//const buttonSubmit=By.xpath("//*[@id=\"pending-tx-form\"]/div[3]/input");
+const buttonSubmit=By.className("confirm btn-green");
+
+
 const fieldGasPrise=By.xpath("//*[@id=\"pending-tx-form\"]/div[1]/div[2]/div[3]/div[2]/div/div/input");
 ///////Imported from TestCircle//////
 const buttonAccept=By.xpath('//*[@id="app-content"]/div/div[4]/div/button');

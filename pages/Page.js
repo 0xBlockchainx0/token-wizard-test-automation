@@ -12,7 +12,7 @@ const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
 const Twait=20000;
-const TTT=1000;
+const TTT=100;
 
 class Page {
 
@@ -88,7 +88,7 @@ async open (url){
         await this.driver.get(url);
 }
 async clearField(element,n){
-	await this.driver.sleep(TTT);
+	await this.driver.sleep(1000);
     logger.info("clear");
     let field;
     if (n!=1) {
