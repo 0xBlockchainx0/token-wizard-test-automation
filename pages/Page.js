@@ -53,7 +53,7 @@ class Page {
          q = false;
          logger.info(" element NOT present");
      }
-
+	 Utils.takeScreenshoot(this.driver);
      return q;
 
      }
@@ -119,6 +119,7 @@ async clickElement(element){
     }
 
    async  fillField(field,address){
+	   Utils.takeScreenshoot(this.driver);
 	   await this.driver.sleep(TTT);
         logger.info("fill: value = "+address);
       await  field.sendKeys(address);
@@ -127,13 +128,16 @@ async clickElement(element){
 
 
     async clickWithWait(element) {
+
 	    await this.driver.sleep(TTT);
         logger.info("click");
         try{
 
         let button = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+        Utils.takeScreenshoot(this.driver);
         await button.click();}
-        catch(err){logger.info("Can not click element"+ button)}
+        catch(err){logger.info("Can not click element"+ button);
+	               Utils.takeScreenshoot(this.driver);  }
     }
 
 
@@ -142,18 +146,21 @@ async clickElement(element){
         logger.info("fill: value = "+k);
         let field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
         await field.sendKeys(k);
+	    Utils.takeScreenshoot(this.driver);
 
     }
     async refresh(){
 	    await this.driver.sleep(TTT);
         logger.info("refresh");
         await this.driver.navigate().refresh();
+	    Utils.takeScreenshoot(this.driver);
     }
     async findWithWait(element)
     {
 	    await this.driver.sleep(TTT);
         logger.info("find");
         await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+	    Utils.takeScreenshoot(this.driver);
         return await this.driver.findElements(element);
     }
     async clickTo(element){
@@ -166,11 +173,14 @@ async clickElement(element){
     async  isDisplayedLoader(){
 	    await this.driver.sleep(TTT);
         var s=await this.driver.findElement(loader).getAttribute("className");
-        if (s=="loading-container notdisplayed") {logger.info("displayed");return true;}
+	    Utils.takeScreenshoot(this.driver);
+        if (s=="loading-container notdisplayed") {
+            logger.info("displayed");return true;}
         else {logger.info("NOT displayed");return false;}
     }
 async waitUntilLoaderGone(){
-	await this.driver.sleep(TTT);
+	//await this.driver.sleep(TTT);
+	Utils.takeScreenshoot(this.driver);
     logger.info("Modal :");
     do{ this.driver.sleep(1000);await this.isDisplayedLoader();}
     while(!(await this.isDisplayedLoader()));
@@ -178,6 +188,7 @@ async waitUntilLoaderGone(){
 
 async switchToNextPage(){
 	await this.driver.sleep(TTT);
+	Utils.takeScreenshoot(this.driver);
         logger.info("switch to another tab");
         let dr=this.driver;
         let allHandles=await dr.getAllWindowHandles();
@@ -188,6 +199,7 @@ async switchToNextPage(){
             if (curHandle!=allHandles[i]) handle=allHandles[i];
         }
         await dr.switchTo().window(handle);
+	    Utils.takeScreenshoot(this.driver);
 
 
 

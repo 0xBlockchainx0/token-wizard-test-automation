@@ -90,7 +90,7 @@ catch(err){
 
     async setMetaMaskAccount(){
         var metaMask = new MetaMask(this.driver);
-
+	    Utils.takeScreenshoot(this.driver);
         if (this.accN =="undefined")
         {    //console.log("import    accN="+this.accN);//!!!!!
             logger.info("import");
@@ -104,7 +104,9 @@ catch(err){
     }
 
     async open(url){
+
         await new Page(this.driver).open(url);
+	    Utils.takeScreenshoot(this.driver);
     }
 
     print(){
@@ -361,6 +363,7 @@ catch(err){
         await this.driver.sleep(3000);
         await  wizardStep1.clickButtonContinue();
         //await this.driver.sleep(500);
+	    Utils.takeScreenshoot(this.driver);
         await wizardStep2.fillName(cur.name);
         await wizardStep2.fillTicker(cur.ticker);
         await wizardStep2.fillDecimals(cur.decimals);
@@ -380,6 +383,7 @@ catch(err){
         await wizardStep3.fillWalletAddress(cur.walletAddress);
 
         await wizardStep3.setGasPrice(cur.gasPrice);
+	    Utils.takeScreenshoot(this.driver);
         if (cur.whitelisting) await wizardStep3.clickCheckboxWhitelistYes();
         else (await wizardStep3.fillMinCap(cur.minCap));
         Utils.takeScreenshoot(this.driver);
@@ -396,7 +400,7 @@ catch(err){
 
         await wizardStep3.clickButtonContinue();
         await this.driver.sleep(5000);
-
+	    Utils.takeScreenshoot(this.driver);
         if (!(await wizardStep4.isPage())) {
             logger.info("Incorrect data in tiers");
             throw ('Incorrect data in tiers');
@@ -407,13 +411,15 @@ catch(err){
         var timeLimit=timeLimitTransactions*cur.tiers.length;
         do {
             await metaMask.switchToNextPage();
-            await  this.driver.sleep(2000);//4000
+            //await  this.driver.sleep(2000);//4000
+	        Utils.takeScreenshoot(this.driver);
             await metaMask.refresh();
-            await this.driver.sleep(2000);//1000
+            await this.driver.sleep(7000);//1000
             if ( await metaMask.isPresentButtonSubmit()) {
 	            Utils.takeScreenshoot(this.driver);
 	            await this.driver.sleep(5000);//----
                 await metaMask.submitTransaction();
+	            Utils.takeScreenshoot(this.driver);
                 trCounter++;
                 logger.info("Transaction# "+trCounter);
             }
