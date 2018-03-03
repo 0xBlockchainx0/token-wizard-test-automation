@@ -416,7 +416,7 @@ catch(err){
                 trCounter++;
                 logger.info("Transaction# "+trCounter);
             }
-	        await this.driver.sleep(1000);//1000
+	        await this.driver.sleep(4000);//1000
             await welcomePage.switchToNextPage();
             await this.driver.sleep(4000);//1000
             if (!(await wizardStep4.isPage())) {
