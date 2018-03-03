@@ -1,7 +1,8 @@
 const Logger= require('../entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
-
+const utils=require('../utils/Utils.js');
+const Utils=utils.Utils;
 const key = require('selenium-webdriver').Key;
 const page=require('./Page.js');
 const webdriver = require('selenium-webdriver'),
