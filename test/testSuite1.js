@@ -19,7 +19,7 @@ const Crowdsale=crowdsale.Crowdsale;
 
 
 test.describe('POA token-wizard. Test suite #1', function() {
-    this.timeout(2400000);//40 min
+    this.timeout(24000000);//400 min
 
     var driver;
 

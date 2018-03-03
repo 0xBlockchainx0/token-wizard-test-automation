@@ -411,13 +411,16 @@ catch(err){
             await metaMask.refresh();
             await this.driver.sleep(4000);//1000
             if ( await metaMask.isPresentButtonSubmit()) {
+	            Utils.takeScreenshoot(this.driver);
 	            await this.driver.sleep(2000);//----
                 await metaMask.submitTransaction();
                 trCounter++;
                 logger.info("Transaction# "+trCounter);
             }
+	        Utils.takeScreenshoot(this.driver);
 	        await this.driver.sleep(4000);//1000
             await welcomePage.switchToNextPage();
+	        Utils.takeScreenshoot(this.driver);
             await this.driver.sleep(4000);//1000
             if (!(await wizardStep4.isPage())) {
                 await this.driver.sleep(2000);
