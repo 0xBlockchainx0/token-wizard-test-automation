@@ -188,7 +188,7 @@ return q;
         //options.addArguments("user-data-dir=/home/d/.config/google-chrome/");
        //
 	     // options.addArguments('headless');
-        options.addArguments('start-maximized');
+        //options.addArguments('start-maximized');
         options.addArguments('disable-popup-blocking');
         options.addArguments('test-type');
         return  new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
