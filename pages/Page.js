@@ -13,7 +13,7 @@ const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
 const Twait=20000;
-const TTT=1500;
+const TTT=10;
 
 class Page {
 
@@ -44,12 +44,12 @@ class Page {
 
      await this.driver.sleep(TTT);
      try {
-         //q = await this.driver.findElement(element).isDisplayed();
-
-         var s=await this.driver.findElements(element);
+         q = await this.driver.findElement(element).isDisplayed();
+	     logger.info(" element present");
+        // var s=await this.driver.findElements(element);
         // console.log("lengfth"+s.length);
-         if (s.length>0){q=true;logger.info(" element present");}
-         else {q=false;logger.info(" element NOT present");}
+        // if (s.length>0){q=true;logger.info(" element present");}
+         //else {q=false;logger.info(" element NOT present");}
      } catch (err) {
          q = false;
          logger.info(" element NOT present");
@@ -89,7 +89,7 @@ async open (url){
         await this.driver.get(url);
 }
 async clearField(element,n){
-	await this.driver.sleep(1000);
+	await this.driver.sleep(2000);
     logger.info("clear");
     let field;
     if (n!=1) {
@@ -126,6 +126,19 @@ async clickElement(element){
       await  field.sendKeys(address);
 
     }
+	async  clickWithWaitIsElementEnabled(element) {
+		Utils.takeScreenshoot(this.driver);
+		await this.driver.sleep(TTT);
+		logger.info("click");
+		try{
+
+			//let button = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+			let button = await this.driver.wait(webdriver.until.elementIsEnabled(element), Twait);
+			Utils.takeScreenshoot(this.driver);
+			await button.click();}
+		catch(err){logger.info("Can not click element"+ button);
+			Utils.takeScreenshoot(this.driver);  }
+	}
 
 
     async clickWithWait(element) {
@@ -135,6 +148,7 @@ async clickElement(element){
         try{
 
         let button = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+
         Utils.takeScreenshoot(this.driver);
         await button.click();}
         catch(err){logger.info("Can not click element"+ button);

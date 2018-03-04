@@ -79,7 +79,8 @@ class MetaMask extends page.Page{
 
     async clickButtonSubmit(){
         logger.info(this.name+"button Submit :");
-        await super.clickWithWait(buttonSubmit);
+       // await super.clickWithWaitIsElementEnabled(buttonSubmit);
+	    await super.clickWithWait(buttonSubmit);
 
     }
     async clickPopupNetwork(){
@@ -250,12 +251,12 @@ async isPresentButtonSubmit()
         await this.driver.executeScript("" +
             "document.getElementsByClassName('dropdown-menu-item')["+(networks.length-1)+"].click();");
          logger.info(this.name+"select network from menu :");
-         await this.driver.sleep(5000);////////!!!!!!!!!!!!
+         await this.driver.sleep(1000);////////!!!!!!!!!!!!
         await super.fillWithWait(fieldNewRPCURL,url);
-	     await this.driver.sleep(5000);////////!!!!!!!!!!!!
+	     await this.driver.sleep(1000);////////!!!!!!!!!!!!
         await super.clickWithWait(buttonSave);
 
-        await this.driver.sleep(1000);
+       // await this.driver.sleep(1000);
         await super.clickWithWait(arrowBackRPCURL);
         //lengthNetworkMenu++;
         return;

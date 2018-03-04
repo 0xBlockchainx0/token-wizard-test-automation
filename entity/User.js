@@ -411,13 +411,14 @@ catch(err){
         var timeLimit=timeLimitTransactions*cur.tiers.length;
         do {
             await metaMask.switchToNextPage();
-            //await  this.driver.sleep(2000);//4000
+            await  this.driver.sleep(2000);//4000
 	        Utils.takeScreenshoot(this.driver);
             await metaMask.refresh();
-            await this.driver.sleep(7000);//1000
+	        Utils.takeScreenshoot(this.driver);
+            await this.driver.sleep(1000);//1000
             if ( await metaMask.isPresentButtonSubmit()) {
 	            Utils.takeScreenshoot(this.driver);
-	            await this.driver.sleep(5000);//----
+	            await this.driver.sleep(1000);//----
                 await metaMask.submitTransaction();
 	            Utils.takeScreenshoot(this.driver);
                 trCounter++;
