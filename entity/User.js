@@ -454,18 +454,20 @@ catch(err){
 
             if (skippedTr>5)
             {
-	            var s="Deployment failed because too many skipped transaction.Transaction were done:"+ (trCounter-skippedTr)+
+	            var s="Deployment failed because too many skipped transaction."+"\n"+"Transaction were done:"+ (trCounter-skippedTr)+
 		            "\n"+ "Transaction were skipped: "+skippedTr;
 	            logger.info(s);
 	            b=false;
             }
 
 	        if((timeLimit--)==0)
-            {   var s="Deployment failed because time expired.Transaction were done:"+ (trCounter-skippedTr)+
+            {   var s="Deployment failed because time expired."+"\n"+" Transaction were done:"+ (trCounter-skippedTr)+
             "\n"+ "Transaction were skipped: "+skippedTr;
                 logger.info(s);
                 b=false;}
         } while (b);
+        logger.info("Crowdsale created."+"\n"+" Transaction were done:"+ (trCounter-skippedTr)+
+	    "\n"+ "Transaction were skipped: "+skippedTr);
 //////////////////////////////////////////////////////////////////
         await Utils.takeScreenshoot(this.driver);
         await this.driver.sleep(5000);
