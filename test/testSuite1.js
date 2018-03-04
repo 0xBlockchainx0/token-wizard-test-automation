@@ -18,8 +18,8 @@ const crowdsale=require('../entity/Crowdsale.js');
 const Crowdsale=crowdsale.Crowdsale;
 
 
-test.describe('POA token-wizard. Test suite #1', function() {
-    this.timeout(24000000);//400 min
+test.describe('POA token-wizard. Test suite #1', async function() {
+    this.timeout(2400000);//400 min
 
     var driver;
 
