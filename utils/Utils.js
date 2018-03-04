@@ -153,7 +153,7 @@ return q;
         return n;
     }
 
-    static takeScreenshoot(driver) {return;
+    static takeScreenshoot(driver) {
         driver.takeScreenshot()
             .then((res) => {
 

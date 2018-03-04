@@ -13,7 +13,7 @@ const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
 const Twait=20000;
-const TTT=10;
+const TTT=1000;
 
 class Page {
 
@@ -193,11 +193,19 @@ async clickElement(element){
             logger.info("displayed");return true;}
         else {logger.info("NOT displayed");return false;}
     }
+
+
+
 async waitUntilLoaderGone(){
 	//await this.driver.sleep(TTT);
 	Utils.takeScreenshoot(this.driver);
     logger.info("Modal :");
-    do{ this.driver.sleep(1000);await this.isDisplayedLoader();}
+
+    let c=40;
+    do{
+    	this.driver.sleep(1000);await this.isDisplayedLoader();
+    	if (c--<0) break;
+    }
     while(!(await this.isDisplayedLoader()));
 }
 

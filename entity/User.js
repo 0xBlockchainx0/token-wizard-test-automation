@@ -35,7 +35,7 @@ const currency= require('../entity/Currency.js');
 const Currency=currency.Currency;
 const crowdsale=require('../entity/Crowdsale.js');
 const Crowdsale=crowdsale.Crowdsale;
-const timeLimitTransactions=30//80;
+const timeLimitTransactions=80;
 
 
 class User {

@@ -91,6 +91,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
 
 
     test.it('Owner  can create crowdsale,no whitelist,reserved, not modifiable', async function() {
+        b=false;
         owner=user77_56B2;
         await owner.setMetaMaskAccount();
         crowdsale = await owner.createCrowdsale(scenario);
@@ -104,6 +105,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
     });
 
     test.it('Warning presents if investor try to buy from foreign network', async function() {
+	    b=true;
         investor=user4_40cA;
         await investor.setMetaMaskAccount();
         await investor.open(crowdsale.url);
@@ -115,6 +117,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
 
     });
     test.it('Investor can NOT buy less than minCap in first transaction', async function() {
+	    b=true;
         investor=user77_27F2;
         await investor.setMetaMaskAccount();
         await investor.open(crowdsale.url);
@@ -125,6 +128,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
     });
 
     test.it('Investor can NOT buy more than total supply in tier', async function() {
+	    b=true;
         investor=user77_27F2;
         await investor.open(crowdsale.url);
         b = await investor.contribute(crowdsale.currency.tiers[0].supply+1);
@@ -134,6 +138,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
     });
 
     test.it('Investor can buy  amount = minCap', async function() {
+        b=false;
         //await investor.setMetaMaskAccount();
         //crowdsale.url="https://wizard.poa.network/invest?addr=0x87be99f4F7e0CA13E878202232CA2eDA93c449b7&networkID=77";
         //crowdsale.currency.minCap=1;
@@ -153,6 +158,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
     });
 
     test.it('Investor can buy less than minCap after first transaction', async function() {
+	    b=false;
         investor=user77_27F2;
         await investor.open(crowdsale.url);
         balance=await investor.getBalanceFromPage(crowdsale.url);
@@ -170,6 +176,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
     });
 
     test.it('Owner can NOT distribute before  all tokens are sold', async function() {
+        b=true;
         owner=user77_56B2;
         await owner.setMetaMaskAccount();
         b = await owner.distribute(crowdsale);
@@ -178,14 +185,14 @@ test.describe('POA token-wizard. Test suite #1', function() {
     });
 
     test.it('Owner can NOT finalize before  all tokens are sold & if crowdsale NOT ended ', async function() {
-
+        b=true;
         b = await owner.finalize(crowdsale);
         assert.equal(b, false, "Test FAILED. Owner can  finalize before  all tokens re sold & if crowdsale NOT ended ");
         logger.warn("Owner can NOT finalize before  all tokens are sold & if crowdsale NOT ended" );
     });
 
     test.it('Investor can buy total supply for current tier', async function() {
-
+        b=false;
         investor=user77_27F2;
         await investor.setMetaMaskAccount();
         await investor.open(crowdsale.url);
@@ -200,6 +207,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
 
     });
     test.it('NOT Owner can NOT distribute (after all tokens were sold)', async function() {
+	    b=true;
         owner=user77_27F2;
         await owner.setMetaMaskAccount();
         b = await owner.distribute(crowdsale);
@@ -208,6 +216,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
 
     });
     test.it('Owner can distribute (after all tokens were sold)', async function() {
+	    b=false;
         owner=user77_56B2;
         await owner.setMetaMaskAccount();
         b = await owner.distribute(crowdsale);
@@ -221,6 +230,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
     });
 
     test.it('NOT Owner can NOT finalize (after all tokens were sold)', async function() {
+        b=true;
         owner=user77_27F2;
         await owner.setMetaMaskAccount();
         b = await owner.finalize(crowdsale);
@@ -230,6 +240,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
     });
 
     test.it('Owner can  finalize (after all tokens were sold)', async function() {
+	    b=false;
         owner=user77_56B2;
         await owner.setMetaMaskAccount();
         b = await owner.finalize(crowdsale);
