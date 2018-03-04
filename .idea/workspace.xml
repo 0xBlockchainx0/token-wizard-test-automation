@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="40b9626d-5f4f-46c4-8096-7de331aaa15a" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/pages/Page.js" afterPath="$PROJECT_DIR$/pages/Page.js" />
+      <change beforePath="$PROJECT_DIR$/utils/Utils.js" afterPath="$PROJECT_DIR$/utils/Utils.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -22,8 +24,8 @@
       <file leaf-file-name="User.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/entity/User.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
-              <caret line="418" column="34" lean-forward="true" selection-start-line="418" selection-start-column="34" selection-end-line="418" selection-end-column="34" />
+            <state relative-caret-position="902">
+              <caret line="418" column="34" lean-forward="false" selection-start-line="418" selection-start-column="34" selection-end-line="418" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -42,8 +44,8 @@
       <file leaf-file-name="testSuite1.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-662">
-              <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
+            <state relative-caret-position="113">
+              <caret line="54" column="29" lean-forward="false" selection-start-line="54" selection-start-column="29" selection-end-line="54" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -59,11 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Utils.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Utils.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/utils/Utils.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="524">
-              <caret line="167" column="0" lean-forward="false" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
+            <state relative-caret-position="331">
+              <caret line="167" column="16" lean-forward="false" selection-start-line="167" selection-start-column="16" selection-end-line="167" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -72,18 +74,18 @@
       <file leaf-file-name="Page.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pages/Page.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3118">
-              <caret line="184" column="29" lean-forward="false" selection-start-line="184" selection-start-column="24" selection-end-line="184" selection-end-column="29" />
+            <state relative-caret-position="321">
+              <caret line="259" column="0" lean-forward="false" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MetaMask.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MetaMask.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pages/MetaMask.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="245">
-              <caret line="205" column="29" lean-forward="true" selection-start-line="205" selection-start-column="29" selection-end-line="205" selection-end-column="29" />
+            <state relative-caret-position="2940">
+              <caret line="196" column="0" lean-forward="false" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -100,7 +102,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>timest</find>
       <find>timestamp</find>
       <find>log</find>
       <find>console</find>
@@ -129,6 +130,7 @@
       <find>doTra</find>
       <find>doTr</find>
       <find>scree</find>
+      <find>swi</find>
       <find>screenSh</find>
     </findStrings>
     <dirStrings>
@@ -188,11 +190,11 @@
         <option value="$PROJECT_DIR$/tests/Test1.js" />
         <option value="$PROJECT_DIR$/pages/TierPage.js" />
         <option value="$PROJECT_DIR$/pages/WizardStep4.js" />
-        <option value="$PROJECT_DIR$/pages/Page.js" />
-        <option value="$PROJECT_DIR$/utils/Utils.js" />
         <option value="$PROJECT_DIR$/entity/User.js" />
         <option value="$PROJECT_DIR$/test/testSuite1.js" />
         <option value="$PROJECT_DIR$/pages/MetaMask.js" />
+        <option value="$PROJECT_DIR$/pages/Page.js" />
+        <option value="$PROJECT_DIR$/utils/Utils.js" />
       </list>
     </option>
   </component>
@@ -359,7 +361,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="393200000" />
+    <option name="totallyTimeSpent" value="393909000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -680,14 +682,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/Utils.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="524">
-          <caret line="167" column="0" lean-forward="false" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/Test1.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="107">
@@ -712,14 +706,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pages/Page.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3118">
-          <caret line="184" column="29" lean-forward="false" selection-start-line="184" selection-start-column="24" selection-end-line="184" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scenarios/testSuite1.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
@@ -728,26 +714,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
+    <entry file="file://$PROJECT_DIR$/pages/Page.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-662">
-          <caret line="38" column="0" lean-forward="false" selection-start-line="38" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/entity/User.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="418" column="34" lean-forward="true" selection-start-line="418" selection-start-column="34" selection-end-line="418" selection-end-column="34" />
+        <state relative-caret-position="321">
+          <caret line="259" column="0" lean-forward="false" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pages/MetaMask.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="205" column="29" lean-forward="true" selection-start-line="205" selection-start-column="29" selection-end-line="205" selection-end-column="29" />
+        <state relative-caret-position="2940">
+          <caret line="196" column="0" lean-forward="false" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entity/User.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="902">
+          <caret line="418" column="34" lean-forward="false" selection-start-line="418" selection-start-column="34" selection-end-line="418" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="113">
+          <caret line="54" column="29" lean-forward="false" selection-start-line="54" selection-start-column="29" selection-end-line="54" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/Utils.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="167" column="16" lean-forward="false" selection-start-line="167" selection-start-column="16" selection-end-line="167" selection-end-column="16" />
           <folding />
         </state>
       </provider>

@@ -257,6 +257,7 @@ async switchToNextPage(){
 	       await this.driver.sleep(TTT);
 
 	       await Utils.takeScreenshoot(this.driver);
+
        }
        catch (err){
        	logger.info("Can't switch to next tab "+err);

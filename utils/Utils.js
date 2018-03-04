@@ -152,7 +152,7 @@ return q;
 
 
 
-     static   async startBrowserWithMetamask() {
+     static   startBrowserWithMetamask() {
         var source = 'MetaMask.crx';
         if (!fs.existsSync(source)) source = './node_modules/create-poa-crowdsale/MetaMask.crx';
         logger.info("Metamask source:"+source);
@@ -165,7 +165,7 @@ return q;
         //options.addArguments('start-maximized');
         options.addArguments('disable-popup-blocking');
         //options.addArguments('test-type');
-        return  await new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
+        return  new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
 
     }
 
