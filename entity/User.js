@@ -432,7 +432,7 @@ catch(err){
 
 		        await wizardStep4.clickButtonYes();
 		        logger.info("Transaction #"+ trCounter+" is skipped.");
-		        console.log("Transaction #"+ trCounter+" is skipped.);
+		        console.log("Transaction #"+ trCounter+" is skipped.");
 		        skippedTr++;
 		        await this.driver.sleep(5000);//1000
 	        }   else
