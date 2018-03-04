@@ -199,7 +199,7 @@ async doTransaction(){
     logger.info(this.name+"wait and submit transaction :");
     await this.switchToNextPage();
     var counter=0;
-    var timeLimit=10;//30;
+    var timeLimit=20;//30;
     do {
 
         await this.driver.sleep(1000);

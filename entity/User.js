@@ -407,43 +407,33 @@ catch(err){
         }
 ////////////////////////////////////////////////////////////////////
         var trCounter=0;
+        var skippedTr=0;
         var b=true;
         var z=false;
         var timeLimit=timeLimitTransactions*cur.tiers.length;
         do {
            z=await metaMask.doTransaction();
+	        trCounter++;
            if (!z) {
-           	var s="Deployment failed because transaction didn't appear.Transaction were done:"+ trCounter;
-	           logger.info(s);
+
+	           logger.info("Transaction #"+trCounter+" didn't appear.");
 	           //b=false;
 	            }
 	           else {
-	           trCounter++;
-	           logger.info("Transaction# "+trCounter);
+
+	           logger.info("Transaction# "+trCounter+" is successfull");
            }
-     /*       await metaMask.switchToNextPage();
-            await  this.driver.sleep(2000);//4000
-	        Utils.takeScreenshoot(this.driver);
-            await metaMask.refresh();
-	        Utils.takeScreenshoot(this.driver);
-            await this.driver.sleep(1000);//1000
-            if ( await metaMask.isPresentButtonSubmit()) {
-	            Utils.takeScreenshoot(this.driver);
-	            await this.driver.sleep(1000);//----
-                await metaMask.submitTransaction();
-	            Utils.takeScreenshoot(this.driver);
-                trCounter++;
-                logger.info("Transaction# "+trCounter);
-            }
-*/
+
 	        await this.driver.sleep(1000);//1000
 	        if (await wizardStep4.isPresentButtonSkipTransaction())
 	        {
-		        logger.info("Transaction #"+ trCounter+" is skipped.");
+
 		        await wizardStep4.clickButtonSkipTransaction();
 
 		        await wizardStep4.clickButtonYes();
-		        console.log("YEAHHHSHSHHSHSHS!!");
+		        logger.info("Transaction #"+ trCounter+" is skipped.");
+		        console.log("Transaction #"+ trCounter+" is skipped.);
+		        skippedTr++;
 		        await this.driver.sleep(5000);//1000
 	        }   else
 
@@ -460,7 +450,8 @@ catch(err){
 
 
 	        if((timeLimit--)==0)
-            {   var s="Deployment failed because time expired.Transaction were done:"+ trCounter;
+            {   var s="Deployment failed because time expired.Transaction were done:"+ (trCounter-skippedTr)+
+            "\n"+ "Transaction were skipped: "+skippedTr;
                 logger.info(s);
                 b=false;}
         } while (b);
