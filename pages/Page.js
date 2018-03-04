@@ -13,7 +13,7 @@ const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
 const Twait=20000;
-const TTT=500;
+const TTT=10;
 
 class Page {
 
@@ -54,7 +54,7 @@ class Page {
          q = false;
          logger.info(" element NOT present");
      }
-	 Utils.takeScreenshoot(this.driver);
+	 //await Utils.takeScreenshoot(this.driver);
      return q;
 
      }
@@ -127,56 +127,76 @@ async clickElement(element){
 
     }
 	async  clickWithWaitIsElementEnabled(element) {
-		Utils.takeScreenshoot(this.driver);
+
 		await this.driver.sleep(TTT);
 		logger.info("click");
 		try{
 
 			//let button = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
 			let button = await this.driver.wait(webdriver.until.elementIsEnabled(element), Twait);
-			Utils.takeScreenshoot(this.driver);
+
 			await button.click();}
-		catch(err){logger.info("Can not click element"+ button);
-			Utils.takeScreenshoot(this.driver);  }
+		catch(err){logger.info("Can not click element"+ element);
+
+			await Utils.takeScreenshoot(this.driver);  }
 	}
 
 
     async clickWithWait(element) {
-	    Utils.takeScreenshoot(this.driver);
+
 	    await this.driver.sleep(TTT);
         logger.info("click");
         try{
 
         let button = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
 
-        Utils.takeScreenshoot(this.driver);
-        await button.click();}
-        catch(err){logger.info("Can not click element"+ button);
-	               Utils.takeScreenshoot(this.driver);  }
-    }
 
+        await button.click();}
+        catch(err){logger.info("Can not click element"+ element);
+	               await Utils.takeScreenshoot(this.driver);  }
+    }
+async waitUntilLocated(element)
+{
+	try {
+		await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+	}
+	catch(err){logger.info("Element "+ element+" have not appeared in"+ Twait+" sec.");
+		await Utils.takeScreenshoot(this.driver);  }
+
+}
 
     async fillWithWait(element,k) {
 	    await this.driver.sleep(TTT);
-        logger.info("fill: value = "+k);
-        let field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
-        await field.sendKeys(k);
-	    Utils.takeScreenshoot(this.driver);
+	    try {
+		    logger.info("fill: value = " + k);
+		    let field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+		    await field.sendKeys(k);
+	    }
+	    catch(err){logger.info("Element "+ element+" have not appeared in"+ Twait+" sec.");
+		    await Utils.takeScreenshoot(this.driver);  }
 
     }
     async refresh(){
+
 	    await this.driver.sleep(TTT);
         logger.info("refresh");
         await this.driver.navigate().refresh();
-	    Utils.takeScreenshoot(this.driver);
+	    //await this.driver.sleep(2000);
+	    await Utils.takeScreenshoot(this.driver);
     }
     async findWithWait(element)
     {
 	    await this.driver.sleep(TTT);
         logger.info("find");
-        await this.driver.wait(webdriver.until.elementLocated(element), Twait);
-	    Utils.takeScreenshoot(this.driver);
-        return await this.driver.findElements(element);
+	    try {
+		    await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+
+		    return await this.driver.findElements(element);
+	    }
+    catch(err){logger.info("Element "+ element+" have not appeared in"+ Twait+" sec.");
+	    await Utils.takeScreenshoot(this.driver);
+	    return null;}
+
     }
     async clickTo(element){
 	    await this.driver.sleep(TTT);
@@ -189,7 +209,7 @@ async clickElement(element){
 	    await this.driver.sleep(TTT);
 	    try {
 		    var s = await this.driver.findElement(loader).getAttribute("className");
-		    Utils.takeScreenshoot(this.driver);
+
 		    if (s == "loading-container notdisplayed") {
 			    logger.info("NOT displayed");
 			    return false;

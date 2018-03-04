@@ -15,7 +15,8 @@ const blueScreen=By.xpath('//*[@id="root"]/div/section/div[4]/div[2]/div');
 //const modal=By.xpath("//*[@id=\"root\"]/div/section/div[4]/div/p");
 const modal=By.className("modal");
 const buttonOK=By.xpath('/html/body/div[2]/div/div[3]/button[1]');
-
+const buttonSkipTransaction=By.className("no_image button button_fill");
+const buttonYes=By.className("swal2-confirm swal2-styled");
 
 class WizardStep4 extends page.Page{
 
@@ -26,6 +27,7 @@ class WizardStep4 extends page.Page{
 
     }
 async isPage(){
+	logger.info(this.name+"Is present Modal: ");
         return await super.isElementPresent(modal);
 }
     async clickButtonContinue(){
@@ -39,12 +41,24 @@ async isPage(){
         await super.clickWithWait(buttonOK);
     }
     async isPresentButtonOk(){
-	    logger.info(this.name+"Is present buttonOK: ");
-	    return await super.isElementPresent(buttonOK);
+		logger.info(this.name+"Is present buttonOK: ");
+		return await super.isElementPresent(buttonOK);
 
-    }
+	}
+	async isPresentButtonSkipTransaction(){
+		logger.info(this.name+"Is present buttonSkipTransaction: ");
+		return await super.isElementPresent(buttonSkipTransaction);
 
+	}
+	async clickButtonSkipTransaction(){
+		logger.info(this.name+"buttonSkipTransaction: ");
+		await super.clickWithWait(buttonSkipTransaction);
+	}
 
+	async clickButtonYes(){
+		logger.info(this.name+"clickButtonYes: ");
+		await super.clickWithWait(buttonYes);
+	}
 
 
 

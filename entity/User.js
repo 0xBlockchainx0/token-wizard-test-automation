@@ -415,7 +415,8 @@ catch(err){
            if (!z) {
            	var s="Deployment failed because transaction didn't appear.Transaction were done:"+ trCounter;
 	           logger.info(s);
-	           b=false;}
+	           //b=false;
+	            }
 	           else {
 	           trCounter++;
 	           logger.info("Transaction# "+trCounter);
@@ -435,11 +436,18 @@ catch(err){
                 logger.info("Transaction# "+trCounter);
             }
 */
-	        await this.driver.sleep(5000);//1000
-	       // Utils.takeScreenshoot(this.driver);
-           // await welcomePage.switchToNextPage();
-	       // Utils.takeScreenshoot(this.driver);
-          //  await this.driver.sleep(2000);//1000
+	        await this.driver.sleep(1000);//1000
+	        if (await wizardStep4.isPresentButtonSkipTransaction())
+	        {
+		        logger.info("Transaction #"+ trCounter+" is skipped.");
+		        await wizardStep4.clickButtonSkipTransaction();
+
+		        await wizardStep4.clickButtonYes();
+		        console.log("YEAHHHSHSHHSHSHS!!");
+		        await this.driver.sleep(5000);//1000
+	        }   else
+
+
             if (!(await wizardStep4.isPage())) {//if modal NOT present
                 //await this.driver.sleep(10000);
                 await wizardStep4.waitUntilLoaderGone();
@@ -448,17 +456,20 @@ catch(err){
 
                 b=false;
             }
-            if((timeLimit--)==0)
+
+
+
+	        if((timeLimit--)==0)
             {   var s="Deployment failed because time expired.Transaction were done:"+ trCounter;
                 logger.info(s);
                 b=false;}
         } while (b);
 //////////////////////////////////////////////////////////////////
-        Utils.takeScreenshoot(this.driver);
+        await Utils.takeScreenshoot(this.driver);
         await this.driver.sleep(5000);
         await wizardStep4.clickButtonContinue();
         await this.driver.sleep(5000);
-        Utils.takeScreenshoot(this.driver);
+        await Utils.takeScreenshoot(this.driver);
         await wizardStep4.waitUntilLoaderGone();
         b=true;
         var counter=50;

@@ -51,6 +51,11 @@ const fieldNewRPCURL=By.id("new_rpc");
 const buttonSave=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/div/div[2]/button");
 //const arrowBackRPCURL=By.className("fa fa-arrow-left fa-lg cursor-pointer");
 const arrowBackRPCURL=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[1]/i");
+
+const iconQuestionMark=By.className("fa fa-question-circle fa-lg");
+const iconChangeAccount=By.className("cursor-pointer color-orange accounts-selector");
+
+
 var accN=1;
 //var lengthNetworkMenu=6;
 //var sokolAdded=0;
@@ -69,7 +74,10 @@ class MetaMask extends page.Page{
 
 
     }
-
+	async isPresentIconQuestionMark()
+	{   logger.info(this.name+"isPresentIconQuestionMark Submit :");
+		return await super.isElementPresent(iconQuestionMark);
+	}
 
     async setGasPriceTransaction(price){
         logger.info(this.name+"field GasPrice :");
@@ -191,12 +199,15 @@ async doTransaction(){
     logger.info(this.name+"wait and submit transaction :");
     await this.switchToNextPage();
     var counter=0;
-    var timeLimit=30;
+    var timeLimit=10;//30;
     do {
 
         await this.driver.sleep(1000);
         await this.refresh();
-        await this.driver.sleep(4000);
+        await this.driver.sleep(2000);
+	    await super.waitUntilLocated(iconChangeAccount);
+
+
         if (await this.isPresentButtonSubmit()) {
 	        await this.driver.sleep(500);
             await this.submitTransaction();

@@ -157,7 +157,7 @@ return q;
         return n;
     }
 
-    static takeScreenshoot(driver) {return;
+    static async takeScreenshoot(driver) {return;
         driver.takeScreenshot()
             .then((res) => {
 
@@ -175,7 +175,7 @@ return q;
         //options.addArguments("user-data-dir=/home/d/GoogleProfile");
         //options.addArguments('start-maximized');
         options.addArguments('disable-popup-blocking');
-        options.addArguments('test-type');
+        //options.addArguments('test-type');
         return new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
 
     }
