@@ -13,7 +13,7 @@ const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
 const Twait=20000;
-const TTT=10;
+const TTT=500;
 
 class Page {
 
@@ -223,7 +223,7 @@ async waitUntilLoaderGone(){
 async switchToNextPage(){
 	await this.driver.sleep(TTT);
 	Utils.takeScreenshoot(this.driver);
-        logger.info("switch to another tab");
+        logger.info("switch to next tab");
         let dr=this.driver;
         let allHandles=await dr.getAllWindowHandles();
         let curHandle=await dr.getWindowHandle();
@@ -233,7 +233,10 @@ async switchToNextPage(){
             if (curHandle!=allHandles[i]) handle=allHandles[i];
         }
         await dr.switchTo().window(handle);
-	    Utils.takeScreenshoot(this.driver);
+	    await this.driver.sleep(500);
+	    await this.driver.sleep(TTT);
+
+	Utils.takeScreenshoot(this.driver);
 
 
 
