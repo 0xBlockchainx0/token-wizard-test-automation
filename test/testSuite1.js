@@ -101,6 +101,7 @@ test.describe('POA token-wizard. Test suite #1', function() {
         b = (crowdsale.tokenAddress != "") & (crowdsale.contractAddress != "") & (crowdsale.url != "");
         assert.equal(b, true, 'Test FAILED. ');
         logger.error("Test PASSED. Owner  can create crowdsale,no whitelist,reserved");
+        if (!b) {console.log("Crowdsale didn't created. Can't proceed"); throw("Crowdsale didn't created. Can't proceed");}
 
     });
 

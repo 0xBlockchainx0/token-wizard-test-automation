@@ -157,14 +157,19 @@ return q;
         return n;
     }
 
-    static async takeScreenshoot(driver) {return;
-        driver.takeScreenshot()
+    static async takeScreenshoot(driver) {
+
+	    var res=await driver.takeScreenshot();
+	    var buf = new Buffer(res, 'base64');
+
+	    await fs.writeFileSync(tempOutputPath + "screenshoot" + Utils.getDate() + '.png', buf);
+        /*driver.takeScreenshot()
             .then((res) => {
 
                var buf = new Buffer(res, 'base64');
 
                 fs.writeFileSync(tempOutputPath + "screenshoot" + Utils.getDate() + '.png', buf);
-                });
+                });*/
 
     }
 

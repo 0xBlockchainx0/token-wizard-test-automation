@@ -120,7 +120,7 @@ async clickElement(element){
     }
 
    async  fillField(field,address){
-	   Utils.takeScreenshoot(this.driver);
+
 	   await this.driver.sleep(TTT);
         logger.info("fill: value = "+address);
       await  field.sendKeys(address);
@@ -138,7 +138,7 @@ async clickElement(element){
 			await button.click();}
 		catch(err){logger.info("Can not click element"+ element);
 
-			await Utils.takeScreenshoot(this.driver);  }
+			  }
 	}
 
 
@@ -153,7 +153,7 @@ async clickElement(element){
 
         await button.click();}
         catch(err){logger.info("Can not click element"+ element);
-	               await Utils.takeScreenshoot(this.driver);  }
+	                }
     }
 async waitUntilLocated(element)
 {
@@ -161,7 +161,7 @@ async waitUntilLocated(element)
 		await this.driver.wait(webdriver.until.elementLocated(element), Twait);
 	}
 	catch(err){logger.info("Element "+ element+" have not appeared in"+ Twait+" sec.");
-		await Utils.takeScreenshoot(this.driver);  }
+		 }
 
 }
 
@@ -173,7 +173,7 @@ async waitUntilLocated(element)
 		    await field.sendKeys(k);
 	    }
 	    catch(err){logger.info("Element "+ element+" have not appeared in"+ Twait+" sec.");
-		    await Utils.takeScreenshoot(this.driver);  }
+		     }
 
     }
     async refresh(){
@@ -194,7 +194,7 @@ async waitUntilLocated(element)
 		    return await this.driver.findElements(element);
 	    }
     catch(err){logger.info("Element "+ element+" have not appeared in"+ Twait+" sec.");
-	    await Utils.takeScreenshoot(this.driver);
+
 	    return null;}
 
     }
@@ -229,7 +229,7 @@ async waitUntilLocated(element)
 
 async waitUntilLoaderGone(){
 	//await this.driver.sleep(TTT);
-	Utils.takeScreenshoot(this.driver);
+
     logger.info("Loader :");
 
     let c=40;
@@ -242,7 +242,7 @@ async waitUntilLoaderGone(){
 
 async switchToNextPage(){
 	await this.driver.sleep(TTT);
-	Utils.takeScreenshoot(this.driver);
+
         logger.info("switch to next tab");
         let dr=this.driver;
         let allHandles=await dr.getAllWindowHandles();
@@ -256,7 +256,7 @@ async switchToNextPage(){
 	    await this.driver.sleep(500);
 	    await this.driver.sleep(TTT);
 
-	Utils.takeScreenshoot(this.driver);
+	await Utils.takeScreenshoot(this.driver);
 
 
 
