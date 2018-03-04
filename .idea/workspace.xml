@@ -22,8 +22,8 @@
       <file leaf-file-name="User.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/entity/User.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="474" column="38" lean-forward="true" selection-start-line="474" selection-start-column="38" selection-end-line="474" selection-end-column="38" />
+            <state relative-caret-position="80">
+              <caret line="430" column="37" lean-forward="false" selection-start-line="430" selection-start-column="37" selection-end-line="430" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -42,8 +42,8 @@
       <file leaf-file-name="testSuite1.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="316">
-              <caret line="207" column="0" lean-forward="true" selection-start-line="207" selection-start-column="0" selection-end-line="207" selection-end-column="0" />
+            <state relative-caret-position="2427">
+              <caret line="207" column="0" lean-forward="false" selection-start-line="207" selection-start-column="0" selection-end-line="207" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -53,7 +53,7 @@
         <entry file="file://$PROJECT_DIR$/entity/Currency.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="153">
-              <caret line="28" column="19" lean-forward="true" selection-start-line="28" selection-start-column="19" selection-end-line="28" selection-end-column="19" />
+              <caret line="28" column="19" lean-forward="false" selection-start-line="28" selection-start-column="19" selection-end-line="28" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -267,6 +267,11 @@
             <path>
               <item name="token-wizard-test-automation" type="b2602c69:ProjectViewProjectNode" />
               <item name="token-wizard-test-automation" type="462c0819:PsiDirectoryNode" />
+              <item name="users" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="token-wizard-test-automation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="token-wizard-test-automation" type="462c0819:PsiDirectoryNode" />
               <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -344,7 +349,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="390912000" />
+    <option name="totallyTimeSpent" value="391585000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -427,7 +432,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/results/result_2_27_2018_8_49_16/screenshoot_2_27_2018_8_48_38.png" />
     <entry file="file://$PROJECT_DIR$/results/result_2_27_2018_8_49_16/screenshoot_2_27_2018_8_48_43.png" />
     <entry file="file://$PROJECT_DIR$/results/result_2_27_2018_8_49_16/screenshoot_2_27_2018_8_49_15.png" />
     <entry file="file://$PROJECT_DIR$/testSuite2.js" />
@@ -702,15 +706,15 @@
     <entry file="file://$PROJECT_DIR$/entity/Currency.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
-          <caret line="28" column="19" lean-forward="true" selection-start-line="28" selection-start-column="19" selection-end-line="28" selection-end-column="19" />
+          <caret line="28" column="19" lean-forward="false" selection-start-line="28" selection-start-column="19" selection-end-line="28" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/entity/User.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="474" column="38" lean-forward="true" selection-start-line="474" selection-start-column="38" selection-end-line="474" selection-end-column="38" />
+        <state relative-caret-position="80">
+          <caret line="430" column="37" lean-forward="false" selection-start-line="430" selection-start-column="37" selection-end-line="430" selection-end-column="37" />
           <folding />
         </state>
       </provider>
@@ -723,10 +727,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/users/user77_56B2.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="207" column="0" lean-forward="true" selection-start-line="207" selection-start-column="0" selection-end-line="207" selection-end-column="0" />
+        <state relative-caret-position="2427">
+          <caret line="207" column="0" lean-forward="false" selection-start-line="207" selection-start-column="0" selection-end-line="207" selection-end-column="0" />
           <folding />
         </state>
       </provider>

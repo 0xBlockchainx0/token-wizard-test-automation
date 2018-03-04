@@ -428,7 +428,7 @@ catch(err){
 	           logger.info("Transaction# "+trCounter+" is successfull");
            }
 
-	        await this.driver.sleep(1000);//1000
+	        await this.driver.sleep(5000);//1000
 	        if (await wizardStep4.isPresentButtonSkipTransaction())
 	        {
 		        await Utils.takeScreenshoot(this.driver);
