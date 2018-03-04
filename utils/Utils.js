@@ -75,6 +75,7 @@ return s[0]+":"+s[1].substring(0,2);
         var d=new Date(Date.now()+adj);
         var r="am";
         var h=d.getHours();
+	    var min=d.getMinutes();
         if (format=='mdy')
             if (h>12) {h=h-12;r="pm";}
 
@@ -82,8 +83,11 @@ return s[0]+":"+s[1].substring(0,2);
 
         h=""+h;
         if (h.length<2) h="0"+h;
-        var min=""+(d.getMinutes()+1);
+        var min=""+min;
 	    if (min.length<2) min="0"+min;
+
+
+
         var q=h+":"+min+r;
         return q;
     }
