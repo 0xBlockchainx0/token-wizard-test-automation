@@ -119,14 +119,7 @@ return q;
         return date;
     }
 
-     openAnotherTab(driver, URL) {
-        driver.executeScript('window.open("' + URL + '");');
-    }
 
-    focusOn(driver) {
-        driver.executeScript('alert("Focus window")');
-        driver.switchTo().alert().accept();
-    }
 
     static getStartURL() {
         var obj = JSON.parse(fs.readFileSync(configFile, "utf8"));
@@ -134,20 +127,7 @@ return q;
 
     }
 
-    getInstallMetamask(fileName) {
-        var obj = JSON.parse(fs.readFileSync(fileName, "utf8"));
-        return obj.installMetaMask;
 
-    }
-
-
-    print(arr) {
-        for (var i = 0; i < arr.length; i++) {
-            logger.info(arr[i]);
-        }
-
-
-    }
 
     getTransactionCount(address) {
 
@@ -163,31 +143,16 @@ return q;
 	    var buf = new Buffer(res, 'base64');
 
 	    await fs.writeFileSync(tempOutputPath + "screenshoot" + Utils.getDate() + '.png', buf);
-        /*driver.takeScreenshot()
-            .then((res) => {
 
-               var buf = new Buffer(res, 'base64');
-
-                fs.writeFileSync(tempOutputPath + "screenshoot" + Utils.getDate() + '.png', buf);
-                });*/
 
     }
 
 
 
-    startBrowser() {
-        var options = new chrome.Options();
-        //options.addArguments("user-data-dir=/home/d/GoogleProfile");
-        //options.addArguments('start-maximized');
-        options.addArguments('disable-popup-blocking');
-        //options.addArguments('test-type');
-        return new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
-
-    }
 
 
 
-     static   startBrowserWithMetamask() {
+     static   async startBrowserWithMetamask() {
         var source = 'MetaMask.crx';
         if (!fs.existsSync(source)) source = './node_modules/create-poa-crowdsale/MetaMask.crx';
         logger.info("Metamask source:"+source);
@@ -199,8 +164,8 @@ return q;
 	     // options.addArguments('headless');
         //options.addArguments('start-maximized');
         options.addArguments('disable-popup-blocking');
-        options.addArguments('test-type');
-        return  new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
+        //options.addArguments('test-type');
+        return  await new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
 
     }
 
