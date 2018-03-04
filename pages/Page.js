@@ -13,7 +13,7 @@ const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
 const Twait=20000;
-const TTT=1000;
+const TTT=10;
 
 class Page {
 
@@ -187,11 +187,22 @@ async clickElement(element){
 
     async  isDisplayedLoader(){
 	    await this.driver.sleep(TTT);
-        var s=await this.driver.findElement(loader).getAttribute("className");
-	    Utils.takeScreenshoot(this.driver);
-        if (s=="loading-container notdisplayed") {
-            logger.info("displayed");return true;}
-        else {logger.info("NOT displayed");return false;}
+	    try {
+		    var s = await this.driver.findElement(loader).getAttribute("className");
+		    Utils.takeScreenshoot(this.driver);
+		    if (s == "loading-container notdisplayed") {
+			    logger.info("NOT displayed");
+			    return false;
+		    }
+		    else {
+			    logger.info("displayed");
+			    return true;
+		    }
+	    }
+	    catch (err){
+		    logger.info("can't find loader. "+err);
+		    return false;
+	    }
     }
 
 
@@ -199,14 +210,14 @@ async clickElement(element){
 async waitUntilLoaderGone(){
 	//await this.driver.sleep(TTT);
 	Utils.takeScreenshoot(this.driver);
-    logger.info("Modal :");
+    logger.info("Loader :");
 
     let c=40;
     do{
     	this.driver.sleep(1000);await this.isDisplayedLoader();
     	if (c--<0) break;
     }
-    while(!(await this.isDisplayedLoader()));
+    while((await this.isDisplayedLoader()));
 }
 
 async switchToNextPage(){

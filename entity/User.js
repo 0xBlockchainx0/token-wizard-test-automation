@@ -408,9 +408,19 @@ catch(err){
 ////////////////////////////////////////////////////////////////////
         var trCounter=0;
         var b=true;
+        var z=false;
         var timeLimit=timeLimitTransactions*cur.tiers.length;
         do {
-            await metaMask.switchToNextPage();
+           z=await metaMask.doTransaction();
+           if (!z) {
+           	var s="Deployment failed because transaction didn't appear.Transaction were done:"+ trCounter;
+	           logger.info(s);
+	           b=false;}
+	           else {
+	           trCounter++;
+	           logger.info("Transaction# "+trCounter);
+           }
+     /*       await metaMask.switchToNextPage();
             await  this.driver.sleep(2000);//4000
 	        Utils.takeScreenshoot(this.driver);
             await metaMask.refresh();
@@ -424,19 +434,22 @@ catch(err){
                 trCounter++;
                 logger.info("Transaction# "+trCounter);
             }
+*/
+	        await this.driver.sleep(5000);//1000
+	       // Utils.takeScreenshoot(this.driver);
+           // await welcomePage.switchToNextPage();
+	       // Utils.takeScreenshoot(this.driver);
+          //  await this.driver.sleep(2000);//1000
+            if (!(await wizardStep4.isPage())) {//if modal NOT present
+                //await this.driver.sleep(10000);
+                await wizardStep4.waitUntilLoaderGone();
+	           // await this.driver.sleep(5000);
+		            await wizardStep4.clickButtonOk();
 
-	        await this.driver.sleep(2000);//1000
-	        Utils.takeScreenshoot(this.driver);
-            await welcomePage.switchToNextPage();
-	        Utils.takeScreenshoot(this.driver);
-            await this.driver.sleep(2000);//1000
-            if (!(await wizardStep4.isPage())) {
-                await this.driver.sleep(2000);
-                await wizardStep4.clickButtonOk();
                 b=false;
             }
             if((timeLimit--)==0)
-            {   var s="Deployment failed.Transaction were done:"+ trCounter;
+            {   var s="Deployment failed because time expired.Transaction were done:"+ trCounter;
                 logger.info(s);
                 b=false;}
         } while (b);

@@ -147,8 +147,8 @@ class TierPage extends page.Page{
 
 	    if((this.tier.startDate==""))
 	    {
-		    this.tier.startDate=Utils.getDateNear(120000,format);
-		    this.tier.startTime=Utils.getTimeNear(120000,format);
+		    this.tier.startDate=Utils.getDateNear(100000,format);
+		    this.tier.startTime=Utils.getTimeNear(100000,format);
 
 	    } else
 	    if (format=="mdy") {

@@ -38,6 +38,11 @@ async isPage(){
         logger.info(this.name+"buttonOK: ");
         await super.clickWithWait(buttonOK);
     }
+    async isPresentButtonOk(){
+	    logger.info(this.name+"Is present buttonOK: ");
+	    return await super.isElementPresent(buttonOK);
+
+    }
 
 
 
