@@ -417,7 +417,7 @@ catch(err){
         var timeLimit=timeLimitTransactions*cur.tiers.length;
         do
           {
-           z=await metaMask.doTransaction();
+           z=await metaMask.doTransaction(3);
 	        trCounter++;
            if (!z) {
 
@@ -429,7 +429,7 @@ catch(err){
 	           logger.info("Transaction# "+trCounter+" is successfull");
            }
 
-	        await this.driver.sleep(5000);//1000
+	        await this.driver.sleep(1000);//1000
 	        if ((await wizardStep4.isPresentButtonSkipTransaction()))
 	        {
 		        await Utils.takeScreenshoot(this.driver);
@@ -441,19 +441,19 @@ catch(err){
 		        skippedTr++;
 		        await this.driver.sleep(5000);//1000
 	        }
-	        else
+	        else {
+		        await this.driver.sleep(3000);
+		        if (!(await wizardStep4.isPage())) {//if modal NOT present
+			        //await this.driver.sleep(10000);
 
+			        await wizardStep4.waitUntilLoaderGone();
+			        await Utils.takeScreenshoot(this.driver);
+			        // await this.driver.sleep(5000);
+			        await wizardStep4.clickButtonOk();
 
-            if (!(await wizardStep4.isPage())) {//if modal NOT present
-                //await this.driver.sleep(10000);
-
-                await wizardStep4.waitUntilLoaderGone();
-	            await Utils.takeScreenshoot(this.driver);
-	            // await this.driver.sleep(5000);
-		            await wizardStep4.clickButtonOk();
-
-                b=false;
-            }
+			        b = false;
+		        }
+	        }
 
             if (skippedTr>5)
             {

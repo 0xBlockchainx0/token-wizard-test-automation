@@ -199,13 +199,13 @@ async doTransaction(refreshCount){
     logger.info(this.name+"wait and submit transaction :");
     await this.switchToNextPage();
     var counter=0;
-	var timeLimit=20;
+	var timeLimit=5;
     if (refreshCount!='undefined') timeLimit=refreshCount;
     do {
 
         await this.driver.sleep(1000);
         await this.refresh();
-        await this.driver.sleep(3000);
+        await this.driver.sleep(1000);
 	    await super.waitUntilLocated(iconChangeAccount);
 	    //await Utils.takeScreenshoot(this.driver);
 
@@ -216,6 +216,7 @@ async doTransaction(refreshCount){
             return true;
         }
         counter++;
+        logger.info("counter #"+ counter);
         if (counter>=timeLimit) {
             await this.switchToNextPage();
 
