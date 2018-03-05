@@ -415,7 +415,8 @@ catch(err){
         var b=true;
         var z=false;
         var timeLimit=timeLimitTransactions*cur.tiers.length;
-        do {
+        do
+          {
            z=await metaMask.doTransaction();
 	        trCounter++;
            if (!z) {
@@ -439,11 +440,13 @@ catch(err){
 		        console.log("Transaction #"+ trCounter+" is skipped.");
 		        skippedTr++;
 		        await this.driver.sleep(5000);//1000
-	        }   else
+	        }
+	        else
 
 
             if (!(await wizardStep4.isPage())) {//if modal NOT present
                 //await this.driver.sleep(10000);
+
                 await wizardStep4.waitUntilLoaderGone();
 	            await Utils.takeScreenshoot(this.driver);
 	            // await this.driver.sleep(5000);
@@ -465,7 +468,10 @@ catch(err){
             "\n"+ "Transaction were skipped: "+skippedTr;
                 logger.info(s);
                 b=false;}
+	         // console.log("timeLimit="+timeLimit);
+
         } while (b);
+
         logger.info("Crowdsale created."+"\n"+" Transaction were done:"+ (trCounter-skippedTr)+
 	    "\n"+ "Transaction were skipped: "+skippedTr);
 //////////////////////////////////////////////////////////////////

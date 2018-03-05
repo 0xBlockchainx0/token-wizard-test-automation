@@ -245,16 +245,17 @@ async waitUntilLocated(element)
     }
 
     async  isDisplayedLoader(){
+    	//logger.info("DWECWHCHWOCHIWOIEJC");
 	    await this.driver.sleep(TTT);
 	    try {
 		    var s = await this.driver.findElement(loader).getAttribute("className");
 
 		    if (s == "loading-container notdisplayed") {
-			    logger.info("NOT displayed");
+			    logger.info("NOT displayed"+",  s="+s);
 			    return false;
 		    }
 		    else {
-			    logger.info("displayed");
+			    logger.info("displayed"+", s="+s);
 			    return true;
 		    }
 	    }
@@ -304,7 +305,7 @@ async switchToNextPage(){
        catch (err){
        	logger.info("Can't switch to next tab "+err+". \n"+ "Amount of widow is "+ allHandles.length);
        	logger.info("Current handle: "+curHandle);
-	       for (let i = 0; i < allHandles.length; i++) {
+	     for (let i = 0; i < allHandles.length; i++) {
 		       await dr.switchTo().window(allHandles[i]);
 		       logger.info("Handle #"+i+":   "+allHandles[i]);
 		       logger.info("URL #"+i+": "+await this.driver.getCurrentUrl());

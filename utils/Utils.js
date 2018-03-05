@@ -160,7 +160,18 @@ return q;
         options.addArguments('start-maximized');
         options.addArguments('disable-popup-blocking');
         //options.addArguments('test-type');
-        return  new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
+        var driver=new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
+
+	    driver.getAllWindowHandles().then((allHandles)=> {
+			     for (let i = 0; i < allHandles.length; i++) {
+				     driver.switchTo().window(allHandles[i]);
+				     logger.info("Handle #" + i + ":   " + allHandles[i]);
+				     logger.info("URL #" + i + ": " + driver.getCurrentUrl());
+			     }
+		     }
+
+	     );
+	     return driver;
 
     }
 
