@@ -281,6 +281,7 @@ async waitUntilLoaderGone(){
 }
 
 async switchToNextPage(){
+
 	await this.driver.sleep(TTT);
 
         logger.info("switch to next tab");
@@ -289,11 +290,31 @@ async switchToNextPage(){
 	let curHandle;
        try {
 	       allHandles = await dr.getAllWindowHandles();
-	       if (allHandles.length>2) throw ("Browser has more than 2 windows")
+	       //if (allHandles.length>2) throw ("Browser has more than 2 windows")
 	       curHandle = await dr.getWindowHandle();
+	       if (allHandles.length>2){
+	       	let n=Utils.browserHandles[0];
+	       	let k=Utils.browserHandles[1];
+	       	let p=0;
+		       for (let i = 0; i < allHandles.length; i++)
+		       {
+		       	if ((allHandles[i]!=n)&&(allHandles[i]!=k)) p=i;
+		       }
+		       let newArr=[];
+		       for (let i = 0; i < allHandles.length; i++)
+		       {
+		       	if (i!=p) newArr.push(allHandles[i]);
+		       }
+		       allHandles=newArr;
+		       logger.info("Unexpected window was deleted from browser. Amount of windows= "+allHandles.length);
+                }
+
 	       let handle;
 	       for (let i = 0; i < allHandles.length; i++) {
+
 		       if (curHandle != allHandles[i]) {handle = allHandles[i];break;}
+
+
 	       }
 	       await dr.switchTo().window(handle);
 	       await this.driver.sleep(1000);

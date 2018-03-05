@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="40b9626d-5f4f-46c4-8096-7de331aaa15a" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/entity/User.js" afterPath="$PROJECT_DIR$/entity/User.js" />
-      <change beforePath="$PROJECT_DIR$/pages/MetaMask.js" afterPath="$PROJECT_DIR$/pages/MetaMask.js" />
       <change beforePath="$PROJECT_DIR$/pages/Page.js" afterPath="$PROJECT_DIR$/pages/Page.js" />
       <change beforePath="$PROJECT_DIR$/utils/Utils.js" afterPath="$PROJECT_DIR$/utils/Utils.js" />
     </list>
@@ -26,8 +24,8 @@
       <file leaf-file-name="User.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/entity/User.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4245">
-              <caret line="449" column="42" lean-forward="false" selection-start-line="449" selection-start-column="42" selection-end-line="449" selection-end-column="42" />
+            <state relative-caret-position="114">
+              <caret line="202" column="35" lean-forward="false" selection-start-line="202" selection-start-column="35" selection-end-line="202" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -46,8 +44,8 @@
       <file leaf-file-name="Utils.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/Utils.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="409">
-              <caret line="175" column="5" lean-forward="false" selection-start-line="175" selection-start-column="5" selection-end-line="175" selection-end-column="5" />
+            <state relative-caret-position="269">
+              <caret line="192" column="1" lean-forward="false" selection-start-line="192" selection-start-column="1" selection-end-line="192" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -73,11 +71,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Page.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Page.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pages/Page.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="326">
-              <caret line="307" column="9" lean-forward="false" selection-start-line="307" selection-start-column="9" selection-end-line="307" selection-end-column="9" />
+            <state relative-caret-position="253">
+              <caret line="307" column="33" lean-forward="false" selection-start-line="307" selection-start-column="33" selection-end-line="307" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Logger.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/entity/Logger.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="15" column="10" lean-forward="false" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -103,6 +111,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="MetaMask.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/pages/MetaMask.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="105">
+              <caret line="197" column="6" lean-forward="false" selection-start-line="197" selection-start-column="6" selection-end-line="197" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -114,7 +132,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>submi</find>
       <find>clear</find>
       <find>add network</find>
       <find>modal</find>
@@ -138,12 +155,13 @@
       <find>get</find>
       <find>open</find>
       <find>get(</find>
-      <find>do</find>
       <find>switc</find>
       <find>switch</find>
       <find>isDisplayed</find>
       <find>create</find>
       <find>switch</find>
+      <find>browser</find>
+      <find>do</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/temp</dir>
@@ -227,7 +245,7 @@
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1440" />
     <option name="height" value="797" />
@@ -369,12 +387,12 @@
       <workItem from="1519665990860" duration="9095000" />
       <workItem from="1519788052352" duration="2739000" />
       <workItem from="1519840457230" duration="27677000" />
-      <workItem from="1520279748388" duration="1666000" />
+      <workItem from="1520279748388" duration="3524000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="409264000" />
+    <option name="totallyTimeSpent" value="411122000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -387,8 +405,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1440" height="797" extended-state="0" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17406625" sideWeight="0.49213484" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32970452" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -398,7 +415,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17231223" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31840795" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" x="134" y="236" width="1254" height="290" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37702504" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" x="134" y="236" width="1254" height="290" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27391976" sideWeight="0.5078652" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -538,13 +555,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/entity/Logger.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="22" column="19" lean-forward="false" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/selenium-webdriver/lib/webdriver.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="142">
@@ -583,6 +593,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="341">
           <caret line="62" column="12" lean-forward="false" selection-start-line="62" selection-start-column="12" selection-end-line="62" selection-end-column="12" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -654,14 +665,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pages/MetaMask.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-8">
-          <caret line="197" column="6" lean-forward="false" selection-start-line="197" selection-start-column="6" selection-end-line="197" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pages/InvestPage.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
@@ -686,26 +689,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/entity/User.js">
+    <entry file="file://$PROJECT_DIR$/entity/Logger.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4245">
-          <caret line="449" column="42" lean-forward="false" selection-start-line="449" selection-start-column="42" selection-end-line="449" selection-end-column="42" />
+        <state relative-caret-position="225">
+          <caret line="15" column="10" lean-forward="false" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/Utils.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="175" column="5" lean-forward="false" selection-start-line="175" selection-start-column="5" selection-end-line="175" selection-end-column="5" />
+        <state relative-caret-position="269">
+          <caret line="192" column="1" lean-forward="false" selection-start-line="192" selection-start-column="1" selection-end-line="192" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pages/Page.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="307" column="9" lean-forward="false" selection-start-line="307" selection-start-column="9" selection-end-line="307" selection-end-column="9" />
+        <state relative-caret-position="253">
+          <caret line="307" column="33" lean-forward="false" selection-start-line="307" selection-start-column="33" selection-end-line="307" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entity/User.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="202" column="35" lean-forward="false" selection-start-line="202" selection-start-column="35" selection-end-line="202" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/MetaMask.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="197" column="6" lean-forward="false" selection-start-line="197" selection-start-column="6" selection-end-line="197" selection-end-column="6" />
           <folding />
         </state>
       </provider>

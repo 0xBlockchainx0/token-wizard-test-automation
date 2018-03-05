@@ -9,7 +9,7 @@ const webdriver = require('selenium-webdriver'),
 const fs = require('fs');
 const Web3 = require('web3');
 const configFile='config.json';
-
+var browserHandles=[];
 
 
 class Utils {
@@ -163,6 +163,7 @@ return q;
         var driver=new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
 
 	    driver.getAllWindowHandles().then((allHandles)=> {
+	    	     browserHandles=allHandles;
 			     for (let i = 0; i < allHandles.length; i++) {
 				     driver.switchTo().window(allHandles[i]);
 				     logger.info("Handle #" + i + ":   " + allHandles[i]);
@@ -187,5 +188,6 @@ return q;
     }
 }
 module.exports={
-    Utils:Utils
+    Utils:Utils,
+	browserHandles:browserHandles
 }
