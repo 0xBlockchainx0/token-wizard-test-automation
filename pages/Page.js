@@ -28,7 +28,8 @@ class Page {
 
      async   findElementInArray(locator,className)
         {
-            var arr=await this.driver.findElements(locator);
+
+            var arr=await this.driver.findElements(locator);///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             for (var i=0;i<arr.length;i++)
             {
                 var s=await arr[i].getAttribute("className");
@@ -66,7 +67,7 @@ async getTextByElement(element)
 async getAttributeByLocator(locator,attr){
 	await this.driver.sleep(TTT);
 	logger.info("get attribute value ");
-	return await this.driver.findElement(locator).getAttribute(attr);
+	return await this.driver.findElement(locator).getAttribute(attr);///1!!!!!!!!!!!!!!!!!!!
 
 }
 
@@ -76,7 +77,7 @@ async getTextByLocator(element)
 {
 	await this.driver.sleep(TTT);
   logger.info("get text ");
-  return await this.driver.findElement(element).getText();
+  return await this.driver.findElement(element).getText();///!!!!!!!!!!!!!!!!!!!!!!
 }
 async getURL()
 {  await this.driver.sleep(TTT);
@@ -84,9 +85,10 @@ async getURL()
     return await this.driver.getCurrentUrl();
 }
 async open (url){
-	await this.driver.sleep(TTT);
+
         logger.info("open  "+url);
         await this.driver.get(url);
+	    await this.driver.sleep(5000);
 }
 async clearField(element,n){
 	await this.driver.sleep(2000);
@@ -245,12 +247,14 @@ async switchToNextPage(){
 
         logger.info("switch to next tab");
         let dr=this.driver;
+	let allHandles=[];
        try {
-	       let allHandles = await dr.getAllWindowHandles();
+	       allHandles = await dr.getAllWindowHandles();
+	       if (allHandles.length>2) throw ("Browser has more than 2 windows")
 	       let curHandle = await dr.getWindowHandle();
 	       let handle;
 	       for (let i = 0; i < allHandles.length; i++) {
-		       if (curHandle != allHandles[i]) handle = allHandles[i];
+		       if (curHandle != allHandles[i]) {handle = allHandles[i];break;}
 	       }
 	       await dr.switchTo().window(handle);
 	       await this.driver.sleep(1000);
@@ -260,7 +264,7 @@ async switchToNextPage(){
 
        }
        catch (err){
-       	logger.info("Can't switch to next tab "+err);
+       	logger.info("Can't switch to next tab "+err+". \n"+ "Amount of widow is "+ allHandles.length);
        }
 
 
