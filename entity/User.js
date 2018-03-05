@@ -429,7 +429,7 @@ catch(err){
            }
 
 	        await this.driver.sleep(5000);//1000
-	        if (!(await wizardStep4.isNotPresentButtonSkipTransaction()))
+	        if ((await wizardStep4.isPresentButtonSkipTransaction()))
 	        {
 		        await Utils.takeScreenshoot(this.driver);
 		        await wizardStep4.clickButtonSkipTransaction();
@@ -560,7 +560,7 @@ catch(err){
 
 
 
-        var b=await new MetaMask(this.driver).doTransaction();
+        var b=await new MetaMask(this.driver).doTransaction(2);
 
         if (!b) {  return false;}
 ////////////////////////////////////////////////////Added check if crowdsale NOT started and it failed

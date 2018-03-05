@@ -45,9 +45,9 @@ async isPage(){
 		return await super.isElementPresent(buttonOK);
 
 	}
-	async isNotPresentButtonSkipTransaction(){
+	async isPresentButtonSkipTransaction(){
 		logger.info(this.name+"Is present buttonSkipTransaction: ");
-		return await super.isElementNotPresent(buttonSkipTransaction);
+		return await super.isElementPresent(buttonSkipTransaction);
 
 	}
 	async clickButtonSkipTransaction(){

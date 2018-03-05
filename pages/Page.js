@@ -28,22 +28,27 @@ class Page {
 
      async   findElementInArray(locator,className)
         {
-
-            var arr=await this.driver.findElements(locator);///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            for (var i=0;i<arr.length;i++)
-            {
-                var s=await arr[i].getAttribute("className");
-                if (s.includes(className)) return arr[i];
-            }
+        	try {
+		        await this.driver.wait(webdriver.until.elementsLocated(locator), 10000, 'Element NOT present.Time out.\n');
+		        var arr = await this.driver.findElements(locator);
+		        for (var i = 0; i < arr.length; i++) {
+			        var s = await arr[i].getAttribute("className");
+			        if (s.includes(className)) return arr[i];
+		        }
+	        }
+	        catch(err){
+        		logger.info("Can't find "+ locator+ "in array of "+ className+".\n"+err);
+        		return null;
+	        }
 
 
         }
 
 
-        async isElementPresent(element){
+        async isElementPresentWithWait(element){
 
     	try {
-		    await this.driver.wait(webdriver.until.elementLocated(element), 10000,'Element npt present.Time out');
+		    await this.driver.wait(webdriver.until.elementLocated(element), Twait/2,'Element NOT present.Time out.\n');
 		    logger.info(" element present");
     		return true;
 	    }
@@ -57,7 +62,7 @@ class Page {
 
         }
 
- async  isElementNotPresent(element) {
+ async  isElementPresent(element) {
      var q;
 
      await this.driver.sleep(TTT);
@@ -73,7 +78,7 @@ class Page {
          logger.info(" element NOT present");
      }
 	 //await Utils.takeScreenshoot(this.driver);
-     return !q;
+     return q;
 
      }
 
@@ -86,24 +91,30 @@ async getTextByElement(element)
 	await this.driver.sleep(TTT);
     return await element.getText();}
 
+
+
 async getAttributeByLocator(locator,attr){
 	await this.driver.sleep(TTT);
 	logger.info("get attribute value ");
-	return await this.driver.findElement(locator).getAttribute(attr);///1!!!!!!!!!!!!!!!!!!!
+	await this.driver.wait(webdriver.until.elementLocated(locator), Twait,'Element '+locator+'NOT present.Time out.\n');
+
+	return await this.driver.findElement(locator).getAttribute(attr);
 
 }
 
 
 
-async getTextByLocator(element)
+async getTextByLocator(locator)
 {
 	await this.driver.sleep(TTT);
   logger.info("get text ");
-  return await this.driver.findElement(element).getText();///!!!!!!!!!!!!!!!!!!!!!!
+	await this.driver.wait(webdriver.until.elementLocated(locator), Twait,'Element '+locator+'NOT present.Time out.\n');
+    return await this.driver.findElement(locator).getText();
 }
 async getURL()
 {  await this.driver.sleep(TTT);
     logger.info("get current page URL ");
+
     return await this.driver.getCurrentUrl();
 }
 async open (url){

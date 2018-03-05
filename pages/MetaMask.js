@@ -195,20 +195,21 @@ class MetaMask extends page.Page{
     }
 
 
-async doTransaction(){
+async doTransaction(refreshCount){
     logger.info(this.name+"wait and submit transaction :");
     await this.switchToNextPage();
     var counter=0;
-    var timeLimit=20;//30;
+	var timeLimit=20;
+    if (refreshCount!='undefined') timeLimit=refreshCount;
     do {
 
         await this.driver.sleep(1000);
         await this.refresh();
-        await this.driver.sleep(6000);
+       // await this.driver.sleep(6000);
 	    await super.waitUntilLocated(iconChangeAccount);
 	    await Utils.takeScreenshoot(this.driver);
 
-        if (await this.isPresentButtonSubmit()) {
+        if (await this.isElementPresentWithWait(buttonSubmit)) {
 	        await this.driver.sleep(500);
             await this.submitTransaction();
             await  this.switchToNextPage();
