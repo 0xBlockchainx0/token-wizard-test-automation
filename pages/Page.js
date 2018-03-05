@@ -121,6 +121,10 @@ async open (url){
 
         logger.info("open  "+url);
         await this.driver.get(url);
+	    logger.info("Current URL: "+await this.driver.getCurrentUrl());
+     	logger.info("Current HANDLE: "+await this.driver.getWindowHandle());
+
+
 	    await this.driver.sleep(5000);
 }
 async clearField(element,n){
@@ -301,7 +305,10 @@ async switchToNextPage(){
        	logger.info("Can't switch to next tab "+err+". \n"+ "Amount of widow is "+ allHandles.length);
        	logger.info("Current handle: "+curHandle);
 	       for (let i = 0; i < allHandles.length; i++) {
+		       await dr.switchTo().window(allHandles[i]);
 		       logger.info("Handle #"+i+":   "+allHandles[i]);
+		       logger.info("URL #"+i+": "+await this.driver.getCurrentUrl());
+
 	       }
 
 

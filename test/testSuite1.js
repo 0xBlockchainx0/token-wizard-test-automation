@@ -53,7 +53,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
     test.before(async function() {
 
         driver=Utils.startBrowserWithMetamask();
-	    driver.manage().timeouts().pageLoadTimeout(20000);
+	   // driver.manage().timeouts().pageLoadTimeout(20000);
 	    //driver.manage().timeouts().implicitlyWait(30000);
 	    console.log("This browser date format is"+Utils.getDateFormat(driver));
         user77_56B2=new User(driver,user77_56B2File);
