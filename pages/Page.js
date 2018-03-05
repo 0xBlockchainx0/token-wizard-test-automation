@@ -311,7 +311,7 @@ async switchToNextPage(){
 
 	       let handle;
 	       for (let i = 0; i < allHandles.length; i++) {
-	       	if ((allHandles[i]!=Utils.browserHandles[0])||(allHandles[i]!=Utils.browserHandles[1]))
+	       	if ((allHandles[i]==Utils.browserHandles[0])||(allHandles[i]==Utils.browserHandles[1]))
 		       if (curHandle != allHandles[i]) {handle = allHandles[i];break;}
 
 
