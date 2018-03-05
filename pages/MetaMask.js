@@ -207,7 +207,7 @@ async doTransaction(refreshCount){
         await this.refresh();
        // await this.driver.sleep(6000);
 	    await super.waitUntilLocated(iconChangeAccount);
-	    await Utils.takeScreenshoot(this.driver);
+	    //await Utils.takeScreenshoot(this.driver);
 
         if (await this.isElementPresentWithWait(buttonSubmit)) {
 	        await this.driver.sleep(500);

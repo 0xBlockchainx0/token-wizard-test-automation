@@ -137,7 +137,7 @@ return q;
         return n;
     }
 
-    static async takeScreenshoot(driver) {
+    static async takeScreenshoot(driver) { return;
 
 	    var res=await driver.takeScreenshot();
 	    var buf = new Buffer(res, 'base64');
