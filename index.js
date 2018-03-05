@@ -53,7 +53,7 @@ async function run() {
 
     var driver;
     var util=new Utils();
-    driver = Utils.startBrowserWithMetamask();
+    driver= await util.startBrowserWithMetamask();
     var mtMask = new MetaMask(driver);
     await mtMask.open();//return activated Metamask and empty page
 

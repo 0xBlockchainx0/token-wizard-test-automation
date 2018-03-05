@@ -58,8 +58,8 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	///////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
-
-		driver = Utils.startBrowserWithMetamask();
+        var u=new Utils();
+		driver = await u.startBrowserWithMetamask();
 		user77_56B2 = new User(driver, user77_56B2File);
 		user4_F16A = new User(driver, user4_F16AFile);
 		user77_F16A = new User(driver, user77_F16AFile);

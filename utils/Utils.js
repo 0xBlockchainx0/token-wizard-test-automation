@@ -147,7 +147,7 @@ return q;
 
     }
 
-     static   startBrowserWithMetamask() {
+       async  startBrowserWithMetamask() {
         var source = 'MetaMask.crx';
         if (!fs.existsSync(source)) source = './node_modules/create-poa-crowdsale/MetaMask.crx';
         logger.info("Metamask source:"+source);
@@ -157,21 +157,11 @@ return q;
         //options.addArguments("user-data-dir=/home/d/.config/google-chrome/");
        //
 	     // options.addArguments('headless');
-        options.addArguments('start-maximized');
+        //options.addArguments('start-maximized');
         options.addArguments('disable-popup-blocking');
         //options.addArguments('test-type');
-        var driver=new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
+        var driver=await new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
 
-	    driver.getAllWindowHandles().then((allHandles)=> {
-	    	     browserHandles=allHandles;
-			     for (let i = 0; i < allHandles.length; i++) {
-				     driver.switchTo().window(allHandles[i]);
-				     logger.info("Handle #" + i + ":   " + allHandles[i]);
-				     logger.info("URL #" + i + ": " + driver.getCurrentUrl());
-			     }
-		     }
-
-	     );
 	     return driver;
 
     }
@@ -188,6 +178,7 @@ return q;
     }
 }
 module.exports={
-    Utils:Utils,
-	browserHandles:browserHandles
+    Utils:Utils
+
 }
+exports.browserHandles=browserHandles;

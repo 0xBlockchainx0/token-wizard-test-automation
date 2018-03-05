@@ -1,8 +1,10 @@
 const Logger= require('../entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
+
 const utils=require('../utils/Utils.js');
 const Utils=utils.Utils;
+
 const webdriver = require('selenium-webdriver'),
       chrome = require('selenium-webdriver/chrome'),
       firefox = require('selenium-webdriver/firefox'),
@@ -292,31 +294,24 @@ async switchToNextPage(){
 	       allHandles = await dr.getAllWindowHandles();
 	       //if (allHandles.length>2) throw ("Browser has more than 2 windows")
 	       curHandle = await dr.getWindowHandle();
-	      /* if (allHandles.length>2){
-	       	let n=Utils.browserHandles[0];
-	       	let k=Utils.browserHandles[1];
-	       	let p=0;
-		       for (let i = 0; i < allHandles.length; i++)
-		       {
-		       	if ((allHandles[i]!=n)&&(allHandles[i]!=k)) p=i;
-		       }
-		       let newArr=[];
-		       for (let i = 0; i < allHandles.length; i++)
-		       {
-		       	if (i!=p) newArr.push(allHandles[i]);
-		       }
-		       allHandles=newArr;
-		       logger.info("Unexpected window was deleted from browser. Amount of windows= "+allHandles.length);
-                }*/
+	       if (allHandles.length>2){
+	       	logger.info("Browser has more than 2 windows"+". \n"+ "Amount of window is "+ allHandles.length);
+	       	var arr=[];
+	       	arr[0]=allHandles[0];
+	       	arr[1]=allHandles[1];
+	       	allHandles=arr;
+	       	logger.info("New allHandles.length="+allHandles.length);
+	       }
 
 	       let handle;
 	       for (let i = 0; i < allHandles.length; i++) {
-	       	if ((allHandles[i]==Utils.browserHandles[0])||(allHandles[i]==Utils.browserHandles[1]))
+
 		       if (curHandle != allHandles[i]) {handle = allHandles[i];break;}
 
-
 	       }
-	       await dr.switchTo().window(handle);
+	          logger.info("Current handle  = "+ curHandle);
+	          logger.info("Switch to handle  = "+ handle);
+           await dr.switchTo().window(handle);
 	       await this.driver.sleep(1000);
 	      // await this.driver.sleep(TTT);
 
@@ -326,12 +321,12 @@ async switchToNextPage(){
        catch (err){
        	logger.info("Can't switch to next tab "+err+". \n"+ "Amount of window is "+ allHandles.length);
        	logger.info("Current handle: "+curHandle);
-	     for (let i = 0; i < allHandles.length; i++) {
+	     /*for (let i = 0; i < allHandles.length; i++) {
 		       await dr.switchTo().window(allHandles[i]);
 		       logger.info("Handle #"+i+":   "+allHandles[i]);
 		       logger.info("URL #"+i+": "+await this.driver.getCurrentUrl());
 
-	       }
+	       }*/
 
 
        }
