@@ -292,7 +292,7 @@ async switchToNextPage(){
 	       allHandles = await dr.getAllWindowHandles();
 	       //if (allHandles.length>2) throw ("Browser has more than 2 windows")
 	       curHandle = await dr.getWindowHandle();
-	       if (allHandles.length>2){
+	      /* if (allHandles.length>2){
 	       	let n=Utils.browserHandles[0];
 	       	let k=Utils.browserHandles[1];
 	       	let p=0;
@@ -307,11 +307,11 @@ async switchToNextPage(){
 		       }
 		       allHandles=newArr;
 		       logger.info("Unexpected window was deleted from browser. Amount of windows= "+allHandles.length);
-                }
+                }*/
 
 	       let handle;
 	       for (let i = 0; i < allHandles.length; i++) {
-
+	       	if ((allHandles[i]!=Utils.browserHandles[0])||(allHandles[i]!=Utils.browserHandles[1]))
 		       if (curHandle != allHandles[i]) {handle = allHandles[i];break;}
 
 
@@ -324,7 +324,7 @@ async switchToNextPage(){
 
        }
        catch (err){
-       	logger.info("Can't switch to next tab "+err+". \n"+ "Amount of widow is "+ allHandles.length);
+       	logger.info("Can't switch to next tab "+err+". \n"+ "Amount of window is "+ allHandles.length);
        	logger.info("Current handle: "+curHandle);
 	     for (let i = 0; i < allHandles.length; i++) {
 		       await dr.switchTo().window(allHandles[i]);
