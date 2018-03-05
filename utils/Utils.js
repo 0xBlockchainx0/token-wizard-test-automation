@@ -147,11 +147,6 @@ return q;
 
     }
 
-
-
-
-
-
      static   startBrowserWithMetamask() {
         var source = 'MetaMask.crx';
         if (!fs.existsSync(source)) source = './node_modules/create-poa-crowdsale/MetaMask.crx';
@@ -162,7 +157,7 @@ return q;
         //options.addArguments("user-data-dir=/home/d/.config/google-chrome/");
        //
 	     // options.addArguments('headless');
-        //options.addArguments('start-maximized');
+        options.addArguments('start-maximized');
         options.addArguments('disable-popup-blocking');
         //options.addArguments('test-type');
         return  new webdriver.Builder().withCapabilities(options.toCapabilities()).build();

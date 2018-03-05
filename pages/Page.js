@@ -281,23 +281,30 @@ async switchToNextPage(){
         logger.info("switch to next tab");
         let dr=this.driver;
 	let allHandles=[];
+	let curHandle;
        try {
 	       allHandles = await dr.getAllWindowHandles();
 	       if (allHandles.length>2) throw ("Browser has more than 2 windows")
-	       let curHandle = await dr.getWindowHandle();
+	       curHandle = await dr.getWindowHandle();
 	       let handle;
 	       for (let i = 0; i < allHandles.length; i++) {
 		       if (curHandle != allHandles[i]) {handle = allHandles[i];break;}
 	       }
 	       await dr.switchTo().window(handle);
 	       await this.driver.sleep(1000);
-	       await this.driver.sleep(TTT);
+	      // await this.driver.sleep(TTT);
 
-	       await Utils.takeScreenshoot(this.driver);
+	       //await Utils.takeScreenshoot(this.driver);
 
        }
        catch (err){
        	logger.info("Can't switch to next tab "+err+". \n"+ "Amount of widow is "+ allHandles.length);
+       	logger.info("Current handle: "+curHandle);
+	       for (let i = 0; i < allHandles.length; i++) {
+		       logger.info("Handle #"+i+":   "+allHandles[i]);
+	       }
+
+
        }
 
 
