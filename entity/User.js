@@ -429,7 +429,7 @@ catch(err){
            }
 
 	        await this.driver.sleep(5000);//1000
-	        if (await wizardStep4.isPresentButtonSkipTransaction())
+	        if (!(await wizardStep4.isNotPresentButtonSkipTransaction()))
 	        {
 		        await Utils.takeScreenshoot(this.driver);
 		        await wizardStep4.clickButtonSkipTransaction();

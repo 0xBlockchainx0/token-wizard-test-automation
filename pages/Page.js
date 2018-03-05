@@ -40,7 +40,24 @@ class Page {
         }
 
 
- async  isElementPresent(element) {
+        async isElementPresent(element){
+
+    	try {
+		    await this.driver.wait(webdriver.until.elementLocated(element), 10000,'Element npt present.Time out');
+		    logger.info(" element present");
+    		return true;
+	    }
+
+    	catch(err)
+	    {
+
+		    logger.info(" element NOT present "+ err);
+		    return false;
+	    }
+
+        }
+
+ async  isElementNotPresent(element) {
      var q;
 
      await this.driver.sleep(TTT);
@@ -56,9 +73,14 @@ class Page {
          logger.info(" element NOT present");
      }
 	 //await Utils.takeScreenshoot(this.driver);
-     return q;
+     return !q;
 
      }
+
+
+
+
+
 async getTextByElement(element)
 {logger.info("get text ");
 	await this.driver.sleep(TTT);
