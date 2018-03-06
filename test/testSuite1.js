@@ -67,13 +67,13 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 
     test.after(async function() {
         driver.sleep(10000);
-       let outputPath=Utils.getOutputPath();
+        Utils.sendEmail("./temp/result.log");
+        let outputPath=Utils.getOutputPath();
         outputPath=outputPath+"/result"+Utils.getDate();
         fs.ensureDirSync(outputPath);
         fs.copySync(tempOutputPath,outputPath);
         fs.remove(tempOutputPath);
-
-        //driver.quit();
+        driver.quit();
     });
 //////////////////////////////////////////////////////////////////////////////
    // test.it.skip('Self test', async function() {

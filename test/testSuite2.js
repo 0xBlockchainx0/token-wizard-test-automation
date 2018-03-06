@@ -212,7 +212,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 
-	test.it('Owner can NOT modify start time if crowdsale has started',
+	test.it('Owner can NOT modify start time if crowdsale has begun',
 		async function () {
 		b=true;
 		owner = user77_56B2;

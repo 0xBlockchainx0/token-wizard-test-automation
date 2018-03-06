@@ -49,9 +49,10 @@ class Test1 extends BaseTest {
 /////////////////////////////////////////////////////////////////////////
 s = 'Owner <'+owner.name+'> can create crowdsale,no whitelist,reserved';
 
-       //var scenario='./scenarios/T2RyWyMy_0020.json';
-	 var scenario='./scenarios/simple.json';
+      var scenario='./scenarios/T2RyWyMy_0020.json';
+	 //var scenario='./scenarios/simple.json';
 	  //var scenario='./scenarios/testSuite2.json';
+	 // var scenario='./scenarios/T3RnWn.json';
        await owner.setMetaMaskAccount();
        var crowdsale = await owner.createCrowdsale(scenario);
        //logger.info("TokenAddress:  " + crowdsale.tokenAddress);

@@ -1,3 +1,4 @@
+var nodemailer = require('nodemailer');
 const Logger= require('../entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
@@ -14,6 +15,45 @@ var browserHandles=[];
 
 class Utils {
 
+
+	static sendEmail(path){
+		var transport = nodemailer.createTransport({
+			service: 'gmail',
+			auth: {
+				user: 'monzano2@gmail.com',
+				pass: 'kindzadza'
+			}
+		});
+
+		var mailOptions = {
+			from: 'monzano2@gmail.com',
+			to: 'dennistikhomirov@gmail.com',
+			subject: 'Sending Email using Node.js',
+			text: 'That was easy!',
+			attachments: [
+				{path:""}
+
+
+			]
+		};
+		mailOptions.attachments[0].path=path;
+
+		transport.sendMail(mailOptions, function(error, info){
+			if (error) {
+				console.log(error);
+			} else {
+				console.log('Email sent: ' + info.response);
+			}
+		});
+
+
+
+	}
+
+
+
+
+
 	static compare(ss,newDate,newTime){
 
 		let arr=ss.split("T");
@@ -22,6 +62,10 @@ class Utils {
 
 		return (arr[1]==newTime)&&(aww[0]==n[2])&&(aww[1]==n[1])&&(aww[2]==n[0]);
 	}
+
+
+
+
 
     static async getDateFormat(driver){
 

@@ -1,7 +1,7 @@
 {
 
-  "name": "T2RyWyMy_20.json",
-  "ticker": "sc20",
+  "name": "TestSuite2.json",
+  "ticker": "ts2",
   "decimals": 6,
   "reservedTokens":[
     {

@@ -39,10 +39,10 @@ const tempOutputPath=Logger.tempOutputPath;
 //console.log(d);
 //console.log(Utils.convertTimeToMdy("01:10"));
 
-let newTime="12:29";
-let newDate="21/03/2020";
-let ss="2020-03-21T12:29";
-console.log(Utils.compare(ss,newDate,newTime));
+
+
+
+
 run();
 
 async function run() {
