@@ -28,12 +28,10 @@ class Utils {
 		var mailOptions = {
 			from: 'monzano2@gmail.com',
 			to: 'dennistikhomirov@gmail.com',
-			subject: 'Sending Email using Node.js',
-			text: 'That was easy!',
+			subject: 'test results '+Utils.getDateNear(0,'utc')+"  "+ Utils.getTimeNear(0,'utc'),
+			text: 'test results '+Utils.getDateNear(0,'utc') + "  " + Utils.getTimeNear(0,'utc'),
 			attachments: [
 				{path:""}
-
-
 			]
 		};
 		mailOptions.attachments[0].path=path;

@@ -41,9 +41,9 @@ const tempOutputPath=Logger.tempOutputPath;
 
 
 
+Utils.sendEmail("./temp/result.log");
 
-
-run();
+//run();
 
 async function run() {
 
