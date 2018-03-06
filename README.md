@@ -22,10 +22,19 @@ Test suite #1 , starts with command ```npm run -script test1```
 Test suite #2 , starts with command ```npm run -script test2```
 
 ```
-1.  'Owner  can create crowdsale, whitelist, reserved'
-
-
-
+1. 'Owner  can create crowdsale(scenario testSuite2.json),2 tiers, 2 whitelist adresses,1 reserved addresses, modifiable'
+2. 'Not whitelisted investor can NOT buy'
+3. 'Whitelisted investor can NOT buy less than assigned MIN value in first transaction'
+4. 'Whitelisted investor can buy assigned MIN value '
+5. 'Whitelisted investor can buy less than MIN value if it is NOT first transaction'
+6. 'Whitelisted investor can buy assigned MAX value '
+7. 'Owner can add whitelist if tier has not finished yet'
+8. 'New added whitelisted investor can buy'
+9. 'Owner can NOT modify start time if crowdsale has started'
+10. 'Owner can modify start time of tier if tier has not started yet'
+11. 'Owner can modify end time of tier#1'
+12. 'Check inheritance of whitelisting. Whitelisted investor can buy in next tier.'
+13. 'Owner can modify end time of tier#2'
 
 
 ```
