@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40b9626d-5f4f-46c4-8096-7de331aaa15a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/test/testSuite1.js" afterPath="$PROJECT_DIR$/test/testSuite1.js" />
+      <change beforePath="$PROJECT_DIR$/token.txt" afterPath="$PROJECT_DIR$/token.txt" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -42,18 +42,28 @@
       <file leaf-file-name="testSuite2.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/testSuite2.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="698">
-              <caret line="54" column="15" lean-forward="false" selection-start-line="54" selection-start-column="15" selection-end-line="54" selection-end-column="15" />
+            <state relative-caret-position="286">
+              <caret line="94" column="56" lean-forward="true" selection-start-line="94" selection-start-column="56" selection-end-line="94" selection-end-column="56" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="testSuite1.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="token.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/token.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="testSuite1.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="76" column="9" lean-forward="false" selection-start-line="76" selection-start-column="9" selection-end-line="76" selection-end-column="9" />
+            <state relative-caret-position="-811">
+              <caret line="11" column="41" lean-forward="true" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -163,7 +173,6 @@
         <option value="$PROJECT_DIR$/.travis.yml" />
         <option value="$PROJECT_DIR$/.circleci/config.yml" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/token.txt" />
         <option value="$PROJECT_DIR$/scenarios/T3RnWn.json" />
         <option value="$PROJECT_DIR$/scenarios/simple.json" />
         <option value="$PROJECT_DIR$/scenarios/T2RyWyMy_0020.json" />
@@ -190,9 +199,10 @@
         <option value="$PROJECT_DIR$/scenarios/testSuite2.json" />
         <option value="$PROJECT_DIR$/users2/user77_E743.json" />
         <option value="$PROJECT_DIR$/entity/User.js" />
-        <option value="$PROJECT_DIR$/test/testSuite2.js" />
         <option value="$PROJECT_DIR$/entity/Logger.js" />
         <option value="$PROJECT_DIR$/test/testSuite1.js" />
+        <option value="$PROJECT_DIR$/test/testSuite2.js" />
+        <option value="$PROJECT_DIR$/token.txt" />
       </list>
     </option>
   </component>
@@ -334,12 +344,12 @@
       <workItem from="1520279748388" duration="9878000" />
       <workItem from="1520293993686" duration="26198000" />
       <workItem from="1520390432449" duration="272000" />
-      <workItem from="1520390798051" duration="13179000" />
+      <workItem from="1520390798051" duration="13789000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="457125000" />
+    <option name="totallyTimeSpent" value="457735000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -447,13 +457,6 @@
         <state relative-caret-position="300">
           <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/token.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -763,14 +766,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/testSuite2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="698">
-          <caret line="54" column="15" lean-forward="false" selection-start-line="54" selection-start-column="15" selection-end-line="54" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/entity/User.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -789,8 +784,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="76" column="9" lean-forward="false" selection-start-line="76" selection-start-column="9" selection-end-line="76" selection-end-column="9" />
+        <state relative-caret-position="-811">
+          <caret line="11" column="41" lean-forward="true" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/testSuite2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="94" column="56" lean-forward="true" selection-start-line="94" selection-start-column="56" selection-end-line="94" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/token.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding />
         </state>
       </provider>
