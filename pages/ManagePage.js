@@ -35,6 +35,7 @@ const warningStartTimeTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[4
 
 const fieldStartTimeTier2=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[4]/div/div[1]/div[2]/div[1]/input");
 const fieldEndTimeTier2=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[4]/div/div[1]/div[2]/div[2]/input");
+
 const fieldWhAddressTier2=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[4]/div/div[2]/div[2]/div[1]/div[1]/div[1]/input");
 const fieldWhMinTier2=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[4]/div/div[2]/div[2]/div[1]/div[1]/div[2]/input");
 const fieldWhMaxTier2=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[4]/div/div[2]/div[2]/div[1]/div[1]/div[3]/input");
@@ -130,9 +131,11 @@ async fillWhitelistTier1(address,min,max)
 	   await super.fillWithWait(fieldWhMinTier1, min);
 	   await super.fillWithWait(fieldWhMaxTier1, max);
 	   await super.clickWithWait(buttonWhAddTier1);
+	   return true;
    }
    catch(err)
-   {logger.info("Can't fill out whitelist. Field DISABLED.\n"+err)}
+   {logger.info("Can't fill out whitelist. Field DISABLED.\n"+err);
+   return false;}
 
 
 
@@ -146,9 +149,11 @@ async fillWhitelistTier2(address,min,max)
 			await super.fillWithWait(fieldWhMinTier2, min);
 			await super.fillWithWait(fieldWhMaxTier2, max);
 			await super.clickWithWait(buttonWhAddTier2);
+			return true;
 		}
 	catch(err)
-		{logger.info("Can't fill out whitelist. Field DISABLED.\n"+err)}
+		{logger.info("Can't fill out whitelist. Field DISABLED.\n"+err);
+		return false;x}
 
 
 	}

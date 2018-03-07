@@ -15,7 +15,10 @@ var browserHandles=[];
 
 class Utils {
 
+static async wait(driver,time){
+	await driver.sleep(time*1000);
 
+}
 	static sendEmail(path){
 		var transport = nodemailer.createTransport({
 			service: 'gmail',

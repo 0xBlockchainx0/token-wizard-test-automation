@@ -73,7 +73,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
     test.after(async function() {
         driver.sleep(10000);
 
-       // await Utils.sendEmail("./node_modules/token-wizard-test-automation/temp/result.log");
+        await Utils.sendEmail("./node_modules/token-wizard-test-automation/temp/result.log");
         let outputPath=Utils.getOutputPath();
         outputPath=outputPath+"/result"+Utils.getDate();
         await fs.ensureDirSync(outputPath);
@@ -183,7 +183,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
         logger.warn("Test PASSED. Investor can buy less than minCap after first transaction" );
 
     });
-    test.it('Owner can not modify crowdsale if allow modify is false', async function() {
+    test.it.skip('Owner can not modify crowdsale if allow modify is false', async function() {
 
     });
 

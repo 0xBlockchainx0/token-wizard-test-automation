@@ -52,27 +52,32 @@ class User {
 
     async addWhitelistMngPage(tier, min, max){
 try {
+	let b=false;
 	let mngPage = new ManagePage(this.driver);
 	switch (tier) {
 		case 1: {
-			await mngPage.fillWhitelistTier1(this.account, min, max);
+			b=await mngPage.fillWhitelistTier1(this.account, min, max);
 			break;
 		}
 		case 2: {
-			await mngPage.fillWhitelistTier2(this.account, min, max);
+			b=await mngPage.fillWhitelistTier2(this.account, min, max);
 			break;
 		}
 		default:
 			return false;
 	}
-
+    if(!b) return false;
 	await Utils.takeScreenshoot(this.driver);
 	await mngPage.clickButtonSave();
 	var metaMask = new MetaMask(this.driver);
-	await metaMask.doTransaction(5);
+
+	b=await metaMask.doTransaction(5);
+	if (!b) return false;
+	if (tier==1) b=await metaMask.doTransaction(5);
+	if (!b) return false;
 	await mngPage.waitUntilLoaderGone();
 	await Utils.takeScreenshoot(this.driver);
-	var b = await this.confirmPopup();
+	b = await this.confirmPopup();
 	await mngPage.waitUntilLoaderGone();
 	return b;
 }
@@ -568,7 +573,7 @@ catch(err){
 
 
 
-        var b=await new MetaMask(this.driver).doTransaction(2);
+        var b=await new MetaMask(this.driver).doTransaction(3);
 
         if (!b) {  return false;}
 ////////////////////////////////////////////////////Added check if crowdsale NOT started and it failed
@@ -587,6 +592,8 @@ catch(err){
         await Utils.takeScreenshoot(this.driver);
         return false;
     }
+
+
     async getBalanceFromPage(url)
     {
         var investPage = new InvestPage(this.driver);
