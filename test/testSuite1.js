@@ -60,7 +60,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
         driver=await u.startBrowserWithMetamask();
 	   // driver.manage().timeouts().pageLoadTimeout(20000);
 	    //driver.manage().timeouts().implicitlyWait(30000);
-	    console.log("This browser date format is"+Utils.getDateFormat(driver));
+	    logger.info("This browser date format is"+Utils.getDateFormat(driver));
         user77_56B2=new User(driver,user77_56B2File);
         user4_F16A=new User(driver,user4_F16AFile);
         user77_27F2 = new User(driver,user77_27F2File);
@@ -71,14 +71,15 @@ test.describe('POA token-wizard. Test suite #1', async function() {
     });
 
     test.after(async function() {
-        driver.sleep(10000);
+
 	    // /home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/temp/result.log
         await Utils.sendEmail("/home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/temp/result.log");
+	    driver.sleep(10000);
         let outputPath=Utils.getOutputPath();
         outputPath=outputPath+"/result"+Utils.getDate();
         await fs.ensureDirSync(outputPath);
         await fs.copySync(tempOutputPath,outputPath);
-        await fs.remove(tempOutputPath);
+        //await fs.remove(tempOutputPath);
         await driver.quit();
     });
 //////////////////////////////////////////////////////////////////////////////
