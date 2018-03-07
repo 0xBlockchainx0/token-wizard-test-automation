@@ -200,7 +200,7 @@ async doTransaction(refreshCount){
     await this.switchToNextPage();
     var counter=0;
 	var timeLimit=5;
-    if (refreshCount!=undefined) timeLimit=refreshCount;
+    //if (refreshCount!=undefined) timeLimit=refreshCount;
     do {
 
         await this.driver.sleep(1000);
@@ -217,7 +217,9 @@ async doTransaction(refreshCount){
         }
         counter++;
         logger.info("counter #"+ counter);
-	    logger.info("Time limit "+ timeLimit);
+	    logger.info("Time limit ");
+	    logger.info( timeLimit);
+
         if (counter>=timeLimit) {
             await this.switchToNextPage();
 

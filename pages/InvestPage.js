@@ -56,8 +56,8 @@ class InvestPage extends Page{
 
    async  clickButtonOK(){
         logger.info(this.name+"button OK :");
-     // await  super.clickWithWait(buttonOk);
-      await super.oneClick(buttonOk);//////////////!!!!!!!!!!!!!!!!
+      await  super.clickWithWait(buttonOk);
+      //await super.oneClick(buttonOk);//////////////!!!!!!!!!!!!!!!!
     }
 
     async fillInvest(amount)

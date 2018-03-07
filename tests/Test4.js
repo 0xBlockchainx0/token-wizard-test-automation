@@ -33,8 +33,8 @@ class Test4 extends BaseTest {
     async run(){
 
         var b=false;
-        var ownerFile='./users/user77_56B2.json';
-        var userFile1="./users/user77_41B.json";
+        var ownerFile='';
+        var userFile1="";
         var owner=new User(this.driver,ownerFile);
         var owner1=new User(this.driver,userFile1);
 
@@ -46,24 +46,9 @@ class Test4 extends BaseTest {
         var investor = new Investor(this.driver,investorFile);
         var investor1 = new Investor(this.driver,investorFile1);
         var investor2 = new Investor(this.driver,investorFile2);*/
-	    var user77_d13cFile = './users/user77_d13c.json';//whitelisted in tier#1 but will buy in tier #2 only
-	    var user77_d13c = new User(this.driver, user77_d13cFile);
-
-	    var user77_d3E4File = './users/user77_d3E4.json';
-	    var user77_d3E4=new User(this.driver, user77_d3E4File);
 
 
-        var crowdsale=new Crowdsale();
-	    crowdsale.contractAddress="0xa5B93685bFc3CfBA2AaABD14C58853D4F6345624";
-	                             // 0x7195ECb520A68f79036cda121fd69Ad7Bf56C65F
-        //crowdsale.url="https://wizard.oracles.org/manage/0x7195ECb520A68f79036cda121fd69Ad7Bf56C65F";
 
-        await owner.setMetaMaskAccount();//77   5b2
-	    await owner.openManagePage(crowdsale);
-        var whOwner=user77_d3E4;
-
-        var b=await whOwner.addWhitelistMngPage(1,5,77);//tier#1
-        console.log("B="+b);
 
 
 

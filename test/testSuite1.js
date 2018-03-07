@@ -23,20 +23,25 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 
     var driver;
 
-    var user4_F16AFile='./users/user4_F16A.json';
-    var user77_56B2File='./users/user77_56B2.json';
-    var user4_40cAFile='./users/user4_40cA.json';
-    var user77_27F2File='./users/user77_27F2.json';
+    var user4_F16AFile='./users1/user4_F16A.json';//Foreign
+    var user77_56B2File='./users1/user77_56B2.json';//Owner
+    var user4_40cAFile='./users1/user4_40cA.json';//Foreign
+    var user77_27F2File='./users1/user77_27F2.json';//Investor
 
-    var user4_F16A;
-    var user77_56B2;
-    var user4_40cA;
-    var user77_27F2;
-    var owner;
+	var user77_895BFile='./users1/user77_895B.json';//WalletAddress
+	var user77_A5ecFile='./users1/user77_A5ec.json';//ReservedTokens#2
+	var user77_c30bFile='./users1/user77_c30b.json';//ReservedTokens#1
 
 
+	var user4_F16A;   //Foreign
+    var user77_56B2;  //Owner
+    var user4_40cA;   //Foreign
+    var user77_27F2;  //Investor
+	var user77_895B;//WalletAddress
+	var user77_A5ec;//ReservedTokens#2
+	var user77_c30b;//ReservedTokens#1
 
-
+	var owner;
     var investor;
 
     //var scenario="./scenarios/T1RyWn_0008.json";//'./scenarios/simple.json';
@@ -68,7 +73,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
     test.after(async function() {
         driver.sleep(10000);
 
-        await Utils.sendEmail("./node_modules/token-wizard-test-automation/temp/result.log");
+       // await Utils.sendEmail("./node_modules/token-wizard-test-automation/temp/result.log");
         let outputPath=Utils.getOutputPath();
         outputPath=outputPath+"/result"+Utils.getDate();
         await fs.ensureDirSync(outputPath);
@@ -108,18 +113,21 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 
     });
 
-    test.it('Warning presents if investor try to buy from foreign network', async function() {
-	    b=true;
+    test.it('Warning is displayed if investor try to buy from foreign network', async function() {
+	    b=false;
         investor=user4_40cA;
         await investor.setMetaMaskAccount();
         await investor.open(crowdsale.url);
         b=await investor.confirmPopup();
-        assert.equal(b, true, "Test failed. Warning does not present");
+        assert.equal(b, true, "Test failed. Warning does not displayed");
+        b=true;
         b = await investor.contribute(crowdsale.currency.tiers[0].supply/2);
-        assert.equal(b, false, "Test FAILED. Warning does NOT present if investor try to buy from foreign network");
-        logger.error("Test PASSED. Warning present if investor try to buy from foreign network. ");
+        assert.equal(b, false, "Test FAILED.  Investor can buy from foreign network");
+        logger.error("Test PASSED. Warning present if investor try to buy from foreign network. Investor can not buy from foreign network");
 
     });
+
+
     test.it('Investor can NOT buy less than minCap in first transaction', async function() {
 	    b=true;
         investor=user77_27F2;

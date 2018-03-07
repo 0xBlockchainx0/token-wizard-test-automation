@@ -15,13 +15,15 @@ const metaMask=require('../pages/MetaMask.js');
 const MetaMask=metaMask.MetaMask;
 const metaMaskWallet=require('../entity/MetaMaskWallet.js');
 const MetaMaskWallet=metaMaskWallet.MetaMaskWallet;
-const crowdsale=require('../entity/Crowdsale.js');
+
 const utils=require('../utils/Utils.js');
 const Utils=utils.Utils;
 const assert = require('assert');
 const Logger= require('../entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
+const crowdsale=require('../entity/Crowdsale.js');
+const Crowdsale=crowdsale.Crowdsale;
 
 
 
@@ -37,40 +39,47 @@ class Test1 extends BaseTest {
     }
   async run() {
 
-        var b=false;
+var investor;
+var min;
+var max;
+
         var balance=0;
         var newBalance=0;
         var contribution=0;
-        var s="Test start time:"+Utils.getDate();
-        logger.info(s);
-        var ownerFile='./users/user77_27F2.json';
-        var owner=new User(this.driver,ownerFile);
+        var cr=new Crowdsale();
+	    cr.contractAddress="0x57E2680e98B45b543Ed3DC4Ccb7123382e96fA26";
 
+        var ownerFile='./users2/user77_a3e8.json';
+        var user77_a3e8=new User(this.driver,ownerFile);
+	    var user77_AAcdFile='./users2/user77_AAcd.json';
+	    var user77_AAcd=new User(this.driver,user77_AAcdFile);
+	    var URL="https://wizard.poa.network/manage/0x57E2680e98B45b543Ed3DC4Ccb7123382e96fA26";
+	  // /
+	 // 'Owner can add whitelist if tier has not finished yet'
 /////////////////////////////////////////////////////////////////////////
-s = 'Owner <'+owner.name+'> can create crowdsale,no whitelist,reserved';
 
-      var scenario='./scenarios/T2RyWyMy_0020.json';
-	 //var scenario='./scenarios/simple.json';
-	  //var scenario='./scenarios/testSuite2.json';
-	 // var scenario='./scenarios/T3RnWn.json';
-       await owner.setMetaMaskAccount();
-       var crowdsale = await owner.createCrowdsale(scenario);
-       //logger.info("TokenAddress:  " + crowdsale.tokenAddress);
-       //logger.info("ContractAddress:  " + crowdsale.contractAddress);
-       //logger.info("url:  " + crowdsale.url);
-      // b = (crowdsale.tokenAddress != "") & (crowdsale.contractAddress != "") & (crowdsale.url != "");
-      /// assert.equal(b, true, 'Test FAILED. ' + s);
-      // logger.warn("Test PASSED. " + s);
+	  var b=false;
+	  var owner = user77_a3e8;//Owner
+	  await owner.setMetaMaskAccount();
+	  await owner.openManagePage(cr);
+	  investor=user77_AAcd;//Whitelisted investor #3 ,
+                           //will be added in tier 1 from manage page
+	  min=5;
+	  max=77;
+	  b=await investor.addWhitelistMngPage(1,min,max);//tier#1, Min,Max
+	 // assert.equal(b, true, 'Test FAILED. Owner can NOT add whitelist if tier has not finished yet');
+	  //logger.info('Test PASSED. Owner can add whitelist if tier has not finished yet');
+console.log("BBB="+b);
+
+
+
+
+
 
 
   }
 
-after(){
-    //logger.log("Test end time:");
-    // this.driver.close();
-     //Utils.saveTestsResults();
-     //Utils.deleteTempFiles();
-    }
+
 }
 module.exports.Test1=Test1;
 

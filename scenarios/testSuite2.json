@@ -5,11 +5,11 @@
   "decimals": 6,
   "reservedTokens":[
     {
-      "address" :"0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+      "address" :"0x9D76b08c6815feDbaC6096aF6665Bbc1D31491C5",
       "dimension": "percentage",
       "value": 20
     }],
-  "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+  "walletAddress":"0xa75C1001f527898A7377c34AF5aec6A7B2A309DA",
   "gasprice": 40,
   "mincap": 1,
   "whitelisting":true,
@@ -25,7 +25,7 @@
       "supply": 200,
       "whitelist":[
         {
-          "address":"0x27F2f56e6Ee35E4995A965337ba2A7b4ec492FcC",
+          "address":"0x75B4a78b86523ef93CcE5cfC217cd3D99fc9ab18",
           "min":6,
           "max":100
         }
@@ -42,7 +42,7 @@
       "supply": 200,
       "whitelist":[
         {
-          "address":"0x41B4073E966c169dB22185805A951A0f1b805320",
+          "address":"0x2C683fE4dac1f28c51Aa710Ed74196CdFcb04E20",
           "min":6,
           "max":100
         }]

@@ -69,7 +69,7 @@ try {
 	await Utils.takeScreenshoot(this.driver);
 	await mngPage.clickButtonSave();
 	var metaMask = new MetaMask(this.driver);
-	await metaMask.doTransaction();
+	await metaMask.doTransaction(5);
 	await mngPage.waitUntilLoaderGone();
 	await Utils.takeScreenshoot(this.driver);
 	var b = await this.confirmPopup();
@@ -200,7 +200,7 @@ catch(err){
 			if (await mngPage.isPresentWarningEndTimeTier1()||await mngPage.isPresentWarningEndTimeTier2()) return false;
 			await mngPage.clickButtonSave();
 			var metaMask = new MetaMask(this.driver);
-			await metaMask.doTransaction();
+			await metaMask.doTransaction(5);
 			await mngPage.waitUntilLoaderGone();
 
 			var b = await this.confirmPopup();
@@ -436,8 +436,9 @@ catch(err){
 		        await wizardStep4.clickButtonSkipTransaction();
 
 		        await wizardStep4.clickButtonYes();
-		        logger.info("Transaction #"+ trCounter+" is skipped.");
-		        console.log("Transaction #"+ trCounter+" is skipped.");
+		        logger.info("Transaction #"+ (trCounter+1)+" is skipped.");
+		        console.log("Transaction #"+ (trCounter+1)+" is skipped.");
+		        trCounter++;
 		        skippedTr++;
 		        await this.driver.sleep(5000);//1000
 	        }
@@ -518,6 +519,7 @@ catch(err){
             await this.driver.sleep(1000);
             if (await investPage.isPresentWarning()) {
                 await Utils.takeScreenshoot(this.driver);
+	            await this.driver.sleep(2000);
                 await investPage.clickButtonOK();
                 return true;
             }

@@ -24,26 +24,25 @@ test.describe('POA token-wizard. Test suite #2', function() {
     var s="";
     var min;
     var max;
-	var user4_F16AFile = './users/user4_F16A.json';  // foreigh investor
-	var user77_F16AFile = './users/user4_F16A.json';  // reserved address
-	var user77_56B2File = './users/user77_56B2.json';// owner
-	var user4_40cAFile = './users/user4_40cA.json';
-	var user77_27F2File = './users/user77_27F2.json';//whtlisted in tier1
-	var user77_d13cFile = './users/user77_d13c.json';//whitelisted in tier#1 but will buy in tier #2 only
-	var user77_d3E4File = './users/user77_d3E4.json';//whtlisted in tier2
+	var user77_a3e8File = './users2/user77_a3e8.json';  // Owner
+	var user77_abDEFile = './users2/user77_abDE.json';  // Not whitelisted investor
+	var user77_75B4File = './users2/user77_75B4.json';  //Whitelisted investor #1 in tier 1
+	var user77_2C68File = './users2/user77_2C68.json';  //Whitelisted investor #2 in tier 2
+	var user77_AAcdFile = './users2/user77_AAcd.json';  //Whitelisted investor #3 ,
+	                                                   //will be added in tier 1 from manage page
+	var user77_9D76File = './users2/user77_9D76.json'; //Reserved token #1
+	var user77_a75CFile = './users2/user77_a75C.json'; //Wallet address
 
-	var user77_41BFile = './users/user77_41B.json';//NOT whtlisted
-	var user4_F16A;
-	var user77_F16A;
-	var user77_56B2;
-	var user4_40cA;
-	var user77_27F2;
-	var user77_41B;
-	var user77_d3E4;
-	var user77_d13c;
+	var user77_a3e8;  // Owner
+	var user77_abDE;  // Not whitelisted investor
+	var user77_75B4;  //Whitelisted investor #1 in tier 1
+	var user77_2C68;  //Whitelisted investor #2 in tier 2
+	var user77_AAcd;  //Whitelisted investor #3 ,
+	//will be added in tier 1 from manage page
+	var user77_9D76; //Reserved token #1
+	var user77_a75C; //Wallet address
+
 	var owner;
-
-
 	var investor;
 
 	//var scenario="./scenarios/T1RyWn_0008.json";//'./scenarios/simple.json';
@@ -60,28 +59,34 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.before(async function () {
         var u=new Utils();
 		driver = await u.startBrowserWithMetamask();
-		user77_56B2 = new User(driver, user77_56B2File);
-		user4_F16A = new User(driver, user4_F16AFile);
-		user77_F16A = new User(driver, user77_F16AFile);
-		user77_27F2 = new User(driver, user77_27F2File);
-		user4_40cA = new User(driver, user4_40cAFile);
-		user77_41B = new User(driver, user77_41BFile);
-		user77_d3E4 = new User(driver, user77_d3E4File);
-		user77_d13c = new User(driver, user77_d13cFile);
+
+		user77_a3e8 = new User(driver, user77_a3e8File); // Owner
+		user77_abDE = new User(driver, user77_abDEFile);  // Not whitelisted investor
+		user77_75B4 = new User(driver, user77_75B4File);  //Whitelisted investor #1 in tier 1
+		user77_2C68 = new User(driver, user77_2C68File);  //Whitelisted investor #2 in tier 2
+		user77_AAcd = new User(driver, user77_AAcdFile);  //Whitelisted investor #3 ,
+		//will be added in tier 1 from manage page
+		user77_9D76 = new User(driver, user77_9D76File); //Reserved token #1
+		user77_a75C = new User(driver, user77_a75CFile); //Wallet address
+
+
 		mtMask = new MetaMask(driver);
 		await mtMask.open();//return activated Metamask and empty page
 
 	});
 
 	test.after(async function () {
-		driver.sleep(5000);
-		let outputPath = Utils.getOutputPath();
-		outputPath = outputPath + "/result" + Utils.getDate();
-		fs.ensureDirSync(outputPath);
-		fs.copySync(tempOutputPath, outputPath);
-		fs.remove(tempOutputPath);
+		driver.sleep(10000);
 
-		//driver.quit();
+		//await Utils.sendEmail("./node_modules/token-wizard-test-automation/temp/result.log");
+		let outputPath=Utils.getOutputPath();
+		outputPath=outputPath+"/result"+Utils.getDate();
+		await fs.ensureDirSync(outputPath);
+		await fs.copySync(tempOutputPath,outputPath);
+		await fs.remove(tempOutputPath);
+		await driver.quit();
+
+
 	});
 /////////////////////////////////////////////////////////////////////////////
 
@@ -89,7 +94,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it('Owner  can create crowdsale(scenario testSuite2.json),2 tiers,' +
 		' 2 whitelist adresses,1 reserved addresses, modifiable', async function () {
 		b=false;
-		owner = user77_56B2;
+		owner = user77_a3e8;//Owner
 		await owner.setMetaMaskAccount();
 		crowdsale = await owner.createCrowdsale(scenario);
 		logger.info("TokenAddress:  " + crowdsale.tokenAddress);
@@ -103,7 +108,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it('Not whitelisted investor can NOT buy',
 		async function () {
 		b=true;
-		investor=user77_41B;//whitelisted but only for second tier
+		investor=user77_2C68;//whitelisted#2 for tier#2
 		await owner.setMetaMaskAccount();
 		await investor.open(crowdsale.url);
 		b=await investor.confirmPopup();
@@ -115,7 +120,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it('Whitelisted investor can NOT buy less than assigned MIN value in first transaction',
 		async function () {
 		    b=true;
-			investor=user77_27F2;
+			investor=user77_75B4;//Whitelisted investor #1 in tier 1
 			await investor.setMetaMaskAccount();
 			await investor.open(crowdsale.url);
 			b = await investor.contribute(crowdsale.currency.tiers[0].whitelist[0].min*0.5);
@@ -127,7 +132,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it.skip('Whitelisted investor can buy assigned MIN value ',
 		async function () {
 			b=false;
-			investor=user77_27F2;
+			investor=user77_75B4;//Whitelisted investor #1 in tier 1
 			//await investor.setMetaMaskAccount();
 			await investor.open(crowdsale.url);
 
@@ -145,7 +150,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it.skip('Whitelisted investor can buy less than MIN value if it is NOT first transaction',
 		async function () {
 			b=false;
-			investor=user77_27F2;
+			investor=user77_75B4;//Whitelisted investor #1 in tier 1
 			//await investor.setMetaMaskAccount();
 			await investor.open(crowdsale.url);
 			balance=await investor.getBalanceFromPage(crowdsale.url);
@@ -162,7 +167,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it.skip('Whitelisted investor can buy assigned MAX value ',
 		async function () {
 			b=false;
-			investor=user77_27F2;
+			investor=user77_75B4;//Whitelisted investor #1 in tier 1
 			//await investor.setMetaMaskAccount();
 			await investor.open(crowdsale.url);
 			balance=await investor.getBalanceFromPage(crowdsale.url);
@@ -181,13 +186,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it('Owner can add whitelist if tier has not finished yet',
 		async function () {
 			b=false;
-			owner = user77_56B2;
+			owner = user77_a3e8;//Owner
 			await owner.setMetaMaskAccount();//77   5b2
 			await owner.openManagePage(crowdsale);
-			investor=user77_d13c;
+			investor=user77_AAcd;//Whitelisted investor #3 ,
+		                         //will be added in tier 1 from manage page
 			min=5;
 			max=77;
-			var b=await investor.addWhitelistMngPage(1,min,max);//tier#1, Min,Max
+			b=await investor.addWhitelistMngPage(1,min,max);//tier#1, Min,Max
 			assert.equal(b, true, 'Test FAILED. Owner can NOT add whitelist if tier has not finished yet');
 			logger.info('Test PASSED. Owner can add whitelist if tier has not finished yet');
 
@@ -197,7 +203,8 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it('New added whitelisted investor can buy',
 		async function () {
 			b=false;
-			investor=user77_d13c;//new added whitelist
+			investor=user77_AAcd;//Whitelisted investor #3 ,
+		                         //will be added in tier 1 from manage page
 			await investor.setMetaMaskAccount();
 			await investor.open(crowdsale.url);
 			balance=0;
@@ -215,7 +222,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it('Owner can NOT modify start time if crowdsale has begun',
 		async function () {
 		b=true;
-		owner = user77_56B2;
+		owner = user77_a3e8;//Owner
 			await owner.setMetaMaskAccount();//77   5b2
 			await owner.openManagePage(crowdsale);
 			let newTime=Utils.getTimeNear(1200000,"utc");//"12:30";
@@ -230,7 +237,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it('Owner can modify start time of tier if tier has not started yet',
 		async function () {
 			b=false;
-			owner = user77_56B2;
+			owner = user77_a3e8;//Owner
 			//await owner.setMetaMaskAccount();//77   5b2
 			//await owner.openManagePage(crowdsale);
 			let newTime=Utils.getTimeNear(120000,"utc");//"12:30";
@@ -246,7 +253,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it('Owner can modify end time of tier#1',
 		async function () {
 			b=false;
-			owner = user77_56B2;
+			owner = user77_a3e8;//Owner
 		    //await owner.setMetaMaskAccount();//77   5b2
 			//await owner.openManagePage(crowdsale);
 			let newTime=Utils.getTimeNear(120000,"utc");
@@ -263,7 +270,8 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it('Check inheritance of whitelisting. Whitelisted investor can buy in next tier.',
 		async function () {
 			b=false;
-			investor=user77_d13c;//new added whitelist
+			investor=user77_AAcd;//Whitelisted investor #3 ,
+		                         //will be added in tier 1 from manage page
 			await investor.setMetaMaskAccount();
 			await investor.open(crowdsale.url);
 			balance=await investor.getBalanceFromPage(crowdsale.url);
@@ -282,9 +290,9 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	test.it('Owner can modify end time of tier#2',
 		async function () {
 			b=false;
-			owner = user77_56B2;
-			//await owner.setMetaMaskAccount();//77   5b2
-			//await owner.openManagePage(crowdsale);
+			owner = user77_a3e8;//Owner
+			await owner.setMetaMaskAccount();
+			await owner.openManagePage(crowdsale);
 			let newTime=Utils.getTimeNear(120000,"utc");//"12:30";
 			let newDate=Utils.getDateNear(120000,"utc");//"21/03/2020";
 			b=await owner.changeEndTime(crowdsale,2,newDate,newTime);

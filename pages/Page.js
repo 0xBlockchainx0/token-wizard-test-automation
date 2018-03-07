@@ -201,11 +201,20 @@ async waitUntilLocated(element)
 	try {
 		await this.driver.wait(webdriver.until.elementLocated(element), Twait);
 	}
-	catch(err){logger.info("Element "+ element+" have not appeared in"+ Twait+" sec.");
+	catch(err){logger.info("Element "+ element+" has not appeared in"+ Twait+" sec.");
 		 }
 
 }
+    async isDisabledElement(element)
+    { try {
+	    await this.driver.wait(webdriver.until.elementIsEnabled(element), Twait/2);
+    }
+    catch (err)
+    {
+	    logger.info("Element DISABLED"+ element+"\n"+err);
 
+    }
+    }
     async fillWithWait(element,k) {
 	    await this.driver.sleep(TTT);
 	    try {
@@ -213,7 +222,7 @@ async waitUntilLocated(element)
 		    let field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
 		    await field.sendKeys(k);
 	    }
-	    catch(err){logger.info("Element "+ element+" have not appeared in"+ Twait+" sec.");
+	    catch(err){logger.info("Element "+ element+" has not appeared in"+ Twait+" sec.");
 		     }
 
     }

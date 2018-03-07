@@ -123,23 +123,33 @@ class ManagePage extends Page
     	return (s!="");
     }
 async fillWhitelistTier1(address,min,max)
-   {
-        logger.info(this.name+"add address in whitelist, tier #1 :");
-	    await super.fillWithWait(fieldWhAddressTier1,address);
-	    await super.fillWithWait(fieldWhMinTier1,min);
-	    await super.fillWithWait(fieldWhMaxTier1,max);
-	    await super.clickWithWait(buttonWhAddTier1);
+   { try {
+   	   if (!(await super.isElementPresentWithWait(fieldWhAddressTier1))){throw ("WhiteList address field  not present");}
+	   logger.info(this.name + "add address in whitelist, tier #1 :");
+	   await super.fillWithWait(fieldWhAddressTier1, address);
+	   await super.fillWithWait(fieldWhMinTier1, min);
+	   await super.fillWithWait(fieldWhMaxTier1, max);
+	   await super.clickWithWait(buttonWhAddTier1);
+   }
+   catch(err)
+   {logger.info("Can't fill out whitelist. Field DISABLED.\n"+err)}
 
 
 
    }
 async fillWhitelistTier2(address,min,max)
 	{
-		logger.info(this.name+"add address in whitelist, tier #2 :");
-		await super.fillWithWait(fieldWhAddressTier2,address);
-		await super.fillWithWait(fieldWhMinTier2,min);
-		await super.fillWithWait(fieldWhMaxTier2,max);
-		await super.clickWithWait(buttonWhAddTier2);
+		try {
+			if (!(await super.isElementPresentWithWait(fieldWhAddressTier1))){throw ("WhiteList address field  not present");}
+			logger.info(this.name + "add address in whitelist, tier #2 :");
+			await super.fillWithWait(fieldWhAddressTier2, address);
+			await super.fillWithWait(fieldWhMinTier2, min);
+			await super.fillWithWait(fieldWhMaxTier2, max);
+			await super.clickWithWait(buttonWhAddTier2);
+		}
+	catch(err)
+		{logger.info("Can't fill out whitelist. Field DISABLED.\n"+err)}
+
 
 	}
     async fillEndTimeTier1(date,time){
