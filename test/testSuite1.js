@@ -8,6 +8,7 @@ const fs = require('fs-extra');
 const Logger= require('../entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
+const tempOutputFile=Logger.tempOutputFile;
 const utils=require('../utils/Utils.js');
 const Utils=utils.Utils;
 const metaMask=require('../pages/MetaMask.js');
@@ -74,7 +75,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 
 	    // /home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/temp/result.log
        // await Utils.sendEmail("/home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/temp/result.log");
-	    await Utils.sendEmail("./node_modules/token-wizard-test-automation/temp/result.log");
+	    await Utils.sendEmail(tempOutputFile);
 	     driver.sleep(10000);
         let outputPath=Utils.getOutputPath();
         outputPath=outputPath+"/result"+Utils.getDate();

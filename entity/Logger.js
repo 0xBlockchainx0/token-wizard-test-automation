@@ -35,6 +35,7 @@ const logger = createLogger({
 
 exports.logger=logger;
 exports.tempOutputPath=tempOutputPath;
+exports.tempOutputFile=tempOutputFile;
 
 
 
