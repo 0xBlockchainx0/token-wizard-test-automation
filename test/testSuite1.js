@@ -72,8 +72,8 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 
     test.after(async function() {
         driver.sleep(10000);
-
-        await Utils.sendEmail("./node_modules/token-wizard-test-automation/temp/result.log");
+	    // /home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/temp/result.log
+        await Utils.sendEmail("/home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/temp/result.log");
         let outputPath=Utils.getOutputPath();
         outputPath=outputPath+"/result"+Utils.getDate();
         await fs.ensureDirSync(outputPath);
