@@ -14,5 +14,91 @@ curl -u a1a9a14f4c1cb8c71dc0c3b0df3be1cc53f2303b: \
 
 
 
+async.series([
+	doc.useServiceAccountAuth(creds,  function (err) {
+
+		// Get all of the rows from the spreadsheet.
+		 doc.getCells(1, {
+			'min-row': 1,
+			'max-row': 1,
+			'min-col': 1,
+			'max-col': 1,
+			'return-empty': true
+		}, function (err, cells) {
+			var cell = cells[0];
+			console.log(cell.value);
+			 return cell.value;
+
+		});
+	});
+
+
+]
+)
+function writeSheet(val) {
+	return doc.useServiceAccountAuth(creds,  function (err) {
+
+		// Get all of the rows from the spreadsheet.
+		doc.getCells(1, {
+			'min-row': 1,
+			'max-row': 1,
+			'min-col': 1,
+			'max-col': 1,
+			'return-empty': true
+		}, function (err, cells) {
+			var cell = cells[0];
+			cell.value=val;
+			cell.save();
+
+
+		});
+	});
+
+}
+
+async.series([readSheet(),readSheet()]);
+
+
+async.series([
+		function setAuth(step) {
+
+			doc.useServiceAccountAuth(creds, step);
+		},
+		function getInfoAndWorksheets(step) {
+			doc.getInfo(function( err,info) {
+
+				sheet = info.worksheets[0];
+				step();
+
+			});
+		},
+		function workingWithCells(step) {
+			sheet.getCells({
+				'min-row': 1,
+				'max-row': 1,
+				'min-col': 1,
+				'max-col': 1,
+				'return-empty': true
+			}, async function(err, cells) {
+				var cell = cells[0];
+				//console.log("cell= "+cell.value);
+				await fs.writeFileSync(fileName, cell.value);
+				if (cell.value != '1') {
+					cell.value = '1';
+					cell.save();
+				}
+				step();
+			});
+		}
+	], function(err){
+
+		var ss = fs.readFileSync(fileName, "utf8");
+		return ss;
+	});
+
+	var s = await fs.readFileSync(fileName, "utf8");
+	return s;
+
+}
 
 

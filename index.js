@@ -34,16 +34,33 @@ const Logger= require('./entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
 ///////////////////////////////////////
+var GoogleSpreadsheet = require('google-spreadsheet');
 
-//var d=Utils.getTimeNear(1213000,"utc");
-//console.log(d);
-//console.log(Utils.convertTimeToMdy("01:10"));
+xrun();
 
+async function srun(){
+	var doc = new GoogleSpreadsheet('1oWsbaZspCJgAWxCfTEIUnhVWw0unS_apP6mYaBYWPXs');
+	var sheet;
 
+}
 
-//Utils.sendEmail("./temp/result.log");
+async function xrun(){
+	var driver;
+	var util=new Utils();
+	driver= await util.startBrowserWithMetamask();
+	//await driver.get("https://docs.google.com/spreadsheets/d/1oWsbaZspCJgAWxCfTEIUnhVWw0unS_apP6mYaBYWPXs/edit#gid=0");
 
-run();
+	//
+     await driver.get("https://docs.google.com/spreadsheets/d/1oWsbaZspCJgAWxCfTEIUnhVWw0unS_apP6mYaBYWPXs/edit#gid=0&range=A2");
+  // await driver.get("https://docs.google.com/spreadsheets/d/1oWsbaZspCJgAWxCfTEIUnhVWw0unS_apP6mYaBYWPXs/edit#gid=0&range=A2");
+    var el=By.className("cell-input");
+  //var el=By.xpath("//*[@id=\"t-formula-bar-input\"]/div");
+    var s=await driver.findElement(el).sendKeys("wdwdewed");
+    console.log(s);
+   var t=await s.getText();
+   console.log("SSSSS="+t);
+}
+//run();
 
 async function run() {
 
@@ -60,7 +77,7 @@ async function run() {
     var test1 = new Test1(driver,Utils.getOutputPath());
   // var d=await Utils.getDateFormat(driver);
  //  console.log(d);
-    test1.run().then().catch();
+    //test1.run().then().catch();
 
     var test3 = new Test3(driver,Utils.getOutputPath());
   //test3.run().then().catch();

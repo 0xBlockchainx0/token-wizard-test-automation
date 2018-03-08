@@ -90,7 +90,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		driver.sleep(10000);
 
 		//await Utils.sendEmail("./node_modules/token-wizard-test-automation/temp/result.log");
-		await Utils.sendEmail("./temp/result.log");
+		//await Utils.sendEmail("./temp/result.log");
 		let outputPath=Utils.getOutputPath();
 		outputPath=outputPath+"/result"+Utils.getDate();
 		await fs.ensureDirSync(outputPath);
