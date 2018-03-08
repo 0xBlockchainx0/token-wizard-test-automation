@@ -230,7 +230,7 @@ catch(err){}
         logger.warn("Test PASSED. Investor can buy less than minCap after first transaction" );
 
     });
-    test.it.skip('Owner can not modify end time if allow modify is false', async function() {
+    test.it('Owner can not modify end time if allow modify is false', async function() {
 	    assert.equal(flagCrowdsale,true);
 
 	    b=true;
