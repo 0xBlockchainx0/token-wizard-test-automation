@@ -50,7 +50,7 @@ class Page {
         async isElementPresentWithWait(element){
 
     	try {
-		    await this.driver.wait(webdriver.until.elementLocated(element), Twait/2,'Element NOT present.Time out.\n');
+		    await this.driver.wait(webdriver.until.elementLocated(element), Twait/4,'Element NOT present.Time out.\n');
 		    logger.info(" element present");
     		return true;
 	    }

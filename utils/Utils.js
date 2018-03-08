@@ -23,13 +23,13 @@ static async wait(driver,time){
 		var transport = nodemailer.createTransport({
 			service: 'gmail',
 			auth: {
-				user: 'monzano2@gmail.com',
-				pass: 'kindzadza'
+				user: 'testresults39@gmail.com',
+				pass: 'javascript'
 			}
 		});
 
 		var mailOptions = {
-			from: 'monzano2@gmail.com',
+			from: 'testresults39@gmail.com',
 			to: 'dennistikhomirov@gmail.com',
 			subject: 'test results '+Utils.getDateNear(0,'utc')+"  "+ Utils.getTimeNear(0,'utc'),
 			text: 'test results '+Utils.getDateNear(0,'utc') + "  " + Utils.getTimeNear(0,'utc'),
