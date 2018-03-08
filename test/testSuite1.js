@@ -76,14 +76,16 @@ test.describe('POA token-wizard. Test suite #1', async function() {
     var balance;
     var newBalance;
     var contribution;
-
+	var flagCrowdsale;
+	var s;
  ///////////////////////////////////////////////////////////////////////
 
     test.before(async function() {
+	    flagCrowdsale=false;
         var flag=1;
 
 try {
-	var flag = await SpreadSheet.readSheet();
+	//var flag = await SpreadSheet.readSheet();
 }
 catch(err){}
 
@@ -109,8 +111,13 @@ catch(err){}
 		       }
 
 		       }
+		logger.info("Roles:");
+	    logger.info("Owner = "+Owner.account);
+	    logger.info("Investor = "+Investor.account);
+	    logger.info("Foreighn Investor = " +ForeignInvestor.account);
+	    logger.info("ForeignOwner="+ForeignOwner.account);
 
-	    logger.info("This browser date format is"+Utils.getDateFormat(driver));
+	   // logger.info("This browser date format is"+Utils.getDateFormat(driver));
         mtMask = new MetaMask(driver);
         await mtMask.open();//return activated Metamask and empty page
 
@@ -140,14 +147,17 @@ catch(err){}
         logger.info("ContractAddress:  " + crowdsale.contractAddress);
         logger.info("url:  " + crowdsale.url);
         b = (crowdsale.tokenAddress != "") & (crowdsale.contractAddress != "") & (crowdsale.url != "");
+	    flagCrowdsale=b;
         assert.equal(b, true, 'Test FAILED. ');
-        logger.error("Test PASSED. Owner  can create crowdsale,no whitelist,reserved");
-        if (!b) {console.log("Crowdsale didn't created. Can't proceed"); throw("Crowdsale didn't created. Can't proceed");}
+
+        logger.info("Test PASSED. Owner  can create crowdsale,no whitelist,reserved");
+       // if (!b) {console.log("Crowdsale didn't created. Can't proceed"); throw("Crowdsale didn't created. Can't proceed");}
 
     });
 
     test.it('Warning is displayed if investor try to buy from foreign network', async function() {
-	    b=true;
+	    assert.equal(flagCrowdsale,true);
+    	b=true;
         investor=ForeignInvestor;
         await investor.setMetaMaskAccount();
         await investor.open(crowdsale.url);
@@ -162,7 +172,8 @@ catch(err){}
 
 
     test.it('Investor can NOT buy less than minCap in first transaction', async function() {
-	    b=true;
+	    assert.equal(flagCrowdsale,true);
+	     b=true;
         investor=Investor;
         await investor.setMetaMaskAccount();
         await investor.open(crowdsale.url);
@@ -173,7 +184,8 @@ catch(err){}
     });
 
     test.it('Investor can NOT buy more than total supply in tier', async function() {
-	    b=true;
+	    assert.equal(flagCrowdsale,true);
+	     b=true;
 	    investor=Investor;
         await investor.open(crowdsale.url);
         b = await investor.contribute(crowdsale.currency.tiers[0].supply+1);
@@ -183,7 +195,8 @@ catch(err){}
     });
 
     test.it('Investor can buy amount = minCap', async function() {
-        b=false;
+	    assert.equal(flagCrowdsale,true);
+    	b=false;
         //await investor.setMetaMaskAccount();
         //crowdsale.url="https://wizard.poa.network/invest?addr=0x87be99f4F7e0CA13E878202232CA2eDA93c449b7&networkID=77";
         //crowdsale.currency.minCap=1;
@@ -203,7 +216,8 @@ catch(err){}
     });
 
     test.it('Investor can buy less than minCap after first transaction', async function() {
-	    b=false;
+	    assert.equal(flagCrowdsale,true);
+	      b=false;
 	    investor=Investor;
         await investor.open(crowdsale.url);
         balance=await investor.getBalanceFromPage(crowdsale.url);
@@ -216,11 +230,27 @@ catch(err){}
         logger.warn("Test PASSED. Investor can buy less than minCap after first transaction" );
 
     });
-    test.it.skip('Owner can not modify crowdsale if allow modify is false', async function() {
+    test.it.skip('Owner can not modify end time if allow modify is false', async function() {
+	    assert.equal(flagCrowdsale,true);
+
+	    b=true;
+	    owner = Owner;//Owner
+	    await owner.setMetaMaskAccount();//77   5b2
+	    await owner.openManagePage(crowdsale);
+	    let newTime=Utils.getTimeNear(1200000,"utc");//"12:30";
+	    let newDate=Utils.getDateNear(1200000,"utc");//"21/03/2020";
+	    b=await owner.changeEndTime(crowdsale,1,newDate,newTime);
+	    s=await owner.getEndTime(1);//# of tier, mngPage should be open
+	    b=b&&Utils.compare(s,newDate,newTime);
+	    assert.equal(b, false, 'Test FAILED. Owner can  modify start time of tier#1 if allow modify is false');
+	    logger.info('Test PASSED. Owner can NOT modify start time if allow modify is false');
+
+
 
     });
 
     test.it('Owner can NOT distribute before  all tokens are sold', async function() {
+	    assert.equal(flagCrowdsale,true);
         b=true;
         owner=Owner;
         await owner.setMetaMaskAccount();
@@ -230,6 +260,7 @@ catch(err){}
     });
 
     test.it('Owner can NOT finalize before  all tokens are sold & if crowdsale NOT ended ', async function() {
+	    assert.equal(flagCrowdsale,true);
         b=true;
 	    owner=Owner;
         b = await owner.finalize(crowdsale);
@@ -238,6 +269,7 @@ catch(err){}
     });
 
     test.it('Investor can buy total supply for current tier', async function() {
+	    assert.equal(flagCrowdsale,true);
         b=false;
         investor=Investor;
         await investor.setMetaMaskAccount();
@@ -253,7 +285,8 @@ catch(err){}
 
     });
     test.it('NOT Owner can NOT distribute (after all tokens were sold)', async function() {
-	    b=true;
+	    assert.equal(flagCrowdsale,true);
+    	b=true;
         owner=Investor;
         await owner.setMetaMaskAccount();
         b = await owner.distribute(crowdsale);
@@ -262,7 +295,8 @@ catch(err){}
 
     });
     test.it('Owner can distribute (after all tokens were sold)', async function() {
-	    b=false;
+	    assert.equal(flagCrowdsale,true);
+    	b=false;
         owner=Owner;
         await owner.setMetaMaskAccount();
         b = await owner.distribute(crowdsale);
@@ -272,11 +306,12 @@ catch(err){}
     });
 
     test.it('Reserved addresses receive right amount of tokens after distribution)', async function() {
-
+	    assert.equal(flagCrowdsale,true);
     });
 
     test.it('NOT Owner can NOT finalize (after all tokens were sold)', async function() {
-        b=true;
+	    assert.equal(flagCrowdsale,true);
+    	b=true;
         owner=Investor;
         await owner.setMetaMaskAccount();
         b = await owner.finalize(crowdsale);
@@ -286,7 +321,8 @@ catch(err){}
     });
 
     test.it('Owner can  finalize (after all tokens were sold)', async function() {
-	    b=false;
+	    assert.equal(flagCrowdsale,true);
+    	b=false;
         owner=Owner;
         await owner.setMetaMaskAccount();
         b = await owner.finalize(crowdsale);
@@ -298,7 +334,7 @@ catch(err){}
 //New
 
     test.it('Investors receive right amount of tokens after finalization)', async function() {
-
+	    assert.equal(flagCrowdsale,true);
     });
 
 
