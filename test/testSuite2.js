@@ -123,9 +123,10 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		assert.equal(flagCrowdsale,true);
 		b=true;
 		investor=user77_2C68;//whitelisted#2 for tier#2
-		await owner.setMetaMaskAccount();
+		await investor.setMetaMaskAccount();
 		await investor.open(crowdsale.url);
-		b=await investor.confirmPopup();
+		b=await investor.contribute(crowdsale.currency.tiers[0].whitelist[0].min*1.5);
+		//b=await investor.confirmPopup();
 		assert.equal(b, false, 'Test FAILED.Not whitelisted investor can  buy ');
 		logger.error('Test PASSED. Not whitelisted investor can NOT buy');
 

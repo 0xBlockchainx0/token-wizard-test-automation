@@ -16,9 +16,9 @@
     }
   ],
   "walletAddress":"0x45D990b04004aea469443d0484BfaB050da0EBF4",
-  "gasprice":40,
+  "gasprice":100,
   "mincap": 1,
-  "whitelisting":false,
+  "whitelisting":true,
   "tiers":[
     {
       "name":"###1",
@@ -29,6 +29,12 @@
       "endTime":"",
       "rate":100,
       "supply": 20,
-      "whitelist":[]
+      "whitelist":[
+        {
+          "address":"0x783CA4B3d53Bf76368BF8a3aFEc6fABd90F1fE51",
+          "min":1,
+          "max":20
+        }
+      ]
     }]
 }

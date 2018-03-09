@@ -138,7 +138,7 @@ catch(err){}
 //////////////////////////////////////////////////////////////////////////////
 
 
-    test.it('Owner  can create crowdsale,no whitelist,reserved, not modifiable', async function() {
+    test.it('Owner  can create crowdsale,one whitelist address,two reserved addresses, not modifiable', async function() {
         b=false;
         owner=Owner;
         await owner.setMetaMaskAccount();
@@ -155,35 +155,33 @@ catch(err){}
 
     });
 
-    test.it('Warning is displayed if investor try to buy from foreign network', async function() {
-	    assert.equal(flagCrowdsale,true);
-    	b=true;
-        investor=ForeignInvestor;
-        await investor.setMetaMaskAccount();
-        await investor.open(crowdsale.url);
-        b=await investor.confirmPopup();
-        assert.equal(b, true, "Test failed. Warning does not displayed");
-        b=true;
-        b = await investor.contribute(crowdsale.currency.tiers[0].supply/2);
-        assert.equal(b, false, "Test FAILED.  Investor can buy from foreign network");
-        logger.error("Test PASSED. Warning present if investor try to buy from foreign network. Investor can not buy from foreign network");
+	test.it('Not whitelisted investor can NOT buy',
+		async function () {
+			assert.equal(flagCrowdsale,true);
+			b=true;
+			investor=Owner;//whitelisted#2 for tier#2
+			await investor.setMetaMaskAccount();
+			await investor.open(crowdsale.url);
+			b=await investor.contribute(crowdsale.currency.tiers[0].whitelist[0].min*2);
+			assert.equal(b, false, 'Test FAILED.Not whitelisted investor can  buy ');
+			logger.error('Test PASSED. Not whitelisted investor can NOT buy');
 
-    });
+		});
 
 
-    test.it('Investor can NOT buy less than minCap in first transaction', async function() {
+	test.it('Whitelisted investor can NOT buy less than minCap in first transaction', async function() {
 	    assert.equal(flagCrowdsale,true);
 	     b=true;
         investor=Investor;
         await investor.setMetaMaskAccount();
         await investor.open(crowdsale.url);
         b = await investor.contribute(crowdsale.currency.minCap * 0.5);
-        assert.equal(b, false, "Test FAILED.Investor can contribute less than minCap in first transaction");
+        assert.equal(b, false, "Test FAILED.Investor can buy less than minCap in first transaction");
         logger.warn("Test PASSED. Investor can NOT contribute less than minCap in first transaction");
 
     });
 
-    test.it('Investor can NOT buy more than total supply in tier', async function() {
+    test.it('Whitelisted investor can NOT buy more than total supply in tier', async function() {
 	    assert.equal(flagCrowdsale,true);
 	     b=true;
 	    investor=Investor;
@@ -194,7 +192,7 @@ catch(err){}
 
     });
 
-    test.it('Investor can buy amount = minCap', async function() {
+    test.it('Whitelisted investor can buy amount = minCap', async function() {
 	    assert.equal(flagCrowdsale,true);
     	b=false;
         //await investor.setMetaMaskAccount();
@@ -215,7 +213,7 @@ catch(err){}
 
     });
 
-    test.it('Investor can buy less than minCap after first transaction', async function() {
+    test.it('Whitelisted investor can buy less than minCap after first transaction', async function() {
 	    assert.equal(flagCrowdsale,true);
 	      b=false;
 	    investor=Investor;
@@ -268,7 +266,7 @@ catch(err){}
         logger.warn("Owner can NOT finalize before  all tokens are sold & if crowdsale NOT ended" );
     });
 
-    test.it('Investor can buy total supply for current tier', async function() {
+    test.it('Whitelisted investor can buy total supply for current tier', async function() {
 	    assert.equal(flagCrowdsale,true);
         b=false;
         investor=Investor;
@@ -331,7 +329,6 @@ catch(err){}
 
     });
 
-//New
 
     test.it('Investors receive right amount of tokens after finalization)', async function() {
 	    assert.equal(flagCrowdsale,true);

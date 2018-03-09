@@ -165,7 +165,7 @@ class MetaMask extends page.Page{
 
        await  this.clickImportAccount();
        await  super.fillWithWait(fieldPrivateKey,user.privateKey);
-       await  this.driver.sleep(1500);
+       await  this.driver.sleep(1000);
        await  super.clickWithWait(buttonImport);
         user.accN=accN-1;
 
@@ -181,7 +181,7 @@ class MetaMask extends page.Page{
         await super.clickWithWait(popupAccount);
         await this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(user.accN)+"].click();");
 
-        await this.driver.sleep(5000);//!!!!!!!!!!!!!!!
+        await this.driver.sleep(1000);//!!!!!!!!!!!!!!!
         await this.switchToNextPage();
     }
 
@@ -200,7 +200,7 @@ async doTransaction(refreshCount){
     await this.switchToNextPage();
     var counter=0;
 	var timeLimit=5;
-    //if (refreshCount!=undefined) timeLimit=refreshCount;
+    if (refreshCount!=undefined) timeLimit=refreshCount;
     do {
 
         await this.driver.sleep(1000);
@@ -217,8 +217,8 @@ async doTransaction(refreshCount){
         }
         counter++;
         logger.info("counter #"+ counter);
-	    logger.info("Time limit ");
-	    logger.info( timeLimit);
+	    logger.info("Time limit " +timeLimit);
+	    //logger.info( timeLimit);
 
         if (counter>=timeLimit) {
             await this.switchToNextPage();
