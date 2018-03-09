@@ -422,7 +422,7 @@ catch(err){
         var timeLimit=timeLimitTransactions*cur.tiers.length;
         do
           {
-           z=await metaMask.doTransaction(3);
+           z=await metaMask.doTransaction(5);
 	        trCounter++;
            if (!z) {
 
@@ -573,7 +573,7 @@ catch(err){
 
 
 
-        var b=await new MetaMask(this.driver).doTransaction(3);
+        var b=await new MetaMask(this.driver).doTransaction(5);
 
         if (!b) {  return false;}
 ////////////////////////////////////////////////////Added check if crowdsale NOT started and it failed

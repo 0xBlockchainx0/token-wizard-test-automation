@@ -109,7 +109,7 @@ async getAttributeByLocator(locator,attr){
 
 async getTextByLocator(locator)
 {
-	await this.driver.sleep(TTT);
+	await this.driver.sleep(7000);
   logger.info("get text ");
 	await this.driver.wait(webdriver.until.elementLocated(locator), Twait,'Element '+locator+'NOT present.Time out.\n');
     return await this.driver.findElement(locator).getText();
