@@ -246,7 +246,7 @@ async isPresentButtonSubmit()
 
 }
      async addNetwork(provider){
-         //this.driver.sleep(1000);
+         this.driver.sleep(5000);
         logger.info(this.name+"add network :");
         var url;
 
@@ -267,12 +267,12 @@ async isPresentButtonSubmit()
         await this.driver.executeScript("" +
             "document.getElementsByClassName('dropdown-menu-item')["+(networks.length-1)+"].click();");
          logger.info(this.name+"select network from menu :");
-         await this.driver.sleep(1000);////////!!!!!!!!!!!!
+         await this.driver.sleep(5000);////////!!!!!!!!!!!!
         await super.fillWithWait(fieldNewRPCURL,url);
-	     await this.driver.sleep(1000);////////!!!!!!!!!!!!
+	     await this.driver.sleep(5000);////////!!!!!!!!!!!!
         await super.clickWithWait(buttonSave);
 
-       // await this.driver.sleep(1000);
+        await this.driver.sleep(1000);
         await super.clickWithWait(arrowBackRPCURL);
         //lengthNetworkMenu++;
         return;
