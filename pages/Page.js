@@ -14,7 +14,7 @@ const By=by.By;
 const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
-const Twait=7000;
+const Twait=14000;
 Twaittransaction=5000;
 
 
