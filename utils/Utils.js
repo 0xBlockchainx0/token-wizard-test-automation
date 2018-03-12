@@ -15,6 +15,32 @@ var browserHandles=[];
 
 class Utils {
 
+	static setNetwork(network){
+		let url;
+		switch(network)
+		{
+			case 4:{url="https://rinkeby.infura.io/";break;}
+			case 77:{url="https://sokol.poa.network";break;}
+			default:{url="https://sokol.poa.network";break;}
+		}
+		return  new Web3(new Web3.providers.HttpProvider(url));
+	}
+	static  getTransactionCount(network,address) {
+
+		var w = Utils.setNetwork(network);
+		var n = w.eth.getTransactionCount(address.toString());//returns Number
+		return n;
+	}
+static getBalance(user)
+{
+	var w = Utils.setNetwork(user.networkID);
+	var n =w.eth.getBalance(user.account.toString());
+	return n;
+}
+
+
+
+
 static async wait(driver,time){
 	await driver.sleep(time*1000);
 
@@ -174,13 +200,6 @@ return q;
 
 
 
-    getTransactionCount(address) {
-
-        var w = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/"));
-        var n = w.eth.getTransactionCount(address.toString());//returns Number
-        fs.writeFileSync("tempAddr.txt", n);
-        return n;
-    }
 
     static async takeScreenshoot(driver) { return;
 

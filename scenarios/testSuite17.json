@@ -1,0 +1,41 @@
+{
+
+  "name": "testSuite#17.json",
+  "ticker": "test",
+  "decimals": 18,
+  "reservedTokens":[
+    {
+      "address" :  "0xc30b64EB36f3aab720eEEF0fd27508a13DF92ADa",
+      "dimension": "percentage",
+      "value": 99
+    },
+    {
+      "address" :  "0xA5ecc0a4a9b417cb11290870Bd2355Ad0e051f29",
+      "dimension": "tokens",
+      "value":333
+    }
+  ],
+  "walletAddress":"0x895B4BDb444BFeA7401dF555A7acDA5608C94484",
+  "gasprice":100,
+  "mincap": 1,
+  "whitelisting":true,
+  "tiers":[
+    {
+      "name":"###1",
+      "allowModify": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
+      "rate":100,
+      "supply": 20,
+      "whitelist":[
+        {
+          "address":"0xf5aA6080aA25573558C0Bc8FA607edD07dDec51d",
+          "min":1,
+          "max":20
+        }
+      ]
+    }]
+}
+
