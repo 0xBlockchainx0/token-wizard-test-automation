@@ -267,7 +267,7 @@ async isPresentButtonSubmit()
         await this.driver.executeScript("" +
             "document.getElementsByClassName('dropdown-menu-item')["+(networks.length-1)+"].click();");
          logger.info(this.name+"select network from menu :");
-         await this.driver.sleep(5000);////////!!!!!!!!!!!!
+         await this.driver.sleep(10000);////////!!!!!!!!!!!!
         await super.fillWithWait(fieldNewRPCURL,url);
 	     await this.driver.sleep(5000);////////!!!!!!!!!!!!
         await super.clickWithWait(buttonSave);
