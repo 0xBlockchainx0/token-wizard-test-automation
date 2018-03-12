@@ -107,7 +107,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 
     test.before(async function() {
 	    flagCrowdsale=false;
-        var flag=8;
+        var flag=Math.round(10*Math.random());
 
 try {
 	//var flag = await SpreadSheet.readSheet();

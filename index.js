@@ -37,7 +37,8 @@ const tempOutputPath=Logger.tempOutputPath;
 //address="0x9E963042D581D262AdE4E31541360e7FDAeE70C6";
 //address="0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b";
 
-
+let n=Math.round(10*Math.random());
+console.log(n);
 
 //////////////////////////
 var GoogleSpreadsheet = require('google-spreadsheet');
