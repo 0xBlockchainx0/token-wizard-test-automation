@@ -38,6 +38,7 @@ const tempOutputPath=Logger.tempOutputPath;
 //address="0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b";
 
 let n=Math.round(10*Math.random());
+if (n==10)n=0;
 console.log(n);
 
 //////////////////////////
