@@ -102,6 +102,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
     var newBalance;
     var contribution;
 	var flagCrowdsale;
+	var flagDistribute=false;
 	var s;
  ///////////////////////////////////////////////////////////////////////
 
@@ -385,13 +386,14 @@ catch(err){}
     });
     test.it('Owner can distribute (after all tokens were sold)', async function() {
 	    assert.equal(flagCrowdsale,true);
+
     	b=false;
         owner=Owner;
         await owner.setMetaMaskAccount();
         b = await owner.distribute(crowdsale);
         assert.equal(b, true, "Test FAILED. Owner can NOT distribute (after all tokens were sold)");
         logger.warn("Test PASSED.Owner can distribute (after all tokens were sold).");
-
+	    flagDistribute=true;
     });
 
     test.it('Reserved addresses receive right amount of tokens after distribution)', async function() {
@@ -411,6 +413,7 @@ catch(err){}
 
     test.it('Owner can  finalize (after all tokens were sold)', async function() {
 	    assert.equal(flagCrowdsale,true);
+	    assert.equal(flagDistribute,true);
     	b=false;
         owner=Owner;
         await owner.setMetaMaskAccount();

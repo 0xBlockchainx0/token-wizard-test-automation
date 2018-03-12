@@ -201,6 +201,7 @@ async isAvailable(){
 }
 /////////////////////////////////
 async isEnabledDistribute(){
+	await this.driver.sleep(3000);
     logger.info(this.name+"button Distribute :")
     if (!(await this.isPresentButtonDistribute()))
     {return false;}
