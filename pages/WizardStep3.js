@@ -18,12 +18,15 @@ const boxGasPriceSafe=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[
 const boxGasPriceNormal=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[2]/label/span");
 const boxGasPriceFast=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[3]/label/span");
 const boxGasPriceCustom=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[4]/label/span");
-const fieldGasPriceCustom=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[5]/input");
                                            //*[@id="root"]/div/section/div[2]/div[2]/div[2]/div[2]/div[4]/label/span
+const fieldGasPriceCustom=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[5]/input");
+                                              //*[@id="root"]/div/section/div[2]/div[2]/div[2]/div[2]/div[5]/input
 
-const buttonContinue=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[5]/div/a");
+const buttonContinue=By.xpath("//*[@id=\"root\"]/div/section/div[4]/a");
+
 const buttonAddTier=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[5]/div/div");
 const boxWhitelistingYes=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[3]/div[2]/div/label[1]/span");
+                                            //*[@id="root"]/div/section/div[2]/div[2]/div[3]/div[2]/div/label[1]/span
 const boxWhitelistingNo=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[3]/div[2]/div/label[2]/span");
 class WizardStep3 extends page.Page{
 

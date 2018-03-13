@@ -12,32 +12,42 @@ const By=by.By;
 const utils=require('../utils/Utils.js');
 const Utils=utils.Utils;
 var COUNT_TIERS=0;
-//const adj="div[1]/";
-const adj="";
-const fieldAddressTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div[2]/div[2]/div/div[1]/div[1]/input");
+const adj="div[1]/";
+//const adj="";
+
+const fieldAddressTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[2]/div[2]/div[1]/div[1]/div[1]/input");
+
+
 const fieldAddress1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldAddress2="]/div[2]/div[2]/div/div[1]/div[1]/input";
 
-const fieldMinTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div[2]/div[2]/div/div[1]/div[2]/input");
+const fieldMinTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[2]/div[2]/div[1]/div[1]/div[2]/input");
 const fieldMin1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldMin2="]/div[2]/div[2]/div/div[1]/div[2]/input";
 
-const fieldMaxTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div[2]/div[2]/div/div[1]/div[3]/input");
+const fieldMaxTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[2]/div[2]/div[1]/div[1]/div[3]/input");
 const fieldMax1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldMax2="]/div[2]/div[2]/div/div[1]/div[3]/input";
 
 const buttonAdd=By.className("button button_fill button_fill_plus");
 const buttonAdd1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const buttonAdd2="]/div[2]/div[2]/div/div[2]/div";
+                                 //*[@id="root"]/div/section/div[3]/div/div[1]/div[1]/div[1]/input
 
-const fieldNameTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[1]/div[1]/input\n");
-const checkboxModifyOffTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[1]/div[2]/div/label[2]/span\n");
-const checkboxModifyOnTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[1]/div[2]/div/label[1]/span");
-const fieldRateTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[3]/div[1]/input");
+const fieldNameTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[1]/"+adj+"div[1]/input\n");
 
-const fieldSupplyTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[3]/div[2]/input");
-const fieldStartTimeTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[2]/div[1]/input");
-const fieldEndTimeTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[2]/div[2]/input");
+                                         //*[@id="root"]/div/section/div[3]/div/div[1]/div[1]/div[2]/div/label[2]/span
+const checkboxModifyOffTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[1]/"+adj+"div[2]/div/label[2]/span\n");
+const checkboxModifyOnTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[1]/"+adj+"div[2]/div/label[1]/span");
+const fieldRateTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[1]/div[3]/div[1]/input");
+
+const fieldSupplyTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[1]/div[3]/div[2]/input");
+                                      //*[@id="root"]/div/section/div[3]/div/div[1]/div[2]/div[1]/input
+                                      //*[@id="root"]/div/section/div[3]/div/div[1]/div[2]/div[1]/input
+const fieldStartTimeTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[1]/div[2]/div[1]/input");
+
+                                     //*[@id="root"]/div/section/div[3]/div/div[1]/div[2]/div[2]/input
+const fieldEndTimeTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[1]/div[2]/div[2]/input");
 
 const fieldName1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldName2="]/div/div[1]/div[1]/input";
