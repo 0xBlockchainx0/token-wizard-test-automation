@@ -111,8 +111,10 @@ class MetaMask extends page.Page{
 
    async open()
     {
-        logger.info(this.name+"open: ");
+        logger.info(this.name+"open: "+this.URL);
+
         await this.driver.get(this.URL);
+        await this.driver.sleep(10000);
         await super.clickWithWait(buttonAccept);
         var agr= await this.driver.findElement(agreement);
         const action=this.driver.actions();
@@ -165,7 +167,7 @@ class MetaMask extends page.Page{
 
        await  this.clickImportAccount();
        await  super.fillWithWait(fieldPrivateKey,user.privateKey);
-       await  this.driver.sleep(1500);
+       await  this.driver.sleep(1000);
        await  super.clickWithWait(buttonImport);
         user.accN=accN-1;
 
@@ -181,7 +183,7 @@ class MetaMask extends page.Page{
         await super.clickWithWait(popupAccount);
         await this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(user.accN)+"].click();");
 
-        await this.driver.sleep(5000);//!!!!!!!!!!!!!!!
+        await this.driver.sleep(1000);//!!!!!!!!!!!!!!!
         await this.switchToNextPage();
     }
 
@@ -200,7 +202,7 @@ async doTransaction(refreshCount){
     await this.switchToNextPage();
     var counter=0;
 	var timeLimit=5;
-    //if (refreshCount!=undefined) timeLimit=refreshCount;
+    if (refreshCount!=undefined) timeLimit=refreshCount;
     do {
 
         await this.driver.sleep(1000);
@@ -217,8 +219,8 @@ async doTransaction(refreshCount){
         }
         counter++;
         logger.info("counter #"+ counter);
-	    logger.info("Time limit ");
-	    logger.info( timeLimit);
+	    logger.info("Time limit " +timeLimit);
+	    //logger.info( timeLimit);
 
         if (counter>=timeLimit) {
             await this.switchToNextPage();
@@ -246,7 +248,7 @@ async isPresentButtonSubmit()
 
 }
      async addNetwork(provider){
-         //this.driver.sleep(1000);
+         this.driver.sleep(5000);
         logger.info(this.name+"add network :");
         var url;
 
@@ -267,12 +269,12 @@ async isPresentButtonSubmit()
         await this.driver.executeScript("" +
             "document.getElementsByClassName('dropdown-menu-item')["+(networks.length-1)+"].click();");
          logger.info(this.name+"select network from menu :");
-         await this.driver.sleep(1000);////////!!!!!!!!!!!!
+         await this.driver.sleep(10000);////////!!!!!!!!!!!!
         await super.fillWithWait(fieldNewRPCURL,url);
-	     await this.driver.sleep(1000);////////!!!!!!!!!!!!
+	     await this.driver.sleep(5000);////////!!!!!!!!!!!!
         await super.clickWithWait(buttonSave);
 
-       // await this.driver.sleep(1000);
+        await this.driver.sleep(1000);
         await super.clickWithWait(arrowBackRPCURL);
         //lengthNetworkMenu++;
         return;

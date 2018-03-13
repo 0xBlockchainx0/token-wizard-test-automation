@@ -1,6 +1,6 @@
 {
 
-  "name": "testSuite#11.json",
+  "name": "testSuite#19.json",
   "ticker": "test",
   "decimals": 18,
   "reservedTokens":[
@@ -31,7 +31,7 @@
       "supply": 20,
       "whitelist":[
         {
-          "address":"0x27F2f56e6Ee35E4995A965337ba2A7b4ec492FcC",
+          "address":"0x340272E5b85DE21C7a136Ad8d27b4CDdF6386902",
           "min":1,
           "max":20
         }

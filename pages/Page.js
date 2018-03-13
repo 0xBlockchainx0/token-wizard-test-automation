@@ -14,9 +14,9 @@ const By=by.By;
 const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
-const Twait=7000;
+const Twait=14000;
 Twaittransaction=5000;
-const TTT=10;
+
 
 class Page {
 
@@ -68,7 +68,7 @@ class Page {
  async  isElementPresent(element) {
      var q;
 
-     await this.driver.sleep(TTT);
+    // await this.driver.sleep(TTT);
      try {
          q = await this.driver.findElement(element).isDisplayed();
 	     logger.info(" element present");
@@ -91,13 +91,14 @@ class Page {
 
 async getTextByElement(element)
 {logger.info("get text ");
-	await this.driver.sleep(TTT);
-    return await element.getText();}
+	//await this.driver.sleep(TTT);
+    return await element.getText();
+}
 
 
 
 async getAttributeByLocator(locator,attr){
-	await this.driver.sleep(TTT);
+	//await this.driver.sleep(TTT);
 	logger.info("get attribute = "+attr+ "for element = "+locator);
 	await this.driver.wait(webdriver.until.elementLocated(locator), Twait,'Element '+locator+'NOT present.Time out.\n');
 
@@ -109,13 +110,13 @@ async getAttributeByLocator(locator,attr){
 
 async getTextByLocator(locator)
 {
-	await this.driver.sleep(TTT);
+	await this.driver.sleep(7000);
   logger.info("get text ");
 	await this.driver.wait(webdriver.until.elementLocated(locator), Twait,'Element '+locator+'NOT present.Time out.\n');
     return await this.driver.findElement(locator).getText();
 }
 async getURL()
-{  await this.driver.sleep(TTT);
+{  //await this.driver.sleep(TTT);
     logger.info("get current page URL ");
 
     return await this.driver.getCurrentUrl();
@@ -152,25 +153,25 @@ async clearField(element,n){
 
 }
 async oneClick(element){
-	await this.driver.sleep(TTT);
+	//await this.driver.sleep(TTT);
      await  this.driver.findElement(element).click();
 }
 async clickElement(element){
-	await this.driver.sleep(TTT);
+	//await this.driver.sleep(TTT);
         logger.info("click");
         await element.click();
     }
 
    async  fillField(field,address){
 
-	   await this.driver.sleep(TTT);
+	   //await this.driver.sleep(TTT);
         logger.info("fill: value = "+address);
       await  field.sendKeys(address);
 
     }
 	async  clickWithWaitIsElementEnabled(element) {
 
-		await this.driver.sleep(TTT);
+		//await this.driver.sleep(TTT);
 		logger.info("click");
 		try{
 
@@ -186,8 +187,8 @@ async clickElement(element){
 
     async clickWithWait(element) {
 
-	    await this.driver.sleep(TTT);
-        logger.info("click");
+	   // await this.driver.sleep(TTT);
+        logger.info("click" +element);
         try{
 
         let button = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
@@ -217,7 +218,7 @@ async waitUntilLocated(element)
     }
     }
     async fillWithWait(element,k) {
-	    await this.driver.sleep(TTT);
+	   // await this.driver.sleep(TTT);
 	    try {
 		    logger.info("fill: value = " + k);
 		    let field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
@@ -229,7 +230,7 @@ async waitUntilLocated(element)
     }
     async refresh(){
 
-	    await this.driver.sleep(TTT);
+	   // await this.driver.sleep(TTT);
         logger.info("refresh");
         await this.driver.navigate().refresh();
 	    //await this.driver.sleep(2000);
@@ -237,7 +238,7 @@ async waitUntilLocated(element)
     }
     async findWithWait(element)
     {
-	    await this.driver.sleep(TTT);
+	    //await this.driver.sleep(TTT);
         logger.info("find");
 	    try {
 		    await this.driver.wait(webdriver.until.elementLocated(element), Twait);
@@ -250,7 +251,7 @@ async waitUntilLocated(element)
 
     }
     async clickTo(element){
-	    await this.driver.sleep(TTT);
+	   // await this.driver.sleep(TTT);
         logger.info("click");
        await  element.click();
 
@@ -258,7 +259,7 @@ async waitUntilLocated(element)
 
     async  isDisplayedLoader(){
     	//logger.info("DWECWHCHWOCHIWOIEJC");
-	    await this.driver.sleep(TTT);
+	    //await this.driver.sleep(TTT);
 	    try {
 		    var s = await this.driver.findElement(loader).getAttribute("className");
 
@@ -294,7 +295,7 @@ async waitUntilLoaderGone(){
 
 async switchToNextPage(){
 
-	await this.driver.sleep(TTT);
+	//await this.driver.sleep(TTT);
 
         logger.info("switch to next tab");
         let dr=this.driver;

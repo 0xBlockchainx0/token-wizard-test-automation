@@ -295,7 +295,7 @@ catch(err){
         }
         else  {return false;}
         var metaMask = new meta.MetaMask(this.driver);
-        await metaMask.doTransaction();
+        await metaMask.doTransaction(10);
         await mngPage.waitUntilLoaderGone();
         await Utils.takeScreenshoot(this.driver);
         var b= await mngPage.confirmPopup();
@@ -384,9 +384,9 @@ catch(err){
             // await this.driver.sleep(1000);
 
         }
-        await Utils.zoom(this.driver,0.5);
-        await Utils.takeScreenshoot(this.driver);
-        await Utils.zoom(this.driver,1);
+       // await Utils.zoom(this.driver,0.5);
+       // await Utils.takeScreenshoot(this.driver);
+       // await Utils.zoom(this.driver,1);
 
         await wizardStep2.clickButtonContinue();
         await wizardStep3.fillWalletAddress(cur.walletAddress);
@@ -422,7 +422,7 @@ catch(err){
         var timeLimit=timeLimitTransactions*cur.tiers.length;
         do
           {
-           z=await metaMask.doTransaction(3);
+           z=await metaMask.doTransaction(5);
 	        trCounter++;
            if (!z) {
 
@@ -434,10 +434,10 @@ catch(err){
 	           logger.info("Transaction# "+trCounter+" is successfull");
            }
 
-	        await this.driver.sleep(1000);//1000
+	        await this.driver.sleep(3000);//1000
 	        if ((await wizardStep4.isPresentButtonSkipTransaction()))
 	        {
-		        await Utils.takeScreenshoot(this.driver);
+		       // await Utils.takeScreenshoot(this.driver);
 		        await wizardStep4.clickButtonSkipTransaction();
 
 		        await wizardStep4.clickButtonYes();
@@ -448,12 +448,12 @@ catch(err){
 		        await this.driver.sleep(5000);//1000
 	        }
 	        else {
-		        await this.driver.sleep(3000);
+		        await this.driver.sleep(1000);
 		        if (!(await wizardStep4.isPage())) {//if modal NOT present
 			        //await this.driver.sleep(10000);
 
 			        await wizardStep4.waitUntilLoaderGone();
-			        await Utils.takeScreenshoot(this.driver);
+			       // await Utils.takeScreenshoot(this.driver);
 			        // await this.driver.sleep(5000);
 			        await wizardStep4.clickButtonOk();
 
@@ -519,7 +519,7 @@ catch(err){
 
         let investPage = new InvestPage(this.driver);
         await this.driver.sleep(2000);
-        let c=50;
+        let c=50;x
         while(c-->0) {
             await this.driver.sleep(1000);
             if (await investPage.isPresentWarning()) {
@@ -545,7 +545,7 @@ catch(err){
         // await investPage.waitUntilLoaderGone();
         var counter=0;
         var d=true;
-        var timeLimit=10;
+        var timeLimit=5;
         do {
 
             await this.driver.sleep(1000);
@@ -573,7 +573,7 @@ catch(err){
 
 
 
-        var b=await new MetaMask(this.driver).doTransaction(3);
+        var b=await new MetaMask(this.driver).doTransaction(5);
 
         if (!b) {  return false;}
 ////////////////////////////////////////////////////Added check if crowdsale NOT started and it failed

@@ -102,3 +102,22 @@ async.series([
 }
 
 
+ test.it('Warning is displayed if investor try to buy from foreign network', async function() {
+	    assert.equal(flagCrowdsale,true);
+    	b=true;
+        investor=ForeignInvestor;
+        await investor.setMetaMaskAccount();
+        await investor.open(crowdsale.url);
+        b=await investor.confirmPopup();
+        assert.equal(b, true, "Test failed. Warning does not displayed");
+        b=true;
+        b = await investor.contribute(crowdsale.currency.tiers[0].supply/2);
+        assert.equal(b, false, "Test FAILED.  Investor can buy from foreign network");
+        logger.error("Test PASSED. Warning present if investor try to buy from foreign network. Investor can not buy from foreign network");
+
+    });
+
+
+
+
+
