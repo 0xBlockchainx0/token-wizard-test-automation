@@ -188,7 +188,7 @@ async clickElement(element){
     async clickWithWait(element) {
 
 	   // await this.driver.sleep(TTT);
-        logger.info("click");
+        logger.info("click" +element);
         try{
 
         let button = await this.driver.wait(webdriver.until.elementLocated(element), Twait);

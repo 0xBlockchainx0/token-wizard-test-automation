@@ -111,8 +111,10 @@ class MetaMask extends page.Page{
 
    async open()
     {
-        logger.info(this.name+"open: ");
+        logger.info(this.name+"open: "+this.URL);
+
         await this.driver.get(this.URL);
+        await this.driver.sleep(10000);
         await super.clickWithWait(buttonAccept);
         var agr= await this.driver.findElement(agreement);
         const action=this.driver.actions();
