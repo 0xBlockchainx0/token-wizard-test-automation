@@ -132,7 +132,7 @@ async open (url){
 	    await this.driver.sleep(5000);
 }
 async clearField(element,n){
-	await this.driver.sleep(2000);
+	await this.driver.sleep(2500);
     logger.info("clear");
     let field;
     if (n!=1) {

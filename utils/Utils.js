@@ -149,6 +149,7 @@ return s[0]+":"+s[1].substring(0,2);
 	    var min=d.getMinutes();
         if (format=='mdy')
             if (h>12) {h=h-12;r="pm";}
+            if (h==12) {r="pm";}
 
         if (format=='utc')  r="";
 
