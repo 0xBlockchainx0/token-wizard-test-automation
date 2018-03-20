@@ -2,124 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40b9626d-5f4f-46c4-8096-7de331aaa15a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/.travis.yml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/MetaMask.crx" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/README.md" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/client_secret.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/config.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/Crowdsale.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/Currency.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/Helper.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/Investor.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/Logger.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/MetaMaskWallet.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/Owner.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/ReservedTokens.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/SpreadSheet.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/Tier.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/User.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/entity/Whitelist.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/index.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/package.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/CrowdsalePage.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/InvestPage.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/ManagePage.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/MetaMask.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/Page.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/ReservedTokensPage.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/TierPage.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/WizardStep1.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/WizardStep2.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/WizardStep3.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/WizardStep4.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pages/WizardWelcome.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T10WyRyMy_0006.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RnWn_0005.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RnWy.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RnWy_0003.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RyWnMy_0015.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RyWn_0007.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RyWn_0008.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RyWn_0009.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RyWn_0010.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RyWn_0011.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RyWn_0012.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RyWn_0014.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T1RyWy_0013.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T2RnWyMy_0016.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T2RnWy_0001.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T2RnWy_0002.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T2RyWy.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T2RyWyMy_0020.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T3RnWn.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T6RnWy.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/T6RnWy_0004.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/simple.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite11.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite12.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite13.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite14.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite15.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite16.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite17.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite18.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite19.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite2.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/scenarios/testSuite20.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/test/testSuite1.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/test/testSuite2.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/tests/BaseTest.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/tests/Test1.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/tests/Test2.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/tests/Test3.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/tests/Test4.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/token.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user4_0e03.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user4_4082.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user4_40cA.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user4_F16A.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_020F.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_0436.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_1180.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_27F2.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_2a77.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_3402.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_41B.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_45D9.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_4754.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_4B33.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_56B2.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_5860.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_5ACC.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_76b3.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_783C.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_895B.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_8ce1.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_944A.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_9E96.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_A5ec.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_A6C8.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_C0FD.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_CcDD.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_Db0E.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_F16A.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_c30b.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_d13c.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_d3E4.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_ecDF.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users/user77_f5aA.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users2/user77_2C68.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users2/user77_75B4.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users2/user77_9D76.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users2/user77_AAcd.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users2/user77_AbDE.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users2/user77_E743.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users2/user77_a3e8.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/users2/user77_a75C.json" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/utils/Utils.js" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -136,11 +19,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="285">
               <caret line="19" column="1" lean-forward="false" selection-start-line="19" selection-start-column="1" selection-end-line="19" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Page.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pages/Page.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="143">
+              <caret line="141" column="23" lean-forward="true" selection-start-line="141" selection-start-column="23" selection-end-line="141" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="testSuite1.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -305,6 +208,11 @@
             <path>
               <item name="token-wizard-test-automation" type="b2602c69:ProjectViewProjectNode" />
               <item name="token-wizard-test-automation" type="462c0819:PsiDirectoryNode" />
+              <item name="pages" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="token-wizard-test-automation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="token-wizard-test-automation" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -399,12 +307,12 @@
       <workItem from="1520920580585" duration="4224000" />
       <workItem from="1521124449379" duration="1117000" />
       <workItem from="1521512821173" duration="38000" />
-      <workItem from="1521516392448" duration="452000" />
+      <workItem from="1521516392448" duration="728000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="522917000" />
+    <option name="totallyTimeSpent" value="523193000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -427,7 +335,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19970414" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2766272" sideWeight="0.7491124" order="10" side_tool="false" content_ui="tabs" x="134" y="236" width="1254" height="290" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2677515" sideWeight="0.7491124" order="10" side_tool="false" content_ui="tabs" x="134" y="236" width="1254" height="290" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39940828" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27391976" sideWeight="0.5078652" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -792,22 +700,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pages/Page.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2010">
-          <caret line="134" column="25" lean-forward="true" selection-start-line="134" selection-start-column="25" selection-end-line="134" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1147">
-          <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/contracts/DeployContract.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -828,6 +720,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="19" column="1" lean-forward="false" selection-start-line="19" selection-start-column="1" selection-end-line="19" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/Page.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="143">
+          <caret line="141" column="23" lean-forward="true" selection-start-line="141" selection-start-column="23" selection-end-line="141" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
           <folding />
         </state>
       </provider>
