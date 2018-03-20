@@ -1,11 +1,11 @@
-const spread=require('../entity/SpreadSheet.js');
-const SpreadSheet=spread.SpreadSheet;
+
 webdriver = require('selenium-webdriver');
 var test = require('selenium-webdriver/testing');
 var assert = require('assert');
 const fs = require('fs-extra');
 
 ////////////////////////////////////////////////////////
+const deployRegistry= require("../contracts/DeployRegistry.js");
 const Logger= require('../entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
@@ -18,7 +18,7 @@ const user=require("../entity/User.js");
 const User=user.User;
 const crowdsale=require('../entity/Crowdsale.js');
 const Crowdsale=crowdsale.Crowdsale;
-
+const Web3 = require('web3');
 
 test.describe('POA token-wizard. Test suite #1', async function() {
     this.timeout(2400000);//400 min
@@ -27,71 +27,15 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 
 ///////////// SET #1 ///////////////////////////////////////////////////////
     var user4_F16AFile='./users/user4_F16A.json';//Foreign Owner
-    var user77_56B2File='./users/user77_56B2.json';//Owner
-    var user4_40cAFile='./users/user4_40cA.json';//Foreign Investor
-    var user77_27F2File='./users/user77_27F2.json';//Investor
-	var user77_895BFile='./users/user77_895B.json';//WalletAddress
-	var user77_A5ecFile='./users/user77_A5ec.json';//ReservedTokens#2
-	var user77_c30bFile='./users/user77_c30b.json';//ReservedTokens#1
+    var user8545_56B2File='./users/user8545_56B2.json';//Owner
+	var user8545_F16AFile='./users/user8545_F16A.json';//Investor
 
-	var user4_F16A;   //Foreign #1
-    var user77_56B2;  //Owner
-    var user4_40cA;   //Foreign #2
-    var user77_27F2;  //Investor
-	var user77_895B;//WalletAddress
-	var user77_A5ec;//ReservedTokens#2
-	var user77_c30b;//ReservedTokens#1
-////////////// SET #2 ///////////////////////////////////////////////////////
-	var user4_0e03File='./users/user4_0e03.json';//Foreign #1
-	var user77_A6C8File='./users/user77_A6C8.json';//Owner
-	var user4_4082File='./users/user4_4082.json';//Foreign #2
-	var user77_783CFile='./users/user77_783C.json';//Investor
-	var user77_45D9File='./users/user77_45D9.json';//MainAddress
-	var user77_9E96File='./users/user77_9E96.json';//ReservedTokens#2
-	var user77_ecDFFile='./users/user77_ecDF.json';//ReservedTokens#1
 
-	var user4_0e03;//Foreign #1
-	var user77_A6C8;//Owner
-	var user4_4082;//Foreign #2
-	var user77_783C;//Investor
-	var user77_45D9;//WalletAddress
-	var user77_9E96;//ReservedTokens#2
-	var user77_ecDF;//ReservedTokens#1
-//////////////// SET #3 ///////////////////////////////////////////////////////
-	var user77_8ce1File='./users/user77_8ce1.json';//Owner
-	var user77_2a77File='./users/user77_2a77.json';//Investor
-/////////////// SET #4 ///////////////////////////////////////////////////////
-	var user77_5860File='./users/user77_5860.json';//Owner
-	var user77_Db0EFile='./users/user77_Db0E.json';//Investor
-/////////////// SET #5 ///////////////////////////////////////////////////////
-	var user77_76b3File='./users/user77_76b3.json';//Owner
-	var user77_4754File='./users/user77_4754.json';//Investor
-
-/////////////// SET #6 ///////////////////////////////////////////////////////
-	var user77_5ACCFile='./users/user77_5ACC.json';//Owner
-	var user77_C0FDFile='./users/user77_C0FD.json';//Investor
-/////////////// SET #7 ///////////////////////////////////////////////////////
-	var user77_0436File='./users/user77_0436.json';//Owner
-	var user77_f5aAFile='./users/user77_f5aA.json';//Investor
-/////////////// SET #8 ///////////////////////////////////////////////////////
-	var user77_CcDDFile='./users/user77_CcDD.json';//Owner
-	var user77_4B33File='./users/user77_4B33.json';//Investor
-/////////////// SET #9 ///////////////////////////////////////////////////////
-	var user77_944AFile='./users/user77_944A.json';//Owner
-	var user77_3402File='./users/user77_3402.json';//Investor
-/////////////// SET #10 ///////////////////////////////////////////////////////
-	var user77_1180File='./users/user77_1180.json';//Owner
-	var user77_020FFile='./users/user77_020F.json';//Investor
 
 	var owner;
     var investor;
     var Owner;
     var Investor;
-    var ForeignOwner;
-	var ForeignInvestor;
-	var ReservedTokens1;
-	var ReservedTokens2;
-	var MainAddress;
 
     //var scenario="./scenarios/T1RyWn_0008.json";//'./scenarios/simple.json';
     var scenario;
@@ -104,122 +48,46 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 	var flagCrowdsale;
 	var flagDistribute=false;
 	var s;
+	var ganache;
+
  ///////////////////////////////////////////////////////////////////////
 
     test.before(async function() {
+
+	   //ganache=Utils.runGanache();
+	    //await driver.sleep(5000);//for ganache
+	    scenario = './scenarios/testSuite1.json';
+
+
+	    logger.info("Scenario: "+scenario);
+
+
+	    driver = await Utils.startBrowserWithMetamask();
 	    flagCrowdsale=false;
-        let flag=Math.round(10*Math.random());
-        if (flag==10) flag=0;
-
-try {
-	//var flag = await SpreadSheet.readSheet();
-}
-catch(err){}
-
-    	logger.info("Account suite is "+flag);
-
-        var u=new Utils();
-        driver=await u.startBrowserWithMetamask();
-
-	    switch(flag){
-		    case 0:
-		        { Owner = new User (driver,user77_56B2File);
-		          Investor = new User (driver,user77_27F2File);
-		          ForeignOwner= new User (driver,user4_0e03File);
-		          ForeignInvestor= new User (driver,user4_40cAFile);
-		          scenario='./scenarios/testSuite11.json';
-		          break;
-		        }
-		    case 1:
-		       { Owner = new User (driver,user77_A6C8File);
-			     Investor = new User (driver,user77_783CFile);
-			     ForeignOwner= new User (driver,user4_0e03File);
-			     ForeignInvestor= new User (driver,user4_4082File);
-			     scenario='./scenarios/testSuite12.json';
-			     break;
-		       }
-		    case 2:
-		    {   Owner = new User (driver,user77_8ce1File);
-			    Investor = new User (driver,user77_2a77File);
-
-			    scenario='./scenarios/testSuite13.json';
-			    break;
-		    }
-		    case 3:
-		    {   Owner = new User (driver,user77_5860File);
-			    Investor = new User (driver,user77_Db0EFile);
-
-			    scenario='./scenarios/testSuite14.json';
-			    break;
-		    }
-		    case 4:
-		    {   Owner = new User (driver,user77_76b3File);
-			    Investor = new User (driver,user77_4754File);
-
-			    scenario='./scenarios/testSuite15.json';
-			    break;
-		    }
-		    case 5:
-		    {   Owner = new User (driver,user77_5ACCFile);
-			    Investor = new User (driver,user77_C0FDFile);
-
-			    scenario='./scenarios/testSuite16.json';
-			    break;
-		    }
-		    case 6:
-		    {   Owner = new User (driver,user77_0436File);
-			    Investor = new User (driver,user77_f5aAFile);
-
-			    scenario='./scenarios/testSuite17.json';
-			    break;
-		    }
-
-		    case 7:
-		    {   Owner = new User (driver,user77_CcDDFile);
-			    Investor = new User (driver,user77_4B33File);
-
-			    scenario='./scenarios/testSuite18.json';
-			    break;
-		    }
-		    case 8:
-		    {   Owner = new User (driver,user77_944AFile);
-			    Investor = new User (driver,user77_3402File);
-
-			    scenario='./scenarios/testSuite19.json';
-			    break;
-		    }
-		    case 9:
-		    {   Owner = new User (driver,user77_1180File);
-			    Investor = new User (driver,user77_020FFile);
-
-			    scenario='./scenarios/testSuite20.json';
-			    break;
-		    }
+	     Owner = new User (driver,user8545_56B2File);
 
 
-
-
-		       }
+	    Investor = new User (driver,user8545_F16AFile);
+	    await  Utils.sendEth(Owner,30);
+	    await Utils.sendEth(Investor,30);
+	  // await deployRegistry(Owner.account);
 
 		logger.info("Roles:");
 	    logger.info("Owner = "+Owner.account);
-	    logger.info("Owner's balance:"+Utils.getBalance(Owner));
+	    logger.info("Owner's balance:"+await Utils.getBalance(Owner)/1e18);
 	    logger.info("Investor = "+Investor.account);
-	    logger.info("Investor's balance:"+Utils.getBalance(Investor));
-	    //logger.info("Foreighn Investor = " +ForeignInvestor.account);
-	    //logger.info("ForeignOwner="+ForeignOwner.account);
+	    logger.info("Investor's balance:"+await Utils.getBalance(Investor)/1e18);
 
-	   // logger.info("This browser date format is"+Utils.getDateFormat(driver));
+
         mtMask = new MetaMask(driver);
         await mtMask.open();//return activated Metamask and empty page
 
     });
 
     test.after(async function() {
-
+        // Utils.killProcess(ganache);
 	     await Utils.sendEmail(tempOutputFile);
-	     //./node_modules/token-wizard-test-automation/temp/result.log"
-	     driver.sleep(10000);
+	     //driver.sleep(10000);
         let outputPath=Utils.getOutputPath();
         outputPath=outputPath+"/result"+Utils.getDate();
         await fs.ensureDirSync(outputPath);
@@ -249,6 +117,7 @@ catch(err){}
 
 	test.it('Not whitelisted investor can NOT buy',
 		async function () {
+
 			assert.equal(flagCrowdsale,true);
 			b=true;
 			investor=Owner;//whitelisted#2 for tier#2
@@ -273,16 +142,7 @@ catch(err){}
 
     });
 
-    test.it('Whitelisted investor can NOT buy more than total supply in tier', async function() {
-	    assert.equal(flagCrowdsale,true);
-	     b=true;
-	    investor=Investor;
-        await investor.open(crowdsale.url);
-        b = await investor.contribute(crowdsale.currency.tiers[0].supply+1);
-        assert.equal(b, false, "Test FAILED.Investor can  buy more than supply in tier");
-        logger.warn("Test PASSED. Investor can NOT contribute more than supply in tier");
 
-    });
 
     test.it('Whitelisted investor can buy amount = minCap', async function() {
 	    assert.equal(flagCrowdsale,true);
@@ -304,6 +164,17 @@ catch(err){}
         logger.warn("Test PASSED. Investor can buy minCap");
 
     });
+
+	test.it('Whitelisted investor can NOT buy more than total supply in tier', async function() {
+		assert.equal(flagCrowdsale,true);
+		b=true;
+		investor=Investor;
+		await investor.open(crowdsale.url);
+		b = await investor.contribute(crowdsale.currency.tiers[0].supply+1);
+		assert.equal(b, false, "Test FAILED.Investor can  buy more than supply in tier");
+		logger.warn("Test PASSED. Investor can NOT contribute more than supply in tier");
+
+	});
 
     test.it('Whitelisted investor can buy less than minCap after first transaction', async function() {
 	    assert.equal(flagCrowdsale,true);
@@ -396,8 +267,19 @@ catch(err){}
 	    flagDistribute=true;
     });
 
-    test.it('Reserved addresses receive right amount of tokens after distribution)', async function() {
+    test.it('Reserved addresses receive correct amount of tokens after distribution)', async function() {
 	    assert.equal(flagCrowdsale,true);
+	    owner=Owner;
+
+	    newBalance=await owner.getTokenBalance(crowdsale);
+	    balance=
+		    crowdsale.currency.reservedTokens[0].value*crowdsale.currency.tiers[0].supply/100+
+		    crowdsale.currency.reservedTokens[1].value;
+	    logger.info("Investor should receive  = "+balance);
+	    logger.info("Investor has received balance = "+newBalance);
+	    assert.equal(balance, newBalance/1e18,"Test FAILED.'Investor has received "+newBalance+" tokens instead "+ balance );
+	    logger.error("Test PASSED.'Investor has receive right amount of tokens after finalization ");
+
     });
 
     test.it('NOT Owner can NOT finalize (after all tokens were sold)', async function() {
@@ -424,8 +306,17 @@ catch(err){}
     });
 
 
-    test.it('Investors receive right amount of tokens after finalization)', async function() {
+    test.it('Investor receive correct amount of tokens after finalization)', async function() {
 	    assert.equal(flagCrowdsale,true);
+	    investor=Investor;
+	    newBalance=await investor.getTokenBalance(crowdsale);
+	    balance=crowdsale.currency.tiers[0].supply;
+	    logger.info("Investor should receive  = "+balance);
+	    logger.info("Investor has received balance = "+newBalance);
+	    assert.equal(balance, newBalance/1e18,"Test FAILED.'Investor has received "+newBalance+" tokens instead "+ balance )
+	    logger.warn("Test PASSED.'Investor has receive right amount of tokens after finalization ");
+
+
     });
 
 

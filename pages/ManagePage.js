@@ -91,7 +91,7 @@ class ManagePage extends Page
 		logger.info("Text="+s);
 			return (s!="");
 		}
-		catch(err){return false;}
+		catch(err){console.log(err); return false;}
 
 	}
 	async isPresentWarningStartTimeTier2(){
@@ -102,7 +102,7 @@ class ManagePage extends Page
 		    logger.info("Text=" + s);
 		    return (s!="");
 	    }
-	    catch(err){return false;}
+	    catch(err){console.log(err);return false;}
 
 
 	}
@@ -201,11 +201,11 @@ async isAvailable(){
 }
 /////////////////////////////////
 async isEnabledDistribute(){
-	await this.driver.sleep(3000);
+	//await this.driver.sleep(3000);
     logger.info(this.name+"button Distribute :")
     if (!(await this.isPresentButtonDistribute()))
     {return false;}
-    await this.driver.sleep(3000);
+    //await this.driver.sleep(3000);
     var s=await this.driver.findElement(buttonDistribute).getAttribute("className");///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (s=="button button_disabled")
     {logger.info("present and disabled");
@@ -230,7 +230,7 @@ async clickButtonDistribute(){
     async isEnabledFinalize(){
         logger.info(this.name+"button Finalize :");
         var button=await this.getButtonFinalize();
-        await this.driver.sleep(3000);
+        //await this.driver.sleep(3000);
         var s=await button.getAttribute("className");
 
         //console.log("ClassNAme"+s);
@@ -275,20 +275,20 @@ async isPresentButtonOK(){
 }
 async clickButtonOK(){
       logger.info(this.name+"button OK :");
-      //await super.clickWithWait(buttonOk);
-    await super.oneClick(buttonOk);
+      await super.clickWithWait(buttonOk);
+   // await super.oneClick(buttonOk);
 
 }
 async confirmPopup(){
     logger.info(this.name+"confirm popup Distribute/Finalize :");
    // return true;
         var c=0;
-        var limit=60;
+        var limit=10;
         do {
             await this.driver.sleep(1000);
-            if (await this.isPresentButtonOK) {
+            if (await this.isPresentButtonOK()) {
 
-                //await this.clickButtonOK();
+                await this.clickButtonOK();
                 return true;
             }
 

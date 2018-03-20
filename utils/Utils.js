@@ -9,11 +9,66 @@ const webdriver = require('selenium-webdriver'),
       by = require('selenium-webdriver/lib/by');
 const fs = require('fs');
 const Web3 = require('web3');
+const {spawn} = require('child_process');
 const configFile='config.json';
 var browserHandles=[];
 
 
 class Utils {
+
+	static runGanache(){
+        logger.info("Run ganache-cli");
+		return spawn ('ganache-cli');
+
+	}
+	static killProcess(process){
+
+		return process.kill();
+
+	}
+
+static async getProviderUrl(id)
+{
+	    logger.info("getProvider "+id);
+        let provider="";
+		switch(id) {
+			case 8545:{ provider= "http://localhost:8545";break;}
+            default:  {provider= "https://sokol.poa.network";break;}
+
+		}
+
+		logger.info("Got provider "+provider);
+		return provider;
+
+}
+
+	static async sendEth(user,amount)
+	{
+		try{
+            let provider=await Utils.getProviderUrl(user.networkID);
+            logger.info("Current provider "+ provider);
+		    let w=await new Web3(new Web3.providers.HttpProvider(provider));
+			//let account0 = w.eth.accounts[0];
+			let account0=await w.eth.getAccounts().then((accounts)=>{return accounts[2];});
+			//let account0=await w.eth.accounts[2];
+
+			//logger.info("Ganache balance  "+w.eth.getBalance(account0));
+			logger.info("Send " + amount + " Eth from " + account0 + " to " + user.account);
+			await w.eth.sendTransaction({
+				from: account0,
+				to: user.account,
+				value: amount*1e18
+			}).then(console.log);
+
+		}
+		catch(err){
+			logger.info("Not able to sent " + amount + " Eth to " + user.account);
+			logger.info(err);
+		}
+
+	}
+
+
 
 	static setNetwork(network){
 		let url;
@@ -21,6 +76,7 @@ class Utils {
 		{
 			case 4:{url="https://rinkeby.infura.io/";break;}
 			case 77:{url="https://sokol.poa.network";break;}
+			case 8545:{url="http://localhost:8545"; break;}
 			default:{url="https://sokol.poa.network";break;}
 		}
 		return  new Web3(new Web3.providers.HttpProvider(url));
@@ -31,10 +87,10 @@ class Utils {
 		var n = w.eth.getTransactionCount(address.toString());//returns Number
 		return n;
 	}
-static getBalance(user)
+static async getBalance(user)
 {
 	var w = Utils.setNetwork(user.networkID);
-	var n =w.eth.getBalance(user.account.toString());
+	var n =await w.eth.getBalance(user.account.toString());
 	return n;
 }
 
@@ -212,9 +268,10 @@ return q;
 
     }
 
-       async  startBrowserWithMetamask() {
+        static async  startBrowserWithMetamask() {
         var source = 'MetaMask.crx';
-        if (!fs.existsSync(source)) source = './node_modules/create-poa-crowdsale/MetaMask.crx';
+        if (!fs.existsSync(source)) source = '.node_modules/token-wizard-test-automation/MetaMask.crx';
+
         logger.info("Metamask source:"+source);
         var options = new chrome.Options();
         options.addExtensions(source);
@@ -222,7 +279,7 @@ return q;
         //options.addArguments("user-data-dir=/home/d/.config/google-chrome/");
        //
 	     // options.addArguments('headless');
-        //options.addArguments('start-maximized');
+        //options.addArguments('--start-maximized');
         options.addArguments('disable-popup-blocking');
         //options.addArguments('test-type');
         var driver=await new webdriver.Builder().withCapabilities(options.toCapabilities()).build();

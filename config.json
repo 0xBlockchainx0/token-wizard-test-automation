@@ -1,5 +1,6 @@
 {
-  "startURL" : "http://localhost:3000/",
+  "startURL" : "https://wizard.poa.network/",
   "outputPath":"./results",
   "installMetaMask":true
+
 }

@@ -1,7 +1,7 @@
 const Logger= require('../entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
-
+const deployRegistry= require("../contracts/DeployRegistry.js");
 const meta=require('../pages/MetaMask.js');
 const MetaMask=meta.MetaMask;
 const page=require('../pages/Page.js');
@@ -26,7 +26,7 @@ const investPage=require('../pages/InvestPage.js');
 const InvestPage=investPage.InvestPage;
 const managePage=require('../pages/ManagePage.js');
 const ManagePage=managePage.ManagePage;
-
+const Web3 = require('web3');
 
 const utils=require('../utils/Utils.js');
 const Utils=utils.Utils;
@@ -39,18 +39,45 @@ const timeLimitTransactions=80;
 
 
 class User {
-    constructor(driver,file,resultFile){
+    constructor(driver,file){
         this.driver=driver;
         var obj=JSON.parse(fs.readFileSync(file,"utf8"));
         this.account=obj.account;
         this.privateKey=obj.privateKey;
         this.networkID=obj.networkID;
-        this.resultFile=resultFile;
+        //this.resultFile=resultFile;
         this.accN="undefined";//for MetaMaskPage only
         this.name=file;
     }
 
-    async addWhitelistMngPage(tier, min, max){
+
+	async getTokenBalance(crowdsale){
+    	logger.info("getTokenBalance: account="+this.account);
+    	logger.info("token address="+crowdsale.tokenAddress);
+    	//logger.info("ABI: "+crowdsale.tokenContractAbi);
+		try {
+			var web3 = Utils.setNetwork(this.networkID);
+			var tokenContract=JSON.parse(crowdsale.tokenContractAbi);
+			var MyContract = new web3.eth.Contract(tokenContract, crowdsale.tokenAddress);
+
+			var b = await MyContract.methods.balanceOf(this.account).call();
+			//logger.info("Balance=" + b);
+			return b;
+		}
+		catch(err){
+			logger.info("Can not get balance");
+			logger.info("Error:"+err);
+			return 0;
+		}
+
+
+	}
+
+
+
+
+
+	async addWhitelistMngPage(tier, min, max){
 try {
 	let b=false;
 	let mngPage = new ManagePage(this.driver);
@@ -124,23 +151,24 @@ catch(err){
         return 0;
     }
     async openManagePage(crowdsale){
-        var welcomePage=new WizardWelcome(this.driver);
-        const  startURL=Utils.getStartURL();
+	    const  startURL=Utils.getStartURL();
+     /*   var welcomePage=new WizardWelcome(this.driver);
+
         welcomePage.URL=startURL;
         await welcomePage.open();
         await  welcomePage.clickButtonChooseContract();
-        await Utils.takeScreenshoot(this.driver);
+        await Utils.takeScreenshoot(this.driver);*/
         var mngPage=new ManagePage(this.driver);
-        var counter=0;
+       /* var counter=0;
 
         do {await this.driver.sleep(1000);
             if(counter++>30) break;
         } while(!await  mngPage.isAvailable());
-
+*/
         mngPage.URL=startURL+"manage/"+crowdsale.contractAddress;
         await mngPage.open();
         await mngPage.waitUntilLoaderGone();
-        await Utils.takeScreenshoot(this.driver);
+       // await Utils.takeScreenshoot(this.driver);
 
         return mngPage;
 
@@ -283,10 +311,11 @@ catch(err){
 
 
     async distribute(crowdsale){
-
+	    logger.info(this.account + " distribution");
+	    logger.info(this. account+" balance = "+ Utils.getBalance(this));
         var mngPage=await this.openManagePage(crowdsale);
        await  Utils.takeScreenshoot(this.driver);
-       await  this.driver.sleep(5000);
+       //await  this.driver.sleep(5000);
         // logger.info(("Present:"+await mngPage.isPresentButtonDistribute());
         //  logger.info(("Enabled"+await mngPage.isEnabledDistribute());
         if ( await mngPage.isEnabledDistribute())
@@ -295,15 +324,16 @@ catch(err){
         }
         else  {return false;}
         var metaMask = new meta.MetaMask(this.driver);
-        await metaMask.doTransaction(10);
+        await metaMask.doTransaction(5);
         await mngPage.waitUntilLoaderGone();
-        await Utils.takeScreenshoot(this.driver);
+       // await Utils.takeScreenshoot(this.driver);
         var b= await mngPage.confirmPopup();
         return true;
     }
 
     async finalize(crowdsale){
-
+	    logger.info(this.account + " finalization");
+	    logger.info(this. account+" balance = "+ Utils.getBalance(this));
         await this.openManagePage(crowdsale);
         await Utils.takeScreenshoot(this.driver);
         var mngPage=new ManagePage(this.driver);
@@ -324,12 +354,12 @@ catch(err){
 
         }
         while(!(await mngPage.isPresentPopupYesFinalize()));
-        await Utils.takeScreenshoot(this.driver);
-        await this.driver.sleep(1000);
+        //await Utils.takeScreenshoot(this.driver);
+       // await this.driver.sleep(1000);
         await mngPage.clickButtonYesFinalize();
-        await this.driver.sleep(3000);
+        //await this.driver.sleep(3000);
         var metaMask = new meta.MetaMask(this.driver);
-        await metaMask.doTransaction();
+        await metaMask.doTransaction(5);
         await mngPage.waitUntilLoaderGone();
         //Utils.takeScreenshoot(this.driver);
         var b= await mngPage.confirmPopup();
@@ -354,25 +384,19 @@ catch(err){
         var investPage = new InvestPage(this.driver);
         var reservedTokens=new ReservedTokensPage(this.driver);
         var cur=Currency.createCurrency(scenarioFile);
-	     //console.log ("HSHHSHHSH"+cur.tiers[0].whitelist[0].min);
-	    //cur.print();
-	   // return;
-        //cur.print();
+
         var tiers=[];
         for (var i=0;i<cur.tiers.length;i++)
             tiers.push(new TierPage(this.driver,cur.tiers[i]));
 
-
-
         await  welcomePage.open();
-        // await this.driver.sleep(1000);
-        await Utils.takeScreenshoot(this.driver);
+
         await  welcomePage.clickButtonNewCrowdsale();
-        await Utils.takeScreenshoot(this.driver);
+        //await Utils.takeScreenshoot(this.driver);
         await this.driver.sleep(3000);
         await  wizardStep1.clickButtonContinue();
         //await this.driver.sleep(500);
-	   await  Utils.takeScreenshoot(this.driver);
+	 //  await  Utils.takeScreenshoot(this.driver);
         await wizardStep2.fillName(cur.name);
         await wizardStep2.fillTicker(cur.ticker);
         await wizardStep2.fillDecimals(cur.decimals);
@@ -389,13 +413,14 @@ catch(err){
        // await Utils.zoom(this.driver,1);
 
         await wizardStep2.clickButtonContinue();
+	    await this.driver.sleep(3000);
         await wizardStep3.fillWalletAddress(cur.walletAddress);
 
         await wizardStep3.setGasPrice(cur.gasPrice);
-	    await Utils.takeScreenshoot(this.driver);
+	    //await Utils.takeScreenshoot(this.driver);
         if (cur.whitelisting) await wizardStep3.clickCheckboxWhitelistYes();
         else (await wizardStep3.fillMinCap(cur.minCap));
-        await Utils.takeScreenshoot(this.driver);
+        //await Utils.takeScreenshoot(this.driver);
         for (var i=0;i<cur.tiers.length-1;i++)
         {
             await tiers[i].fillTier();
@@ -434,21 +459,21 @@ catch(err){
 	           logger.info("Transaction# "+trCounter+" is successfull");
            }
 
-	        await this.driver.sleep(3000);//1000
+	      await this.driver.sleep(2500);//anyway won't be faster than start time
 	        if ((await wizardStep4.isPresentButtonSkipTransaction()))
 	        {
-		       // await Utils.takeScreenshoot(this.driver);
-		        await wizardStep4.clickButtonSkipTransaction();
 
+		        await wizardStep4.clickButtonSkipTransaction();
+		        await this.driver.sleep(1000);
 		        await wizardStep4.clickButtonYes();
 		        logger.info("Transaction #"+ (trCounter+1)+" is skipped.");
 		        console.log("Transaction #"+ (trCounter+1)+" is skipped.");
 		        trCounter++;
 		        skippedTr++;
-		        await this.driver.sleep(5000);//1000
+		        //await this.driver.sleep(5000);//1000
 	        }
 	        else {
-		        await this.driver.sleep(1000);
+		       // await this.driver.sleep(1000);
 		        if (!(await wizardStep4.isPage())) {//if modal NOT present
 			        //await this.driver.sleep(10000);
 
@@ -481,11 +506,16 @@ catch(err){
         logger.info("Crowdsale created."+"\n"+" Transaction were done:"+ (trCounter-skippedTr)+
 	    "\n"+ "Transaction were skipped: "+skippedTr);
 //////////////////////////////////////////////////////////////////
-        await Utils.takeScreenshoot(this.driver);
+       // await Utils.takeScreenshoot(this.driver);
+
+
         await this.driver.sleep(5000);
+	    const abi=await wizardStep4.getABI();
+	    console.log(abi);
+	    //return;
         await wizardStep4.clickButtonContinue();
-        await this.driver.sleep(5000);
-        await Utils.takeScreenshoot(this.driver);
+        //await this.driver.sleep(5000);
+       // await Utils.takeScreenshoot(this.driver);
         await wizardStep4.waitUntilLoaderGone();
         b=true;
         var counter=50;
@@ -511,12 +541,12 @@ catch(err){
         await Utils.takeScreenshoot(this.driver);
         const addr=await investPage.getTokenAddress();
         const contr=await investPage.getContractAddress();
-        const  cr=new Crowdsale(cur,addr,contr,ur);
+        const  cr=new Crowdsale(cur,addr,contr,ur,abi);
 
         return cr;
     }
     async confirmPopup(){
-
+        logger.info("Confirm popup");
         let investPage = new InvestPage(this.driver);
         await this.driver.sleep(2000);
         let c=50;x
@@ -536,84 +566,87 @@ catch(err){
 
 
     async  contribute(amount){
+    	logger.info(this.account + " contribution");
+    	logger.info(this. account+" balance = "+ Utils.getBalance(this));
         var investPage = new InvestPage(this.driver);
         await investPage.waitUntilLoaderGone();
         await investPage.fillInvest(amount);
-        await Utils.takeScreenshoot(this.driver);
+        //await Utils.takeScreenshoot(this.driver);
         await investPage.clickButtonContribute();
-
-        // await investPage.waitUntilLoaderGone();
         var counter=0;
         var d=true;
-        var timeLimit=5;
+        var timeLimit=2;
         do {
 
-            await this.driver.sleep(1000);
+            await this.driver.sleep(500);
             //Check if Warning present(wrong start time)->return false
             if (await investPage.isPresentWarning()) {
                 var text=await investPage.getWarningText();
                 logger.info(this.name+text);
-                await Utils.takeScreenshoot(this.driver);
+                //await Utils.takeScreenshoot(this.driver);
                 //await investPage.clickButtonOK();
                 return false;}
             //Check if Error present(transaction failed)->return false
             if (await investPage.isPresentError()) {
                 var text=await investPage.getErrorText();
                 logger.info(this.name+text);
-                await Utils.takeScreenshoot(this.driver);
+               // await Utils.takeScreenshoot(this.driver);
                 //await investPage.clickButtonOK();
                 return false;}
 
             counter++;
             if (counter>=timeLimit) {
-                await Utils.takeScreenshoot(this.driver);
+                //await Utils.takeScreenshoot(this.driver);
                 d=false;
             }
         } while(d);
 
 
 
-        var b=await new MetaMask(this.driver).doTransaction(5);
+        var b=await new MetaMask(this.driver).doTransaction(2);
 
         if (!b) {  return false;}
 ////////////////////////////////////////////////////Added check if crowdsale NOT started and it failed
         await investPage.waitUntilLoaderGone();
         counter=0;
-        var timeLimit=50;
+        var timeLimit=5;
         while(counter++<timeLimit) {
-            await this.driver.sleep(1000);
+            await this.driver.sleep(500);
             if (await investPage.isPresentWarning()) {
-                await Utils.takeScreenshoot(this.driver);
+                //await Utils.takeScreenshoot(this.driver);
                 await investPage.clickButtonOK();
                 return true;
             }
 
         }
-        await Utils.takeScreenshoot(this.driver);
+       // await Utils.takeScreenshoot(this.driver);
         return false;
     }
 
 
     async getBalanceFromPage(url)
-    {
+    {   logger.info("Get balance from "+url);
         var investPage = new InvestPage(this.driver);
+
         var curURL=await investPage.getURL();
         if(url!=curURL) await investPage.open(url);
         await investPage.waitUntilLoaderGone();
-        await Utils.takeScreenshoot(this.driver);
-        await this.driver.sleep(2000);
+        //await Utils.takeScreenshoot(this.driver);
+        await this.driver.sleep(5000);
+	    await investPage.refresh();
+	    await this.driver.sleep(2000);
         let s=await investPage.getBalance();
+
         let arr=s.split(" ");
         s=arr[0].trim();
+        logger.info("Received "+ s);
+
         return s;
 
 
 
     }
-    balanceTokens(tokenAddress){
-        return 0;
 
-    }
 
 
 

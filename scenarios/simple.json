@@ -23,8 +23,8 @@
     {
       "name":"###1",
       "allowModify": true,
-      "startDate": "05/03/2018",
-      "startTime": "20:00",
+      "startDate": "",
+      "startTime": "",
       "endDate":"",
       "endTime":"",
       "rate":100,

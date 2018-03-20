@@ -10,11 +10,13 @@ const webdriver = require('selenium-webdriver'),
     by = require('selenium-webdriver/lib/by');
 const By=by.By;
 const utils=require('../utils/Utils.js');
+const wizardStep3=require("./WizardStep3.js");
 const Utils=utils.Utils;
 var COUNT_TIERS=0;
+
+/*
 const adj="div[1]/";
 //const adj="";
-
 const fieldAddressTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[2]/div[2]/div[1]/div[1]/div[1]/input");
 
 
@@ -28,8 +30,8 @@ const fieldMin2="]/div[2]/div[2]/div/div[1]/div[2]/input";
 const fieldMaxTier1=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[2]/div[2]/div[1]/div[1]/div[3]/input");
 const fieldMax1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldMax2="]/div[2]/div[2]/div/div[1]/div[3]/input";
+//*[@id="root"]/div/section/div[3]/div/div[2]/div[2]/div[1]/div[2]/div
 
-const buttonAdd=By.className("button button_fill button_fill_plus");
 const buttonAdd1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const buttonAdd2="]/div[2]/div[2]/div/div[2]/div";
                                  //*[@id="root"]/div/section/div[3]/div/div[1]/div[1]/div[1]/input
@@ -68,10 +70,11 @@ const fieldStartTime2="]/div/div[2]/div[1]/input";
 
 const fieldEndTime1="//*[@id=\"root\"]/div/"+adj+"section/div[4]/div[";
 const fieldEndTime2="]/div/div[2]/div[2]/input";
+*/
 
+const buttonAdd=By.className("button button_fill button_fill_plus");
 
-
-class TierPage extends page.Page{
+class TierPage extends page.Page {
 
     constructor(driver,tier){
         super(driver);
@@ -79,46 +82,86 @@ class TierPage extends page.Page{
         this.tier=tier;
         this.number=COUNT_TIERS++;
         this.name="Tier #"+this.number+": ";
-    }
-    print(){
-        //console.log(typeof(this.tier));
-    }
 
-    async fillTier()
+	    this.fieldNameTier;
+	    this.fieldStartTimeTier;
+	    this.fieldEndTimeTier;
+	    this.fieldRateTier;
+	    this.fieldSupplyTier;
+	    this.fieldAddressTier;
+	    this.fieldMinTier;
+	    this.fieldMaxTier;
+	    this.checkboxModifyOn;
+	    this.checkboxModifyOff;
+    }
+	async init(){
+
+		var locator = By.className("input");
+		var arr = await super.findWithWait(locator);
+		let ci_tresh=2;
+		let ci_mult=5;
+
+		if (wizardStep3.WizardStep3.getFlagCustom()) ci_tresh=3;
+		if (wizardStep3.WizardStep3.getFlagWHitelising()) ci_mult=8;
+
+		this.fieldNameTier = arr[ci_tresh+(this.number)*ci_mult];
+		this.fieldStartTimeTier=arr[ci_tresh+(this.number)*ci_mult+1];
+		this.fieldEndTimeTier=arr[ci_tresh+(this.number)*ci_mult+2];
+		this.fieldRateTier=arr[ci_tresh+(this.number)*ci_mult+3];
+		this.fieldSupplyTier=arr[ci_tresh+(this.number)*ci_mult+4];
+		this.fieldAddressTier=arr[ci_tresh+(this.number)*ci_mult+5];
+		this.fieldMinTier=arr[ci_tresh+(this.number)*ci_mult+6];
+		this.fieldMaxTier=arr[ci_tresh+(this.number)*ci_mult+7];
+
+		locator = By.className("radio-inline");
+		arr = await super.findWithWait(locator);
+
+		this.checkboxModifyOn=arr[6+2*this.number];
+		this.checkboxModifyOff=arr[7+2*this.number];
+
+	}
+
+
+	async fillTier()
     {   logger.info(this.name+"fill tier: ");
-        await this.fillSetupName();
+
         await this.fillRate();
+	    await this.fillSetupName();
         await this.fillSupply();
         await this.setModify();
         await this.fillStartTime();
         await this.fillEndTime();
+        //await this.driver.sleep(3000);
         if (this.tier.whitelist!=null) await this.fillWhitelist();
 
     }
 
     async fillSetupName()
     {
+    	await this.init();
         logger.info(this.name+"field SetupName: ");
-        let locator;
-        if (this.number==0) {locator=fieldNameTier1;}
-        else {locator=by.By.xpath(fieldName1+this.number+fieldName2);}
+        let locator=this.fieldNameTier;
+     //   if (this.number==0) {locator=fieldNameTier1;}
+    //    else {locator=by.By.xpath(fieldName1+this.number+fieldName2);}
         await super.clearField(locator);
         await  super.fillWithWait(locator,this.tier.name);
 
     }
     async fillRate()
-    {   logger.info(this.name+"field Rate: ");
-        let locator;
-        if (this.number==0) {locator=fieldRateTier1;}
-        else {locator=by.By.xpath(fieldRate1+this.number+fieldRate2);}
+    {   await this.init();
+    	logger.info(this.name+"field Rate: ");
+        let locator=this.fieldRateTier;
+        //if (this.number==0) {locator=fieldRateTier1;}
+        //else {locator=by.By.xpath(fieldRate1+this.number+fieldRate2);}
         await super.clearField(locator);
         await super.fillWithWait(locator,this.tier.rate);
     }
     async fillSupply()
-    {   logger.info(this.name+"field Supply: ");
-        let locator;
-        if (this.number==0) {locator=fieldSupplyTier1;}
-        else {locator=by.By.xpath(fieldSupply1+this.number+fieldSupply2);}
+    {  await this.init();
+    	logger.info(this.name+"field Supply: ");
+        let locator=this.fieldSupplyTier;
+       // if (this.number==0) {locator=fieldSupplyTier1;}
+        //else {locator=by.By.xpath(fieldSupply1+this.number+fieldSupply2);}
         await super.clearField(locator);
         await super.fillWithWait(locator,this.tier.supply);
 
@@ -126,8 +169,14 @@ class TierPage extends page.Page{
 
     async setModify() {
         logger.info(this.name+"checkbox Modify: ");
-        let locator;
-        if (this.number == 0)
+        await this.init();
+
+	    if (this.tier.allowModify) {
+		    await super.clickWithWait(this.checkboxModifyOn);
+	    }
+
+      /* let locator;
+      if (this.number == 0)
             if (this.tier.allowModify) {
                 locator = checkboxModifyOnTier1;
             }
@@ -142,23 +191,24 @@ class TierPage extends page.Page{
             else {
             locator = by.By.xpath(checkboxModifyOff1 + this.number + checkboxModifyOff2);
                  }
-             }
-        await super.clickWithWait(locator);
+             }*/
+        //await super.clickWithWait(locator);
 
     }
     async fillStartTime()
     {
+	    await this.init();
         logger.info(this.name+"field StartTime: ");
 
-	    let locator;
-        if (this.number==0) {locator=fieldStartTimeTier1;}
-        else {locator=by.By.xpath(fieldStartTime1+this.number+fieldStartTime2);}
+	    let locator=this.fieldStartTimeTier;
+       // if (this.number==0) {locator=fieldStartTimeTier1;}
+       // else {locator=by.By.xpath(fieldStartTime1+this.number+fieldStartTime2);}
 	    var format=await Utils.getDateFormat(this.driver);
 
 	    if((this.tier.startDate==""))
 	    {
-		    this.tier.startDate=Utils.getDateNear(100000,format);
-		    this.tier.startTime=Utils.getTimeNear(100000,format);
+		    this.tier.startDate=Utils.getDateNear(80000,format);
+		    this.tier.startTime=Utils.getTimeNear(80000,format);
 
 	    } else
 	    if (format=="mdy") {
@@ -178,13 +228,14 @@ class TierPage extends page.Page{
     }
     async fillEndTime()
     {
+	    await this.init();
         logger.info(this.name+"field EndTime: ");
 
-        let locator;
+        let locator=this.fieldEndTimeTier;
 
 
-       if (this.number==0) {locator=fieldEndTimeTier1;}
-        else {locator=by.By.xpath(fieldEndTime1+this.number+fieldEndTime2);}
+       //if (this.number==0) {locator=fieldEndTimeTier1;}
+       // else {locator=by.By.xpath(fieldEndTime1+this.number+fieldEndTime2);}
 
 	    var format=await Utils.getDateFormat(this.driver);
 
@@ -216,36 +267,39 @@ class TierPage extends page.Page{
 
     }
     async fillAddress(address){
+	    await this.init();
         logger.info(this.name+"field Address: ");
-        let locator;
-        if (this.number==0) {locator=fieldAddressTier1;}
-        else {locator=by.By.xpath(fieldAddress1+this.number+fieldAddress2);}
+        let locator=this.fieldAddressTier;
+       // if (this.number==0) {locator=fieldAddressTier1;}
+       // else {locator=by.By.xpath(fieldAddress1+this.number+fieldAddress2);}
         await super.fillWithWait(locator,address);
         //this.driver.sleep(500);
 
 
     }
     async fillMin(value){
+	    await this.init();
         logger.info(this.name+"field Address: ");
-        let locator;
-        if (this.number==0) {locator=fieldMinTier1;}
-        else {locator=by.By.xpath(fieldMin1+this.number+fieldMin2);}
+        let locator=this.fieldMinTier;
+       // if (this.number==0) {locator=fieldMinTier1;}
+	    // else {locator=by.By.xpath(fieldMin1+this.number+fieldMin2);}
         await super.fillWithWait(locator,value);
     }
     async fillMax(value){
+	    await this.init();
         logger.info(this.name+"field Max: ");
-        let locator;
-        if (this.number==0) {locator=fieldMaxTier1;}
-        else {locator=by.By.xpath(fieldMax1+this.number+fieldMax2);}
+        let locator=this.fieldMaxTier;
+       // if (this.number==0) {locator=fieldMaxTier1;}
+       // else {locator=by.By.xpath(fieldMax1+this.number+fieldMax2);}
         await super.fillWithWait(locator,value);
     }
     async clickButtonAdd(){
         logger.info(this.name+"button Add: ");
-        let locator;
-        if (this.number==0) {locator=buttonAdd}
-        else {locator=By.xpath(buttonAdd1+this.number+buttonAdd2);}
+       // let locator;
+       // if (this.number==0) {locator=buttonAdd}
+       // else {locator=By.xpath(buttonAdd1+this.number+buttonAdd2);}
 
-        await super.clickWithWait(locator);
+        await super.clickWithWait(buttonAdd);
     }
 
 

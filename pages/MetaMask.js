@@ -45,8 +45,6 @@ const popupImportAccountCSS="#app-content > div > div.full-width > div > div:nth
 const fieldPrivateKey=By.xpath("//*[@id=\"private-key-box\"]");
 const pass="qwerty12345";
 const buttonImport=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/button");
-const secretWords="mask divorce brief insane improve effort ranch forest width accuse wall ride";
-const amountEth=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div[2]/div[1]/div/div/div[1]/div[1]");
 const fieldNewRPCURL=By.id("new_rpc");
 const buttonSave=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/div/div[2]/button");
 //const arrowBackRPCURL=By.className("fa fa-arrow-left fa-lg cursor-pointer");
@@ -109,32 +107,51 @@ class MetaMask extends page.Page{
         await super.clickWithWait(buttonUnlock);
 }
 
-   async open()
-    {
-        logger.info(this.name+"open: "+this.URL);
+	async open()
+	{
+		await this.switchToNextPage();
+		logger.info(this.name+"open: "+this.URL);
 
-        await this.driver.get(this.URL);
-        await this.driver.sleep(10000);
-        await super.clickWithWait(buttonAccept);
-        var agr= await this.driver.findElement(agreement);
-        const action=this.driver.actions();
-        await action.click(agr).perform();
+		await this.driver.get(this.URL);
+		await this.driver.sleep(2000);
+		logger.info("Button Accept");
+		await super.clickWithWait(buttonAccept);
+		var agr= await this.driver.findElement(agreement);
+		const action=this.driver.actions();
+		await action.click(agr).perform();
+		logger.info("Listing agreement");
+
+		for (var i=0;i<15;i++) {
+
+			await action.sendKeys(key.TAB).perform();
+
+		}
+		logger.info("Button 2nd Accept");
+		await super.clickWithWait(buttonAccept);
+		logger.info("Fill password");
+		//await this.driver.sleep(10000);
+		let cc=50;
+		do{
+			await this.driver.sleep(1000);
+			if (super.isElementPresentWithWait(fieldNewPass)) break;
+		} while(cc-->0);
+		if (cc<=0) throw Error("Metamask haven't downloaded");
+		await super.clickWithWait(fieldNewPass);
+		await super.clickWithWait(fieldNewPass);
+		await super.clickWithWait(fieldNewPass);
+		await super.fillWithWait(fieldNewPass,pass);
+		logger.info("Confirm password");
+		await super.fillWithWait(fieldConfirmPass,pass);
+		logger.info("Button create");
+		await super.clickWithWait(buttonCreate);
+		await this.driver.sleep(2000);
+		logger.info("Button I've copied");
+		await super.clickWithWait(buttonIveCopied);
+		await this.switchToNextPage();
+
+	}
 
 
-        for (var i=0;i<9;i++) {
-
-           await action.sendKeys(key.TAB).perform();
-
-        }
-        await super.clickWithWait(buttonAccept);
-        await super.fillWithWait(fieldNewPass,pass);
-        await super.fillWithWait(fieldConfirmPass,pass);
-        await super.clickWithWait(buttonCreate);
-        await this.driver.sleep(500);
-        await super.clickWithWait(buttonIveCopied);
-        await this.switchToNextPage();
-
-    }
    async  clickDotMenu(){
         await super.clickWithWait(dotMenu);
     }
@@ -161,7 +178,7 @@ class MetaMask extends page.Page{
         //this.driver.sleep(1000);
 
        logger.info(this.name+"import account :");
-       await  this.switchToNextPage();
+       await  super.switchToNextPage();
 
        await  this.chooseProvider(user.networkID);
 
@@ -172,7 +189,7 @@ class MetaMask extends page.Page{
         user.accN=accN-1;
 
 
-       await this.switchToNextPage();
+       await super.switchToNextPage();
     }
 
     async selectAccount(user){
@@ -205,14 +222,14 @@ async doTransaction(refreshCount){
     if (refreshCount!=undefined) timeLimit=refreshCount;
     do {
 
-        await this.driver.sleep(1000);
+        //await this.driver.sleep(1000);
         await this.refresh();
-        await this.driver.sleep(1000);
+        //await this.driver.sleep(1000);
 	    await super.waitUntilLocated(iconChangeAccount);
 	    //await Utils.takeScreenshoot(this.driver);
 
         if (await this.isElementPresentWithWait(buttonSubmit)) {
-	        await this.driver.sleep(500);
+	        //await this.driver.sleep(500);
             await this.submitTransaction();
             await  this.switchToNextPage();
             return true;
@@ -248,13 +265,15 @@ async isPresentButtonSubmit()
 
 }
      async addNetwork(provider){
-         this.driver.sleep(5000);
+        await  this.driver.sleep(1000);//5000
         logger.info(this.name+"add network :");
         var url;
 
         switch(provider)
         {
-            case 77:{url="https://sokol.poa.network";
+
+            case 77:{
+            url="https://sokol.poa.network";
             networks.push(77);
             break;
 
@@ -269,7 +288,7 @@ async isPresentButtonSubmit()
         await this.driver.executeScript("" +
             "document.getElementsByClassName('dropdown-menu-item')["+(networks.length-1)+"].click();");
          logger.info(this.name+"select network from menu :");
-         await this.driver.sleep(10000);////////!!!!!!!!!!!!
+         await this.driver.sleep(5000);////////!!!!!!!!!!!!
         await super.fillWithWait(fieldNewRPCURL,url);
 	     await this.driver.sleep(5000);////////!!!!!!!!!!!!
         await super.clickWithWait(buttonSave);
