@@ -93,7 +93,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
         await fs.ensureDirSync(outputPath);
         await fs.copySync(tempOutputPath,outputPath);
         //await fs.remove(tempOutputPath);
-       // await driver.quit();
+	    await driver.quit();
     });
 //////////////////////////////////////////////////////////////////////////////
 
