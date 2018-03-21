@@ -1,11 +1,14 @@
 
 
+const Logger= require('../entity/Logger.js');
+const logger=Logger.logger;
+
 const Web3 = require('web3');
 const fs = require('fs');
 const deployContract = require('./DeployContract.js');
-
-async function deployRegistry(address) {
-console.log("Deploy Registry for address "+ address);
+deployRegistry();
+async function deployRegistry() {
+//logger.info("Deploy Registry for address "+ address);
 	const web3 = await new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 
 	const registryPath = './contracts/Registry_flat';
@@ -16,12 +19,27 @@ console.log("Deploy Registry for address "+ address);
 	if (registryBin.slice(0, 2) !== '0x' && registryBin.slice(0, 2) !== '0X') {
 		registryBin = '0x' + registryBin;
 	}
-//console.log(registryBin);
 
-	await web3.eth.getAccounts()
+	var contract=await web3.eth.getAccounts()
 		.then((accounts) => {
 			return deployContract(web3, registryAbi, registryBin,accounts[0])
 		});
+
+	var networkID=await web3.eth.net.getId();
+	var registryAddress=contract._address;
+
+
+	if (await !fs.existsSync("./.env")) await fs.writeFileSync("./.env");
+	await fs.writeFileSync("./.env", '"'+networkID+'":"'+registryAddress+'"');
+
+	logger.info("Registry deployed");
+	logger.info("Ganache Chain ID: "+networkID);
+	logger.info("Contract address: "+registryAddress);
+	logger.info("Data saved to file  ./token-wizard-test-automation/.env");
+
+
+
+
 }
 module.exports = deployRegistry;
-//deployContract(web3, registryAbi, registryBin, web3.eth.accounts[0]);
+
