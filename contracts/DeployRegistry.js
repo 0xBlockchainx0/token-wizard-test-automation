@@ -30,7 +30,8 @@ async function deployRegistry() {
 
 
 	if (await !fs.existsSync("./.env")) await fs.writeFileSync("./.env");
-	await fs.writeFileSync("./.env", '"'+networkID+'":"'+registryAddress+'"');
+	let envContent = `REACT_APP_REGISTRY_ADDRESS='{"${networkID}":"${registryAddress}"}'`;
+	await fs.writeFileSync("./.env", envContent);
 
 	logger.info("Registry deployed");
 	logger.info("Ganache Chain ID: "+networkID);
