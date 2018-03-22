@@ -1,29 +1,23 @@
-{ "account": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
-  "privateKey": "03c06a9fab22fe0add145e337c5a8251e140f74468d72eab17ec7419ab812cd0",
-  "networkID":4,
+{
 
   "name": "T6RnWy_0004.json",
-  "ticker": "MSC",
-  "decimals": 6,
+  "ticker": "test",
+  "decimals": 18,
   "reservedTokens":[
-    {
-
-    },
-    {
-    }],
+    ],
   "walletAddress":"0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
   "gasprice": 40,
   "mincap": 1,
-  "whitelisting":true,
+  "whitelisting":false,
   "tiers":[
     {
       "name":"###1",
-      "allowModify": false,
-      "startDate": "02/10/2018",
-      "startTime": "01:15pm",
-      "endDate":"02/10/2018",
-      "endTime":"01:35pm",
-      "rate":100,
+      "allowModify": true,
+      "startDate": "17/04/2018",
+      "startTime": "19:00",
+      "endDate":"17/04/2018",
+      "endTime":"20:00",
+      "rate":1000,
       "supply": 200,
       "whitelist":[
         {
@@ -34,12 +28,12 @@
     },
     {
       "name":"###2",
-      "allowModify": false,
-      "startDate": "02/10/2018",
-      "startTime": "01:40pm",
-      "endDate":"02/10/2018",
-      "endTime":"01:50pm",
-      "rate":100,
+      "allowModify": true,
+      "startDate": "18/04/2018",
+      "startTime": "19:00",
+      "endDate":"18/04/2018",
+      "endTime":"20:00",
+      "rate":1000,
       "supply": 200,
       "whitelist":[
         {
@@ -50,48 +44,48 @@
     },
     {
       "name":"###3",
-      "allowModify": false,
-      "startDate": "02/10/2018",
-      "startTime": "01:55pm",
-      "endDate":"02/10/2018",
-      "endTime":"01:59pm",
-      "rate":100,
+      "allowModify": true,
+      "startDate": "19/04/2018",
+      "startTime": "19:00",
+      "endDate":"19/04/2018",
+      "endTime":"20:00",
+      "rate":1000,
       "supply": 200,
       "whitelist":[
         ]
     },
     {
       "name":"###4",
-      "allowModify": false,
-      "startDate": "02/10/2018",
-      "startTime": "02:05pm",
-      "endDate":"02/10/2018",
-      "endTime":"02:09pm",
-      "rate":100,
+      "allowModify": true,
+      "startDate": "20/04/2018",
+      "startTime": "19:00",
+      "endDate":"20/04/2018",
+      "endTime":"20:00",
+      "rate":1000,
       "supply": 200,
       "whitelist":[
         ]
     },
     {
       "name":"###5",
-      "allowModify": false,
-      "startDate": "02/10/2018",
-      "startTime": "02:10pm",
-      "endDate":"02/10/2018",
-      "endTime":"02:14pm",
-      "rate":100,
+      "allowModify": true,
+      "startDate": "21/04/2018",
+      "startTime": "19:00",
+      "endDate":"21/04/2018",
+      "endTime":"20:00",
+      "rate":1000,
       "supply": 200,
       "whitelist":[
         ]
     },
     {
       "name":"###6",
-      "allowModify": false,
-      "startDate": "02/10/2018",
-      "startTime": "02:15pm",
-      "endDate":"02/10/2018",
-      "endTime":"02:19pm",
-      "rate":100,
+      "allowModify": true,
+      "startDate": "22/04/2018",
+      "startTime": "19:00",
+      "endDate":"22/04/2018",
+      "endTime":"20:00",
+      "rate":1000,
       "supply": 200,
       "whitelist":[
         ]

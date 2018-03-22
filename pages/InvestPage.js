@@ -42,7 +42,9 @@ class InvestPage extends Page{
         this.fieldCurrentAccount=arr[0];
     }
     async getBalance(){
+
         logger.info(this.name+"get Balance :");
+        //await this.driver.sleep(5000);
         return  await super.getTextByLocator(fieldBalance);
     }
     async isPresentError(){

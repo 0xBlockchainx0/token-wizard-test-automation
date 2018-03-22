@@ -2,4 +2,5 @@
   "startURL" : "http://localhost:3000/",
   "outputPath":"./results",
   "installMetaMask":true
+
 }

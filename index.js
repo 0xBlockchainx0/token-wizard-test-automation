@@ -2,10 +2,8 @@
 const os = require('os');
 const test1=require('./tests/Test1.js');
 const Test1=test1.Test1;
-const test2=require('./tests/Test2.js');
-const Test2=test2.Test2;
-const test3=require('./tests/Test3.js');
-const Test3=test3.Test3;
+
+
 const test4=require('./tests/Test4.js');
 const Test4=test4.Test4;
 
@@ -33,46 +31,76 @@ const assert = require('assert');
 const Logger= require('./entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
+const user=require("./entity/User.js");
+const User=user.User;
+//const deployRegistry= require("./contracts/DeployRegistry.js");
+//var Accounts = require('web3-eth-accounts');
 ///////////////////////////////////////
 //address="0x9E963042D581D262AdE4E31541360e7FDAeE70C6";
-//address="0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b";
+address="0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7";
+var user8545_56B2File='./users/user8545_56B2.json';
+var user1=new User(null,user8545_56B2File);
 
-let n=Utils.convertTimeToMdy("00:33");
-console.log(n);
 
-//////////////////////////
-var GoogleSpreadsheet = require('google-spreadsheet');
 
-//xrun();
+
+run();
+//srun();
+
 
 async function srun(){
-	var doc = new GoogleSpreadsheet('1oWsbaZspCJgAWxCfTEIUnhVWw0unS_apP6mYaBYWPXs');
-	var sheet;
+	var user77_F16AFile='./users/user77_F16A.json';
+	var owner=new User(null,user77_F16AFile);
+	var user77_1180File='./users/user77_1180.json';
+	var investor=new User(null,user77_1180File);
+
+
+	var tokenAddress="0x8892a103A69C0dE5497cEe2acB06cEB260376e43";
+	var contractAddress="0x56A9b2D6F7FE1C1Da92A6481d0c2cf9286421E5D";
+
+	//var web3=Utils.setNetwork(77);
+	//var b=await web.eth.getBalance(tokenAddress);
+
+	var abi=[{"constant":true,"inputs":[],"name":"isPricingStrategy","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"tier","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"value","type":"uint256"},{"name":"weiRaised","type":"uint256"},{"name":"tokensSold","type":"uint256"},{"name":"msgSender","type":"address"},{"name":"decimals","type":"uint256"}],"name":"calculatePrice","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_tier","type":"address"}],"name":"setTier","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"newOneTokenInWei","type":"uint256"}],"name":"updateRate","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"oneTokenInWei","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"crowdsale","type":"address"}],"name":"isSane","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"purchaser","type":"address"}],"name":"isPresalePurchase","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"_oneTokenInWei","type":"uint256"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"newOneTokenInWei","type":"uint256"}],"name":"RateChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"}]
+
+	var web3 = Utils.setNetwork(this.networkID);
+	var tokenContract=abi;
+	var MyContract = new web3.eth.Contract(tokenContract, tokenAddress);
+
+	var b = await MyContract.methods.balanceOf(this.account).call();
+console.log (b);
 
 }
 
-async function xrun(){
-	var driver;
-	var util=new Utils();
-	driver= await util.startBrowserWithMetamask();
-	//await driver.get("https://docs.google.com/spreadsheets/d/1oWsbaZspCJgAWxCfTEIUnhVWw0unS_apP6mYaBYWPXs/edit#gid=0");
 
-	//
-     await driver.get("https://docs.google.com/spreadsheets/d/1oWsbaZspCJgAWxCfTEIUnhVWw0unS_apP6mYaBYWPXs/edit#gid=0&range=A2");
-  // await driver.get("https://docs.google.com/spreadsheets/d/1oWsbaZspCJgAWxCfTEIUnhVWw0unS_apP6mYaBYWPXs/edit#gid=0&range=A2");
-    var el=By.className("cell-input");
-  //var el=By.xpath("//*[@id=\"t-formula-bar-input\"]/div");
-    var s=await driver.findElement(el).sendKeys("wdwdewed");
-    console.log(s);
-   var t=await s.getText();
-   console.log("SSSSS="+t);
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////
+async function xrun() {
+	const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+	await web3.eth.getAccounts().then(console.log);
+
+	await web3.eth.accounts.privateKeyToAccount("ba98116a7d4b98f22f113c59448b9cc69f916d75f35d51f088b64b483fd0b8ca");
+	console.log("?????????????????????");
+	await web3.eth.getAccounts().then(console.log);
+
+	await deployRegistry("0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b");
+
 }
-//run();
 
 async function run() {
 
 
- // @Before Tests
+	// @Before Tests
 
 
     var driver;
@@ -84,11 +112,10 @@ async function run() {
     var test1 = new Test1(driver,Utils.getOutputPath());
   // var d=await Utils.getDateFormat(driver);
  //  console.log(d);
-    //test1.run().then().catch();
+    test1.run().then().catch();
 
-    var test3 = new Test3(driver,Utils.getOutputPath());
-  //test3.run().then().catch();
-    var test4 = new Test4(driver,Utils.getOutputPath());
+
+  //  var test4 = new Test4(driver,Utils.getOutputPath());
   // test4.run().then().catch();
 
   //@After suit

@@ -14,7 +14,7 @@ class Investor extends User
         super(driver,file);
 
     }
-    print() {
+  /*  print() {
        logger.info("account:" + this.account);
         logger.info("privateKey:" + this.privateKey);
         logger.info("networkID:" + this.networkID);
@@ -40,6 +40,8 @@ async confirmPopup(){
 
 
    async  contribute(amount){
+
+
       var investPage = new InvestPage(this.driver);
       await investPage.waitUntilLoaderGone();
       await investPage.fillInvest(amount);
@@ -110,6 +112,6 @@ async confirmPopup(){
 
     }
 
-
+*/
 }
 module.exports.Investor=Investor;

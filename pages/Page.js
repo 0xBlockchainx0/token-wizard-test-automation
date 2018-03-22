@@ -110,7 +110,7 @@ async getAttributeByLocator(locator,attr){
 
 async getTextByLocator(locator)
 {
-	await this.driver.sleep(7000);
+	//await this.driver.sleep(7000);
   logger.info("get text ");
 	await this.driver.wait(webdriver.until.elementLocated(locator), Twait,'Element '+locator+'NOT present.Time out.\n');
     return await this.driver.findElement(locator).getText();
@@ -127,19 +127,37 @@ async open (url){
         await this.driver.get(url);
 	    logger.info("Current URL: "+await this.driver.getCurrentUrl());
      	logger.info("Current HANDLE: "+await this.driver.getWindowHandle());
-
-
 	    await this.driver.sleep(5000);
 }
-async clearField(element,n){
-	await this.driver.sleep(2500);
-    logger.info("clear");
-    let field;
-    if (n!=1) {
 
-        field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);}
-    else field=element;
-    await field.clear();
+async clearField(element,n){
+    	logger.info("Class name="+element.constructor.name);
+	let c=10;
+	let s="empty";
+    	do {
+
+
+		    logger.info("clear");
+		    let field;
+		   // if (n != 1)
+		   if (element.constructor.name!="WebElement")
+		    {
+
+			    field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+		    }
+		    else field = element;
+		    await field.clear();
+		    await this.driver.sleep(1000);
+		    await field.clear();
+		    await field.clear();
+
+		    s=await this.getTextByElement(field);
+		    if (s=="") {logger.info("Break with c="+c+", s="+s); break;}
+		    logger.info("Field  contains:"+s);
+		    s=s.trim();
+		    c--;
+
+	    } while((c>0))
     /*
     const c=key.chord(key.CONTROL,"a");
     const action=this.driver.actions();
@@ -191,10 +209,16 @@ async clickElement(element){
         logger.info("click" +element);
         try{
 
-        let button = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+	        let field;
+	        // if (n != 1)
+	        if (element.constructor.name!="WebElement")
+	        {
 
+		        field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+	        }
+	        else field = element;
 
-        await button.click();}
+        await field.click();}
         catch(err){logger.info("Can not click element"+ element);
 	                }
     }
@@ -221,11 +245,21 @@ async waitUntilLocated(element)
 	   // await this.driver.sleep(TTT);
 	    try {
 		    logger.info("fill: value = " + k);
-		    let field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+
+		    let field;
+		    // if (n != 1)
+		    if (element.constructor.name!="WebElement")
+		    {
+
+			    field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+		    }
+		    else field = element;
 		    await field.sendKeys(k);
+
 	    }
-	    catch(err){logger.info("Element "+ element+" has not appeared in"+ Twait+" sec.");
-		     }
+	    catch(err){
+	    	logger.info("Element "+ element+" has not appeared in"+ Twait+" sec.");
+		          }
 
     }
     async refresh(){
@@ -284,18 +318,28 @@ async waitUntilLoaderGone(){
 	//await this.driver.sleep(TTT);
 
     logger.info("Loader :");
+try {
+	let c = 0;
+	let limit=40;
+	do {
+		this.driver.sleep(1000);
+		await this.isDisplayedLoader();
+		if (c++ > limit) throw ("Loading container displayed more than "+limit+" sec");
+	}
+	while ((await this.isDisplayedLoader()));
 
-    let c=40;
-    do{
-    	this.driver.sleep(1000);await this.isDisplayedLoader();
-    	if (c--<0) break;
-    }
-    while((await this.isDisplayedLoader()));
 }
+catch(err){
+	console.log(err);
+   await  this.refresh();
+    await this.driver.sleep(5000);
+}
+
+    }
 
 async switchToNextPage(){
 
-	//await this.driver.sleep(TTT);
+	//await this.driver.sleep(500);
 
         logger.info("switch to next tab");
         let dr=this.driver;
@@ -323,7 +367,7 @@ async switchToNextPage(){
 	          logger.info("Current handle  = "+ curHandle);
 	          logger.info("Switch to handle  = "+ handle);
            await dr.switchTo().window(handle);
-	       await this.driver.sleep(1000);
+	       //await this.driver.sleep(1000);
 	      // await this.driver.sleep(TTT);
 
 	       //await Utils.takeScreenshoot(this.driver);
