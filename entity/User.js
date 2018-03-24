@@ -73,10 +73,6 @@ class User {
 
 	}
 
-
-
-
-
 	async addWhitelistMngPage(tier, min, max){
 try {
 	let b=false;
@@ -459,7 +455,7 @@ catch(err){
 	           logger.info("Transaction# "+trCounter+" is successfull");
            }
 
-	      await this.driver.sleep(2500);//anyway won't be faster than start time
+	      await this.driver.sleep(3500);//anyway won't be faster than start time
 	        if ((await wizardStep4.isPresentButtonSkipTransaction()))
 	        {
 
@@ -615,6 +611,8 @@ catch(err){
             if (await investPage.isPresentWarning()) {
                 //await Utils.takeScreenshoot(this.driver);
                 await investPage.clickButtonOK();
+	            await investPage.waitUntilLoaderGone();
+                await this.driver.sleep(3000);
                 return true;
             }
 
@@ -632,9 +630,11 @@ catch(err){
         if(url!=curURL) await investPage.open(url);
         await investPage.waitUntilLoaderGone();
         //await Utils.takeScreenshoot(this.driver);
-        await this.driver.sleep(5000);
-	    await investPage.refresh();
+	    //await investPage.refresh();
 	    await this.driver.sleep(2000);
+	    await investPage.refresh();
+	    await this.driver.sleep(6000);
+
         let s=await investPage.getBalance();
 
         let arr=s.split(" ");
