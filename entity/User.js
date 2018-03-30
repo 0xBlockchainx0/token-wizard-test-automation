@@ -328,9 +328,6 @@ class User {
 
 
     }
-
-
-
     async distribute(crowdsale){
 	    logger.info(this.account + " distribution");
 	    logger.info(this. account+" balance = "+ Utils.getBalance(this));
@@ -395,9 +392,6 @@ class User {
         return true;
     }
 
-
-    getAmount(){}
-
     async createCrowdsale(scenarioFile,Tfactor){
 
 
@@ -447,33 +441,23 @@ class User {
         for (var i=0;i<cur.reservedTokens.length;i++)
         {
             await reservedTokens.fillReservedTokens(cur.reservedTokens[i]);
-            // await this.driver.sleep(1000);
             await reservedTokens.clickButtonAddReservedTokens();
-            // await this.driver.sleep(1000);
-
         }
 
 
         await wizardStep2.clickButtonContinue();
-	    // await this.driver.sleep(3000);
         await wizardStep3.fillWalletAddress(cur.walletAddress);
 
         await wizardStep3.setGasPrice(cur.gasPrice);
-	    //await Utils.takeScreenshoot(this.driver);
         if (cur.whitelisting) await wizardStep3.clickCheckboxWhitelistYes();
         else (await wizardStep3.fillMinCap(cur.minCap));
-        //await Utils.takeScreenshoot(this.driver);
         for (var i=0;i<cur.tiers.length-1;i++)
         {
             await tiers[i].fillTier();
-            //await Utils.takeScreenshoot(this.driver);
             await wizardStep3.clickButtonAddTier();
         }
         await tiers[cur.tiers.length-1].fillTier();
         await Utils.takeScreenshoot(this.driver);
-
-
-
         await wizardStep3.clickButtonContinue();
         await this.driver.sleep(5000);
 	    await Utils.takeScreenshoot(this.driver);
@@ -492,9 +476,7 @@ class User {
            z=await metaMask.doTransaction(5);
 	        trCounter++;
            if (!z) {
-
 	           logger.info("Transaction #"+trCounter+" didn't appear.");
-	           //b=false;
 	            }
 	           else {
 
@@ -512,18 +494,12 @@ class User {
 		        console.log("Transaction #"+ (trCounter+1)+" is skipped.");
 		        trCounter++;
 		        skippedTr++;
-		        //await this.driver.sleep(5000);//1000
 	        }
 	        else {
-		       // await this.driver.sleep(1000);
+
 		        if (!(await wizardStep4.isPage())) {//if modal NOT present
-			        //await this.driver.sleep(10000);
-
 			        await wizardStep4.waitUntilLoaderGone();
-			       // await Utils.takeScreenshoot(this.driver);
-			        // await this.driver.sleep(5000);
 			        await wizardStep4.clickButtonOk();
-
 			        b = false;
 		        }
 	        }
@@ -541,17 +517,13 @@ class User {
             "\n"+ "Transaction were skipped: "+skippedTr;
                 logger.info(s);
                 b=false;}
-	         // console.log("timeLimit="+timeLimit);
 
         } while (b);
 
         logger.info("Crowdsale created."+"\n"+" Transaction were done:"+ (trCounter-skippedTr)+
 	    "\n"+ "Transaction were skipped: "+skippedTr);
 //////////////////////////////////////////////////////////////////
-       // await Utils.takeScreenshoot(this.driver);
-
-
-        await this.driver.sleep(5000);
+	    await this.driver.sleep(5000);
 	    const abi=await wizardStep4.getABI();
 	   logger.info(abi);
 
@@ -578,7 +550,6 @@ class User {
         logger.info("Transaction were done: "+ trCounter);
 
         await investPage.waitUntilLoaderGone();
-        //await  this.driver.sleep(10000);
         await Utils.takeScreenshoot(this.driver);
         const addr=await investPage.getTokenAddress();
         const contr=await investPage.getContractAddress();
@@ -599,7 +570,7 @@ class User {
                 await investPage.clickButtonOK();
                 return true;
             }
-           // await Utils.takeScreenshoot(this.driver);
+
             return false;
         }
 
@@ -612,7 +583,6 @@ class User {
         var investPage = new InvestPage(this.driver);
         await investPage.waitUntilLoaderGone();
         await investPage.fillInvest(amount);
-        //await Utils.takeScreenshoot(this.driver);
         await investPage.clickButtonContribute();
         var counter=0;
         var d=true;
@@ -624,20 +594,16 @@ class User {
             if (await investPage.isPresentWarning()) {
                 var text=await investPage.getWarningText();
                 logger.info(this.name+": warning:"+text);
-                //await Utils.takeScreenshoot(this.driver);
-                //await investPage.clickButtonOK();
                 return false;}
             //Check if Error present(transaction failed)->return false
             if (await investPage.isPresentError()) {
                 var text=await investPage.getErrorText();
                 logger.info(this.name+": error:"+text);
-               // await Utils.takeScreenshoot(this.driver);
-                //await investPage.clickButtonOK();
+
                 return false;}
 
             counter++;
             if (counter>=timeLimit) {
-                //await Utils.takeScreenshoot(this.driver);
                 d=false;
             }
         } while(d);
@@ -654,15 +620,14 @@ class User {
         while(counter++<timeLimit) {
             await this.driver.sleep(500);
             if (await investPage.isPresentWarning()) {
-                //await Utils.takeScreenshoot(this.driver);
+
                 await investPage.clickButtonOK();
 	            await investPage.waitUntilLoaderGone();
                 await this.driver.sleep(3000);
                 return true;
             }
-
         }
-       // await Utils.takeScreenshoot(this.driver);
+
         return false;
     }
 
@@ -674,8 +639,6 @@ class User {
         var curURL=await investPage.getURL();
         if(url!=curURL) await investPage.open(url);
         await investPage.waitUntilLoaderGone();
-        //await Utils.takeScreenshoot(this.driver);
-	    //await investPage.refresh();
 	    await this.driver.sleep(2000);
 	    await investPage.refresh();
 	    await this.driver.sleep(2000);
@@ -692,11 +655,6 @@ class User {
 
 
     }
-
-
-
-
-
 
 }
 module.exports.User=User;

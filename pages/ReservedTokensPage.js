@@ -7,16 +7,8 @@ const page=require('./Page.js');
 const Page=page.Page;
 const  by = require('selenium-webdriver/lib/by');
 const By=by.By;
-//const fieldAddress=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[4]/div/div[1]/div[1]/input");
-//const checkboxTokens=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[4]/div/div[1]/div[2]/div/label[1]/span");
-//const checkboxPercentage=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[4]/div/div[1]/div[2]/div/label[2]/span");
-//const fieldValue=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[4]/div/div[1]/div[3]/input");
-//const buttonAdd=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[4]/div/div[2]/div");
-                            //*[@id="root"]/div/section/div[2]/div[4]/div[1]/div[2]/div
-                               //*[@id="root"]/div/section/div[2]/div[4]/div/div[2]/div
-                            //*[@id="root"]/div/section/div[2]/div[4]/div[1]/div[2]/div
-const buttonAdd=By.className("button button_fill button_fill_plus");
 
+const buttonAdd=By.className("button button_fill button_fill_plus");
 
 class ReservedTokensPage extends Page{
 
@@ -26,8 +18,6 @@ class ReservedTokensPage extends Page{
         this.fieldAddress;
         this.fieldValue;
         this.name="Reserved tokens :"
-        //this.checkboxTokens;
-      //  this.checkboxPercentage;
 
     }
     async init(){
@@ -61,7 +51,7 @@ class ReservedTokensPage extends Page{
     }
 
     async fillAddress(address){
-        // console.log(address);
+
         logger.info(this.name+"field Address :");
         if (address=="") return;
         else {

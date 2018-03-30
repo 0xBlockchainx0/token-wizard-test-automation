@@ -10,10 +10,7 @@ class Whitelist  {
         this.min = min;
         this.max = max;
 
-
     }
 }
-
-
 
 module.exports.Whitelist=Whitelist;

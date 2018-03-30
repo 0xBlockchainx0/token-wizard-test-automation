@@ -85,8 +85,6 @@ class TierPage extends page.Page {
     	await this.init();
         logger.info(this.name+"field SetupName: ");
         let locator=this.fieldNameTier;
-     //   if (this.number==0) {locator=fieldNameTier1;}
-    //    else {locator=by.By.xpath(fieldName1+this.number+fieldName2);}
         await super.clearField(locator);
         await  super.fillWithWait(locator,this.tier.name);
 
@@ -106,8 +104,6 @@ class TierPage extends page.Page {
     {  await this.init();
     	logger.info(this.name+"field Supply: ");
         let locator=this.fieldSupplyTier;
-       // if (this.number==0) {locator=fieldSupplyTier1;}
-        //else {locator=by.By.xpath(fieldSupply1+this.number+fieldSupply2);}
         await super.clearField(locator);
         await super.fillWithWait(locator,this.tier.supply);
 
@@ -121,25 +117,6 @@ class TierPage extends page.Page {
 		    await super.clickWithWait(this.checkboxModifyOn);
 	    }
 
-      /* let locator;
-      if (this.number == 0)
-            if (this.tier.allowModify) {
-                locator = checkboxModifyOnTier1;
-            }
-            else {
-                locator = checkboxModifyOffTier1;
-            }
-        else {
-
-            if (this.tier.allowModify) {
-            locator = by.By.xpath(checkboxModifyOn1 + this.number + checkboxModifyOn2);
-            }
-            else {
-            locator = by.By.xpath(checkboxModifyOff1 + this.number + checkboxModifyOff2);
-                 }
-             }*/
-        //await super.clickWithWait(locator);
-
     }
     async fillStartTime()
     {
@@ -147,8 +124,6 @@ class TierPage extends page.Page {
         logger.info(this.name+"field StartTime: ");
 
 	    let locator=this.fieldStartTimeTier;
-       // if (this.number==0) {locator=fieldStartTimeTier1;}
-       // else {locator=by.By.xpath(fieldStartTime1+this.number+fieldStartTime2);}
 	    var format=await Utils.getDateFormat(this.driver);
 
 
@@ -164,10 +139,7 @@ class TierPage extends page.Page {
 		    this.tier.startTime=Utils.convertTimeToMdy(this.tier.startTime);
 
 	    }
-
-
-
-        await super.fillWithWait(locator,this.tier.startDate);
+	    await super.fillWithWait(locator,this.tier.startDate);
         const action=this.driver.actions();
         await action.sendKeys(key.TAB).perform();
         await super.fillWithWait(locator,this.tier.startTime);
@@ -180,20 +152,12 @@ class TierPage extends page.Page {
         logger.info(this.name+"field EndTime: ");
 
         let locator=this.fieldEndTimeTier;
-
-
-       //if (this.number==0) {locator=fieldEndTimeTier1;}
-       // else {locator=by.By.xpath(fieldEndTime1+this.number+fieldEndTime2);}
-
-	    var format=await Utils.getDateFormat(this.driver);
+        var format=await Utils.getDateFormat(this.driver);
 
         if (! this.tier.endDate.includes("/"))
-        {     //console.log(parseInt(this.tier.endDate));
+        {
 	         this.tier.endTime=Utils.getTimeNear(parseInt(this.tier.endDate),"utc");
         	 this.tier.endDate=Utils.getDateNear(parseInt(this.tier.endDate),"utc");
-
-
-	        // console.log("Time"+this.tier.endTime );
         }
 
 
@@ -231,35 +195,23 @@ class TierPage extends page.Page {
 	    await this.init();
         logger.info(this.name+"field Address: ");
         let locator=this.fieldWhAddressTier;
-       // if (this.number==0) {locator=fieldAddressTier1;}
-       // else {locator=by.By.xpath(fieldAddress1+this.number+fieldAddress2);}
         await super.fillWithWait(locator,address);
-        //this.driver.sleep(500);
-
 
     }
     async fillMin(value){
 	    await this.init();
         logger.info(this.name+"field Address: ");
         let locator=this.fieldMinTier;
-       // if (this.number==0) {locator=fieldMinTier1;}
-	    // else {locator=by.By.xpath(fieldMin1+this.number+fieldMin2);}
         await super.fillWithWait(locator,value);
     }
     async fillMax(value){
 	    await this.init();
         logger.info(this.name+"field Max: ");
         let locator=this.fieldMaxTier;
-       // if (this.number==0) {locator=fieldMaxTier1;}
-       // else {locator=by.By.xpath(fieldMax1+this.number+fieldMax2);}
         await super.fillWithWait(locator,value);
     }
     async clickButtonAdd(){
         logger.info(this.name+"button Add: ");
-       // let locator;
-       // if (this.number==0) {locator=buttonAdd}
-       // else {locator=By.xpath(buttonAdd1+this.number+buttonAdd2);}
-
         await super.clickWithWait(buttonAdd);
     }
 

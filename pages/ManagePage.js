@@ -11,8 +11,6 @@ const Utils=utils.Utils;
 const buttonOk=By.xpath("/html/body/div[2]/div/div[3]/button[1]");
 
 const modal=By.className("modal");
-//const buttonOk=By.className("swal2-confirm swal2-styled");
-//const adj="div[1]/";
 const adj="";
 const buttonDistribute=By.xpath("//*[contains(text(),'Distribute tokens')]");
 const buttonFinalize=By.xpath("//*[contains(text(),'Finalize Crowdsale')]");
@@ -49,12 +47,9 @@ class ManagePage extends Page
 	var arr = await super.findWithWait(locator);
 	for (var i=0; i<arr.length;i++)
 	this.buttonAddWh[i]=arr[i];
-
-
 }
 
 	async initInputs(){
-//restriction maximum 2 tiers
 	var locator = By.className("input");
 	var arr = await super.findWithWait(locator);
 	var amountTiers=1;
@@ -62,9 +57,6 @@ class ManagePage extends Page
 
 	if (arr.length>9){amountTiers=2;}
 	if ((arr.length>15)||(arr.length==9)) tierLength=9;
-
-
-
     for (var i=0;i<amountTiers;i++)
        {
        	  this.fieldNameTier[i]=arr[i*tierLength+0];
@@ -73,19 +65,16 @@ class ManagePage extends Page
        	  this.fieldEndTimeTier[i]=arr[i*tierLength+3];
        	  this.fieldRateTier[i]=arr[i*tierLength+4];
        	  this.fieldSupplyTier[i]=arr[i*tierLength+5];
-
-       	   this.fieldWhAddressTier[i]=undefined;
-	       this.fieldMinTier[i]=undefined;
-	       this.fieldMaxTier[i]=undefined;
+       	  this.fieldWhAddressTier[i]=undefined;
+       	  this.fieldMinTier[i]=undefined;
+       	  this.fieldMaxTier[i]=undefined;
 
     if ((tierLength==9)||(tierLength==18))
        {
-
 	     this.fieldWhAddressTier[i]=arr[i*tierLength+6];
 	     this.fieldMinTier[i]=arr[i*tierLength+7];
 	     this.fieldMaxTier[i]=arr[i*tierLength+8];
-
-        }
+	     }
 
        }
 	if (arr.length==15)
@@ -94,44 +83,38 @@ class ManagePage extends Page
 		this.fieldMinTier[1]=arr[13];
 		this.fieldMaxTier[1]=arr[14];
 	}
-
-
 }
 	async getNameTier(tier){
-	await this.initInputs();
-	return await super.getAttribute(this.fieldNameTier[tier-1],"value");
-
+	  await this.initInputs();
+	  return await super.getAttribute(this.fieldNameTier[tier-1],"value");
 }
-
-async isDisabledNameTier(tier) {
-	await this.initInputs();
-	return await this.isElementDisabled(this.fieldNameTier[tier - 1]);
+    async isDisabledNameTier(tier) {
+	  await this.initInputs();
+	  return await this.isElementDisabled(this.fieldNameTier[tier - 1]);
 
 }
 
 	async getWalletAddressTier(tier){
-	await this.initInputs();
-	return await super.getAttribute(this.fieldWalletAddressTier[tier-1],"value");
+	  await this.initInputs();
+	  return await super.getAttribute(this.fieldWalletAddressTier[tier-1],"value");
 
 }
 
 	async isDisabledWalletAddressTier(tier) {
-	await this.initInputs();
-	return await this.isElementDisabled(this.fieldWalletAddressTier[tier - 1]);
+	  await this.initInputs();
+	  return await this.isElementDisabled(this.fieldWalletAddressTier[tier - 1]);
 
 }
 
-
-
 	async getRateTier(tier){
-	await this.initInputs();
-	return await super.getAttribute(this.fieldRateTier[tier-1],"value");
+	  await this.initInputs();
+	  return await super.getAttribute(this.fieldRateTier[tier-1],"value");
 
 }
 
 	async getSupplyTier(tier){
-	await this.initInputs();
-	return await super.getAttribute(this.fieldSupplyTier[tier-1],"value");
+	  await this.initInputs();
+	  return await super.getAttribute(this.fieldSupplyTier[tier-1],"value");
 
 }
 
@@ -265,19 +248,12 @@ async fillWhitelist(tier,address,min,max)
 
 }
 
-
-/////////////////////////////////////////////////////////
 	async open(){
     logger.info(this.name+":");
     await super.open(this.URL);
 
 }
-async isAvailable(){
 
-       logger.info(this.name+"Modal :");
-       return (await super.isElementPresent(modal));
-}
-/////////////////////////////////
 async isEnabledDistribute(){
 	//await this.driver.sleep(3000);
     logger.info(this.name+"button Distribute :")
@@ -375,14 +351,6 @@ async confirmPopup(){
 
         }while(true);
 }
-
-
-
-
-
-
-
-
 
 }
 module.exports={

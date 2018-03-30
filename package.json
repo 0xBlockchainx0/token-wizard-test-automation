@@ -7,7 +7,6 @@
     "e2e-deployRegistry": "node  ./contracts/DeployRegistry.js",
     "test1": "mocha ./test/testSuite1.js",
     "test2": "mocha ./test/testSuite2.js",
-    "test3": "mocha ./tests/Test2.js",
     "ind": "node ./index.js"
   },
   "dependencies": {

@@ -10,21 +10,10 @@ const webdriver = require('selenium-webdriver'),
     by = require('selenium-webdriver/lib/by');
 const By=by.By;
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
-//const buttonContinue=By.xpath("//*[@id=\"root\"]/div/section/div[3]/a");
-const buttonDownload=By.xpath("//*[@id=\"root\"]/div/section/div[3]/div");
-const blueScreen=By.xpath('//*[@id="root"]/div/section/div[4]/div[2]/div');
-//const modal=By.xpath("//*[@id=\"root\"]/div/section/div[4]/div/p");
 const modal=By.className("modal");
 const buttonOK=By.xpath('/html/body/div[2]/div/div[3]/button[1]');
 const buttonSkipTransaction=By.className("no_image button button_fill");
 const buttonYes=By.className("swal2-confirm swal2-styled");
-const fieldTokenContractAbi1=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[2]/div[7]/div[2]/pre");
-                                         //*[@id="root"]/div/section/div[2]/div[2]/div[7]/div[2]/pre/text()
-
-const fieldTokenContractAbi2=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[2]/div[8]/div[2]/pre");
-
-//const fields=By.css("pre");
-
 
 class WizardStep4 extends page.Page{
 
@@ -57,7 +46,6 @@ class WizardStep4 extends page.Page{
     	logger.info(this.name+": get ABI: ");
     	let element = this.fieldTokenABI;
     	let abi=await super.getTextByElement(element);
-    	//logger.info ("ABI:" +abi);
     	return abi;
 
 	}
@@ -89,13 +77,8 @@ async isPage(){
 	}
 	async clickButtonSkipTransaction(){
 		logger.info(this.name+"buttonSkipTransaction: ");
-		//await Utils.zoom(this.driver,0.75);
-//because BUG
 		await this.driver.executeScript( "document.getElementsByClassName('no_image button button_fill')[0].click();");
 
-
-		//await super.clickWithWait(buttonSkipTransaction);
-		//await Utils.zoom(this.driver,1);
 	}
 
 	async clickButtonYes(){
@@ -106,6 +89,4 @@ async isPage(){
 
 
 }
-module.exports={
-    WizardStep4:WizardStep4
-    }
+module.exports={ WizardStep4:WizardStep4 }

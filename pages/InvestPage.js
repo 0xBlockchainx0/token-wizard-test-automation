@@ -5,22 +5,15 @@ const tempOutputPath=Logger.tempOutputPath;
 const page=require('./Page.js');
 Page=page.Page;
 const webdriver = require('selenium-webdriver'),
-    chrome = require('selenium-webdriver/chrome'),
-    firefox = require('selenium-webdriver/firefox'),
-    by = require('selenium-webdriver/lib/by');
+      chrome = require('selenium-webdriver/chrome'),
+      firefox = require('selenium-webdriver/firefox'),
+      by = require('selenium-webdriver/lib/by');
 const By=by.By;
 const buttonContribute=By.className("button button_fill");
 
-//const fieldTokenAddress=By.xpath("//*[@id=\"root\"]/div/div[1]/div[1]/div[1]/div[2]/div[2]/p[1]");
-                                   //*[@id="root"]/div/div[1]/div/div[1]/div[1]/div[2]/div[3]/p[1]
-//const fieldContractAddress=By.xpath("//*[@id=\"root\"]/div/div[1]/div[1]/div[1]/div[2]/div[3]/p[1]");
-                                       //*[@id="root"]/div/div[1]/div[1]/div[1]/div[2]/div[3]/p[1]
 const fieldInvest=By.className("invest-form-input");
 const buttonOk=By.className("swal2-confirm swal2-styled");
-// /html/body/div[2]/div/div[3]/button[1]
-
 const fieldBalance=By.className("balance-title");
-
 const fields=By.className("hashes-title");
 const warningText=By.id("swal2-content");
 const errorNotice=By.className("css-6bx4c3");

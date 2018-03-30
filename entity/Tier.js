@@ -3,7 +3,7 @@ const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
 
 class Tier{
-    constructor(name,allowModify,rate,supply,startTime,startDate,endTime,endDate,whitelist){
+        constructor(name,allowModify,rate,supply,startTime,startDate,endTime,endDate,whitelist){
 
 
         this.name=name;
@@ -17,12 +17,5 @@ class Tier{
         this.whitelist=whitelist;
     }
 
-
-
-
 }
-
-
-
-
 module.exports.Tier=Tier;
