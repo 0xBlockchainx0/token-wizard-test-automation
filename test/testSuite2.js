@@ -86,9 +86,9 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		logger.info("Roles:");
 		logger.info("Owner = "+Owner.account);
 		logger.info("Owner's balance = :"+await Utils.getBalance(Owner)/1e18);
-		logger.info("Investor1 (will be added in tier1 from manage page) = "+Investor1.account);
+		logger.info("Investor1  = "+Investor1.account);
 		logger.info("Investor1 balance = :"+await Utils.getBalance(Investor1)/1e18);
-		logger.info("Investor2 (added to tier#2 before creating) = :"+Investor2.account);
+		logger.info("Investor2  = :"+Investor2.account);
 		logger.info("Investor2 balance = :"+await Utils.getBalance(Investor2)/1e18);
 
 		mtMask = new MetaMask(driver);
@@ -811,7 +811,6 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		investor=Investor2;
 		newBalance=await investor.getTokenBalance(crowdsale)/1e18;
 		balance=50;
-
 		logger.info("Investor should receive  = "+balance);
 		logger.info("Investor has received balance = "+newBalance);
 		assert.equal(balance, newBalance,"Test FAILED.'Investor has received "+newBalance+" tokens instead "+ balance )

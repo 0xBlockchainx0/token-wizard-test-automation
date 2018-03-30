@@ -105,17 +105,17 @@ class Page {
 
 
 async getTextByElement(element)
-{logger.info("get text ");
-	//await this.driver.sleep(TTT);
-	var s=await element.getText();
-	logger.info("Got text: "+s);
+{
+	logger.info("get text ");
+    var s=await element.getText();
+	if(s.length<100) logger.info("Text received: "+s);
     return s;
 }
 
 
 
 async getAttribute(element,attr){
-	//await this.driver.sleep(TTT);
+
 	logger.info("get attribute = "+attr+ "for element = "+element);
 	let field;
 		if (element.constructor.name!="WebElement")
@@ -132,7 +132,7 @@ async getAttribute(element,attr){
 
 	async getTextByLocatorFast(locator)
 	{
-		//await this.driver.sleep(7000);
+
 		logger.info("get text ");
 		let s="";
 		try {

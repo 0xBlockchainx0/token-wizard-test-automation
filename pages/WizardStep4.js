@@ -19,8 +19,12 @@ const buttonOK=By.xpath('/html/body/div[2]/div/div[3]/button[1]');
 const buttonSkipTransaction=By.className("no_image button button_fill");
 const buttonYes=By.className("swal2-confirm swal2-styled");
 const fieldTokenContractAbi1=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[2]/div[7]/div[2]/pre");
+                                         //*[@id="root"]/div/section/div[2]/div[2]/div[7]/div[2]/pre/text()
 
 const fieldTokenContractAbi2=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[2]/div[8]/div[2]/pre");
+
+//const fields=By.css("pre");
+
 
 class WizardStep4 extends page.Page{
 
@@ -29,7 +33,7 @@ class WizardStep4 extends page.Page{
         this.URL;
         this.name="WizardStep4 page: ";
         this.tokenContractAddress;
-
+        this.fieldTokenABI;
     }
 
 	async init(){
@@ -37,16 +41,23 @@ class WizardStep4 extends page.Page{
 		var locator = By.className("input");
 		var arr = await super.findWithWait(locator);
 		this.tokenContractAddress = arr[2];
+	}
+
+	async initFields(){
+
+		const fields=By.css("pre");
+		var arr=await super.findWithWait(fields);
+		this.fieldTokenABI=arr[1];
 
 	}
 
-	async getABI(tiersAmount){
-    	logger.info(this.name+": get ABI: ");
-    	let locator = fieldTokenContractAbi2;
+	async getABI(){
 
-    	if (tiersAmount==2) locator = fieldTokenContractAbi2;
-    	let abi=await super.getTextByLocator(locator);
-    	logger.info ("ABI:" +abi);
+		await this.initFields();
+    	logger.info(this.name+": get ABI: ");
+    	let element = this.fieldTokenABI;
+    	let abi=await super.getTextByElement(element);
+    	//logger.info ("ABI:" +abi);
     	return abi;
 
 	}

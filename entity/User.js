@@ -550,7 +550,7 @@ class User {
 
 
         await this.driver.sleep(5000);
-	    const abi=await wizardStep4.getABI(cur.tiers.length);
+	    const abi=await wizardStep4.getABI();
 	   logger.info(abi);
 
         await wizardStep4.clickButtonContinue();
