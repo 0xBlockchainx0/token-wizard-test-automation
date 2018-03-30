@@ -4,8 +4,7 @@
     <list default="true" id="40b9626d-5f4f-46c4-8096-7de331aaa15a" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/entity/User.js" afterPath="$PROJECT_DIR$/entity/User.js" />
-      <change beforePath="$PROJECT_DIR$/pages/Page.js" afterPath="$PROJECT_DIR$/pages/Page.js" />
-      <change beforePath="$PROJECT_DIR$/pages/WizardStep4.js" afterPath="$PROJECT_DIR$/pages/WizardStep4.js" />
+      <change beforePath="$PROJECT_DIR$/pages/ManagePage.js" afterPath="$PROJECT_DIR$/pages/ManagePage.js" />
       <change beforePath="$PROJECT_DIR$/test/testSuite2.js" afterPath="$PROJECT_DIR$/test/testSuite2.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -33,11 +32,41 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="testSuite2.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="User.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/entity/User.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="318">
+              <caret line="343" column="0" lean-forward="true" selection-start-line="343" selection-start-column="0" selection-end-line="343" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ManagePage.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pages/ManagePage.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="243">
+              <caret line="285" column="6" lean-forward="false" selection-start-line="285" selection-start-column="6" selection-end-line="285" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Page.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pages/Page.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="168">
+              <caret line="74" column="76" lean-forward="false" selection-start-line="74" selection-start-column="76" selection-end-line="74" selection-end-column="76" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="testSuite2.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/testSuite2.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2613">
-              <caret line="364" column="0" lean-forward="false" selection-start-line="364" selection-start-column="0" selection-end-line="364" selection-end-column="0" />
+            <state relative-caret-position="233">
+              <caret line="223" column="32" lean-forward="false" selection-start-line="223" selection-start-column="32" selection-end-line="223" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -54,9 +83,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>deploy</find>
-      <find>first</find>
-      <find>contribution</find>
       <find>small</find>
       <find>0.1</find>
       <find>smallAmount</find>
@@ -84,6 +110,9 @@
       <find>getTokenBalance</find>
       <find>skip</find>
       <find>getText</find>
+      <find>rate</find>
+      <find>getBalance</find>
+      <find>distr</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/temp</dir>
@@ -134,7 +163,6 @@
         <option value="$PROJECT_DIR$/pages/MetaMask.js" />
         <option value="$PROJECT_DIR$/utils/Utils.js" />
         <option value="$PROJECT_DIR$/contracts/DeployRegistry.js" />
-        <option value="$PROJECT_DIR$/pages/ManagePage.js" />
         <option value="$PROJECT_DIR$/index.js" />
         <option value="$PROJECT_DIR$/pages/WizardStep3.js" />
         <option value="$PROJECT_DIR$/pages/TierPage.js" />
@@ -144,10 +172,11 @@
         <option value="$PROJECT_DIR$/scenarios/testSuite2.json" />
         <option value="$PROJECT_DIR$/entity/Logger.js" />
         <option value="$PROJECT_DIR$/temp.txt" />
-        <option value="$PROJECT_DIR$/entity/User.js" />
         <option value="$PROJECT_DIR$/pages/WizardStep4.js" />
-        <option value="$PROJECT_DIR$/test/testSuite2.js" />
         <option value="$PROJECT_DIR$/pages/Page.js" />
+        <option value="$PROJECT_DIR$/test/testSuite2.js" />
+        <option value="$PROJECT_DIR$/pages/ManagePage.js" />
+        <option value="$PROJECT_DIR$/entity/User.js" />
       </list>
     </option>
   </component>
@@ -167,9 +196,9 @@
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="844" />
-    <option name="y" value="23" />
-    <option name="width" value="830" />
+    <option name="x" value="635" />
+    <option name="y" value="37" />
+    <option name="width" value="1086" />
     <option name="height" value="794" />
   </component>
   <component name="ProjectLevelVcsManager">
@@ -350,12 +379,12 @@
       <workItem from="1521922802943" duration="124358000" />
       <workItem from="1522387509709" duration="4121000" />
       <workItem from="1522391752813" duration="1580000" />
-      <workItem from="1522394698987" duration="4558000" />
+      <workItem from="1522394698987" duration="7520000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="664526000" />
+    <option name="totallyTimeSpent" value="667488000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -368,7 +397,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="844" y="23" width="830" height="794" extended-state="0" />
+    <frame x="635" y="37" width="1086" height="794" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.49213484" order="0" side_tool="false" content_ui="combo" />
@@ -378,7 +407,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19970414" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34911242" sideWeight="0.49753347" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.74408287" sideWeight="0.59208524" order="10" side_tool="false" content_ui="tabs" x="134" y="236" width="1254" height="290" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17899409" sideWeight="0.59208524" order="10" side_tool="false" content_ui="tabs" x="134" y="236" width="1254" height="290" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27391976" sideWeight="0.5078652" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39940828" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -647,14 +676,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pages/ManagePage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="163" column="51" lean-forward="false" selection-start-line="156" selection-start-column="8" selection-end-line="163" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pages/WizardStep3.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="361">
@@ -747,30 +768,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/entity/User.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="53" column="10" lean-forward="false" selection-start-line="53" selection-start-column="10" selection-end-line="53" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/entity/Logger.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="16" column="34" lean-forward="false" selection-start-line="16" selection-start-column="34" selection-end-line="16" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pages/Page.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="107">
-          <caret line="110" column="18" lean-forward="false" selection-start-line="110" selection-start-column="18" selection-end-line="110" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pages/WizardStep4.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="239">
@@ -787,10 +784,42 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pages/Page.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="74" column="76" lean-forward="false" selection-start-line="74" selection-start-column="76" selection-end-line="74" selection-end-column="76" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entity/Logger.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="16" column="34" lean-forward="false" selection-start-line="16" selection-start-column="34" selection-end-line="16" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/test/testSuite2.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2613">
-          <caret line="364" column="0" lean-forward="false" selection-start-line="364" selection-start-column="0" selection-end-line="364" selection-end-column="0" />
+        <state relative-caret-position="233">
+          <caret line="223" column="32" lean-forward="false" selection-start-line="223" selection-start-column="32" selection-end-line="223" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/ManagePage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="243">
+          <caret line="285" column="6" lean-forward="false" selection-start-line="285" selection-start-column="6" selection-end-line="285" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/entity/User.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="318">
+          <caret line="343" column="0" lean-forward="true" selection-start-line="343" selection-start-column="0" selection-end-line="343" selection-end-column="0" />
           <folding />
         </state>
       </provider>

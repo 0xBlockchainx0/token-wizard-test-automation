@@ -284,7 +284,7 @@ async isEnabledDistribute(){
     if (!(await this.isPresentButtonDistribute()))
     {return false;}
     //await this.driver.sleep(3000);
-    var s=await this.driver.findElement(buttonDistribute).getAttribute("className");///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    var s=await this.driver.findElement(buttonDistribute).getAttribute("className");
     if (s=="button button_disabled")
     {logger.info("present and disabled");
      return false;}

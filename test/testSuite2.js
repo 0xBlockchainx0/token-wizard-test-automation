@@ -229,6 +229,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 	test.it('Reserved address has received correct AMOUNT of tokens after distribution)', async function() {
 		assert.equal(flagCrowdsale,true);
+		assert.equal(flagDistribute,true);
 		flagDistribute=false;
 		newBalance=await ReservedAddress.getTokenBalance(crowdsale1)/1e18;
 		balance=crowdsale1.currency.reservedTokens[0].value;//1e18

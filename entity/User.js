@@ -54,7 +54,7 @@ class User {
 	async getTokenBalance(crowdsale){
     	logger.info("getTokenBalance: account="+this.account);
     	logger.info("token address="+crowdsale.tokenAddress);
-    	logger.info("ABI: "+crowdsale.tokenContractAbi);
+    	//logger.info("ABI: "+crowdsale.tokenContractAbi);
 		try {
 			var web3 = Utils.setNetwork(this.networkID);
 			var tokenContract=JSON.parse(crowdsale.tokenContractAbi);
@@ -339,6 +339,8 @@ class User {
 		await this.driver.sleep(3000);
 		await mngPage.refresh();
 		await this.driver.sleep(3000);
+	    await mngPage.refresh();
+	    await this.driver.sleep(3000);
 
 
         if ( await mngPage.isEnabledDistribute())
@@ -677,8 +679,8 @@ class User {
 	    await this.driver.sleep(2000);
 	    await investPage.refresh();
 	    await this.driver.sleep(2000);
-	   // await investPage.refresh();
-	   // await this.driver.sleep(2000);
+	    await investPage.refresh();
+	    await this.driver.sleep(2000);
         let s=await investPage.getBalance();
 
         let arr=s.split(" ");
