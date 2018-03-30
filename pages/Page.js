@@ -27,9 +27,30 @@ class Page {
         this.header;
     }
 
+	async isElementDisabled(element)
+	{
+		logger.info("isElementDisabled ")
+		try{
+			let field;
+			if (element.constructor.name!="WebElement")
+			{
+				field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+			}
+			else field = element;
 
+			var b= await this.driver.wait(webdriver.until.elementIsDisabled(field), 100);
+			logger.info("Element disabled ")
+			return true;
+		}
+		catch(err){
+			logger.info("Element enabled or does not present")
+			logger.info("Error: "+err);
+			return false;
+		}
 
-     async   findElementInArray(locator,className)
+	}
+
+     async findElementInArray(locator,className)
         {
         	try {
 		        await this.driver.wait(webdriver.until.elementsLocated(locator), 10000, 'Element NOT present.Time out.\n');
@@ -65,48 +86,70 @@ class Page {
 
         }
 
- async  isElementPresent(element) {
+ async isElementPresent(element) {
      var q;
 
-    // await this.driver.sleep(TTT);
      try {
          q = await this.driver.findElement(element).isDisplayed();
 	     logger.info(" element present");
-        // var s=await this.driver.findElements(element);
-        // console.log("lengfth"+s.length);
-        // if (s.length>0){q=true;logger.info(" element present");}
-         //else {q=false;logger.info(" element NOT present");}
+
      } catch (err) {
          q = false;
          logger.info(" element NOT present");
      }
-	 //await Utils.takeScreenshoot(this.driver);
+
      return q;
 
      }
 
 
 
-
-
 async getTextByElement(element)
 {logger.info("get text ");
 	//await this.driver.sleep(TTT);
-    return await element.getText();
+	var s=await element.getText();
+	logger.info("Got text: "+s);
+    return s;
 }
 
 
 
-async getAttributeByLocator(locator,attr){
+async getAttribute(element,attr){
 	//await this.driver.sleep(TTT);
-	logger.info("get attribute = "+attr+ "for element = "+locator);
-	await this.driver.wait(webdriver.until.elementLocated(locator), Twait,'Element '+locator+'NOT present.Time out.\n');
+	logger.info("get attribute = "+attr+ "for element = "+element);
+	let field;
+		if (element.constructor.name!="WebElement")
+		{
 
-	return await this.driver.findElement(locator).getAttribute(attr);
+			field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
+		}
+		else field = element;
+		let s=await element.getAttribute(attr);
+		logger.info("Got value= "+s);
+	return s;
 
 }
 
+	async getTextByLocatorFast(locator)
+	{
+		//await this.driver.sleep(7000);
+		logger.info("get text ");
+		let s="";
+		try {
+			await
+			this.driver.wait(webdriver.until.elementLocated(locator), 500, 'Element ' + locator + 'NOT present.Time out.\n');
+		s=await this.driver.findElement(locator).getText();
+		logger.info("got text: "+s);
+		return s;
 
+		}
+		catch(err){
+
+			return s="";
+		}
+
+
+	}
 
 async getTextByLocator(locator)
 {
@@ -135,9 +178,7 @@ async clearField(element,n){
 	let c=10;
 	let s="empty";
     	do {
-
-
-		    logger.info("clear");
+    		logger.info("clear");
 		    let field;
 		   // if (n != 1)
 		   if (element.constructor.name!="WebElement")
@@ -149,7 +190,7 @@ async clearField(element,n){
 		    await field.clear();
 		    await this.driver.sleep(1000);
 		    await field.clear();
-		    await field.clear();
+		   // await field.clear();
 
 		    s=await this.getTextByElement(field);
 		    if (s=="") {logger.info("Break with c="+c+", s="+s); break;}
@@ -158,16 +199,6 @@ async clearField(element,n){
 		    c--;
 
 	    } while((c>0))
-    /*
-    const c=key.chord(key.CONTROL,"a");
-    const action=this.driver.actions();
-    //await action.click(field).perform();
-    await action.click(field).perform();
-    await this.driver.sleep(300);
-    await action.sendKeys(c).perform();
-    await this.driver.sleep(300);
-    await action.sendKeys(key.DELETE).perform();
-    await action.sendKeys(key.DELETE).perform();*/
 
 }
 async oneClick(element){
@@ -218,8 +249,11 @@ async clickElement(element){
 	        }
 	        else field = element;
 
-        await field.click();}
+        await field.click();
+        return true;
+        }
         catch(err){logger.info("Can not click element"+ element);
+        return false;
 	                }
     }
 async waitUntilLocated(element)
@@ -244,7 +278,7 @@ async waitUntilLocated(element)
     async fillWithWait(element,k) {
 	   // await this.driver.sleep(TTT);
 	    try {
-		    logger.info("fill: value = " + k);
+		    logger.info("fill:field: "+element +" with value = " + k);
 
 		    let field;
 		    // if (n != 1)

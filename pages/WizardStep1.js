@@ -9,7 +9,7 @@ const webdriver = require('selenium-webdriver'),
     by = require('selenium-webdriver/lib/by');
 const By=by.By;
 const  buttonContinue= By.className("button button_fill");
-//const  buttonContinue= By.xpath("//*[@id=\"root\"]/div/div[1]/section/div[3]/a/span");
+
 
 
 class WizardStep1 extends page.Page{
@@ -18,6 +18,13 @@ class WizardStep1 extends page.Page{
         super(driver);
         this.URL;
         this.name="WizardStep1 page: ";
+
+    }
+
+    async isPresentButtonContinue(){
+		var b=await super.isElementPresent(buttonContinue);
+        logger.info(this.name+": is present button Continue: "+b);
+		return b;
 
     }
 

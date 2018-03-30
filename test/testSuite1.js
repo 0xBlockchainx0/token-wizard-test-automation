@@ -61,10 +61,9 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 
 	    logger.info("Scenario: "+scenario);
 
-
 	    driver = await Utils.startBrowserWithMetamask();
 	    flagCrowdsale=false;
-	     Owner = new User (driver,user8545_56B2File);
+	    Owner = new User (driver,user8545_56B2File);
 
 
 	    Investor = new User (driver,user8545_F16AFile);
@@ -102,7 +101,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
         b=false;
         owner=Owner;
         await owner.setMetaMaskAccount();
-        crowdsale = await owner.createCrowdsale(scenario);
+        crowdsale = await owner.createCrowdsale(scenario,7);
         logger.info("TokenAddress:  " + crowdsale.tokenAddress);
         logger.info("ContractAddress:  " + crowdsale.contractAddress);
         logger.info("url:  " + crowdsale.url);
@@ -267,7 +266,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 	    flagDistribute=true;
     });
 
-    test.it('Reserved addresses receive correct amount of tokens after distribution)', async function() {
+    test.it('Reserved addresses have received correct amount of tokens after distribution)', async function() {
 	    assert.equal(flagCrowdsale,true);
 	    owner=Owner;
 
@@ -278,7 +277,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 	    logger.info("Investor should receive  = "+balance);
 	    logger.info("Investor has received balance = "+newBalance);
 	    assert.equal(balance, newBalance/1e18,"Test FAILED.'Investor has received "+newBalance+" tokens instead "+ balance );
-	    logger.error("Test PASSED.'Investor has receive right amount of tokens after finalization ");
+	    logger.error("Test PASSED.'Investor has received right amount of tokens after finalization ");
 
     });
 
@@ -306,7 +305,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
     });
 
 
-    test.it('Investor receive correct amount of tokens after finalization)', async function() {
+    test.it('Investor receives correct amount of tokens after finalization', async function() {
 	    assert.equal(flagCrowdsale,true);
 	    investor=Investor;
 	    newBalance=await investor.getTokenBalance(crowdsale);
@@ -314,7 +313,7 @@ test.describe('POA token-wizard. Test suite #1', async function() {
 	    logger.info("Investor should receive  = "+balance);
 	    logger.info("Investor has received balance = "+newBalance);
 	    assert.equal(balance, newBalance/1e18,"Test FAILED.'Investor has received "+newBalance+" tokens instead "+ balance )
-	    logger.warn("Test PASSED.'Investor has receive right amount of tokens after finalization ");
+	    logger.warn("Test PASSED.'Investor has received right amount of tokens after finalization ");
 
 
     });

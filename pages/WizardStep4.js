@@ -18,8 +18,9 @@ const modal=By.className("modal");
 const buttonOK=By.xpath('/html/body/div[2]/div/div[3]/button[1]');
 const buttonSkipTransaction=By.className("no_image button button_fill");
 const buttonYes=By.className("swal2-confirm swal2-styled");
-const fieldTokenContractAbi=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[2]/div[7]/div[2]/pre");
+const fieldTokenContractAbi1=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[2]/div[7]/div[2]/pre");
 
+const fieldTokenContractAbi2=By.xpath("//*[@id=\"root\"]/div/section/div[2]/div[2]/div[8]/div[2]/pre");
 
 class WizardStep4 extends page.Page{
 
@@ -39,9 +40,12 @@ class WizardStep4 extends page.Page{
 
 	}
 
-	async getABI(){
+	async getABI(tiersAmount){
     	logger.info(this.name+": get ABI: ");
-    	let abi=await super.getTextByLocator(fieldTokenContractAbi);
+    	let locator = fieldTokenContractAbi2;
+
+    	if (tiersAmount==2) locator = fieldTokenContractAbi2;
+    	let abi=await super.getTextByLocator(locator);
     	logger.info ("ABI:" +abi);
     	return abi;
 

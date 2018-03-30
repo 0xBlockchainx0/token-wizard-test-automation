@@ -1,51 +1,42 @@
 {
 
   "name": "TestSuite2.json",
-  "ticker": "ts2",
-  "decimals": 6,
+  "ticker": "test2",
+  "decimals": 18,
   "reservedTokens":[
     {
-      "address" :"0x9D76b08c6815feDbaC6096aF6665Bbc1D31491C5",
+      "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",
       "dimension": "percentage",
-      "value": 20
-    }],
-  "walletAddress":"0xa75C1001f527898A7377c34AF5aec6A7B2A309DA",
-  "gasprice": 40,
+      "value": 250
+    },
+    {
+      "address" :  "0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+      "dimension": "tokens",
+      "value":100000000
+    }
+
+  ],
+  "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+  "gasprice": 1,
   "mincap": 1,
   "whitelisting":true,
   "tiers":[
     {
       "name":"###1",
       "allowModify": true,
-      "startDate": "",
-      "startTime": "",
-      "endDate":"",
-      "endTime":"",
-      "rate":10000,
-      "supply": 200,
+      "startDate": "01/01/2030",
+      "startTime": "01:11",
+      "endDate":"01/01/2031",
+      "endTime":"02:22",
+      "rate":20000,
+      "supply": 250,
       "whitelist":[
         {
-          "address":"0x75B4a78b86523ef93CcE5cfC217cd3D99fc9ab18",
-          "min":6,
-          "max":100
+          "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+          "min": 50,
+          "max": 150
         }
       ]
-    },
-    {
-      "name":"###2",
-      "allowModify": true,
-      "startDate": "01/01/2030",
-      "startTime": "01:01",
-      "endDate":"01/01/2031",
-      "endTime":"02:02",
-      "rate":10000,
-      "supply": 200,
-      "whitelist":[
-        {
-          "address":"0x2C683fE4dac1f28c51Aa710Ed74196CdFcb04E20",
-          "min":13,
-          "max":99
-        }]
     }]
 
 }

@@ -33,7 +33,14 @@ class WizardStep2 extends page.Page {
         this.fieldDecimals = arr[2];
     }
 
+async isPresentFieldName(){
+        logger.info(this.name+"is present field name: ");
+        var locator = By.className("input");
+		var arr=await this.driver.findElements(locator);
+		if (arr.length>0)return true;
+		else return false;
 
+    }
 
     async fillName(name){
         logger.info(this.name+"field Name: ");

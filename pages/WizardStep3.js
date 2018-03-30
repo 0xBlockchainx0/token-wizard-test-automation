@@ -8,36 +8,12 @@ const webdriver = require('selenium-webdriver'),
       firefox = require('selenium-webdriver/firefox'),
       by = require('selenium-webdriver/lib/by');
 const By=by.By;
-/*
-//const adj="div[1]/";
-const adj="";
-
-//const fieldWalletAddress=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[1]/input");
-//var fieldWalletAddress;
-//const fieldMinCap=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[3]/div[1]/input");
-//var fieldMinCap;
-
-const boxGasPriceSafe=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[1]/label/span");
-const boxGasPriceNormal=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[2]/label/span");
-const boxGasPriceFast=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[3]/label/span");
-const boxGasPriceCustom=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[4]/label/span");
-                                           //*[@id="root"]/div/section/div[2]/div[2]/div[2]/div[2]/div[4]/label/span
-//const fieldGasPriceCustom=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[2]/div[2]/div[5]/input");
-                               //*[@id="root"]/div/section/div[2]/div[2]/div[2]/div[2]/div[5]/input
-
-//const buttonContinue=By.xpath("//*[@id=\"root\"]/div/section/div[4]/a");
-
-//*[@id="root"]/div/section/div[4]/div
-const boxWhitelistingYes=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[3]/div[2]/div/label[1]/span");
-                                            //*[@id="root"]/div/section/div[2]/div[2]/div[3]/div[2]/div/label[1]/span
-const boxWhitelistingNo=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[2]/div[2]/div[3]/div[2]/div/label[2]/span");
-*/
-
+const warningWalletAddress=By.xpath('//*[@id="root"]/div/section/div[2]/div[2]/div[2]/div[1]/p[2]');
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
 const buttonAddTier=By.className("button button_fill_secondary");
 let flagCustom=false;
 let flagWHitelising=false;
-
+var COUNT_TIERS=0;
 class WizardStep3 extends page.Page{
 
     constructor(driver){
@@ -57,6 +33,10 @@ class WizardStep3 extends page.Page{
     }
 static getFlagCustom(){return flagCustom;}
 static getFlagWHitelising(){return flagWHitelising;}
+static setFlagCustom(value){flagCustom=value;}
+static setFlagWHitelising(value){flagWHitelising=value;}
+static getCountTiers(){return COUNT_TIERS}
+static setCountTiers(value){COUNT_TIERS=value}
 
 	async init(){
 
@@ -94,8 +74,13 @@ async initCheckboxes(){
    async  fillWalletAddress(address){
 	    await this.init();
         logger.info(this.name+"field WalletAddress: ");
-        await super.clearField(this.fieldWalletAddress);
-        await super.fillWithWait(this.fieldWalletAddress,address);
+		do {
+            await super.clearField(this.fieldWalletAddress);
+
+	        await super.fillWithWait(this.fieldWalletAddress, address);
+	        await this.driver.sleep(1000);
+        }
+        while (await this.isPresentWarningWalletAddress())
     }
 
 
@@ -166,6 +151,22 @@ async initCheckboxes(){
         logger.info(this.name+"MinCap: ");
         await super.clearField(this.fieldMinCap,1);
         await super.fillWithWait(this.fieldMinCap,value);
+    }
+
+
+    async isPresentWarningWalletAddress(){
+    	var b=false;
+		try {
+			logger.info(this.name+"red warning if data wrong :");
+			//await this.driver.sleep(1000);
+			var s=await super.getTextByLocatorFast(warningWalletAddress);
+			logger.info("text received ="+s);
+			return (s!="");
+		}
+		catch(err){
+			logger.info("Can not find red warning for wallet address")
+			console.log(err); return false;}
+
     }
 
 
