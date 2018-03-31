@@ -116,7 +116,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			owner = Owner;//Owner
 
 			await owner.setMetaMaskAccount();
-			startTime=new Date(Date.now()).getTime()+80000+80000;
+			startTime=new Date(Date.now()).getTime()+80000+120000;
 			crowdsale1 = await owner.createCrowdsale(scenario1,3);
 			logger.info("TokenAddress:  " + crowdsale1.tokenAddress);
 			logger.info("ContractAddress:  " + crowdsale1.contractAddress);
