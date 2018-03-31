@@ -336,19 +336,24 @@ class User {
 		await this.driver.sleep(3000);
 		await mngPage.refresh();
 		await this.driver.sleep(3000);
-	    await mngPage.refresh();
-	    await this.driver.sleep(3000);
+	    //await mngPage.refresh();
+	    //await this.driver.sleep(3000);
+      let bb=false;
+	  for (var i=0;i<5;i++) {
+		  bb=bb|await mngPage.isEnabledDistribute();
+	  }
 
 
-        if ( await mngPage.isEnabledDistribute())
+
+        if (bb)
         {
             await mngPage.clickButtonDistribute();
         }
         else  {return false;}
+
         var metaMask = new meta.MetaMask(this.driver);
         await metaMask.doTransaction(5);
         await mngPage.waitUntilLoaderGone();
-       // await Utils.takeScreenshoot(this.driver);
         var b= await mngPage.confirmPopup();
         return true;
     }

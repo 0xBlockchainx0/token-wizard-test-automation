@@ -255,14 +255,17 @@ async fillWhitelist(tier,address,min,max)
 }
 
 async isEnabledDistribute(){
-	//await this.driver.sleep(3000);
+	//await this.driver.sleep(1000);
     logger.info(this.name+"button Distribute :")
     if (!(await this.isPresentButtonDistribute()))
     {return false;}
-    //await this.driver.sleep(3000);
+    await this.driver.sleep(1000);
     var s=await this.driver.findElement(buttonDistribute).getAttribute("className");
+	logger.info("class name= "+s);
     if (s=="button button_disabled")
-    {logger.info("present and disabled");
+    {
+
+    	logger.info("present and disabled");
      return false;}
     else
     {   logger.info("present and enabled")

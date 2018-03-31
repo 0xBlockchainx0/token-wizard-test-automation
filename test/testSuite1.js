@@ -89,6 +89,8 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		logger.info("Investor1 balance = :"+await Utils.getBalance(Investor1)/1e18);
 		logger.info("Investor2  = :"+Investor2.account);
 		logger.info("Investor2 balance = :"+await Utils.getBalance(Investor2)/1e18);
+		logger.info("Reserved address  = :"+ReservedAddress.account);
+		logger.info("ReservedAddress balance = :"+await Utils.getBalance(ReservedAddress)/1e18);
 
 		mtMask = new MetaMask(driver);
 		await mtMask.open();//return activated Metamask and empty page
