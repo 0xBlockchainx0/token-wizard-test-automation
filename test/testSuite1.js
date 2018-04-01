@@ -504,9 +504,9 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		contribution=smallAmount;
 		b = await investor.contribute(contribution);
 		newBalance=await investor.getBalanceFromPage(crowdsale1.url);
-		b=((parseFloat(newBalance)-parseFloat(balance))-contribution)<=Math.abs(smallAmount);
-		//console.log("Difference="+(parseFloat(newBalance)-parseFloat(balance)));
-		//console.log("Contributin="+contribution);
+		b=Math.abs((parseFloat(newBalance)-parseFloat(balance))-contribution)<=smallAmount;
+		logger.info("Difference="+(parseFloat(newBalance)-parseFloat(balance)));
+		logger.info("Contribution="+contribution);
 		logger.info("After first:Old balance="+balance+"  New balance="+newBalance+" BBB="+b);
 		//await driver.sleep(10000);
 		assert.equal(b, true, "Test FAILED. Investor can NOT buy less than min after first transaction");
