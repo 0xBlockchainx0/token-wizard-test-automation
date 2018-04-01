@@ -142,7 +142,13 @@ catch(err)
         return await super.clickWithWait(this.boxWhitelistingYes);
 
     }
+	async clickCheckboxWhitelistNo()
+	{   await this.initCheckboxes();
+		logger.info(this.name+"CheckboxWhitelistNo: ");
+		flagWHitelising=false;
+		return await super.clickWithWait(this.boxWhitelistingNo);
 
+	}
 
     async clickButtonAddTier()
     {
@@ -203,6 +209,19 @@ catch(err)
 		//return await super.clickWithWait(buttonUploadCSV);
 	}
 
+async getFieldWalletAddress(){
+	logger.info(this.name+"getFieldWalletAddress: ");
+    try {
+	    await this.init();
+	    let s = super.getAttribute(this.fieldWalletAddress, "value");
+	    return s;
+    }
+    catch (err)
+    {
+    	logger.info(err);
+    	return "";
+    }
+}
 
 
 

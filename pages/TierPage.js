@@ -14,8 +14,11 @@ const wizardStep3=require("./WizardStep3.js");
 const Utils=utils.Utils;
 
 var COUNT_TIERS;
-
+const itemsRemove=By.className("item-remove");
 const buttonAdd=By.className("button button_fill button_fill_plus");
+const WhitelistContainer=By.className("white-list-item-container-inner");
+const buttonClearAll=By.className("fa fa-trash");
+const buttonYesAlert=By.className("swal2-confirm swal2-styled");
 
 class TierPage extends page.Page {
 
@@ -38,7 +41,27 @@ class TierPage extends page.Page {
 	    this.fieldMaxTier;
 	    this.checkboxModifyOn;
 	    this.checkboxModifyOff;
+	    this.itemsRemove=[];
     }
+
+	async initItemsRemove(){
+		var arr = await super.findWithWait(itemsRemove);
+		for (var i=0;i<arr.length;i++)
+		{
+			this.itemsRemove[i]=arr[i];
+		}
+
+		return arr;
+	}
+	async initWhitelistContainer(){
+
+		var arr = await super.findWithWait(WhitelistContainer);
+		return arr;
+
+	}
+
+
+
 	async init(){
 
 		var locator = By.className("input");
@@ -180,15 +203,21 @@ class TierPage extends page.Page {
 
     async fillWhitelist(){
 
-        for (var i=0;i<this.tier.whitelist.length;i++) {
-            logger.info(this.name+"whitelist #"+i+": ");
-            await this.fillAddress(this.tier.whitelist[i].address);
-            await this.fillMin(this.tier.whitelist[i].min);
-            await this.fillMax(this.tier.whitelist[i].max);
-            await this.clickButtonAdd();
+    	try {
+		    for (var i = 0; i < this.tier.whitelist.length; i++) {
+			    logger.info(this.name + "whitelist #" + i + ": ");
+			    await this.fillAddress(this.tier.whitelist[i].address);
+			    await this.fillMin(this.tier.whitelist[i].min);
+			    await this.fillMax(this.tier.whitelist[i].max);
+			    await this.clickButtonAdd();
+		    }
+		    return true;
+	    }
+	    catch (err){return false;}
 
 
-        }
+
+
 
     }
     async fillAddress(address){
@@ -214,8 +243,31 @@ class TierPage extends page.Page {
         logger.info(this.name+"button Add: ");
         await super.clickWithWait(buttonAdd);
     }
+	async removeWhiteList(number)
+	{
+		await this.initItemsRemove();
+		await super.clickWithWait(this.itemsRemove[number]);
 
+	}
 
+	async amountAddedWhitelist(){
+		try {
+			let arr = await this.initWhitelistContainer()
+			logger.info("Reserved tokens added=" + arr.length);
+			return arr.length;
+		}
+		catch(err){
+			return 0;
+		}
+
+	}
+async clickButtonClearAll(){
+	await super.clickWithWait(buttonClearAll);
+}
+	async clickButtonYesAlert(){
+		await super.clickWithWait(buttonYesAlert);
+
+	}
 
 }
 module.exports.TierPage=TierPage;

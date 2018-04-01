@@ -94,6 +94,8 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	var reservedTokens;
 	var currency;
 	var currencyForE2e;
+
+	var tierPage;
 	///////////////////////////////////////////////////////////////////////
 
 	test.before(async function() {
@@ -129,6 +131,10 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		reservedTokens=new ReservedTokensPage(driver);
 		currency=Currency.createCurrency(scenarioReservedTokens);
 		currencyForE2e=Currency.createCurrency(scenario1);
+
+
+		tierPage=new TierPage(driver,currency.tiers[0]);
+
 	});
 
 	test.after(async function() {
@@ -318,8 +324,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 	test.it('Wizard step#3: Wallet address matches the metamask account address ',
 		async function () {
-			b=true;
+
+			s=await wizardStep3.getFieldWalletAddress();
+			console.log("SSS="+s);
+			b=(s==Owner.account);
 			assert.equal(b, true, "Test FAILED. Wallet address does not match the metamask account address ");
+
+
+
 
 		});
 
@@ -372,13 +384,44 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#3: User is able to download CVS file with whitelisted addresses',
+	test.it.skip('Wizard step#3: User is able to download CVS file with whitelisted addresses',
 		async function () {
 
 			b=await wizardStep3.clickButtonUploadCSV();
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
 
 		});
+
+	test.it('Wizard step#3: User is able to add several whitelisted addresses',
+		async function () {
+
+			b=await tierPage.fillWhitelist();
+			assert.equal(b, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
+
+
+		});
+
+	test.it('Wizard step#3: User is able to remove one whitelisted address',
+		async function () {
+            balance=await tierPage.amountAddedWhitelist();
+            await tierPage.removeWhiteList(0);
+			newBalance=await tierPage.amountAddedWhitelist();
+
+			logger.info("Bal"+balance);
+			logger.info("NewBal"+newBalance);
+			assert.equal(balance, newBalance+1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
+		});
+
+	test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
+		async function () {
+		    await tierPage.clickButtonClearAll();
+            await tierPage.clickButtonYesAlert();
+			newBalance=await tierPage.amountAddedWhitelist();
+			logger.info("NewBal"+newBalance);
+			assert.equal(newBalance,0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+		});
+
+
 
 
 

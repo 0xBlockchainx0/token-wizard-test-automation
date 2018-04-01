@@ -60,10 +60,46 @@
       "rate":20000,
       "supply": 250,
       "whitelist":[
+
         {
-          "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
-          "min": 50,
-          "max": 150
+          "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",
+          "min": 51,
+          "max": 151
+        },
+        {
+          "address" :  "0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+          "min": 52,
+          "max": 152
+        },
+        {
+          "address" :"0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+          "min": 53,
+          "max": 153
+        },
+        {
+          "address" :"0xA6C8045C3989fD15d2b506084517E20a0A801637",
+          "min": 54,
+          "max": 154
+        },
+        {
+          "address" :"0x783CA4B3d53Bf76368BF8a3aFEc6fABd90F1fE51",
+          "min": 55,
+          "max": 155
+        },
+        {
+          "address" :"0x408238CE2fA008535790F38f6B8f89Cd9958aF81",
+          "min": 56,
+          "max": 156
+        },
+        {
+          "address" :"0x0e036E74F31aDDb9e0ADcB80dEA9Ed1E187DFe50",
+          "min": 57,
+          "max": 157
+        },
+        {
+          "address" :"0x9E963042D581D262AdE4E31541360e7FDAeE70C6",
+          "min": 58,
+          "max": 158
         }
       ]
     }]
