@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="40b9626d-5f4f-46c4-8096-7de331aaa15a" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/pages/WizardStep3.js" afterPath="$PROJECT_DIR$/pages/WizardStep3.js" />
-      <change beforePath="$PROJECT_DIR$/scenarios/ReservedTokens.json" afterPath="$PROJECT_DIR$/scenarios/ReservedTokens.json" />
-      <change beforePath="$PROJECT_DIR$/test/testSuite1.js" afterPath="$PROJECT_DIR$/test/testSuite1.js" />
-      <change beforePath="$PROJECT_DIR$/test/testSuite2.js" afterPath="$PROJECT_DIR$/test/testSuite2.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -46,7 +42,7 @@
       <file leaf-file-name="testSuite1.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="243">
+            <state relative-caret-position="-89">
               <caret line="416" column="20" lean-forward="false" selection-start-line="416" selection-start-column="20" selection-end-line="416" selection-end-column="20" />
               <folding />
             </state>
@@ -346,12 +342,12 @@
       <workItem from="1521922802943" duration="124358000" />
       <workItem from="1522387509709" duration="4121000" />
       <workItem from="1522391752813" duration="1580000" />
-      <workItem from="1522394698987" duration="52951000" />
+      <workItem from="1522394698987" duration="53412000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="712919000" />
+    <option name="totallyTimeSpent" value="713380000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -847,7 +843,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
+        <state relative-caret-position="-89">
           <caret line="416" column="20" lean-forward="false" selection-start-line="416" selection-start-column="20" selection-end-line="416" selection-end-column="20" />
           <folding />
         </state>
