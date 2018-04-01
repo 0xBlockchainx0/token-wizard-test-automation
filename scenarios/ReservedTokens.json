@@ -60,44 +60,43 @@
       "rate":20000,
       "supply": 250,
       "whitelist":[
-
         {
-          "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",
+          "address" :"0xa3e8A60f9dC18385e6215c1F2b04437Ca02F634c",
           "min": 51,
           "max": 151
         },
         {
-          "address" :  "0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+          "address" :  "0xAbDEeE7cdE25064b42E4A27B00cf53f01587520b",
           "min": 52,
           "max": 152
         },
         {
-          "address" :"0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+          "address" :"0x75B4a78b86523ef93CcE5cfC217cd3D99fc9ab18",
           "min": 53,
           "max": 153
         },
         {
-          "address" :"0xA6C8045C3989fD15d2b506084517E20a0A801637",
+          "address" :"0x2C683fE4dac1f28c51Aa710Ed74196CdFcb04E20",
           "min": 54,
           "max": 154
         },
         {
-          "address" :"0x783CA4B3d53Bf76368BF8a3aFEc6fABd90F1fE51",
+          "address" :"0xAAcd9926862A2ECC1F0D547aF9D9d6FcBD3928f6",
           "min": 55,
           "max": 155
         },
         {
-          "address" :"0x408238CE2fA008535790F38f6B8f89Cd9958aF81",
+          "address" :"0xE743AaF851663e84D3Ec3648638662a6c41cEe2A",
           "min": 56,
           "max": 156
         },
         {
-          "address" :"0x0e036E74F31aDDb9e0ADcB80dEA9Ed1E187DFe50",
+          "address" :"0x9D76b08c6815feDbaC6096aF6665Bbc1D31491C5",
           "min": 57,
           "max": 157
         },
         {
-          "address" :"0x9E963042D581D262AdE4E31541360e7FDAeE70C6",
+          "address" :"0xa75C1001f527898A7377c34AF5aec6A7B2A309DA",
           "min": 58,
           "max": 158
         }

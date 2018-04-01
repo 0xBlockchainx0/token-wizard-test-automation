@@ -12,6 +12,9 @@ const warningWalletAddress=By.xpath('//*[@id="root"]/div/section/div[2]/div[2]/d
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
 const buttonAddTier=By.className("button button_fill_secondary");
 const buttonUploadCSV=By.className("fa fa-upload");
+
+const buttonOK=By.className("swal2-confirm swal2-styled");
+
 let flagCustom=false;
 let flagWHitelising=false;
 var COUNT_TIERS=0;
@@ -201,11 +204,21 @@ catch(err)
 
 	}
 
-	async clickButtonUploadCSV(){
+	async uploadCSV(){
+     try {
+	     const loc = By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[2]/div[2]/div[2]/div/input");
 
-		logger.info(this.name+"clickButtonUploadCSV: ");
-		await super.clickWithWait(buttonUploadCSV);
-		return true;
+	     var el = this.driver.findElement(loc);
+	     el.sendKeys("/Users/person/WebstormProjects/token-wizard-test-automation/MyWhitelist.csv")
+	     logger.info(this.name + "clickButtonUploadCSV: ");
+
+
+	     //await super.clickWithWait(buttonUploadCSV);
+	     return true;
+     }
+     catch (err){
+     	logger.info(err);
+     	return false;}
 		//return await super.clickWithWait(buttonUploadCSV);
 	}
 
@@ -223,6 +236,11 @@ async getFieldWalletAddress(){
     }
 }
 
+async clickButtonOk(){
+    	logger.info("Confirm popup");
+    	await super.clickWithWait(buttonOK);
+
+}
 
 
 }

@@ -383,13 +383,27 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it.skip('Wizard step#3: User is able to download CVS file with whitelisted addresses',
-		async function () {
 
-			b=await wizardStep3.clickButtonUploadCSV();
+
+	test.it('Wizard step#3: User is able to download CVS file with whitelisted addresses',
+		async function () {
+			let rightAddresses=11;
+
+			b=await wizardStep3.uploadCSV();
+			newBalance=await tierPage.amountAddedWhitelist();
+			await wizardStep3.clickButtonOk();
+			if (b&&(newBalance==rightAddresses)) b=true;
+			else b=false;
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
 
 		});
+	test.it.skip('Wizard step#3: Downloaded whitelist addresses dont contain invalid data',
+		async function () {
+			assert.equal(true, true, "Test FAILED. Wizard step#3: Downloaded whitelist addresses contain invalid data");
+
+		});
+
+
 
 	test.it('Wizard step#3: User is able to add several whitelisted addresses',
 		async function () {
@@ -419,8 +433,6 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			logger.info("NewBal"+newBalance);
 			assert.equal(newBalance,0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
 		});
-
-
 
 
 

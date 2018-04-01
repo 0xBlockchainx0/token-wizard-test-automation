@@ -223,7 +223,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 
-	test.it('Wizard step#2: user is able to add reserved tokens ',
+	test.it.skip('Wizard step#2: user is able to add reserved tokens ',
 		async function () {
 			b=false;
 			for (var i=0;i<currency.reservedTokens.length;i++)
@@ -236,7 +236,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			logger.error("Test PASSED. Wizard step#2: user is able to add reserved tokens");
 
 		});
-	test.it('Wizard step#2: user is able to remove one of reserved tokens ',
+	test.it.skip('Wizard step#2: user is able to remove one of reserved tokens ',
 		async function () {
 			b=false;
 			balance=await reservedTokens.amountAddedReservedTokens();
@@ -248,20 +248,20 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	    test.it('Wizard step#2: ClearAll button present ',
+	    test.it.skip('Wizard step#2: ClearAll button present ',
 		async function () {
 
 			b = await reservedTokens.isPresentButtonClearAll();
 			assert.equal(b, true, "Test FAILED.ClearAll button is NOT present");
 		});
 
-	    test.it('Wizard step#2: Alert present after select ClearAll and button No present',
+	    test.it.skip('Wizard step#2: Alert present after select ClearAll and button No present',
 		async function () {
 	    	await reservedTokens.clickButtonClearAll();
 			b = await reservedTokens.isPresentButtonNoAlert();
 			assert.equal(b, true, "Test FAILED.Alert does NOT present after select ClearAll or button No does NOT present");
 		});
-	  test.it('Wizard step#2: User able to click button No and warning disappear ',
+	  test.it.skip('Wizard step#2: User able to click button No and warning disappear ',
 		async function () {
 
 			await  reservedTokens.clickButtonNoAlert();
@@ -271,14 +271,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 
-	    test.it('Wizard step#2: Alert present after select ClearAll and button Yes present',
+	    test.it.skip('Wizard step#2: Alert present after select ClearAll and button Yes present',
 		async function () {
 			await reservedTokens.clickButtonClearAll();
 			b = await reservedTokens.isPresentButtonYesAlert();
 			assert.equal(b, true, "Test FAILED.Alert does NOT present after select ClearAll or button Yes does NOT present");
 		});
 
-	test.it('Wizard step#2: user is able bulk delete of reserved tokens ',
+	test.it.skip('Wizard step#2: user is able bulk delete of reserved tokens ',
 		async function () {
 			await reservedTokens.clickButtonYesAlert();
 			await driver.sleep(2000);
@@ -289,7 +289,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 
-	test.it('Wizard step#2: user is able to add one reserved tokens address after deletion ',
+	test.it.skip('Wizard step#2: user is able to add one reserved tokens address after deletion ',
 		async function () {
 			b=false;
 			for (var i=0;i<currencyForE2e.reservedTokens.length;i++)
@@ -341,21 +341,21 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(b, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
 
 		});
-	test.it('Wizard step#3: User is able to set "Normal Gasprice" checkbox',
+	test.it.skip('Wizard step#3: User is able to set "Normal Gasprice" checkbox',
 		async function () {
 
 			b=await wizardStep3.clickCheckboxGasPriceNormal();
 			assert.equal(b, true, 'Test FAILED. User is not able to set "Normal Gasprice" checkbox');
 
 		});
-	test.it('Wizard step#3: User is able to set "Fast Gasprice" checkbox',
+	test.it.skip('Wizard step#3: User is able to set "Fast Gasprice" checkbox',
 		async function () {
 
 			b=await wizardStep3.clickCheckboxGasPriceFast();
 			assert.equal(b, true, 'Test FAILED. User is not able to set "Fast Gasprice" checkbox');
 
 		});
-	test.it('Wizard step#3: User is able to set "Custom Gasprice" checkbox',
+	test.it.skip('Wizard step#3: User is able to set "Custom Gasprice" checkbox',
 		async function () {
 
 			b=await wizardStep3.clickCheckboxGasPriceCustom();
@@ -363,14 +363,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#3: User is able to fill "Custom Gasprice" with valid value',
+	test.it.skip('Wizard step#3: User is able to fill "Custom Gasprice" with valid value',
 		async function () {
 
 			b=await wizardStep3.fillGasPriceCustom(currencyForE2e.gasPrice);
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
 
 		});
-	test.it('Wizard step#3: Checkbox "Whitelist disabled"   set by default ',
+	test.it.skip('Wizard step#3: Checkbox "Whitelist disabled"   set by default ',
 		async function () {
 			b=true;
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: Checkbox "Whitelist disabled"  does not set by default');
@@ -384,15 +384,38 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it.skip('Wizard step#3: User is able to download CVS file with whitelisted addresses',
-		async function () {
 
-			b=await wizardStep3.clickButtonUploadCSV();
+
+
+
+
+	test.it('Wizard step#3: User is able to download CVS file with whitelisted addresses',
+		async function () {
+            let rightAddresses=11;
+
+			b=await wizardStep3.uploadCSV();
+			newBalance=await tierPage.amountAddedWhitelist();
+			await wizardStep3.clickButtonOk();
+			if (b&&(newBalance==rightAddresses)) b=true;
+			else b=false;
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
 
 		});
+	test.it.skip('Wizard step#3: Downloaded whitelist addresses dont contain invalid data',
+		async function () {
+			assert.equal(true, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
 
-	test.it('Wizard step#3: User is able to add several whitelisted addresses',
+
+		});
+
+
+
+
+
+
+
+
+	test.it.skip('Wizard step#3: User is able to add several whitelisted addresses',
 		async function () {
 
 			b=await tierPage.fillWhitelist();
@@ -401,7 +424,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#3: User is able to remove one whitelisted address',
+	test.it.skip('Wizard step#3: User is able to remove one whitelisted address',
 		async function () {
             balance=await tierPage.amountAddedWhitelist();
             await tierPage.removeWhiteList(0);
@@ -412,7 +435,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(balance, newBalance+1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
 		});
 
-	test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
+	test.it.skip('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
 		async function () {
 		    await tierPage.clickButtonClearAll();
             await tierPage.clickButtonYesAlert();
