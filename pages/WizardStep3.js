@@ -11,6 +11,7 @@ const By=by.By;
 const warningWalletAddress=By.xpath('//*[@id="root"]/div/section/div[2]/div[2]/div[2]/div[1]/p[2]');
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
 const buttonAddTier=By.className("button button_fill_secondary");
+const buttonUploadCSV=By.className("fa fa-upload");
 let flagCustom=false;
 let flagWHitelising=false;
 var COUNT_TIERS=0;
@@ -39,7 +40,7 @@ static getCountTiers(){return COUNT_TIERS}
 static setCountTiers(value){COUNT_TIERS=value}
 
 	async init(){
-
+try{
 		var locator = By.className("input");
 		var arr = await super.findWithWait(locator);
 		this.fieldWalletAddress = arr[0];
@@ -51,24 +52,32 @@ static setCountTiers(value){COUNT_TIERS=value}
         { this.fieldMinCap=arr[1];
           }
 
+          return arr;}
+	catch(err)
+		{return null;}
+
 	}
 
 async initCheckboxes(){
-
+try {
 	var locator = By.className("radio-inline");
 	var arr = await super.findWithWait(locator);
-	this.boxGasPriceSafe=arr[0];
-	this.boxGasPriceNormal=arr[1];
-	this.boxGasPriceFast=arr[2];
-	this.boxGasPriceCustom=arr[3];
-	this.boxWhitelistingYes=arr[4];
-	this.boxWhitelistingNo=arr[5];
+	this.boxGasPriceSafe = arr[0];
+	this.boxGasPriceNormal = arr[1];
+	this.boxGasPriceFast = arr[2];
+	this.boxGasPriceCustom = arr[3];
+	this.boxWhitelistingYes = arr[4];
+	this.boxWhitelistingNo = arr[5];
+	return arr;
+}
+catch(err)
+{return null;}
 
 }
 
     async clickButtonContinue(){
         logger.info(this.name+"button Continue: ");
-        await super.clickWithWait(buttonContinue);
+        return await super.clickWithWait(buttonContinue);
 
     }
    async  fillWalletAddress(address){
@@ -88,49 +97,57 @@ async initCheckboxes(){
     {
 	    await this.initCheckboxes();
         logger.info(this.name+"CheckboxGasPriceSafe: ");
-        await super.clickWithWait(this.boxGasPriceSafe);
 	    flagCustom=false;
+	    return await super.clickWithWait(this.boxGasPriceSafe);
+
     }
     async clickCheckboxGasPriceNormal()
     {
 	    await this.initCheckboxes();
         logger.info(this.name+"CheckboxGasPriceNormal: ");
-        await super.clickWithWait(this.boxGasPriceNormal);
 	    flagCustom=false;
+	    return  await super.clickWithWait(this.boxGasPriceNormal);
+
     }
     async clickCheckboxGasPriceFast()
     {
 	    await this.initCheckboxes();
         logger.info(this.name+"CheckboxGasPriceFast: ");
-        await super.clickWithWait(this.boxGasPriceFast);
 	    flagCustom=false;
+	    return await super.clickWithWait(this.boxGasPriceFast);
     }
     async clickCheckboxGasPriceCustom()
     {
-	    await this.initCheckboxes();
+
+    	await this.initCheckboxes();
         logger.info(this.name+"CheckboxGasPriceCustom: ");
-        await super.clickWithWait(this.boxGasPriceCustom);
 	    flagCustom=true;
+        return await super.clickWithWait(this.boxGasPriceCustom);
+
 
     }
     async fillGasPriceCustom(value){
 	    await this.init();
         logger.info(this.name+"GasPriceCustom: ");
+
         await super.clearField(this.fieldGasPriceCustom,1);
-        await super.fillWithWait(this.fieldGasPriceCustom,value);
+
+        let b=await super.fillWithWait(this.fieldGasPriceCustom,value);
+        return b;
     }
     async clickCheckboxWhitelistYes()
     {   await this.initCheckboxes();
         logger.info(this.name+"CheckboxWhitelistYes: ");
-        await super.clickWithWait(this.boxWhitelistingYes);
-        flagWHitelising=true;
+	    flagWHitelising=true;
+        return await super.clickWithWait(this.boxWhitelistingYes);
+
     }
 
 
     async clickButtonAddTier()
     {
         logger.info(this.name+"ButtonAddTier: ");
-        await super.clickWithWait(buttonAddTier);
+       return await super.clickWithWait(buttonAddTier);
     }
 
     async setGasPrice(value){
@@ -168,6 +185,25 @@ async initCheckboxes(){
 			console.log(err); return false;}
 
     }
+
+	async isPresentFieldWalletAddress(){
+		var arr=await this.init();
+		if (arr==null) return false;
+		logger.info(arr.length);
+		if (arr.length>0)return true;
+		else return false;
+
+	}
+
+	async clickButtonUploadCSV(){
+
+		logger.info(this.name+"clickButtonUploadCSV: ");
+		await super.clickWithWait(buttonUploadCSV);
+		return true;
+		//return await super.clickWithWait(buttonUploadCSV);
+	}
+
+
 
 
 }

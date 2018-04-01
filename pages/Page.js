@@ -14,7 +14,7 @@ const By=by.By;
 const loader=By.className("loading-container");
 
 const key = require('selenium-webdriver').Key;
-const Twait=14000;
+const Twait=7000;
 Twaittransaction=5000;
 
 
@@ -94,7 +94,7 @@ class Page {
          q = false;
          logger.info(" element NOT present");
      }
-
+     logger.info(q)
      return q;
 
      }
@@ -151,9 +151,8 @@ async getTextByLocator(locator)
     return await this.driver.findElement(locator).getText();
 }
 async getURL()
-{  //await this.driver.sleep(TTT);
+{
     logger.info("get current page URL ");
-
     return await this.driver.getCurrentUrl();
 }
 async open (url){
@@ -247,13 +246,16 @@ async clearField(element,n){
 		    }
 		    else field = element;
 		    await field.sendKeys(k);
+		    return true;
 
 	    }
 	    catch(err){
 	    	logger.info("Element "+ element+" has not appeared in"+ Twait+" sec.");
-		          }
+		         return false; }
 
     }
+
+
     async refresh(){
 
 

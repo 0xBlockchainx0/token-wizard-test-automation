@@ -45,7 +45,7 @@ class User {
         this.account=obj.account;
         this.privateKey=obj.privateKey;
         this.networkID=obj.networkID;
-        //this.resultFile=resultFile;
+
         this.accN="undefined";//for MetaMaskPage only
         this.name=file;
     }
@@ -77,13 +77,13 @@ class User {
         var metaMask = new MetaMask(this.driver);
 	    await Utils.takeScreenshoot(this.driver);
         if (this.accN =="undefined")
-        {    //console.log("import    accN="+this.accN);//!!!!!
+        {
             logger.info("import");
         await metaMask.importAccount(this);
         }
         else
         {logger.info("select");
-           // console.log("select    accN="+this.accN);//!!!!!
+
        await metaMask.selectAccount(this);
         }
     }

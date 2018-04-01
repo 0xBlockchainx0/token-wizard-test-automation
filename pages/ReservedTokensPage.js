@@ -7,8 +7,12 @@ const page=require('./Page.js');
 const Page=page.Page;
 const  by = require('selenium-webdriver/lib/by');
 const By=by.By;
-
+const ReservedTokensContainer=By.className("reserved-tokens-item-container-inner");
 const buttonAdd=By.className("button button_fill button_fill_plus");
+const itemsRemove=By.className("item-remove");
+const buttonClearAll=By.className("fa fa-trash");
+const buttonYesAlert=By.className("swal2-confirm swal2-styled");
+const buttonNoAlert=By.className("swal2-cancel swal2-styled");
 
 class ReservedTokensPage extends Page{
 
@@ -18,9 +22,28 @@ class ReservedTokensPage extends Page{
         this.fieldAddress;
         this.fieldValue;
         this.name="Reserved tokens :"
+        this.itemsRemove=[];
 
     }
-    async init(){
+
+
+    async initItemsRemove(){
+	    var arr = await super.findWithWait(itemsRemove);
+	    for (var i=0;i<arr.length;i++)
+        {
+            this.itemsRemove[i]=arr[i];
+        }
+
+	    return arr;
+    }
+	async initReservedTokensContainer(){
+
+		var arr = await super.findWithWait(ReservedTokensContainer);
+		return arr;
+
+	}
+
+	async init(){
 
         var locator = By.className("input");
         var arr = await super.findWithWait(locator);
@@ -32,8 +55,22 @@ class ReservedTokensPage extends Page{
         this.checkboxPercentage=arr[1];
     }
 
+    async amountAddedReservedTokens(){
+		try {
+			let arr = await this.initReservedTokensContainer()
+			logger.info("Reserved tokens added=" + arr.length);
+			return arr.length;
+		}
+		catch(err){
+			return 0;
+		}
 
-    async fillReservedTokens(reservedTokens){
+	}
+
+
+
+
+	async fillReservedTokens(reservedTokens){
           logger.info(this.name+": ");
           await this.fillAddress(reservedTokens.address);
           await this.setDimension(reservedTokens.dimension);
@@ -85,6 +122,40 @@ class ReservedTokensPage extends Page{
         logger.info(this.name+"button AddReservedTokens :");
         await super.clickWithWait(buttonAdd);
     }
+    async removeReservedTokens(number)
+    {
+        await this.initItemsRemove();
+        await super.clickWithWait(this.itemsRemove[number]);
+
+    }
+
+    async clickButtonClearAll(){
+        await super.clickWithWait(buttonClearAll);
+    }
+    async isPresentButtonClearAll(){
+        return await super.isElementPresent(buttonClearAll);
+    }
+ async bulkDelete(){
+
+        await this.clickButtonClearAll();
+
+ }
+
+    async isPresentButtonYesAlert(){
+		return await super.isElementPresent(buttonYesAlert);
+	}
+	async isPresentButtonNoAlert(){
+		return await super.isElementPresent(buttonNoAlert);
+	}
+
+	async clickButtonYesAlert(){
+        await super.clickWithWait(buttonYesAlert);
+
+    }
+	async clickButtonNoAlert(){
+		await super.clickWithWait(buttonNoAlert);
+
+	}
 
 
 
