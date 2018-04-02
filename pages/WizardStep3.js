@@ -210,8 +210,8 @@ catch(err)
 
 	     const loc = By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[2]/div[2]/div[2]/div/input");
 	     var el = this.driver.findElement(loc);
-	     el.sendKeys("/home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/MyWhitelist.csv");
-	     // el.sendKeys("./node_modules/token-wizard-test-automation/MyWhitelist.csv");
+	     //el.sendKeys("/home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/MyWhitelist.csv");
+	     el.sendKeys("../node_modules/token-wizard-test-automation/MyWhitelist.csv");
 	     //el.sendKeys("/Users/person/WebstormProjects/token-wizard-test-automation/MyWhitelist.csv")
 	     //await super.clickWithWait(buttonUploadCSV);
 	     return true;
