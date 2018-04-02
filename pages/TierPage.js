@@ -253,7 +253,7 @@ class TierPage extends page.Page {
 	async amountAddedWhitelist(){
 		try {
 			let arr = await this.initWhitelistContainer()
-			logger.info("Reserved tokens added=" + arr.length);
+			logger.info("Whitelisted addresses added=" + arr.length);
 			return arr.length;
 		}
 		catch(err){
