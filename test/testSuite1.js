@@ -385,7 +385,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 
 
-	test.it.skip('Wizard step#3: User is able to download CVS file with whitelisted addresses',
+	test.it('Wizard step#3: User is able to download CVS file with whitelisted addresses',
 		async function () {
 			let rightAddresses=11;
 
