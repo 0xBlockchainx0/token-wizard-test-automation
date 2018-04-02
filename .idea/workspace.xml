@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="40b9626d-5f4f-46c4-8096-7de331aaa15a" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/pages/WizardStep3.js" afterPath="$PROJECT_DIR$/pages/WizardStep3.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -39,11 +40,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="testSuite1.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="testSuite1.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-89">
-              <caret line="416" column="20" lean-forward="false" selection-start-line="416" selection-start-column="20" selection-end-line="416" selection-end-column="20" />
+            <state relative-caret-position="132">
+              <caret line="391" column="36" lean-forward="true" selection-start-line="391" selection-start-column="36" selection-end-line="391" selection-end-column="36" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WizardStep3.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/pages/WizardStep3.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="232">
+              <caret line="211" column="22" lean-forward="true" selection-start-line="211" selection-start-column="10" selection-end-line="211" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -160,10 +171,10 @@
         <option value="$PROJECT_DIR$/pages/Page.js" />
         <option value="$PROJECT_DIR$/pages/TierPage.js" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/pages/WizardStep3.js" />
         <option value="$PROJECT_DIR$/test/testSuite2.js" />
         <option value="$PROJECT_DIR$/scenarios/ReservedTokens.json" />
         <option value="$PROJECT_DIR$/test/testSuite1.js" />
+        <option value="$PROJECT_DIR$/pages/WizardStep3.js" />
       </list>
     </option>
   </component>
@@ -185,7 +196,7 @@
   <component name="ProjectFrameBounds" fullScreen="true">
     <option name="x" value="58" />
     <option name="y" value="35" />
-    <option name="width" value="947" />
+    <option name="width" value="1231" />
     <option name="height" value="794" />
   </component>
   <component name="ProjectLevelVcsManager">
@@ -342,12 +353,12 @@
       <workItem from="1521922802943" duration="124358000" />
       <workItem from="1522387509709" duration="4121000" />
       <workItem from="1522391752813" duration="1580000" />
-      <workItem from="1522394698987" duration="53412000" />
+      <workItem from="1522394698987" duration="54086000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="713380000" />
+    <option name="totallyTimeSpent" value="714054000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -370,7 +381,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="true" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.68491125" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34911242" sideWeight="0.49753347" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37810946" sideWeight="0.59208524" order="10" side_tool="false" content_ui="tabs" x="134" y="236" width="1254" height="290" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37810946" sideWeight="0.59208524" order="10" side_tool="false" content_ui="tabs" x="134" y="236" width="1254" height="290" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27391976" sideWeight="0.5078652" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39940828" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -817,14 +828,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pages/WizardStep3.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="240" column="44" lean-forward="false" selection-start-line="240" selection-start-column="44" selection-end-line="240" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test/testSuite2.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -843,8 +846,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/testSuite1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-89">
-          <caret line="416" column="20" lean-forward="false" selection-start-line="416" selection-start-column="20" selection-end-line="416" selection-end-column="20" />
+        <state relative-caret-position="132">
+          <caret line="391" column="36" lean-forward="true" selection-start-line="391" selection-start-column="36" selection-end-line="391" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/WizardStep3.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="211" column="22" lean-forward="true" selection-start-line="211" selection-start-column="10" selection-end-line="211" selection-end-column="22" />
           <folding />
         </state>
       </provider>
