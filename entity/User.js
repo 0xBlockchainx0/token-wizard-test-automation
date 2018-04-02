@@ -45,7 +45,7 @@ class User {
         this.account=obj.account;
         this.privateKey=obj.privateKey;
         this.networkID=obj.networkID;
-        //this.resultFile=resultFile;
+
         this.accN="undefined";//for MetaMaskPage only
         this.name=file;
     }
@@ -69,64 +69,21 @@ class User {
 			logger.info("Error:"+err);
 			return 0;
 		}
-
-
 	}
 
-	async addWhitelistMngPage(tier, min, max){
-try {
-	let b=false;
-	let mngPage = new ManagePage(this.driver);
-	switch (tier) {
-		case 1: {
-			b=await mngPage.fillWhitelistTier1(this.account, min, max);
-			break;
-		}
-		case 2: {
-			b=await mngPage.fillWhitelistTier2(this.account, min, max);
-			break;
-		}
-		default:
-			return false;
-	}
-    if(!b) return false;
-	await Utils.takeScreenshoot(this.driver);
-	await mngPage.clickButtonSave();
-	var metaMask = new MetaMask(this.driver);
-
-	b=await metaMask.doTransaction(5);
-	if (!b) return false;
-	if (tier==1) b=await metaMask.doTransaction(5);
-	if (!b) return false;
-	await mngPage.waitUntilLoaderGone();
-	await Utils.takeScreenshoot(this.driver);
-	b = await this.confirmPopup();
-	await mngPage.waitUntilLoaderGone();
-	return b;
-}
-catch(err){
-	logger.info("Can not fill out whitelist for tier #"+ tier);
-	logger.error("Error:"+err);
-	return false;
-
-}
-
-
-
-    }
 
 
     async setMetaMaskAccount(){
         var metaMask = new MetaMask(this.driver);
 	    await Utils.takeScreenshoot(this.driver);
         if (this.accN =="undefined")
-        {    //console.log("import    accN="+this.accN);//!!!!!
+        {
             logger.info("import");
         await metaMask.importAccount(this);
         }
         else
         {logger.info("select");
-           // console.log("select    accN="+this.accN);//!!!!!
+
        await metaMask.selectAccount(this);
         }
     }
@@ -134,7 +91,7 @@ catch(err){
     async open(url){
 
         await new Page(this.driver).open(url);
-	    await Utils.takeScreenshoot(this.driver);
+	    //await Utils.takeScreenshoot(this.driver);
     }
 
     print(){
@@ -148,55 +105,146 @@ catch(err){
     }
     async openManagePage(crowdsale){
 	    const  startURL=Utils.getStartURL();
-     /*   var welcomePage=new WizardWelcome(this.driver);
+     ////
+     /* var welcomePage=new WizardWelcome(this.driver);
 
         welcomePage.URL=startURL;
         await welcomePage.open();
-        await  welcomePage.clickButtonChooseContract();
-        await Utils.takeScreenshoot(this.driver);*/
-        var mngPage=new ManagePage(this.driver);
+        await welcomePage.clickButtonChooseContract();
+
        /* var counter=0;
 
         do {await this.driver.sleep(1000);
             if(counter++>30) break;
         } while(!await  mngPage.isAvailable());
-*/
+//*/
+		var mngPage=new ManagePage(this.driver);
         mngPage.URL=startURL+"manage/"+crowdsale.contractAddress;
         await mngPage.open();
         await mngPage.waitUntilLoaderGone();
        // await Utils.takeScreenshoot(this.driver);
-
+       if (await mngPage.isPresentButtonOK()) return false;
         return mngPage;
 
     }
-	async getStartTime(tier){ //get endTime from tierpage,manage page should be open
+
+    async getSupplyTier(tier)
+	{
+		logger.info("Get supply for tier #"+tier);
 		let mngPage=new ManagePage(this.driver);
+		mngPage.refresh();
 		let s="";
-		switch(tier)
-		{
-			case 1:{s=await mngPage.getStartTimeTier1();break;}
-			case 2:{s=await mngPage.getStartTimeTier2();break;}
-			default: break;
-		}
+		s=await mngPage.getSupplyTier(tier);
+		logger.info("Value="+s);
+
+		return s;
+
+	}
+	async getRateTier(tier)
+	{
+		logger.info("Get rate for tier #"+tier);
+		let mngPage=new ManagePage(this.driver);
+		mngPage.refresh();
+		let s="";
+		s=await mngPage.getRateTier(tier);
+		logger.info("Value="+s);
+		return s;
+
+	}
+
+	async getStartTime(tier){ //get endTime from tierpage,manage page should be open
+		logger.info("Get start time of tier #"+tier);
+		let mngPage=new ManagePage(this.driver);
+        mngPage.refresh();
+		let s=await mngPage.getStartTimeTier(tier);
+		logger.info("Got value= "+s);
 		return s;
 
 	}
 
     async getEndTime(tier){ //get endTime from tierpage,manage page should be open
+		logger.info("Get end time of tier #"+tier);
 		let mngPage=new ManagePage(this.driver);
-		let s="";
-		switch(tier)
-		{
-			case 1:{s=await mngPage.getEndTimeTier1();break;}
-			case 2:{s=await mngPage.getEndTimeTier2();break;}
-			default: break;
-		}
+		mngPage.refresh();
+		let s=await mngPage.getEndTimeTier(tier);
+		logger.info("Got value= "+s);
 		return s;
 
 	}
+	async changeRate(tier,value){
 
-	async changeEndTime(crowdsale,tier,newDate,newTime) {
-		logger.info("Change EndTime for tier#" + tier);
+		logger.info("Change Rate for tier#" + tier);
+		let mngPage=new ManagePage(this.driver);
+		await mngPage.waitUntilLoaderGone();
+		try {
+			await mngPage.fillRateTier(tier, value);
+			await mngPage.clickButtonSave();
+			var metaMask = new MetaMask(this.driver);
+			await metaMask.doTransaction(5);
+			this.driver.sleep(10000);
+			await mngPage.waitUntilLoaderGone();
+			var b = await this.confirmPopup();
+			this.driver.sleep(20000);
+			await mngPage.waitUntilLoaderGone();
+
+			return b;
+		}
+		catch(err){
+			logger.info("Can not change Rate for tier #"+ tier);
+			logger.error("Error:"+err);
+			return false;
+
+		}
+	}
+
+	async fillWhitelistTier(tier,address,min,max)
+{
+	logger.info("Fill whitelist for tier "+ tier);
+	logger.info("Wh address="+address+" , min="+min+ ", max="+max);
+	let mngPage=new ManagePage(this.driver);
+	await mngPage.fillWhitelist(tier,address,min,max);
+	var metaMask = new MetaMask(this.driver);
+	var b=await metaMask.doTransaction(5);
+	if (!b) return false;
+	//if (tier==1) b=await metaMask.doTransaction(5);
+	//if (!b) return false;
+	await mngPage.waitUntilLoaderGone();
+	b = await this.confirmPopup();
+	await mngPage.waitUntilLoaderGone();
+	return b;
+
+}
+
+	async changeSupply(tier,value){
+
+		logger.info("Change Supply for tier#" + tier);
+		let mngPage=new ManagePage(this.driver);
+		await mngPage.waitUntilLoaderGone();
+		try {
+			await mngPage.fillSupplyTier(tier, value);
+			await mngPage.clickButtonSave();
+			var metaMask = new MetaMask(this.driver);
+			await metaMask.doTransaction(5);
+			await mngPage.waitUntilLoaderGone();
+			var b = await this.confirmPopup();
+			await mngPage.waitUntilLoaderGone();
+
+			return b;
+		}
+		catch(err){
+			logger.info("Can not change Supply for tier #"+ tier);
+			logger.error("Error:"+err);
+			return false;
+
+		}
+	}
+
+
+
+	async changeEndTime(tier,newDate,newTime) {
+
+		var b=false;
+    	logger.info("Change EndTime for tier#" + tier);
 		var format=await Utils.getDateFormat(this.driver);
     	if (format=="mdy") {
 			newDate=Utils.convertDateToMdy(newDate);
@@ -210,36 +258,22 @@ catch(err){
 
 		await mngPage.waitUntilLoaderGone();
 		try {
-			switch (tier) {
-				case 1: {
-					await mngPage.fillEndTimeTier1(newDate,newTime);
-					break;
-				}
-				case 2: {
-					await mngPage.fillEndTimeTier2(newDate,newTime);
-					break;
-				}
-				default:
-					return false;
-			}
-			await Utils.takeScreenshoot(this.driver);
+			b=await mngPage.fillEndTimeTier(tier, newDate, newTime);
+			if (!b) return false;
 
-
-			//await this.driver.sleep(1000);
-			if (await mngPage.isPresentWarningEndTimeTier1()||await mngPage.isPresentWarningEndTimeTier2()) return false;
+			if (await mngPage.isPresentWarningEndTimeTier1()||await mngPage.isPresentWarningEndTimeTier2())
+			{return false;}
 			await mngPage.clickButtonSave();
 			var metaMask = new MetaMask(this.driver);
 			await metaMask.doTransaction(5);
 			await mngPage.waitUntilLoaderGone();
 
 			var b = await this.confirmPopup();
-			await Utils.takeScreenshoot(this.driver);
+			//await Utils.takeScreenshoot(this.driver);
 			await mngPage.waitUntilLoaderGone();
 
 			return b;
 
-
-			return true;
 		}
 		catch(err){
 			logger.info("Can not change end time for tier #"+ tier);
@@ -249,9 +283,11 @@ catch(err){
 		}
 	}
 
-    async changeStartTime(crowdsale,tier,newDate,newTime)
+    async changeStartTime(tier,newDate,newTime)
     {
-        logger.info("Change startTime for tier#"+tier);
+
+        var b=false;
+    	logger.info("Change startTime for tier#"+tier);
 	    var format=await Utils.getDateFormat(this.driver);
 	    if (format=="mdy") {
 		    newDate=Utils.convertDateToMdy(newDate);
@@ -262,22 +298,11 @@ catch(err){
 	    let mngPage=new ManagePage(this.driver);
 
 	    await mngPage.waitUntilLoaderGone();
-	    try{
-	    switch (tier) {
-		    case 1: {
-			    await mngPage.fillStartTimeTier1(newDate,newTime);
-			    break;
-		    }
-		    case 2: {
-			    await mngPage.fillStartTimeTier2(newDate,newTime);
-			    break;
-		    }
-		    default:
-			    return false;
-	        }
+	    try {
+		    logger.info("Change start time to: "+newDate+ "  " +newTime);
+		    var b=await mngPage.fillStartTimeTier(tier, newDate, newTime);
+            if (!b) return false;
 
-		    await Utils.takeScreenshoot(this.driver);
-//await this.driver.sleep(1000);
 		    if (await mngPage.isPresentWarningStartTimeTier1()||await mngPage.isPresentWarningStartTimeTier2())
 		    	    return false;
 		    await mngPage.clickButtonSave();
@@ -285,8 +310,8 @@ catch(err){
 		    await metaMask.doTransaction();
 		    await mngPage.waitUntilLoaderGone();
 
-		    var b = await this.confirmPopup();
-		    await Utils.takeScreenshoot(this.driver);
+		    b = await this.confirmPopup();
+		    //await Utils.takeScreenshoot(this.driver);
 		    await mngPage.waitUntilLoaderGone();
 		    return b;
 
@@ -303,26 +328,32 @@ catch(err){
 
 
     }
-
-
-
     async distribute(crowdsale){
 	    logger.info(this.account + " distribution");
 	    logger.info(this. account+" balance = "+ Utils.getBalance(this));
         var mngPage=await this.openManagePage(crowdsale);
-       await  Utils.takeScreenshoot(this.driver);
-       //await  this.driver.sleep(5000);
-        // logger.info(("Present:"+await mngPage.isPresentButtonDistribute());
-        //  logger.info(("Enabled"+await mngPage.isEnabledDistribute());
-        if ( await mngPage.isEnabledDistribute())
+		await mngPage.waitUntilLoaderGone();
+		await this.driver.sleep(3000);
+		await mngPage.refresh();
+		await this.driver.sleep(3000);
+	    //await mngPage.refresh();
+	    //await this.driver.sleep(3000);
+      let bb=false;
+	  for (var i=0;i<5;i++) {
+		  bb=bb|await mngPage.isEnabledDistribute();
+	  }
+
+
+
+        if (bb)
         {
             await mngPage.clickButtonDistribute();
         }
         else  {return false;}
+
         var metaMask = new meta.MetaMask(this.driver);
         await metaMask.doTransaction(5);
         await mngPage.waitUntilLoaderGone();
-       // await Utils.takeScreenshoot(this.driver);
         var b= await mngPage.confirmPopup();
         return true;
     }
@@ -331,10 +362,14 @@ catch(err){
 	    logger.info(this.account + " finalization");
 	    logger.info(this. account+" balance = "+ Utils.getBalance(this));
         await this.openManagePage(crowdsale);
-        await Utils.takeScreenshoot(this.driver);
         var mngPage=new ManagePage(this.driver);
-	    await Utils.takeScreenshoot(this.driver);
         await mngPage.waitUntilLoaderGone();
+        await this.driver.sleep(3000);
+        await mngPage.refresh();
+		await this.driver.sleep(3000);
+		await mngPage.clickButtonDistribute();
+		await mngPage.refresh();
+		await this.driver.sleep(3000);
 
         if ( await mngPage.isEnabledFinalize())
         {
@@ -362,10 +397,7 @@ catch(err){
         return true;
     }
 
-
-    getAmount(){}
-
-    async createCrowdsale(scenarioFile){
+    async createCrowdsale(scenarioFile,Tfactor){
 
 
         const  startURL=Utils.getStartURL();
@@ -375,6 +407,11 @@ catch(err){
         var wizardStep1 = new WizardStep1(this.driver);
         var wizardStep2 = new WizardStep2(this.driver);
         var wizardStep3 = new WizardStep3(this.driver);
+
+		WizardStep3.setCountTiers(0);
+		WizardStep3.setFlagCustom(false);
+		WizardStep3.setFlagWHitelising(false);
+
         var wizardStep4 = new WizardStep4(this.driver);
         var crowdsalePage = new CrowdsalePage(this.driver);
         var investPage = new InvestPage(this.driver);
@@ -388,46 +425,44 @@ catch(err){
         await  welcomePage.open();
 
         await  welcomePage.clickButtonNewCrowdsale();
-        //await Utils.takeScreenshoot(this.driver);
-        await this.driver.sleep(3000);
-        await  wizardStep1.clickButtonContinue();
-        //await this.driver.sleep(500);
-	 //  await  Utils.takeScreenshoot(this.driver);
-        await wizardStep2.fillName(cur.name);
+        let count=10;
+        do {
+	        await this.driver.sleep(1000);
+
+	        if  ((await wizardStep1.isPresentButtonContinue()) &&
+	               !(await wizardStep2.isPresentFieldName()) )
+	        {
+
+	        	await wizardStep1.clickButtonContinue();
+
+	        }
+	        else break;
+        }
+        while (count-->0)
+
+		await  wizardStep2.fillName(cur.name);
         await wizardStep2.fillTicker(cur.ticker);
         await wizardStep2.fillDecimals(cur.decimals);
         for (var i=0;i<cur.reservedTokens.length;i++)
         {
             await reservedTokens.fillReservedTokens(cur.reservedTokens[i]);
-            // await this.driver.sleep(1000);
             await reservedTokens.clickButtonAddReservedTokens();
-            // await this.driver.sleep(1000);
-
         }
-       // await Utils.zoom(this.driver,0.5);
-       // await Utils.takeScreenshoot(this.driver);
-       // await Utils.zoom(this.driver,1);
+
 
         await wizardStep2.clickButtonContinue();
-	    await this.driver.sleep(3000);
         await wizardStep3.fillWalletAddress(cur.walletAddress);
 
         await wizardStep3.setGasPrice(cur.gasPrice);
-	    //await Utils.takeScreenshoot(this.driver);
         if (cur.whitelisting) await wizardStep3.clickCheckboxWhitelistYes();
         else (await wizardStep3.fillMinCap(cur.minCap));
-        //await Utils.takeScreenshoot(this.driver);
         for (var i=0;i<cur.tiers.length-1;i++)
         {
             await tiers[i].fillTier();
-            await Utils.takeScreenshoot(this.driver);
             await wizardStep3.clickButtonAddTier();
         }
         await tiers[cur.tiers.length-1].fillTier();
         await Utils.takeScreenshoot(this.driver);
-
-
-
         await wizardStep3.clickButtonContinue();
         await this.driver.sleep(5000);
 	    await Utils.takeScreenshoot(this.driver);
@@ -446,16 +481,14 @@ catch(err){
            z=await metaMask.doTransaction(5);
 	        trCounter++;
            if (!z) {
-
 	           logger.info("Transaction #"+trCounter+" didn't appear.");
-	           //b=false;
 	            }
 	           else {
 
 	           logger.info("Transaction# "+trCounter+" is successfull");
            }
 
-	      await this.driver.sleep(3500);//anyway won't be faster than start time
+	      await this.driver.sleep(Tfactor*500);//anyway won't be faster than start time
 	        if ((await wizardStep4.isPresentButtonSkipTransaction()))
 	        {
 
@@ -466,18 +499,12 @@ catch(err){
 		        console.log("Transaction #"+ (trCounter+1)+" is skipped.");
 		        trCounter++;
 		        skippedTr++;
-		        //await this.driver.sleep(5000);//1000
 	        }
 	        else {
-		       // await this.driver.sleep(1000);
+
 		        if (!(await wizardStep4.isPage())) {//if modal NOT present
-			        //await this.driver.sleep(10000);
-
 			        await wizardStep4.waitUntilLoaderGone();
-			       // await Utils.takeScreenshoot(this.driver);
-			        // await this.driver.sleep(5000);
 			        await wizardStep4.clickButtonOk();
-
 			        b = false;
 		        }
 	        }
@@ -495,23 +522,18 @@ catch(err){
             "\n"+ "Transaction were skipped: "+skippedTr;
                 logger.info(s);
                 b=false;}
-	         // console.log("timeLimit="+timeLimit);
 
         } while (b);
 
         logger.info("Crowdsale created."+"\n"+" Transaction were done:"+ (trCounter-skippedTr)+
 	    "\n"+ "Transaction were skipped: "+skippedTr);
 //////////////////////////////////////////////////////////////////
-       // await Utils.takeScreenshoot(this.driver);
-
-
-        await this.driver.sleep(5000);
+	    await this.driver.sleep(5000);
 	    const abi=await wizardStep4.getABI();
-	    console.log(abi);
-	    //return;
+	   logger.info(abi);
+
         await wizardStep4.clickButtonContinue();
-        //await this.driver.sleep(5000);
-       // await Utils.takeScreenshoot(this.driver);
+
         await wizardStep4.waitUntilLoaderGone();
         b=true;
         var counter=50;
@@ -533,7 +555,6 @@ catch(err){
         logger.info("Transaction were done: "+ trCounter);
 
         await investPage.waitUntilLoaderGone();
-        //await  this.driver.sleep(10000);
         await Utils.takeScreenshoot(this.driver);
         const addr=await investPage.getTokenAddress();
         const contr=await investPage.getContractAddress();
@@ -544,17 +565,17 @@ catch(err){
     async confirmPopup(){
         logger.info("Confirm popup");
         let investPage = new InvestPage(this.driver);
-        await this.driver.sleep(2000);
-        let c=50;x
+        await this.driver.sleep(1000);
+        let c=10;
         while(c-->0) {
             await this.driver.sleep(1000);
             if (await investPage.isPresentWarning()) {
-                await Utils.takeScreenshoot(this.driver);
-	            await this.driver.sleep(2000);
+
+	            await this.driver.sleep(1000);
                 await investPage.clickButtonOK();
                 return true;
             }
-            await Utils.takeScreenshoot(this.driver);
+
             return false;
         }
 
@@ -562,12 +583,11 @@ catch(err){
 
 
     async  contribute(amount){
-    	logger.info(this.account + " contribution");
+    	logger.info(this.account + " contribution = "+amount);
     	logger.info(this. account+" balance = "+ Utils.getBalance(this));
         var investPage = new InvestPage(this.driver);
         await investPage.waitUntilLoaderGone();
         await investPage.fillInvest(amount);
-        //await Utils.takeScreenshoot(this.driver);
         await investPage.clickButtonContribute();
         var counter=0;
         var d=true;
@@ -578,28 +598,24 @@ catch(err){
             //Check if Warning present(wrong start time)->return false
             if (await investPage.isPresentWarning()) {
                 var text=await investPage.getWarningText();
-                logger.info(this.name+text);
-                //await Utils.takeScreenshoot(this.driver);
-                //await investPage.clickButtonOK();
+                logger.info(this.name+": warning:"+text);
                 return false;}
             //Check if Error present(transaction failed)->return false
             if (await investPage.isPresentError()) {
                 var text=await investPage.getErrorText();
-                logger.info(this.name+text);
-               // await Utils.takeScreenshoot(this.driver);
-                //await investPage.clickButtonOK();
+                logger.info(this.name+": error:"+text);
+
                 return false;}
 
             counter++;
             if (counter>=timeLimit) {
-                //await Utils.takeScreenshoot(this.driver);
                 d=false;
             }
         } while(d);
 
 
 
-        var b=await new MetaMask(this.driver).doTransaction(2);
+        var b=await new MetaMask(this.driver).doTransaction(5);
 
         if (!b) {  return false;}
 ////////////////////////////////////////////////////Added check if crowdsale NOT started and it failed
@@ -609,15 +625,14 @@ catch(err){
         while(counter++<timeLimit) {
             await this.driver.sleep(500);
             if (await investPage.isPresentWarning()) {
-                //await Utils.takeScreenshoot(this.driver);
+
                 await investPage.clickButtonOK();
 	            await investPage.waitUntilLoaderGone();
                 await this.driver.sleep(3000);
                 return true;
             }
-
         }
-       // await Utils.takeScreenshoot(this.driver);
+
         return false;
     }
 
@@ -629,12 +644,11 @@ catch(err){
         var curURL=await investPage.getURL();
         if(url!=curURL) await investPage.open(url);
         await investPage.waitUntilLoaderGone();
-        //await Utils.takeScreenshoot(this.driver);
-	    //await investPage.refresh();
 	    await this.driver.sleep(2000);
 	    await investPage.refresh();
-	    await this.driver.sleep(6000);
-
+	    await this.driver.sleep(2000);
+	    await investPage.refresh();
+	    await this.driver.sleep(2000);
         let s=await investPage.getBalance();
 
         let arr=s.split(" ");
@@ -646,11 +660,6 @@ catch(err){
 
 
     }
-
-
-
-
-
 
 }
 module.exports.User=User;

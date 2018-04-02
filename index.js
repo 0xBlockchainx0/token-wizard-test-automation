@@ -4,8 +4,6 @@ const test1=require('./tests/Test1.js');
 const Test1=test1.Test1;
 
 
-const test4=require('./tests/Test4.js');
-const Test4=test4.Test4;
 
 const utils=require('./utils/Utils.js');
 const Utils=utils.Utils;
@@ -37,14 +35,18 @@ const User=user.User;
 //var Accounts = require('web3-eth-accounts');
 ///////////////////////////////////////
 //address="0x9E963042D581D262AdE4E31541360e7FDAeE70C6";
-address="0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7";
-var user8545_56B2File='./users/user8545_56B2.json';
-var user1=new User(null,user8545_56B2File);
+//address="0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7";
+//var user8545_56B2File='./users/user8545_56B2.json';
+//var user1=new User(null,user8545_56B2File);
+console.log(new Date().getTime());
+var decimals=15;
+var smallAmount=Math.pow(10,-decimals);
+//console.log(1-smallAmount);
 
+console.log(new Date(Date.now()).getTime());
+console.log(new Date().getTime());
 
-
-
-run();
+//run();
 //srun();
 
 
@@ -104,8 +106,8 @@ async function run() {
 
 
     var driver;
-    var util=new Utils();
-    driver= await util.startBrowserWithMetamask();
+
+    driver= await Utils.startBrowserWithMetamask();
     var mtMask = new MetaMask(driver);
     await mtMask.open();//return activated Metamask and empty page
 

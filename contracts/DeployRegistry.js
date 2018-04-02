@@ -6,7 +6,9 @@ const logger=Logger.logger;
 const Web3 = require('web3');
 const fs = require('fs');
 const deployContract = require('./DeployContract.js');
+
 deployRegistry();
+
 async function deployRegistry() {
 //logger.info("Deploy Registry for address "+ address);
 	const web3 = await new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));

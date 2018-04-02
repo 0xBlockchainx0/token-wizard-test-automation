@@ -23,7 +23,6 @@ class WizardStep2 extends page.Page {
         this.name="WizardStep2 page: ";
 
     }
-
     async init(){
 
         var locator = By.className("input");
@@ -35,21 +34,48 @@ class WizardStep2 extends page.Page {
 
 
 
+
+async isPresentFieldName(){
+        logger.info(this.name+"is present field name: ");
+        var locator = By.className("input");
+		var arr=await this.driver.findElements(locator);
+		if (arr.length>0)return true;
+		else return false;
+
+    }
+
     async fillName(name){
-        logger.info(this.name+"field Name: ");
+        try{
+    	logger.info(this.name+"field Name: ");
         await this.init();
         await super.clearField(this.fieldName);
         await super.fillField(this.fieldName,name);
+        return true;}
+        catch (err)
+        {logger.info(err);
+         return false;}
 }
 async fillTicker(name){
-    logger.info(this.name+"field Ticker: ");
-    await this.init();
-    await super.fillField(this.fieldTicker,name);
+    try {
+	    logger.info(this.name + "field Ticker: ");
+	    await this.init();
+	    await super.fillField(this.fieldTicker, name);
+	    return true;
+    }
+catch (err)
+	{logger.info(err);
+		return false;}
 }
-async fillDecimals(name){
-    logger.info(this.name+"field Decimals: ");
-    await this.init();
-    await super.fillField(this.fieldDecimals,name);
+async fillDecimals(name) {
+    	try{
+	logger.info(this.name + "field Decimals: ");
+	await this.init();
+	await super.fillField(this.fieldDecimals, name);
+	return true;
+}
+catch (err)
+	{logger.info(err);
+		return false;}
 }
 
 
@@ -57,7 +83,12 @@ async clickButtonContinue(){
     logger.info(this.name+"button Continue: ");
     await super.clickWithWait(buttonContinue);
 }
+	async isPresentButtonContinue(){
+		var b=await super.isElementPresent(buttonContinue);
+		logger.info(this.name+": is present button Continue: "+b);
+		return b;
 
+	}
 
 }
 module.exports.WizardStep2=WizardStep2;

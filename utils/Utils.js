@@ -137,7 +137,7 @@ static async wait(driver,time){
 
 
 
-	static compare(ss,newDate,newTime){
+	static  compare(ss,newDate,newTime){
 
 		let arr=ss.split("T");
 		let aww=arr[0].split("-");

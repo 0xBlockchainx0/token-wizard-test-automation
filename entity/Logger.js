@@ -15,9 +15,6 @@ const tempOutputPath='./temp/';
 fs.ensureDirSync(tempOutputPath);//create if doesn't exist
 tempOutputFile=tempOutputPath+'result.log';
 fs.ensureFileSync(tempOutputFile);
-//const moment = require('moment');
-//function tsFormat (){ return moment().format('YY-MM-DD hh:mm:ss').trim();}
-//console.log(tsFormat());
 const logger = createLogger({
 
    format: combine(
@@ -26,7 +23,7 @@ const logger = createLogger({
         myFormat
     ),
    transports: [
-       new (winston.transports.Console)(),
+        new (winston.transports.Console)(),
         new (winston.transports.File)({filename: tempOutputFile})
 
     ]

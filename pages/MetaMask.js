@@ -16,48 +16,31 @@ const URL="chrome-extension://"+IDMetaMask+"//popup.html";
 const passMetaMask="kindzadza";
 const fieldEnterPass= By.xpath("//*[@id=\"password-box\"]");
 const buttonUnlock=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[1]/button");
-const buttonBuy= By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div[2]/button[1]");
-const buttonSend= By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div[2]/button[2]");
-
-//const buttonSubmit=By.xpath("//*[@id=\"pending-tx-form\"]/div[3]/input");
 const buttonSubmit=By.className("confirm btn-green");
-
-
 const fieldGasPrise=By.xpath("//*[@id=\"pending-tx-form\"]/div[1]/div[2]/div[3]/div[2]/div/div/input");
-///////Imported from TestCircle//////
+
 const buttonAccept=By.xpath('//*[@id="app-content"]/div/div[4]/div/button');
 
 const agreement=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div/p[1]/strong");
 const fieldNewPass=By.xpath("//*[@id=\"password-box\"]");
 const fieldConfirmPass=By.xpath("//*[@id=\"password-box-confirm\"]");
 const buttonCreate=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/button");
-const fieldSecretWords=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/textarea");
+
 const buttonIveCopied=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/button[1]");
-//const popupNetwork=By.xpath("//*[@id=\"network_component\"]/div/i");
+
 const popupNetwork=By.className("network-name");
-//const popupRinkeby=By.className("menu-icon golden-square");
-const popupRinkeby=By.css("Rinkeby Test Network");
-
-
 const popupAccount=By.xpath("//*[@id=\"app-content\"]/div/div[1]/div/div[2]/span/div");
-const popupImportAccount=By.xpath("//*[@id=\"app-content\"]/div/div[1]/div/div[2]/span/div/div/span/div/li[3]/span");
-const popupImportAccountCSS="#app-content > div > div.full-width > div > div:nth-child(2) > span > div > div > span > div > li:nth-child(4) > span";
 const fieldPrivateKey=By.xpath("//*[@id=\"private-key-box\"]");
 const pass="qwerty12345";
 const buttonImport=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/button");
 const fieldNewRPCURL=By.id("new_rpc");
 const buttonSave=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/div/div[2]/button");
-//const arrowBackRPCURL=By.className("fa fa-arrow-left fa-lg cursor-pointer");
 const arrowBackRPCURL=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[1]/i");
-
 const iconQuestionMark=By.className("fa fa-question-circle fa-lg");
 const iconChangeAccount=By.className("cursor-pointer color-orange accounts-selector");
 
 
 var accN=1;
-//var lengthNetworkMenu=6;
-//var sokolAdded=0;
-//var poaAdded=0;
 var networks=[0,3,42,4,8545]
 
 
@@ -169,12 +152,7 @@ class MetaMask extends page.Page{
 
     }
 
-
-
-
-
-
-   async importAccount(user){
+    async importAccount(user){
         //this.driver.sleep(1000);
 
        logger.info(this.name+"import account :");
@@ -222,11 +200,9 @@ async doTransaction(refreshCount){
     if (refreshCount!=undefined) timeLimit=refreshCount;
     do {
 
-        //await this.driver.sleep(1000);
         await this.refresh();
-        //await this.driver.sleep(1000);
 	    await super.waitUntilLocated(iconChangeAccount);
-	    //await Utils.takeScreenshoot(this.driver);
+
 
         if (await this.isElementPresentWithWait(buttonSubmit)) {
 	        //await this.driver.sleep(500);
@@ -237,7 +213,6 @@ async doTransaction(refreshCount){
         counter++;
         logger.info("counter #"+ counter);
 	    logger.info("Time limit " +timeLimit);
-	    //logger.info( timeLimit);
 
         if (counter>=timeLimit) {
             await this.switchToNextPage();
