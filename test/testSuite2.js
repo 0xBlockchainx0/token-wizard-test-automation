@@ -204,18 +204,19 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 	test.it('Wizard step#2: user able to fill Name field with valid data',
 		async function () {
-			b= await wizardStep2.fillName(currencyForE2e.name);
+			b= await wizardStep2.fillName("012345678901234567890123456789q");
+			await wizardStep2.testtest();
 			assert.equal(b, true, "Test FAILED. Wizard step#2: button Continue  not present ");
 
 		});
 
-	test.it('Wizard step#2: user able to fill Ticker field with valid data',
+	test.it.skip('Wizard step#2: user able to fill Ticker field with valid data',
 		async function () {
 			b=await wizardStep2.fillTicker(currencyForE2e.ticker);
 			assert.equal(b, true, "Test FAILED. User able to fill Ticker field with valid data ");
 
 		});
-	test.it('Wizard step#2: user able to fill Decimals field with valid data',
+	test.it.skip('Wizard step#2: user able to fill Decimals field with valid data',
 		async function () {
 			b=await wizardStep2.fillDecimals(currencyForE2e.decimals);
 			assert.equal(b, true, "Test FAILED. User able to fill Decimals field with valid data ");
@@ -303,7 +304,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#2: button Continue present ',
+	test.it.skip('Wizard step#2: button Continue present ',
 		async function () {
 			b=false;
 			b=await wizardStep2.isPresentButtonContinue();
@@ -311,7 +312,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(b, true, "Test FAILED. Wizard step#2: button Continue  not present ");
 
 		});
-	test.it('Wizard step#2: user is able to open Step3 by clicking button Continue ',
+	test.it.skip('Wizard step#2: user is able to open Step3 by clicking button Continue ',
 		async function () {
 			b=false;
 			await wizardStep2.clickButtonContinue();
@@ -322,7 +323,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#3: Wallet address matches the metamask account address ',
+	test.it.skip('Wizard step#3: Wallet address matches the metamask account address ',
 		async function () {
 
 			s=await wizardStep3.getFieldWalletAddress();
@@ -335,7 +336,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#3: "Safe and cheap" Gas price checkbox set by default ',
+	test.it.skip('Wizard step#3: "Safe and cheap" Gas price checkbox set by default ',
 		async function () {
 			b=true;
 			assert.equal(b, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
@@ -376,7 +377,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: Checkbox "Whitelist disabled"  does not set by default');
 
 		});
-	test.it('Wizard step#3: User is able to set checkbox  "Whitelist enabled"',
+	test.it.skip('Wizard step#3: User is able to set checkbox  "Whitelist enabled"',
 		async function () {
 
 			b=await wizardStep3.clickCheckboxWhitelistYes();

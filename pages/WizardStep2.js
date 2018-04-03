@@ -43,7 +43,19 @@ async isPresentFieldName(){
 		else return false;
 
     }
+async testtest(){
+    	console.log("Testtttt");
+    	//const locator=By.css('style');
 
+	const locator=By.xpath("style[color: red]");
+    	var arr=await this.driver.findElements(locator);
+    	console.log("ARRRR="+ arr.length);
+    	for (var i=0;i<arr.length;i++)
+        console.log("DDDDDFFF= "+ await arr[i].getText());
+
+throw("The end");
+
+}
     async fillName(name){
         try{
     	logger.info(this.name+"field Name: ");
