@@ -214,7 +214,7 @@ catch(err)
 	     el.sendKeys("/home/travis/build/poanetwork/token-wizard/submodules/token-wizard-test-automation/MyWhitelist.csv");
 	      //el.sendKeys("https://github.com/poanetwork/token-wizard-test-automation/blob/rpc/MyWhitelist.csv");
 	     //el.sendKeys(".Downloads/MyWhitelist.csv");
-	     //el.sendKeys("/Users/person/WebstormProjects/token-wizard-test-automation/MyWhitelist.csv")
+	    // el.sendKeys("/Users/person/WebstormProjects/token-wizard-test-automation/MyWhitelist.csv")
 
 	     return true;
      }
