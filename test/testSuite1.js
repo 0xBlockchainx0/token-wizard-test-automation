@@ -100,7 +100,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	///////////////////////////////////////////////////////////////////////
 
 	test.before(async function() {
-        logger.info("Version 2.0.1");
+        logger.info("Version 2.0.2");
 		driver = await Utils.startBrowserWithMetamask();
 		flagCrowdsale=false;
 		Owner = new User (driver,user8545_56B2File);

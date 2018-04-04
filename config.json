@@ -1,5 +1,5 @@
 {
-  "startURL" : "https://wizard.oracles.org/",
+  "startURL" : "http://localhost:3000/",
   "outputPath":"./results",
   "installMetaMask":true
 
