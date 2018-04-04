@@ -343,8 +343,6 @@ class User {
 		  bb=bb|await mngPage.isEnabledDistribute();
 	  }
 
-
-
         if (bb)
         {
             await mngPage.clickButtonDistribute();
@@ -449,27 +447,32 @@ class User {
             await reservedTokens.clickButtonAddReservedTokens();
         }
 
-
         await wizardStep2.clickButtonContinue();
-        await wizardStep3.fillWalletAddress(cur.walletAddress);
 
-        await wizardStep3.setGasPrice(cur.gasPrice);
-        if (cur.whitelisting) await wizardStep3.clickCheckboxWhitelistYes();
-        else (await wizardStep3.fillMinCap(cur.minCap));
-        for (var i=0;i<cur.tiers.length-1;i++)
-        {
-            await tiers[i].fillTier();
-            await wizardStep3.clickButtonAddTier();
-        }
-        await tiers[cur.tiers.length-1].fillTier();
-        await Utils.takeScreenshoot(this.driver);
-        await wizardStep3.clickButtonContinue();
-        await this.driver.sleep(5000);
-	    await Utils.takeScreenshoot(this.driver);
-        if (!(await wizardStep4.isPage())) {
-            logger.info("Incorrect data in tiers");
-            throw ('Incorrect data in tiers');
-        }
+
+	        await wizardStep3.fillWalletAddress(cur.walletAddress);
+
+	        await wizardStep3.setGasPrice(cur.gasPrice);
+	        if (cur.whitelisting) await wizardStep3.clickCheckboxWhitelistYes();
+	        else (await wizardStep3.fillMinCap(cur.minCap));
+	        for (var i = 0; i < cur.tiers.length - 1; i++) {
+		        await tiers[i].fillTier();
+		        await wizardStep3.clickButtonAddTier();
+	        }
+	        await tiers[cur.tiers.length - 1].fillTier();
+	    await this.driver.sleep(5000);
+	        await wizardStep3.clickButtonContinue();
+
+	         await this.driver.sleep(5000);
+
+	        if (!(await wizardStep4.isPage())) {
+		        logger.info("Incorrect data in tiers");
+		        await wizardStep3.printWarnings();
+		        await wizardStep3.fillWalletAddress(cur.walletAddress);
+	        }
+
+
+
 ////////////////////////////////////////////////////////////////////
         var trCounter=0;
         var skippedTr=0;
@@ -584,7 +587,7 @@ class User {
 
     async  contribute(amount){
     	logger.info(this.account + " contribution = "+amount);
-    	logger.info(this. account+" balance = "+ Utils.getBalance(this));
+    	logger.info(this. account+" balance = "+ Utils.getBalance(this. account));
         var investPage = new InvestPage(this.driver);
         await investPage.waitUntilLoaderGone();
         await investPage.fillInvest(amount);
@@ -646,9 +649,8 @@ class User {
         await investPage.waitUntilLoaderGone();
 	    await this.driver.sleep(2000);
 	    await investPage.refresh();
-	    await this.driver.sleep(2000);
 	    await investPage.refresh();
-	    await this.driver.sleep(2000);
+	    await this.driver.sleep(4000);
         let s=await investPage.getBalance();
 
         let arr=s.split(" ");

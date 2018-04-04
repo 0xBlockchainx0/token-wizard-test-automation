@@ -25,7 +25,35 @@ class Page {
         this.pageID;
         this.footer;
         this.header;
+        this.pageTitle;
+
+
     }
+
+	async initTitles(){
+		try{
+			logger.info("init titles");
+			var locator = By.className("title");
+			var arr = await this.findWithWait(locator);
+			this.pageTitle=arr[0];
+			return arr;
+		}
+		catch(err){
+            logger.info("Page has no title");
+			return null;
+		}
+
+	}
+
+    async getTitleText(){
+    	let arr=await this.initTitles();
+
+    	if (arr!=null){
+		    let s=await  this.getTextByElement(this.pageTitle);
+    	    return s;}
+    	    else return "";
+    }
+
 
 	async isElementDisabled(element)
 	{
@@ -196,8 +224,7 @@ async clearField(element,n){
 
    async  fillField(field,address){
 
-
-        logger.info("fill: value = "+address);
+    	logger.info("fill: value = "+address);
       await  field.sendKeys(address);
 
     }
@@ -324,6 +351,10 @@ catch(err){
     await this.driver.sleep(5000);
 }
 
+    }
+
+    async goBack(){
+	    this.driver.navigate().back();
     }
 
 async switchToNextPage(){

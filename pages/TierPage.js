@@ -215,15 +215,13 @@ class TierPage extends page.Page {
 	    }
 	    catch (err){return false;}
 
-
-
-
-
     }
     async fillAddress(address){
 	    await this.init();
         logger.info(this.name+"field Address: ");
         let locator=this.fieldWhAddressTier;
+
+	    await super.clearField(this.fieldWhAddressTier);
         await super.fillWithWait(locator,address);
 
     }
@@ -231,12 +229,14 @@ class TierPage extends page.Page {
 	    await this.init();
         logger.info(this.name+"field Address: ");
         let locator=this.fieldMinTier;
+	    await super.clearField(this.fieldMinTier);
         await super.fillWithWait(locator,value);
     }
     async fillMax(value){
 	    await this.init();
         logger.info(this.name+"field Max: ");
         let locator=this.fieldMaxTier;
+	    await super.clearField(this.fieldMaxTier);
         await super.fillWithWait(locator,value);
     }
     async clickButtonAdd(){

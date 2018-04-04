@@ -8,3 +8,4 @@ results
 .env
 .DS_Store
 index.js
+.idea

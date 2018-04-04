@@ -205,26 +205,192 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			logger.error("Test PASSED. User is able to open Step2 by clicking button Continue");
 
 		});
-	test.it('Wizard step#2: user able to fill Name field with valid data',
+
+	////////////////////////// S T E P 2 //////////////////////////////////////////////////////////////////////////////
+
+
+	test.it('Wizard step#2: user able to fill out field Ticker with valid data',
 		async function () {
-			b= await wizardStep2.fillName(currencyForE2e.name);
-			assert.equal(b, true, "Test FAILED. Wizard step#2: button Continue  not present ");
+			await wizardStep2.fillTicker("test");
+			b=await wizardStep2.isPresentWarningTicker();
+			assert.equal(b, false, "Test FAILED. Wizard step#2: user is not  able to fill out field Ticker with valid data ");
 
 		});
+
+///////Name////
+	test.it("Wizard step#2: warning is presented if field Name  is empty ",
+		async function () {
+			await wizardStep2.fillName(" ");
+			b=await wizardStep2.isPresentWarningName();
+
+			assert.equal(b, true, "Test FAILED. Wizard step#2: warning doesnt present if  field Name empty");
+
+		});
+
+
+	test.it('Wizard step#2: warning is presented if Name length more than 30 symbols',
+		async function () {
+			await wizardStep2.fillName("012345678901234567890123456789q");
+			b=await wizardStep2.isPresentWarningName();
+			assert.equal(b, true, "Test FAILED. Wizard step#2: warning doesnt present if Name length more than 30 symbols");
+
+		});
+	test.it("Wizard step#2: user is not able to proceed if name's warning is presented ",
+		async function () {
+			await wizardStep2.clickButtonContinue();
+			b=await wizardStep2.getTitleText();
+			b=(b==wizardStep2.title);
+			if (!b)  await wizardStep3.goBack();
+			assert.equal(b, true, "Test FAILED. Wizard step#2: user is  able to proceed if name's warning presented");
+		});
+
+	test.it('Wizard step#2: user able to fill Name field with valid data',
+		async function () {
+			await wizardStep2.fillName(currencyForE2e.name);
+			b=await wizardStep2.isPresentWarningName();
+			assert.equal(b, false, "Test FAILED. Wizard step#2: user able to fill Name field with valid data ");
+
+		});
+
+	////Ticker////
+
+	test.it("Wizard step#2: warning is presented if field Ticker is empty ",
+		async function () {
+			await wizardStep2.fillTicker(" ");
+			b=await wizardStep2.isPresentWarningTicker();
+			assert.equal(b, true, "Test FAILED. Wizard step#2: warning does not present if field Ticker  empty ");
+
+		});
+	test.it('Wizard step#2: warning is presented if field Ticker length more than 5 symbols',
+		async function () {
+			await wizardStep2.fillTicker("qwerty");
+			b=await wizardStep2.isPresentWarningTicker();
+			assert.equal(b, true, "Test FAILED. Wizard step#2: warning does not present  if field Ticker length more than 5 symbols");
+
+		});
+	test.it('Wizard step#2: warning is presented if field Ticker contains special symbols',
+		async function () {
+			await wizardStep2.fillTicker("qwer$");
+			b=await wizardStep2.isPresentWarningTicker();
+			assert.equal(b, true, "Test FAILED. Wizard step#2: warning does not present  if field Ticker length more than 5 symbols");
+
+		});
+
+	test.it("Wizard step#2: user is not able to proceed if ticker's warning is presented ",
+		async function () {
+			await wizardStep2.clickButtonContinue();
+			b=await wizardStep2.getTitleText();
+			b=(b==wizardStep2.title);
+			if (!b)  await wizardStep3.goBack();
+			assert.equal(b, true, "Test FAILED. Wizard step#2: user is  able to proceed if ticker's warning presented");
+		});
+
 
 	test.it('Wizard step#2: user able to fill Ticker field with valid data',
 		async function () {
-			b=await wizardStep2.fillTicker(currencyForE2e.ticker);
-			assert.equal(b, true, "Test FAILED. User able to fill Ticker field with valid data ");
+			await wizardStep2.fillTicker(currencyForE2e.ticker);
+			b=await wizardStep2.isPresentWarningName();
+			assert.equal(b, false, "Test FAILED. Wizard step#2: user able to fill Name field with valid data ");
 
 		});
-	test.it('Wizard step#2: user able to fill Decimals field with valid data',
+///////Decimals/////
+
+	test.it("Wizard step#2: warning is presented if  Decimals more than 18 ",
 		async function () {
-			b=await wizardStep2.fillDecimals(currencyForE2e.decimals);
-			assert.equal(b, true, "Test FAILED. User able to fill Decimals field with valid data ");
+			await wizardStep2.fillDecimals("19");
+			b=await wizardStep2.isPresentWarningDecimals();
+			assert.equal(b, true, "Test FAILED. Wizard step#2: warning does not present if field Decimals empty ");
 
 		});
 
+	test.it("Wizard step#2: disable to fill out Decimals with negative value ",
+		async function () {
+			await wizardStep2.fillDecimals("-2");
+			b=await wizardStep2.getFieldDecimals();
+			assert.equal(b,"2", "Test FAILED. Wizard step#2: enable to fill out Decimals with negative value ");
+
+		});
+	test.it("Wizard step#2: disable to fill out Decimals with non-number value ",
+		async function () {
+			await wizardStep2.fillDecimals("qwerty");
+			b=await wizardStep2.getFieldDecimals();
+			assert.equal(b,"", "Test FAILED. Wizard step#2: enable to fill out Decimals with non-number value ");
+
+		});
+
+
+	test.it("Wizard step#2: disable to fill out Decimals with negative value ",
+		async function () {
+			await wizardStep2.fillDecimals("-2");
+			b=await wizardStep2.getFieldDecimals();
+			assert.equal(b,"2", "Test FAILED. Wizard step#2: enable to fill out Decimals with negative value ");
+
+		});
+	test.it.skip("Wizard step#2: user is not able to proceed if Decimals field empty ",
+		async function () {
+			await wizardStep2.fillDecimals("");
+			await wizardStep2.clickButtonContinue();
+			b=await wizardStep2.getTitleText();
+			b=(b==wizardStep2.title);
+			if (!b)  await wizardStep3.goBack();
+			assert.equal(b, true, "Test FAILED. Wizard step#2: user is  able to proceed if Decimals field empty ");
+		});
+	test.it('Wizard step#2: user able to fill out field Decimals with valid data',
+		async function () {
+			await wizardStep2.fillDecimals(currencyForE2e.decimals);
+			b=await wizardStep2.isPresentWarningDecimals();
+			assert.equal(b, false, "Test FAILED. Wizard step#2: user is not able to fill Decimals  field with valid data ");
+
+		});
+
+/////////// Reserved
+	test.it("Wizard step#2: warnings are presented if user try to add empty reserved token ",
+		async function () {
+			await reservedTokens.clickButtonAddReservedTokens();
+			b=(await reservedTokens.isPresentWarningAddress())&&(await reservedTokens.isPresentWarningValue());
+			assert.equal(b, true, "Test FAILED. Wizard step#2: warnings are not  presented if user try to add empty reserved token ");
+
+		});
+	test.it("Wizard step#2: warnings are disappeared if user fill out address and value fields with valid data ",
+		async function () {
+			await reservedTokens.fillAddress(currency.reservedTokens[0].address);
+			await reservedTokens.fillValue(currency.reservedTokens[0].value);
+			b=(await reservedTokens.isPresentWarningAddress())||(await reservedTokens.isPresentWarningValue());
+			assert.equal(b, false, "Test FAILED. Wizard step#2: warnings are presented if user fill out address and value fields with valid data ");
+
+		});
+
+	test.it("Wizard step#2: warning is presented if address of reserved tokens is invalid ",
+		async function () {
+			await reservedTokens.fillAddress("qwertyuiopasdfghjklz");
+			b=await reservedTokens.isPresentWarningAddress();
+			assert.equal(b, true, "Test FAILED. Wizard step#2: warning does not present if address of reserved tokens is invalid ");
+
+		});
+
+	test.it("Wizard step#2: user is not able to add reserved tokens if address is invalid ",
+		async function () {
+			await reservedTokens.clickButtonAddReservedTokens();
+			newBalance=await reservedTokens.amountAddedReservedTokens();
+			assert.equal(newBalance, 0, "Test FAILED. Wizard step#2: user is not able to add reserved tokens if address is invalid");
+
+		});
+
+	test.it("Wizard step#2: warning present if value of reserved tokens  is negative ",
+		async function () {
+			await reservedTokens.fillValue("-123");
+			b=await reservedTokens.isPresentWarningValue();
+			assert.equal(b, true, "Test FAILED. Wizard step#2: warning does not present if address of reserved tokens is negative ");
+
+		});
+	test.it("Wizard step#2: user is not able to add reserved tokens if value is invalid ",
+		async function () {
+		await reservedTokens.fillAddress(currency.reservedTokens[0].address);
+		await reservedTokens.clickButtonAddReservedTokens();
+		newBalance=await reservedTokens.amountAddedReservedTokens();
+		assert.equal(newBalance, 0, "Test FAILED. Wizard step#2: user is not able to add reserved tokens if address is invalid");
+
+		});
 
 	test.it('Wizard step#2: user is able to add reserved tokens ',
 		async function () {
@@ -239,6 +405,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			logger.error("Test PASSED. Wizard step#2: user is able to add reserved tokens");
 
 		});
+
+	test.it('Wizard step#2: field Decimals disabled if reserved tokens added ',
+		async function () {
+
+			b = await wizardStep2.isDisabledDecimals();
+			assert.equal(b, true, "Wizard step#2: field Decimals enabled if reserved tokens added ");
+		});
+
 	test.it('Wizard step#2: user is able to remove one of reserved tokens ',
 		async function () {
 			b=false;
@@ -290,7 +464,12 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
+	test.it('Wizard step#2: field Decimals enabled if no reserved tokens',
+		async function () {
 
+			b = await wizardStep2.isDisabledDecimals();
+			assert.equal(b, false, "Wizard step#2: field Decimals disabled  after deletion of reserved tokens");
+		});
 	test.it('Wizard step#2: user is able to add one reserved tokens address after deletion ',
 		async function () {
 			b=false;
@@ -434,11 +613,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(newBalance,0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
 		});
 
-
-
-
 /////////////////////////////////////////////////////////////////////////////
-
 
 	test.it('Owner  can create crowdsale(scenario testSuite1.json),1 tier, not modifiable, no whitelist,1 reserved',
 		async function () {

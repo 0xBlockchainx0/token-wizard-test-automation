@@ -34,6 +34,8 @@ class WizardStep3 extends page.Page{
 	    this.fieldGasPriceCustom  ;
 	    this.fieldWalletAddress;
 	    this.fieldMinCap;
+        this.title="CROWDSALE SETUP";
+	    this.warningWalletAddress;
     }
 static getFlagCustom(){return flagCustom;}
 static getFlagWHitelising(){return flagWHitelising;}
@@ -41,6 +43,29 @@ static setFlagCustom(value){flagCustom=value;}
 static setFlagWHitelising(value){flagWHitelising=value;}
 static getCountTiers(){return COUNT_TIERS}
 static setCountTiers(value){COUNT_TIERS=value}
+
+async printWarnings(){
+    	var arr=await this.initWarnings();
+    	for (var i=0;i<arr.length;i++)
+	    {
+	    	logger.info(i+" : "+ await super.getTextByElement(arr[i]));
+	    }
+}
+	async initWarnings(){
+		try {
+			logger.info(this.name + " :init warnings:");
+			const locator = By.xpath("//p[@style='color: red; font-weight: bold; font-size: 12px; width: 100%; height: 10px;']");
+			var arr = await super.findWithWait(locator);
+			this.warningWalletAddress = arr[0];
+
+			return arr;
+		}
+		catch(err){
+			logger.info(this.name+": dont contain warning elements");
+			return null;
+		}
+	}
+
 
 	async init(){
 try{
@@ -208,13 +233,11 @@ catch(err)
 		logger.info('Upload CSV');
      try {
 
-	     const loc = By.xpath("//*[@id=\"root\"]/div/section/div[3]/div/div[2]/div[2]/div[2]/div/input");
+	     const loc=By.xpath('//input[@type="file"]');
 	     var el = this.driver.findElement(loc);
 	     //el.sendKeys("/home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/MyWhitelist.csv");
 	     el.sendKeys("/home/travis/build/poanetwork/token-wizard/submodules/token-wizard-test-automation/MyWhitelist.csv");
-	      //el.sendKeys("https://github.com/poanetwork/token-wizard-test-automation/blob/rpc/MyWhitelist.csv");
-	     //el.sendKeys(".Downloads/MyWhitelist.csv");
-	    // el.sendKeys("/Users/person/WebstormProjects/token-wizard-test-automation/MyWhitelist.csv")
+	     //el.sendKeys("/Users/person/WebstormProjects/token-wizard-test-automation/MyWhitelist.csv")
 
 	     return true;
      }
@@ -244,6 +267,8 @@ async clickButtonOk(){
     	await super.clickWithWait(buttonOK);
 
 }
+
+
 
 
 }
