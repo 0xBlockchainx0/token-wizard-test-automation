@@ -26,6 +26,20 @@ class ReservedTokensPage extends Page{
 
     }
 
+	async initWarnings(){
+		try {
+			logger.info(this.name + " :init warnings:");
+			const locator = By.xpath("//p[@style='color: red; font-weight: bold; font-size: 12px; width: 100%; height: 10px;']");
+			var arr = await super.findWithWait(locator);
+			this.warningAddress = arr[3];
+			this.warningValue = arr[4];
+			return arr;
+		}
+		catch(err){
+			logger.info(this.name+": dont contain warning elements");
+			return null;
+		}
+	}
 
     async initItemsRemove(){
 	    var arr = await super.findWithWait(itemsRemove);
@@ -90,18 +104,22 @@ class ReservedTokensPage extends Page{
     async fillAddress(address){
 
         logger.info(this.name+"field Address :");
+
         if (address=="") return;
         else {
-            logger.info("Waallet address"+address);
+            logger.info("Wallet address"+address);
             await this.init();
+	        await super.clearField(this.fieldAddress);
             await super.fillField(this.fieldAddress, address);
         }
 
     }
     async fillValue(value){
         logger.info(this.name+"field Value :");
+
         if (value==undefined) return;
         await this.init();
+	    await super.clearField(this.fieldValue);
         await super.fillField(this.fieldValue,value);
     }
 
@@ -135,11 +153,6 @@ class ReservedTokensPage extends Page{
     async isPresentButtonClearAll(){
         return await super.isElementPresent(buttonClearAll);
     }
- async bulkDelete(){
-
-        await this.clickButtonClearAll();
-
- }
 
     async isPresentButtonYesAlert(){
 		return await super.isElementPresent(buttonYesAlert);
@@ -156,7 +169,19 @@ class ReservedTokensPage extends Page{
 		await super.clickWithWait(buttonNoAlert);
 
 	}
+	async isPresentWarningAddress(){
+		await this.initWarnings();
+		let s=await super.getTextByElement(this.warningAddress);
+		if (s!="") return true;
+		else return false;
+	}
 
+	async isPresentWarningValue(){
+		await this.initWarnings();
+		let s=await super.getTextByElement(this.warningValue);
+		if (s!="") return true;
+		else return false;
+	}
 
 
 }
