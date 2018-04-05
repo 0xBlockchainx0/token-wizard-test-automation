@@ -227,7 +227,7 @@ catch(err)
 	}
 
     async isPresentWarningWalletAddress() {
-	    return false;
+
 	    logger.info(this.name + "is present warning :");
 	    await this.initWarnings();
 	    let s = await super.getTextByElement(this.warningWalletAddress);
