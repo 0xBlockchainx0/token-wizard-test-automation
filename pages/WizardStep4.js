@@ -11,7 +11,8 @@ const webdriver = require('selenium-webdriver'),
 const By=by.By;
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
 const modal=By.className("modal");
-const buttonOK=By.xpath('/html/body/div[2]/div/div[3]/button[1]');
+//const buttonOK=By.xpath('/html/body/div[2]/div/div[3]/button[1]');
+const buttonOK=By.className("swal2-confirm swal2-styled");
 const buttonSkipTransaction=By.className("no_image button button_fill");
 const buttonYes=By.className("swal2-confirm swal2-styled");
 
@@ -51,7 +52,7 @@ class WizardStep4 extends page.Page{
 	}
 
 
-async isPage(){
+async isPresentModal(){
 	logger.info(this.name+"Is present Modal: ");
         return await super.isElementPresent(modal);
 }

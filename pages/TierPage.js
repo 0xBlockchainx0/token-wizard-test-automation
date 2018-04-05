@@ -42,7 +42,49 @@ class TierPage extends page.Page {
 	    this.checkboxModifyOn;
 	    this.checkboxModifyOff;
 	    this.itemsRemove=[];
+	    this.warningName;
+	    this.warningStartTime;
+	    this.warningEndTime;
+	    this.warningRate;
+	    this.warningSupply;
+	    this.warningRate;
+	    this.warningWhAddress;
+	    this.warningWhMin;
+	    this.warningWhMax;
     }
+
+
+	async initWarnings(){
+		try {
+			logger.info(this.name + " :init warnings:");
+			const locator = By.xpath("//p[@style='color: red; font-weight: bold; font-size: 12px; width: 100%; height: 10px;']");
+			var arr = await super.findWithWait(locator);
+
+			let ci_tresh=2;
+			let ci_mult=5;
+
+			if (wizardStep3.WizardStep3.getFlagCustom()) ci_tresh=3;
+			if (wizardStep3.WizardStep3.getFlagWHitelising()) ci_mult=8;
+			this.warningName = arr[ci_tresh+(this.number)*ci_mult];
+			this.warningStartTime=arr[ci_tresh+(this.number)*ci_mult+1];
+			this.warningEndTime=arr[ci_tresh+(this.number)*ci_mult+2];
+			this.warningRate=arr[ci_tresh+(this.number)*ci_mult+3];
+			this.warningSupply=arr[ci_tresh+(this.number)*ci_mult+4];
+			this.warningWhAddress=arr[ci_tresh+(this.number)*ci_mult+5];
+			this.warningWhMin=arr[ci_tresh+(this.number)*ci_mult+6];
+			this.warningWhMax=arr[ci_tresh+(this.number)*ci_mult+7];
+			return arr;
+		}
+		catch(err){
+			logger.info(this.name+": dont contain warning elements");
+			return null;
+		}
+	}
+
+
+
+
+
 
 	async initItemsRemove(){
 		var arr = await super.findWithWait(itemsRemove);
@@ -92,13 +134,36 @@ class TierPage extends page.Page {
 	async fillTier()
     {   logger.info(this.name+"fill tier: ");
 
-        await this.fillRate();
-	    await this.fillSetupName();
-        await this.fillSupply();
-        await this.setModify();
-        await this.fillStartTime();
-        await this.fillEndTime();
-        //await this.driver.sleep(3000);
+	    do {
+		    await this.fillRate();
+
+	    }
+	    while(await this.isPresentWarningRate());
+
+	    do {
+		    await this.fillSetupName();
+
+	    }
+	    while(await this.isPresentWarningName());
+
+	    do {
+	    	await this.fillSupply();
+
+	    }
+	    while(await this.isPresentWarningSupply());
+
+	     do {
+		    await this.fillStartTime();
+	    }
+	    while(await this.isPresentWarningStartTime());
+	    do {
+	    	await this.fillEndTime();
+	    }
+	    while(await this.isPresentWarningEndTime());
+
+	    await this.setModify();
+
+
         if (this.tier.whitelist!=null) await this.fillWhitelist();
 
     }
@@ -117,8 +182,6 @@ class TierPage extends page.Page {
     {   await this.init();
     	logger.info(this.name+"field Rate: ");
         let locator=this.fieldRateTier;
-        //if (this.number==0) {locator=fieldRateTier1;}
-        //else {locator=by.By.xpath(fieldRate1+this.number+fieldRate2);}
         await super.clearField(locator);
         await super.fillWithWait(locator,this.tier.rate);
     }
@@ -162,6 +225,7 @@ class TierPage extends page.Page {
 		    this.tier.startTime=Utils.convertTimeToMdy(this.tier.startTime);
 
 	    }
+	    await super.clickWithWait(locator);
 	    await super.fillWithWait(locator,this.tier.startDate);
         const action=this.driver.actions();
         await action.sendKeys(key.TAB).perform();
@@ -191,7 +255,7 @@ class TierPage extends page.Page {
 		    this.tier.endTime=Utils.convertTimeToMdy(this.tier.endTime);
 
 	    }
-
+	    await super.clickWithWait(locator);
 	    await super.fillWithWait(locator,this.tier.endDate);
         const action=this.driver.actions();
         await action.sendKeys(key.TAB).perform();
@@ -206,9 +270,19 @@ class TierPage extends page.Page {
     	try {
 		    for (var i = 0; i < this.tier.whitelist.length; i++) {
 			    logger.info(this.name + "whitelist #" + i + ": ");
-			    await this.fillAddress(this.tier.whitelist[i].address);
-			    await this.fillMin(this.tier.whitelist[i].min);
-			    await this.fillMax(this.tier.whitelist[i].max);
+
+			    do {
+				    await this.fillAddress(this.tier.whitelist[i].address);
+			    }
+			    while(await this.isPresentWarningWhAddress());
+			    do {
+				    await this.fillMin(this.tier.whitelist[i].min);
+			    }
+			    while(await this.isPresentWarningWhMin());
+			    do {
+				    await this.fillMax(this.tier.whitelist[i].max);
+			    }
+			    while(await this.isPresentWarningWhMax());
 			    await this.clickButtonAdd();
 		    }
 		    return true;
@@ -268,6 +342,66 @@ async clickButtonClearAll(){
 		await super.clickWithWait(buttonYesAlert);
 
 	}
+
+
+	async isPresentWarningName(){
+		logger.info(this.name + "is present warning :");
+		await this.initWarnings();
+		let s = await super.getTextByElement(this.warningName);
+		if (s != "") { logger.info("present");return true;}
+		else {logger.info("not present");return false;}
+	}
+	async isPresentWarningStartTime(){
+		logger.info(this.name + "is present warning :");
+		await this.initWarnings();
+		let s = await super.getTextByElement(this.warningStartTime);
+		if (s != "") { logger.info("present");return true;}
+		else {logger.info("not present");return false;}
+	}
+	async isPresentWarningEndTime(){
+		logger.info(this.name + "is present warning :");
+		await this.initWarnings();
+		let s = await super.getTextByElement(this.warningEndTime);
+		if (s != "") { logger.info("present");return true;}
+		else {logger.info("not present");return false;}
+	}
+	async isPresentWarningRate(){
+		logger.info(this.name + "is present warning :");
+		await this.initWarnings();
+		let s = await super.getTextByElement(this.warningRate);
+		if (s != "") { logger.info("present");return true;}
+		else {logger.info("not present");return false;}
+	}
+	async isPresentWarningSupply(){
+		logger.info(this.name + "is present warning :");
+		await this.initWarnings();
+		let s = await super.getTextByElement(this.warningSupply);
+		if (s != "") { logger.info("present");return true;}
+		else {logger.info("not present");return false;}
+	}
+	async isPresentWarningWhAddress(){
+		logger.info(this.name + "is present warning :");
+		await this.initWarnings();
+		let s = await super.getTextByElement(this.warningWhAddress);
+		if (s != "") { logger.info("present");return true;}
+		else {logger.info("not present");return false;}
+	}
+	async isPresentWarningWhMin(){
+		logger.info(this.name + "is present warning :");
+		await this.initWarnings();
+		let s = await super.getTextByElement(this.warningWhMin);
+		if (s != "") { logger.info("present");return true;}
+		else {logger.info("not present");return false;}
+	}
+	async isPresentWarningWhMax(){
+		logger.info(this.name + "is present warning :");
+		await this.initWarnings();
+		let s = await super.getTextByElement(this.warningWhMax);
+		if (s != "") { logger.info("present");return true;}
+		else {logger.info("not present");return false;}
+	}
+
+
 
 }
 module.exports.TierPage=TierPage;

@@ -86,9 +86,18 @@ class ReservedTokensPage extends Page{
 
 	async fillReservedTokens(reservedTokens){
           logger.info(this.name+": ");
-          await this.fillAddress(reservedTokens.address);
+
+          do {
+	          await this.fillAddress(reservedTokens.address);
+          }
+          while(await this.isPresentWarningAddress());
+
           await this.setDimension(reservedTokens.dimension);
-          await this.fillValue(reservedTokens.value);
+
+          do {
+	          await this.fillValue(reservedTokens.value);
+          }
+          while(await this.isPresentWarningValue());
 
 
     }

@@ -576,7 +576,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
 
 		});
-	test.it.skip('Wizard step#3: Downloaded whitelist addresses dont contain invalid data',
+	test.it('Wizard step#3: Downloaded whitelist addresses dont contain invalid data',
 		async function () {
 			assert.equal(true, true, "Test FAILED. Wizard step#3: Downloaded whitelist addresses contain invalid data");
 
@@ -621,8 +621,8 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			owner = Owner;//Owner
 
 			await owner.setMetaMaskAccount();
-			startTime=new Date(Date.now()).getTime()+80000+120000;
-			crowdsale1 = await owner.createCrowdsale(scenario1,3);
+			startTime=new Date(Date.now()).getTime()+80000+180000;
+			crowdsale1 = await owner.createCrowdsale(scenario1,4);
 			logger.info("TokenAddress:  " + crowdsale1.tokenAddress);
 			logger.info("ContractAddress:  " + crowdsale1.contractAddress);
 			logger.info("url:  " + crowdsale1.url);
@@ -660,7 +660,8 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it.skip('Investor can buy amount equal mincap',
+	//SKIP
+	test.it('Investor can buy amount equal mincap',
 		async function() {
 			assert.equal(flagCrowdsale,true);
 
@@ -681,7 +682,17 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it.skip('Investor can buy less than mincap after first transaction', async function() {
+	test.it.skip('Investor not able to buy amount significally  more than total supply', async function() {
+		assert.equal(flagCrowdsale,true);
+		investor=Investor1;
+		await investor.open(crowdsale1.url);
+		balance=await investor.getBalanceFromPage(crowdsale1.url);
+		contribution=1234567890;
+		b = await investor.contribute(contribution);
+		assert.equal(b, false, "Test FAILED. Investor is able to buy amount significally  more than total supply");
+	});
+
+	test.it('Investor can buy less than mincap after first transaction', async function() {
 		assert.equal(flagCrowdsale,true);
 
 		b=false;
@@ -690,8 +701,9 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		balance=await investor.getBalanceFromPage(crowdsale1.url);
 		contribution=smallAmount;
 		b = await investor.contribute(contribution);
+		assert.equal(b, true, "Test FAILED. Investor can not buy less than mincap after first transaction");
 		newBalance=await investor.getBalanceFromPage(crowdsale1.url);
-		b=Math.abs((parseFloat(newBalance)-parseFloat(balance))-contribution)<=smallAmount;
+		b=(newBalance!=balance)&&(Math.abs((parseFloat(newBalance)-parseFloat(balance))-contribution)<=smallAmount);
 		logger.info("Difference="+(parseFloat(newBalance)-parseFloat(balance)));
 		logger.info("Contribution="+contribution);
 		logger.info("After first:Old balance="+balance+"  New balance="+newBalance+" BBB="+b);
@@ -721,7 +733,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		logger.warn("Test PASSED. IDisabled to buy after crowdsale is finalized");
 	});
 
-	test.it.skip('Owner able to distribute if crowdsale time expired but not all tokens were sold', async function() {
+	test.it('Owner able to distribute if crowdsale time expired but not all tokens were sold', async function() {
 		assert.equal(flagCrowdsale,true);
 		b=false;
 		owner=Owner;
@@ -732,7 +744,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		flagDistribute=true;
 	});
 
-	test.it.skip('Reserved address has received correct quantity of tokens after distribution', async function() {
+	test.it('Reserved address has received correct quantity of tokens after distribution', async function() {
 		assert.equal(flagCrowdsale,true);
 		assert.equal(flagDistribute,true);
 		flagDistribute=false;
@@ -745,7 +757,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		flagDistribute=true;
 	});
 
-	test.it.skip('Owner able to finalize ( if crowdsale time expired but not all tokens were sold)', async function() {
+	test.it('Owner able to finalize ( if crowdsale time expired but not all tokens were sold)', async function() {
 		assert.equal(flagCrowdsale,true);
 		assert.equal(flagDistribute,true);
 		b=false;
@@ -756,7 +768,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		logger.warn("Test PASSED.'Owner can  finalize (after all tokens were sold) ");
 
 	});
-	test.it.skip('Investor has received correct quantity of tokens after finalization', async function() {
+	test.it('Investor has received correct quantity of tokens after finalization', async function() {
 		assert.equal(flagCrowdsale,true);
 		assert.equal(flagDistribute,true);
 		investor=Investor1;
@@ -1122,6 +1134,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		logger.warn("Test PASSED. Investor can NOT buy more than assigned max");
 
 	});
+
 	test.it('Whitelisted investor is able to buy assigned max', async function() {
 		assert.equal(flagCrowdsale,true);
 		assert.equal(flagStartTimeChanged,true);
