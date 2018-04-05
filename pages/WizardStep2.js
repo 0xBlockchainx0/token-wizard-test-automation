@@ -28,9 +28,6 @@ class WizardStep2 extends page.Page {
 	    this.warningValue;
 	    this.title="TOKEN SETUP";
 
-
-
-
     }
     async init(){
 try {

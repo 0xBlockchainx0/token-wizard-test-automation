@@ -8,11 +8,9 @@ const webdriver = require('selenium-webdriver'),
       firefox = require('selenium-webdriver/firefox'),
       by = require('selenium-webdriver/lib/by');
 const By=by.By;
-const warningWalletAddress=By.xpath('//*[@id="root"]/div/section/div[2]/div[2]/div[2]/div[1]/p[2]');
+
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
 const buttonAddTier=By.className("button button_fill_secondary");
-const buttonUploadCSV=By.className("fa fa-upload");
-
 const buttonOK=By.className("swal2-confirm swal2-styled");
 
 let flagCustom=false;
@@ -36,6 +34,12 @@ class WizardStep3 extends page.Page{
 	    this.fieldMinCap;
         this.title="CROWDSALE SETUP";
 	    this.warningWalletAddress;
+	    this.warningCustomGasPrice;
+	    this.warningMincap;
+
+
+
+
     }
 static getFlagCustom(){return flagCustom;}
 static getFlagWHitelising(){return flagWHitelising;}
@@ -57,7 +61,13 @@ async printWarnings(){
 			const locator = By.xpath("//p[@style='color: red; font-weight: bold; font-size: 12px; width: 100%; height: 10px;']");
 			var arr = await super.findWithWait(locator);
 			this.warningWalletAddress = arr[0];
-
+			if (flagCustom)
+			{ this.warningMincap=arr[2];
+				this.warningCustomGasPrice=arr[1];
+			}
+			else
+			{ this.warningMincap=arr[1];
+			}
 			return arr;
 		}
 		catch(err){
@@ -111,13 +121,8 @@ catch(err)
    async  fillWalletAddress(address){
 	    await this.init();
         logger.info(this.name+"field WalletAddress: ");
-		do {
-            await super.clearField(this.fieldWalletAddress);
-
-	        await super.fillWithWait(this.fieldWalletAddress, address);
-	        await this.driver.sleep(1000);
-        }
-        while (await this.isPresentWarningWalletAddress())
+        await super.clearField(this.fieldWalletAddress);
+	    await super.fillWithWait(this.fieldWalletAddress, address);
     }
 
 
@@ -187,7 +192,7 @@ catch(err)
     async setGasPrice(value){
         logger.info(this.name+"setGasPrice: =" + value);
     switch(value){
-       case 2:{await this.clickCheckboxGasPriceSafe();break;}
+       case 1:{await this.clickCheckboxGasPriceSafe();break;}
        case 4:{await this.clickCheckboxGasPriceNormal();break;}
        case 30:{await this.clickCheckboxGasPriceFast();break;}
        default:{
@@ -203,21 +208,27 @@ catch(err)
         await super.clearField(this.fieldMinCap,1);
         await super.fillWithWait(this.fieldMinCap,value);
     }
+	async isPresentWarningMincap(){
+		logger.info(this.name + "is present warning :");
+		await this.initWarnings();
+		let s = await super.getTextByElement(this.warningMincap);
+		if (s != "") { logger.info("present");return true;}
+		else {logger.info("not present");return false;}
+	}
+	async isPresentWarningCustomGasPrice(){
+		logger.info(this.name + "is present warning :");
+		await this.initWarnings();
+		let s = await super.getTextByElement(this.warningCustomGasPrice);
+		if (s != "") { logger.info("present");return true;}
+		else {logger.info("not present");return false;}
+	}
 
-
-    async isPresentWarningWalletAddress(){
-    	var b=false;
-		try {
-			logger.info(this.name+"red warning if data wrong :");
-			//await this.driver.sleep(1000);
-			var s=await super.getTextByLocatorFast(warningWalletAddress);
-			logger.info("text received ="+s);
-			return (s!="");
-		}
-		catch(err){
-			logger.info("Can not find red warning for wallet address")
-			console.log(err); return false;}
-
+    async isPresentWarningWalletAddress() {
+	    logger.info(this.name + "is present warning :");
+	    await this.initWarnings();
+	    let s = await super.getTextByElement(this.warningWalletAddress);
+	    if (s != "") { logger.info("present");return true;}
+	    else {logger.info("not present");return false;}
     }
 
 	async isPresentFieldWalletAddress(){
@@ -268,7 +279,12 @@ async clickButtonOk(){
 
 }
 
+	async isPresentButtonContinue(){
+		var b=await super.isElementPresent(buttonContinue);
+		logger.info(this.name+": is present button Continue: "+b);
+		return b;
 
+	}
 
 
 }

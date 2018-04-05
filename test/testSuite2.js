@@ -149,6 +149,27 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	});
 /////////////////////////////////////////////////////////////////////////////
 
+	test.it('Owner  can create crowdsale(scenario testSuite1.json),1 tier, not modifiable, no whitelist,1 reserved',
+		async function () {
+			b=false;
+			owner = Owner;//Owner
+
+			await owner.setMetaMaskAccount();
+			startTime=new Date(Date.now()).getTime()+80000+120000;
+			crowdsale1 = await owner.createCrowdsale(scenario2,3);
+			logger.info("TokenAddress:  " + crowdsale1.tokenAddress);
+			logger.info("ContractAddress:  " + crowdsale1.contractAddress);
+			logger.info("url:  " + crowdsale1.url);
+			b = (crowdsale1.tokenAddress != "") & (crowdsale1.contractAddress != "") & (crowdsale1.url != "");
+			flagCrowdsale=b;
+			assert.equal(b, true, "Test FAILED. Crowdsale has NOT created ");
+			logger.error("Test PASSED. Owner  can create crowdsale,no whitelist,reserved");
+
+		});
+
+
+
+
 
 	test.it('User can open wizard welcome page: https://wizard.oracles.org/',
 		async function () {
@@ -527,7 +548,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 
 
-	test.it('Wizard step#3: User is able to download CVS file with whitelisted addresses',
+	test.it.skip('Wizard step#3: User is able to download CVS file with whitelisted addresses',
 		async function () {
             let rightAddresses=11;
 

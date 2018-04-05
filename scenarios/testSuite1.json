@@ -11,7 +11,7 @@
     }
   ],
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
-  "gasprice":23,
+  "gasprice":1,
   "mincap": 5,
   "whitelisting":false,
   "tiers":[
@@ -20,7 +20,7 @@
       "allowModify": false,
       "startDate": "",
       "startTime": "",
-      "endDate":"180000",
+      "endDate":"240000",
       "endTime":"",
       "rate":100,
       "supply": 20,

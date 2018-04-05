@@ -10,7 +10,6 @@ const webdriver = require('selenium-webdriver'),
       by = require('selenium-webdriver/lib/by');
 const By=by.By;
 const buttonContribute=By.className("button button_fill");
-
 const fieldInvest=By.className("invest-form-input");
 const buttonOk=By.className("swal2-confirm swal2-styled");
 const fieldBalance=By.className("balance-title");

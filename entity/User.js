@@ -423,24 +423,34 @@ class User {
         await  welcomePage.open();
 
         await  welcomePage.clickButtonNewCrowdsale();
-        let count=10;
+        let count=30;
         do {
 	        await this.driver.sleep(1000);
 
 	        if  ((await wizardStep1.isPresentButtonContinue()) &&
 	               !(await wizardStep2.isPresentFieldName()) )
 	        {
-
 	        	await wizardStep1.clickButtonContinue();
-
 	        }
 	        else break;
         }
         while (count-->0)
 
-		await  wizardStep2.fillName(cur.name);
-        await wizardStep2.fillTicker(cur.ticker);
-        await wizardStep2.fillDecimals(cur.decimals);
+	    do {
+		    await  wizardStep2.fillName(cur.name);
+	    }
+	    while(await wizardStep2.isPresentWarningName());
+
+        do {
+	        await wizardStep2.fillTicker(cur.ticker);
+        }
+        while(await wizardStep2.isPresentWarningTicker());
+
+        do {
+	        await wizardStep2.fillDecimals(cur.decimals);
+        }
+        while(await wizardStep2.isPresentWarningDecimals());
+
         for (var i=0;i<cur.reservedTokens.length;i++)
         {
             await reservedTokens.fillReservedTokens(cur.reservedTokens[i]);
@@ -449,29 +459,46 @@ class User {
 
         await wizardStep2.clickButtonContinue();
 
-
-	        await wizardStep3.fillWalletAddress(cur.walletAddress);
+/////////////////Step 3//////////
+	    do {
+		    await wizardStep3.fillWalletAddress(cur.walletAddress);
+	    } while (await wizardStep3.isPresentWarningWalletAddress());
 
 	        await wizardStep3.setGasPrice(cur.gasPrice);
-	        if (cur.whitelisting) await wizardStep3.clickCheckboxWhitelistYes();
-	        else (await wizardStep3.fillMinCap(cur.minCap));
+	        if (cur.whitelisting) {
+		        await wizardStep3.clickCheckboxWhitelistYes();
+	        }
+	        else {
+	        	do {
+			        await wizardStep3.fillMinCap(cur.minCap);
+		        }
+		        while(await wizardStep3.isPresentWarningMincap())
+	        };
+
+
 	        for (var i = 0; i < cur.tiers.length - 1; i++) {
 		        await tiers[i].fillTier();
 		        await wizardStep3.clickButtonAddTier();
 	        }
 	        await tiers[cur.tiers.length - 1].fillTier();
-	    await this.driver.sleep(5000);
-	        await wizardStep3.clickButtonContinue();
 
-	         await this.driver.sleep(5000);
+	    count=30;
+	    do {
+		    await this.driver.sleep(1000);
 
-	        if (!(await wizardStep4.isPage())) {
-		        logger.info("Incorrect data in tiers");
-		        await wizardStep3.printWarnings();
-		        await wizardStep3.fillWalletAddress(cur.walletAddress);
-	        }
-
-
+		    if  ((await wizardStep3.isPresentButtonContinue()) &&
+			    !(await wizardStep4.isPresentModal()) )
+		    {
+			    await wizardStep3.clickButtonContinue();
+		    }
+		    else break;
+		    if (count==1){
+			    logger.info("Incorrect data in tiers");
+			    await wizardStep3.printWarnings();
+			    throw("Incorrect data in tiers");
+		    }
+	    }
+	    while (count-->0);
 
 ////////////////////////////////////////////////////////////////////
         var trCounter=0;
@@ -505,7 +532,7 @@ class User {
 	        }
 	        else {
 
-		        if (!(await wizardStep4.isPage())) {//if modal NOT present
+		        if (!(await wizardStep4.isPresentModal())) {//if modal NOT present
 			        await wizardStep4.waitUntilLoaderGone();
 			        await wizardStep4.clickButtonOk();
 			        b = false;
@@ -587,7 +614,7 @@ class User {
 
     async  contribute(amount){
     	logger.info(this.account + " contribution = "+amount);
-    	logger.info(this. account+" balance = "+ Utils.getBalance(this. account));
+    	//logger.info(this. account+" balance = "+ Utils.getBalance(this. account));
         var investPage = new InvestPage(this.driver);
         await investPage.waitUntilLoaderGone();
         await investPage.fillInvest(amount);
@@ -631,7 +658,7 @@ class User {
 
                 await investPage.clickButtonOK();
 	            await investPage.waitUntilLoaderGone();
-                await this.driver.sleep(3000);
+                await this.driver.sleep(2000);
                 return true;
             }
         }
@@ -647,8 +674,8 @@ class User {
         var curURL=await investPage.getURL();
         if(url!=curURL) await investPage.open(url);
         await investPage.waitUntilLoaderGone();
-	    await this.driver.sleep(2000);
-	    await investPage.refresh();
+	    //await this.driver.sleep(2000);
+	   // await investPage.refresh();
 	    await investPage.refresh();
 	    await this.driver.sleep(4000);
         let s=await investPage.getBalance();

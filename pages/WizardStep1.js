@@ -18,7 +18,7 @@ class WizardStep1 extends page.Page{
         super(driver);
         this.URL;
         this.name="WizardStep1 page: ";
-
+	    this.title="CROWDSALE CONTRACT";
     }
 
     async isPresentButtonContinue(){
