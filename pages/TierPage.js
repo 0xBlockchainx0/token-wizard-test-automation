@@ -268,6 +268,8 @@ class TierPage extends page.Page {
     async fillWhitelist(){
 
     	try {
+
+
 		    for (var i = 0; i < this.tier.whitelist.length; i++) {
 			    logger.info(this.name + "whitelist #" + i + ": ");
 
