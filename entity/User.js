@@ -494,7 +494,7 @@ class User {
 		    else break;
 		    if (count==1){
 			    logger.info("Incorrect data in tiers");
-			    await wizardStep3.printWarnings();
+			    //await wizardStep3.printWarnings();
 			    throw("Incorrect data in tiers");
 		    }
 	    }

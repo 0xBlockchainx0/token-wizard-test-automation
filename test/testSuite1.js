@@ -100,7 +100,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	///////////////////////////////////////////////////////////////////////
 
 	test.before(async function() {
-        logger.info("Version 2.0.3");
+        logger.info("Version 2.0.5");
 		driver = await Utils.startBrowserWithMetamask();
 		flagCrowdsale=false;
 		Owner = new User (driver,user8545_56B2File);
@@ -153,7 +153,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 
 //////////////////////////////////////////////////////////////////////////////
-	test.it('User is able to open wizard welcome page:'+startURL ,
+	test.it.skip('User is able to open wizard welcome page:'+startURL ,
 		async function () {
 			b="";
 			b=await  welcomePage.open();
@@ -161,7 +161,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			logger.error("Test PASSED. User can open wizard welcome page: https://wizard.oracles.org/");
 
 		});
-	test.it('Welcome page: button NewCrowdsale present ',
+	test.it.skip('Welcome page: button NewCrowdsale present ',
 		async function () {
 			b=false;
 			b=await welcomePage.isPresentButtonNewCrowdsale();
@@ -169,7 +169,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			logger.error("Test PASSED. Button NewCrowdsale present");
 
 		});
-	test.it('Welcome page: button ChooseContract present ',
+	test.it.skip('Welcome page: button ChooseContract present ',
 		async function () {
 			b=false;
 			b=await welcomePage.isPresentButtonChooseContract();
@@ -177,7 +177,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			logger.error("Test PASSED. Button ChooseContract present");
 
 		});
-	test.it('Welcome page: user is able to open Step1 by clicking button NewCrowdsale ',
+	test.it.skip('Welcome page: user is able to open Step1 by clicking button NewCrowdsale ',
 		async function () {
 			b=false;
 			await welcomePage.clickButtonNewCrowdsale();
@@ -186,7 +186,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			logger.error("Test PASSED. User is able to open Step2 by clicking button NewCrowdsale");
 
 		});
-	test.it('Wizard step#1: user is able to open Step2 by clicking button Continue ',
+	test.it.skip('Wizard step#1: user is able to open Step2 by clicking button Continue ',
 		async function () {
 			b=false;
 			let count=10;
@@ -209,7 +209,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 	////////////////////////// S T E P 2 //////////////////////////////////////////////////////////////////////////////
 
 
-	test.it('Wizard step#2: user able to fill out field Ticker with valid data',
+	test.it.skip('Wizard step#2: user able to fill out field Ticker with valid data',
 		async function () {
 			await wizardStep2.fillTicker("test");
 			b=await wizardStep2.isPresentWarningTicker();
@@ -218,7 +218,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 ///////Name////
-	test.it("Wizard step#2: warning is presented if field Name  is empty ",
+	test.it.skip("Wizard step#2: warning is presented if field Name  is empty ",
 		async function () {
 			await wizardStep2.fillName(" ");
 			b=await wizardStep2.isPresentWarningName();
@@ -228,14 +228,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 
-	test.it('Wizard step#2: warning is presented if Name length more than 30 symbols',
+	test.it.skip('Wizard step#2: warning is presented if Name length more than 30 symbols',
 		async function () {
 			await wizardStep2.fillName("012345678901234567890123456789q");
 			b=await wizardStep2.isPresentWarningName();
 			assert.equal(b, true, "Test FAILED. Wizard step#2: warning doesnt present if Name length more than 30 symbols");
 
 		});
-	test.it("Wizard step#2: user is not able to proceed if name's warning is presented ",
+	test.it.skip("Wizard step#2: user is not able to proceed if name's warning is presented ",
 		async function () {
 			await wizardStep2.clickButtonContinue();
 			b=await wizardStep2.getTitleText();
@@ -244,7 +244,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(b, true, "Test FAILED. Wizard step#2: user is  able to proceed if name's warning presented");
 		});
 
-	test.it('Wizard step#2: user able to fill Name field with valid data',
+	test.it.skip('Wizard step#2: user able to fill Name field with valid data',
 		async function () {
 			await wizardStep2.fillName(currencyForE2e.name);
 			b=await wizardStep2.isPresentWarningName();
@@ -254,21 +254,21 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 	////Ticker////
 
-	test.it("Wizard step#2: warning is presented if field Ticker is empty ",
+	test.it.skip("Wizard step#2: warning is presented if field Ticker is empty ",
 		async function () {
 			await wizardStep2.fillTicker(" ");
 			b=await wizardStep2.isPresentWarningTicker();
 			assert.equal(b, true, "Test FAILED. Wizard step#2: warning does not present if field Ticker  empty ");
 
 		});
-	test.it('Wizard step#2: warning is presented if field Ticker length more than 5 symbols',
+	test.it.skip('Wizard step#2: warning is presented if field Ticker length more than 5 symbols',
 		async function () {
 			await wizardStep2.fillTicker("qwerty");
 			b=await wizardStep2.isPresentWarningTicker();
 			assert.equal(b, true, "Test FAILED. Wizard step#2: warning does not present  if field Ticker length more than 5 symbols");
 
 		});
-	test.it('Wizard step#2: warning is presented if field Ticker contains special symbols',
+	test.it.skip('Wizard step#2: warning is presented if field Ticker contains special symbols',
 		async function () {
 			await wizardStep2.fillTicker("qwer$");
 			b=await wizardStep2.isPresentWarningTicker();
@@ -276,7 +276,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it("Wizard step#2: user is not able to proceed if ticker's warning is presented ",
+	test.it.skip("Wizard step#2: user is not able to proceed if ticker's warning is presented ",
 		async function () {
 			await wizardStep2.clickButtonContinue();
 			b=await wizardStep2.getTitleText();
@@ -286,7 +286,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 
-	test.it('Wizard step#2: user able to fill Ticker field with valid data',
+	test.it.skip('Wizard step#2: user able to fill Ticker field with valid data',
 		async function () {
 			await wizardStep2.fillTicker(currencyForE2e.ticker);
 			b=await wizardStep2.isPresentWarningName();
@@ -295,7 +295,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 ///////Decimals/////
 
-	test.it("Wizard step#2: warning is presented if  Decimals more than 18 ",
+	test.it.skip("Wizard step#2: warning is presented if  Decimals more than 18 ",
 		async function () {
 			await wizardStep2.fillDecimals("19");
 			b=await wizardStep2.isPresentWarningDecimals();
@@ -303,14 +303,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it("Wizard step#2: disable to fill out Decimals with negative value ",
+	test.it.skip("Wizard step#2: disable to fill out Decimals with negative value ",
 		async function () {
 			await wizardStep2.fillDecimals("-2");
 			b=await wizardStep2.getFieldDecimals();
 			assert.equal(b,"2", "Test FAILED. Wizard step#2: enable to fill out Decimals with negative value ");
 
 		});
-	test.it("Wizard step#2: disable to fill out Decimals with non-number value ",
+	test.it.skip("Wizard step#2: disable to fill out Decimals with non-number value ",
 		async function () {
 			await wizardStep2.fillDecimals("qwerty");
 			b=await wizardStep2.getFieldDecimals();
@@ -319,7 +319,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 
-	test.it("Wizard step#2: disable to fill out Decimals with negative value ",
+	test.it.skip("Wizard step#2: disable to fill out Decimals with negative value ",
 		async function () {
 			await wizardStep2.fillDecimals("-2");
 			b=await wizardStep2.getFieldDecimals();
@@ -335,7 +335,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			if (!b)  await wizardStep3.goBack();
 			assert.equal(b, true, "Test FAILED. Wizard step#2: user is  able to proceed if Decimals field empty ");
 		});
-	test.it('Wizard step#2: user able to fill out field Decimals with valid data',
+	test.it.skip('Wizard step#2: user able to fill out field Decimals with valid data',
 		async function () {
 			await wizardStep2.fillDecimals(currencyForE2e.decimals);
 			b=await wizardStep2.isPresentWarningDecimals();
@@ -344,14 +344,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 /////////// Reserved
-	test.it("Wizard step#2: warnings are presented if user try to add empty reserved token ",
+	test.it.skip("Wizard step#2: warnings are presented if user try to add empty reserved token ",
 		async function () {
 			await reservedTokens.clickButtonAddReservedTokens();
 			b=(await reservedTokens.isPresentWarningAddress())&&(await reservedTokens.isPresentWarningValue());
 			assert.equal(b, true, "Test FAILED. Wizard step#2: warnings are not  presented if user try to add empty reserved token ");
 
 		});
-	test.it("Wizard step#2: warnings are disappeared if user fill out address and value fields with valid data ",
+	test.it.skip("Wizard step#2: warnings are disappeared if user fill out address and value fields with valid data ",
 		async function () {
 			await reservedTokens.fillAddress(currency.reservedTokens[0].address);
 			await reservedTokens.fillValue(currency.reservedTokens[0].value);
@@ -360,7 +360,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it("Wizard step#2: warning is presented if address of reserved tokens is invalid ",
+	test.it.skip("Wizard step#2: warning is presented if address of reserved tokens is invalid ",
 		async function () {
 			await reservedTokens.fillAddress("qwertyuiopasdfghjklz");
 			b=await reservedTokens.isPresentWarningAddress();
@@ -368,7 +368,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it("Wizard step#2: user is not able to add reserved tokens if address is invalid ",
+	test.it.skip("Wizard step#2: user is not able to add reserved tokens if address is invalid ",
 		async function () {
 			await reservedTokens.clickButtonAddReservedTokens();
 			newBalance=await reservedTokens.amountAddedReservedTokens();
@@ -376,14 +376,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it("Wizard step#2: warning present if value of reserved tokens  is negative ",
+	test.it.skip("Wizard step#2: warning present if value of reserved tokens  is negative ",
 		async function () {
 			await reservedTokens.fillValue("-123");
 			b=await reservedTokens.isPresentWarningValue();
 			assert.equal(b, true, "Test FAILED. Wizard step#2: warning does not present if address of reserved tokens is negative ");
 
 		});
-	test.it("Wizard step#2: user is not able to add reserved tokens if value is invalid ",
+	test.it.skip("Wizard step#2: user is not able to add reserved tokens if value is invalid ",
 		async function () {
 		await reservedTokens.fillAddress(currency.reservedTokens[0].address);
 		await reservedTokens.clickButtonAddReservedTokens();
@@ -392,7 +392,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#2: user is able to add reserved tokens ',
+	test.it.skip('Wizard step#2: user is able to add reserved tokens ',
 		async function () {
 			b=false;
 			for (var i=0;i<currency.reservedTokens.length;i++)
@@ -406,14 +406,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#2: field Decimals disabled if reserved tokens added ',
+	test.it.skip('Wizard step#2: field Decimals disabled if reserved tokens added ',
 		async function () {
 
 			b = await wizardStep2.isDisabledDecimals();
 			assert.equal(b, true, "Wizard step#2: field Decimals enabled if reserved tokens added ");
 		});
 
-	test.it('Wizard step#2: user is able to remove one of reserved tokens ',
+	test.it.skip('Wizard step#2: user is able to remove one of reserved tokens ',
 		async function () {
 			b=false;
 			balance=await reservedTokens.amountAddedReservedTokens();
@@ -425,20 +425,20 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#2: ClearAll button present ',
+	test.it.skip('Wizard step#2: ClearAll button present ',
 		async function () {
 
 			b = await reservedTokens.isPresentButtonClearAll();
 			assert.equal(b, true, "Test FAILED.ClearAll button is NOT present");
 		});
 
-	test.it('Wizard step#2: Alert present after clicking ClearAll and button No present',
+	test.it.skip('Wizard step#2: Alert present after clicking ClearAll and button No present',
 		async function () {
 			await reservedTokens.clickButtonClearAll();
 			b = await reservedTokens.isPresentButtonNoAlert();
 			assert.equal(b, true, "Test FAILED.Alert does NOT present after select ClearAll or button No does NOT present");
 		});
-	test.it('Wizard step#2: User able to click button No and warning disappear ',
+	test.it.skip('Wizard step#2: User able to click button No and warning disappear ',
 		async function () {
 
 			await  reservedTokens.clickButtonNoAlert();
@@ -447,14 +447,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(b, false, "Test FAILED.User is not able to click button No or warning does not disappear");
 		});
 
-	test.it('Wizard step#2: Alert present after select ClearAll and button Yes present',
+	test.it.skip('Wizard step#2: Alert present after select ClearAll and button Yes present',
 		async function () {
 			await reservedTokens.clickButtonClearAll();
 			b = await reservedTokens.isPresentButtonYesAlert();
 			assert.equal(b, true, "Test FAILED.Alert does NOT present after select ClearAll or button Yes does NOT present");
 		});
 
-	test.it('Wizard step#2: user is able bulk delete of reserved tokens ',
+	test.it.skip('Wizard step#2: user is able bulk delete of reserved tokens ',
 		async function () {
 			await reservedTokens.clickButtonYesAlert();
 			await driver.sleep(2000);
@@ -464,13 +464,13 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#2: field Decimals enabled if no reserved tokens',
+	test.it.skip('Wizard step#2: field Decimals enabled if no reserved tokens',
 		async function () {
 
 			b = await wizardStep2.isDisabledDecimals();
 			assert.equal(b, false, "Wizard step#2: field Decimals disabled  after deletion of reserved tokens");
 		});
-	test.it('Wizard step#2: user is able to add one reserved tokens address after deletion ',
+	test.it.skip('Wizard step#2: user is able to add one reserved tokens address after deletion ',
 		async function () {
 			b=false;
 			for (var i=0;i<currencyForE2e.reservedTokens.length;i++)
@@ -484,7 +484,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#2: button Continue present ',
+	test.it.skip('Wizard step#2: button Continue present ',
 		async function () {
 			b=false;
 			b=await wizardStep2.isPresentButtonContinue();
@@ -492,7 +492,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(b, true, "Test FAILED. Wizard step#2: button Continue  not present ");
 
 		});
-	test.it('Wizard step#2: user is able to open Step3 by clicking button Continue ',
+	test.it.skip('Wizard step#2: user is able to open Step3 by clicking button Continue ',
 		async function () {
 			b=false;
 			await wizardStep2.clickButtonContinue();
@@ -503,7 +503,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#3: field Wallet address contains the metamask account address  ',
+	test.it.skip('Wizard step#3: field Wallet address contains the metamask account address  ',
 		async function () {
 
 			s=await wizardStep3.getFieldWalletAddress();
@@ -512,27 +512,27 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#3: User is able to set "Safe and cheap gasprice" checkbox ',
+	test.it.skip('Wizard step#3: User is able to set "Safe and cheap gasprice" checkbox ',
 		async function () {
 			b=await wizardStep3.clickCheckboxGasPriceSafe();
 			assert.equal(b, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
 
 		});
-	test.it('Wizard step#3: User is able to set "Normal Gasprice" checkbox',
+	test.it.skip('Wizard step#3: User is able to set "Normal Gasprice" checkbox',
 		async function () {
 
 			b=await wizardStep3.clickCheckboxGasPriceNormal();
 			assert.equal(b, true, 'Test FAILED. User is not able to set "Normal Gasprice" checkbox');
 
 		});
-	test.it('Wizard step#3: User is able to set "Fast Gasprice" checkbox',
+	test.it.skip('Wizard step#3: User is able to set "Fast Gasprice" checkbox',
 		async function () {
 
 			b=await wizardStep3.clickCheckboxGasPriceFast();
 			assert.equal(b, true, 'Test FAILED. User is not able to set "Fast Gasprice" checkbox');
 
 		});
-	test.it('Wizard step#3: User is able to set "Custom Gasprice" checkbox',
+	test.it.skip('Wizard step#3: User is able to set "Custom Gasprice" checkbox',
 		async function () {
 
 			b=await wizardStep3.clickCheckboxGasPriceCustom();
@@ -540,21 +540,21 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Wizard step#3: User is able to fill "Custom Gasprice" with valid value',
+	test.it.skip('Wizard step#3: User is able to fill "Custom Gasprice" with valid value',
 		async function () {
 
 			b=await wizardStep3.fillGasPriceCustom(currencyForE2e.gasPrice);
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
 
 		});
-	test.it('Wizard step#3: User is able to set checkbox  "Whitelist disabled" ',
+	test.it.skip('Wizard step#3: User is able to set checkbox  "Whitelist disabled" ',
 		async function () {
 			b=true;
 			b=await wizardStep3.clickCheckboxWhitelistNo();
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to set checkbox  "Whitelist disabled"');
 
 		});
-	test.it('Wizard step#3: User is able to set checkbox  "Whitelist enabled"',
+	test.it.skip('Wizard step#3: User is able to set checkbox  "Whitelist enabled"',
 		async function () {
 
 			b=await wizardStep3.clickCheckboxWhitelistYes();
@@ -564,7 +564,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 
 
-	test.it('Wizard step#3: User is able to download CSV file with whitelisted addresses',
+	test.it.skip('Wizard step#3: User is able to download CSV file with whitelisted addresses',
 		async function () {
 			let rightAddresses=11;
 
@@ -605,7 +605,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(balance, newBalance+1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
 		});
 
-	test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
+	test.it.skip('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
 		async function () {
 			await tierPage.clickButtonClearAll();
 			await tierPage.clickButtonYesAlert();

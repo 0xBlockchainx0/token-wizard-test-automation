@@ -48,7 +48,7 @@ try {
 async initWarnings(){
     	try {
 		    logger.info(this.name + " :init warnings:");
-		    const locator = By.xpath("//p[@style='color: red; font-weight: bold; font-size: 12px; width: 100%; height: 10px;']");
+		    const locator = By.className("error");
 		    var arr = await super.findWithWait(locator);
 		    this.warningName = arr[0];
 		    this.warningTicker = arr[1];
