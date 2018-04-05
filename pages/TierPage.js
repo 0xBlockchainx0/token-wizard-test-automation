@@ -348,6 +348,7 @@ async clickButtonClearAll(){
 
 	async isPresentWarningName(){
 		logger.info(this.name + "is present warning :");
+		return false;
 		await this.initWarnings();
 		let s = await super.getTextByElement(this.warningName);
 		if (s != "") { logger.info("present");return true;}
@@ -355,6 +356,7 @@ async clickButtonClearAll(){
 	}
 	async isPresentWarningStartTime(){
 		logger.info(this.name + "is present warning :");
+		return false;
 		await this.initWarnings();
 		let s = await super.getTextByElement(this.warningStartTime);
 		if (s != "") { logger.info("present");return true;}
@@ -362,6 +364,7 @@ async clickButtonClearAll(){
 	}
 	async isPresentWarningEndTime(){
 		logger.info(this.name + "is present warning :");
+		return false;
 		await this.initWarnings();
 		let s = await super.getTextByElement(this.warningEndTime);
 		if (s != "") { logger.info("present");return true;}
@@ -369,6 +372,8 @@ async clickButtonClearAll(){
 	}
 	async isPresentWarningRate(){
 		logger.info(this.name + "is present warning :");
+		return false;
+
 		await this.initWarnings();
 		let s = await super.getTextByElement(this.warningRate);
 		if (s != "") { logger.info("present");return true;}
@@ -376,6 +381,8 @@ async clickButtonClearAll(){
 	}
 	async isPresentWarningSupply(){
 		logger.info(this.name + "is present warning :");
+		return false;
+		return false;
 		await this.initWarnings();
 		let s = await super.getTextByElement(this.warningSupply);
 		if (s != "") { logger.info("present");return true;}
@@ -383,6 +390,7 @@ async clickButtonClearAll(){
 	}
 	async isPresentWarningWhAddress(){
 		logger.info(this.name + "is present warning :");
+		return false;
 		await this.initWarnings();
 		let s = await super.getTextByElement(this.warningWhAddress);
 		if (s != "") { logger.info("present");return true;}
@@ -390,6 +398,7 @@ async clickButtonClearAll(){
 	}
 	async isPresentWarningWhMin(){
 		logger.info(this.name + "is present warning :");
+		return false;
 		await this.initWarnings();
 		let s = await super.getTextByElement(this.warningWhMin);
 		if (s != "") { logger.info("present");return true;}
@@ -397,6 +406,7 @@ async clickButtonClearAll(){
 	}
 	async isPresentWarningWhMax(){
 		logger.info(this.name + "is present warning :");
+		return false;
 		await this.initWarnings();
 		let s = await super.getTextByElement(this.warningWhMax);
 		if (s != "") { logger.info("present");return true;}

@@ -58,7 +58,8 @@ async printWarnings(){
 	async initWarnings(){
 		try {
 			logger.info(this.name + " :init warnings:");
-			const locator = By.xpath("//p[@style='color: red; font-weight: bold; font-size: 12px; width: 100%; height: 10px;']");
+			const locator = By.className("error");
+
 			var arr = await super.findWithWait(locator);
 			this.warningWalletAddress = arr[0];
 			if (flagCustom)
@@ -210,12 +211,14 @@ catch(err)
     }
 	async isPresentWarningMincap(){
 		logger.info(this.name + "is present warning :");
+		return false;
 		await this.initWarnings();
 		let s = await super.getTextByElement(this.warningMincap);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}
 	async isPresentWarningCustomGasPrice(){
+		return false;
 		logger.info(this.name + "is present warning :");
 		await this.initWarnings();
 		let s = await super.getTextByElement(this.warningCustomGasPrice);
@@ -224,6 +227,7 @@ catch(err)
 	}
 
     async isPresentWarningWalletAddress() {
+	    return false;
 	    logger.info(this.name + "is present warning :");
 	    await this.initWarnings();
 	    let s = await super.getTextByElement(this.warningWalletAddress);
@@ -232,6 +236,7 @@ catch(err)
     }
 
 	async isPresentFieldWalletAddress(){
+		return false;
 		var arr=await this.init();
 		if (arr==null) return false;
 		logger.info(arr.length);
