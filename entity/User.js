@@ -35,7 +35,7 @@ const currency= require('../entity/Currency.js');
 const Currency=currency.Currency;
 const crowdsale=require('../entity/Crowdsale.js');
 const Crowdsale=crowdsale.Crowdsale;
-const timeLimitTransactions=80;
+const timeLimitTransactions=25;
 
 
 class User {
@@ -526,7 +526,7 @@ class User {
 		        await this.driver.sleep(1000);
 		        await wizardStep4.clickButtonYes();
 		        logger.info("Transaction #"+ (trCounter+1)+" is skipped.");
-		        console.log("Transaction #"+ (trCounter+1)+" is skipped.");
+		        //console.log("Transaction #"+ (trCounter+1)+" is skipped.");
 		        trCounter++;
 		        skippedTr++;
 	        }
@@ -674,10 +674,11 @@ class User {
         var curURL=await investPage.getURL();
         if(url!=curURL) await investPage.open(url);
         await investPage.waitUntilLoaderGone();
-	    //await this.driver.sleep(2000);
-	   // await investPage.refresh();
+	    await this.driver.sleep(2000);
 	    await investPage.refresh();
-	    await this.driver.sleep(4000);
+	    await this.driver.sleep(1000);
+	    await investPage.refresh();
+	    await this.driver.sleep(2000);
         let s=await investPage.getBalance();
 
         let arr=s.split(" ");
