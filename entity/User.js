@@ -676,9 +676,9 @@ class User {
         await investPage.waitUntilLoaderGone();
 	    await this.driver.sleep(2000);
 	    await investPage.refresh();
-	    await this.driver.sleep(1000);
-	    await investPage.refresh();
 	    await this.driver.sleep(2000);
+	    await investPage.refresh();
+	    await this.driver.sleep(3000);
         let s=await investPage.getBalance();
 
         let arr=s.split(" ");
