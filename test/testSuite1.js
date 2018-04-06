@@ -830,7 +830,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			logger.warn("Test PASSED. Disabled to modify the name of tier");
 		});
 
-	test.it("Tier's name  matches given value",
+	test.it.skip("Tier's name  matches given value",
 		async function () {
 			assert.equal(flagCrowdsale, true);
 			owner = Owner;
@@ -938,7 +938,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 
-	test.it('Owner is able to modify the end time before start of crowdsale',
+	test.it.skip('Owner is able to modify the end time before start of crowdsale',
 		async function () {
 			assert.equal(flagCrowdsale, true);
 			b=false;
@@ -959,7 +959,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		});
 
 
-	test.it('Warning present if end time earlier than start time',
+	test.it.skip('Warning present if end time earlier than start time',
 		async function () {
 			assert.equal(flagCrowdsale, true);
 
@@ -1036,7 +1036,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 		});
 
-	test.it('Owner is able to modify the end time after start of crowdsale',
+	test.it.skip('Owner is able to modify the end time after start of crowdsale',
 		async function () {
 			assert.equal(flagCrowdsale, true);
 			assert.equal(flagStartTimeChanged,true);
