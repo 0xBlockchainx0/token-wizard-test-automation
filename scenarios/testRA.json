@@ -1,18 +1,14 @@
 {
 
-  "name": "testSuite#1.json",
-  "ticker": "test1",
+  "name": "testRA.json",
+  "ticker": "RA",
   "decimals": 18,
   "reservedTokens":[
-    {
-      "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",
-      "dimension": "tokens",
-      "value": 1000
-    }
+
   ],
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
-  "gasprice":1,
-  "mincap": 5,
+  "gasprice":100,
+  "mincap": 0,
   "whitelisting":false,
   "tiers":[
     {
@@ -20,8 +16,8 @@
       "allowModify": false,
       "startDate": "",
       "startTime": "",
-      "endDate":"240000",
-      "endTime":"",
+      "endDate":"15/01/2020",
+      "endTime":"13:00",
       "rate":100,
       "supply": 20,
       "whitelist":[

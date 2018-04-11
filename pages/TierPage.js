@@ -20,6 +20,9 @@ const WhitelistContainer=By.className("white-list-item-container-inner");
 const buttonClearAll=By.className("fa fa-trash");
 const buttonYesAlert=By.className("swal2-confirm swal2-styled");
 
+
+
+
 class TierPage extends page.Page {
 
     constructor(driver,tier){
@@ -183,6 +186,7 @@ class TierPage extends page.Page {
     	logger.info(this.name+"field Rate: ");
         let locator=this.fieldRateTier;
         await super.clearField(locator);
+
         await super.fillWithWait(locator,this.tier.rate);
     }
 
@@ -190,7 +194,7 @@ class TierPage extends page.Page {
     {  await this.init();
     	logger.info(this.name+"field Supply: ");
         let locator=this.fieldSupplyTier;
-        await super.clearField(locator);
+       // await super.clearField(locator);
         await super.fillWithWait(locator,this.tier.supply);
 
     }
@@ -216,8 +220,8 @@ class TierPage extends page.Page {
 
 	    if((this.tier.startDate==""))
 	    {
-		    this.tier.startDate=Utils.getDateNear(80000,format);
-		    this.tier.startTime=Utils.getTimeNear(80000,format);
+		    this.tier.startDate=Utils.getDateWithAdjust(80000,format);
+		    this.tier.startTime=Utils.getTimeWithAdjust(80000,format);
 
 	    } else
 	    if (format=="mdy") {
@@ -243,8 +247,8 @@ class TierPage extends page.Page {
 
         if (! this.tier.endDate.includes("/"))
         {
-	         this.tier.endTime=Utils.getTimeNear(parseInt(this.tier.endDate),"utc");
-        	 this.tier.endDate=Utils.getDateNear(parseInt(this.tier.endDate),"utc");
+	         this.tier.endTime=Utils.getTimeWithAdjust(parseInt(this.tier.endDate),"utc");
+        	 this.tier.endDate=Utils.getDateWithAdjust(parseInt(this.tier.endDate),"utc");
         }
 
 

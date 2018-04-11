@@ -1,7 +1,7 @@
 {
 
-  "name": "TestSuite2.json",
-  "ticker": "test2",
+  "name": "ReservedTokens",
+  "ticker": "test",
   "decimals": 18,
   "reservedTokens":[
     {

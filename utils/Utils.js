@@ -11,6 +11,10 @@ const fs = require('fs');
 const Web3 = require('web3');
 const {spawn} = require('child_process');
 const configFile='config.json';
+
+const crowdsale=require('../entity/Crowdsale.js');
+const Crowdsale=crowdsale.Crowdsale;
+
 var browserHandles=[];
 
 
@@ -42,7 +46,7 @@ static async getProviderUrl(id)
 
 }
 
-	static async sendEth(user,amount)
+	static async increaseBalance(user, amount)
 	{
 		try{
             let provider=await Utils.getProviderUrl(user.networkID);
@@ -113,8 +117,8 @@ static async wait(driver,time){
 		var mailOptions = {
 			from: 'testresults39@gmail.com',
 			to: 'dennistikhomirov@gmail.com',
-			subject: 'test results '+Utils.getDateNear(0,'utc')+"  "+ Utils.getTimeNear(0,'utc'),
-			text: 'test results '+Utils.getDateNear(0,'utc') + "  " + Utils.getTimeNear(0,'utc'),
+			subject: 'test results '+Utils.getDateWithAdjust(0,'utc')+"  "+ Utils.getTimeWithAdjust(0,'utc'),
+			text: 'test results '+Utils.getDateWithAdjust(0,'utc') + "  " + Utils.getTimeWithAdjust(0,'utc'),
 			attachments: [
 				{path:""}
 			]
@@ -197,7 +201,7 @@ return s[0]+":"+s[1].substring(0,2);
 
 
 
-    static getTimeNear(adj,format){
+    static getTimeWithAdjust(adj, format){
 
         var d=new Date(Date.now()+adj);
         var r="am";
@@ -219,7 +223,7 @@ return s[0]+":"+s[1].substring(0,2);
         var q=h+":"+min+r;
         return q;
     }
-static getDateNear(adj,format){
+static getDateWithAdjust(adj, format){
     var d=new Date(Date.now()+adj);
 	var q;
 
@@ -289,15 +293,26 @@ return q;
     }
 
 
-
-    getScenarioFile(fileName) {
-        var obj = JSON.parse(fs.readFileSync(fileName, "utf8"));
-        return obj.scenario;
-
-    }
     static async zoom(driver,z){
         await driver.executeScript ("document.body.style.zoom = '"+z+"'");
     }
+
+	static async getCrowdsaleInstance(fileName) {
+		try {
+			let crowdsale = new Crowdsale();
+			await crowdsale.parser(fileName);
+			return crowdsale;
+		}
+		  catch(err) {
+			logger.info("Can not create crowdsale");
+			logger.info(err);
+			return null;
+		  }
+
+	}
+
+
+
 }
 module.exports={
     Utils:Utils

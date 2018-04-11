@@ -107,10 +107,10 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		Investor2 = new User (driver,user8545_f5aAFile);
 		ReservedAddress = new User (driver,user8545_ecDFFile);
 
-		await Utils.sendEth(Owner,20);
-		await Utils.sendEth(Investor1,20);
-		await Utils.sendEth(Investor2,20);
-		await Utils.sendEth(ReservedAddress,20);
+		await Utils.increaseBalance(Owner,20);
+		await Utils.increaseBalance(Investor1,20);
+		await Utils.increaseBalance(Investor2,20);
+		await Utils.increaseBalance(ReservedAddress,20);
 		// await deployRegistry(Owner.account);
 		logger.info("Roles:");
 		logger.info("Owner = "+Owner.account);
@@ -121,7 +121,7 @@ test.describe('POA token-wizard. Test suite #2', function() {
 		logger.info("Investor2 balance = :"+await Utils.getBalance(Investor2)/1e18);
 
 		mtMask = new MetaMask(driver);
-		await mtMask.open();//return activated Metamask and empty page
+		await mtMask.activate();//return activated Metamask and empty page
         await Owner.setMetaMaskAccount();
 
 		welcomePage = new WizardWelcome(driver,startURL);
@@ -171,12 +171,12 @@ test.describe('POA token-wizard. Test suite #2', function() {
 
 
 
-	test.it('User can open wizard welcome page: https://wizard.oracles.org/',
+	test.it('User can activate wizard welcome page: https://wizard.oracles.org/',
 		async function () {
 		b="";
 		b=await  welcomePage.open();
-		assert.equal(b, startURL, "Test FAILED. User can open Wizard ");
-		logger.error("Test PASSED. User can open wizard welcome page: https://wizard.oracles.org/");
+		assert.equal(b, startURL, "Test FAILED. User can activate Wizard ");
+		logger.error("Test PASSED. User can activate wizard welcome page: https://wizard.oracles.org/");
 
 	});
 	test.it('Welcome page: button NewCrowdsale present ',
@@ -195,16 +195,16 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			logger.error("Test PASSED. Button ChooseContract present");
 
 		});
-	test.it('Welcome page: user is able to open Step1 by clicking button NewCrowdsale ',
+	test.it('Welcome page: user is able to activate Step1 by clicking button NewCrowdsale ',
 		async function () {
 			b=false;
 			await welcomePage.clickButtonNewCrowdsale();
 			b= await wizardStep1.isPresentButtonContinue();
-			assert.equal(b, true, "Test FAILED. User is not able to open Step1 by clicking button NewCrowdsale");
-			logger.error("Test PASSED. User is able to open Step2 by clicking button NewCrowdsale");
+			assert.equal(b, true, "Test FAILED. User is not able to activate Step1 by clicking button NewCrowdsale");
+			logger.error("Test PASSED. User is able to activate Step2 by clicking button NewCrowdsale");
 
 		});
-	test.it('Wizard step#1: user is able to open Step2 by clicking button Continue ',
+	test.it('Wizard step#1: user is able to activate Step2 by clicking button Continue ',
 		async function () {
 			b=false;
 			let count=10;
@@ -219,8 +219,8 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			}
 			while (count-->0)
 			b=await wizardStep2.isPresentFieldName();
-			assert.equal(b, true, "Test FAILED. User is not able to open Step2 by clicking button Continue");
-			logger.error("Test PASSED. User is able to open Step2 by clicking button Continue");
+			assert.equal(b, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
+			logger.error("Test PASSED. User is able to activate Step2 by clicking button Continue");
 
 		});
 
@@ -470,14 +470,14 @@ test.describe('POA token-wizard. Test suite #2', function() {
 			assert.equal(b, true, "Test FAILED. Wizard step#2: button Continue  not present ");
 
 		});
-	test.it('Wizard step#2: user is able to open Step3 by clicking button Continue ',
+	test.it('Wizard step#2: user is able to activate Step3 by clicking button Continue ',
 		async function () {
 			b=false;
 			await wizardStep2.clickButtonContinue();
 			await driver.sleep(2000);
 			b=await wizardStep3.isPresentFieldWalletAddress();
-			assert.equal(b, true, "Test FAILED. User is not able to open Step2 by clicking button Continue");
-			logger.error("Test PASSED. User is able to open Step3 by clicking button Continue");
+			assert.equal(b, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
+			logger.error("Test PASSED. User is able to activate Step3 by clicking button Continue");
 
 		});
 

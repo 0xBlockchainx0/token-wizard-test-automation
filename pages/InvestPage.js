@@ -16,6 +16,8 @@ const fieldBalance=By.className("balance-title");
 const fields=By.className("hashes-title");
 const warningText=By.id("swal2-content");
 const errorNotice=By.className("css-6bx4c3");
+const countdownTimer=By.className("timer");
+const countdownTimerValue=By.className("timer-count");
 
 class InvestPage extends Page{
 
@@ -25,7 +27,22 @@ class InvestPage extends Page{
         this.fieldTokenAddress;
         this.fieldContractAddress;
         this.fieldCurrentAccount;
-        this.name="Invest page :"
+        this.name="Invest page :";
+        this.timer=[];
+    }
+    async initTimer(){
+	   logger.info(this.name+ ":init countdown timer : ");
+        try  {
+		    let arr = await super.findWithWait(countdownTimer);
+		    this.timer = arr[0];
+		    return arr;
+	    }
+        catch(err){
+		    logger.info(this.name+": dont contain countdown timer ");
+		    return null;
+	    }
+
+
     }
     async initFields(){
         var arr = await super.findWithWait(fields);
@@ -33,6 +50,28 @@ class InvestPage extends Page{
         this.fieldContractAddress = arr[2];
         this.fieldCurrentAccount=arr[0];
     }
+
+    async isCrowdsaleTimeOver(){
+        try {
+	        logger.info(this.name + " :isCrowdsaleTimeOver:");
+	        let arr = await super.findWithWait(countdownTimerValue);
+	        let result = 0;
+	        for (let i = 0; i < arr.length; i++) {
+		        result = result + parseInt((await this.getTextByElement(arr[i])));
+	        }
+            if (result<0) result=0;
+
+	        return (result===0);
+        }
+        catch (err){
+            logger.info("Can not find timer");
+            return false;
+        }
+
+
+
+    }
+
     async getBalance(){
 
         logger.info(this.name+"get Balance :");
@@ -47,6 +86,10 @@ class InvestPage extends Page{
         logger.info(this.name+"Warning  :");
         return (await super.isElementPresent(buttonOk));
     }
+	async isPresentCountdownTimer(){
+		logger.info(this.name+"countdown timer  :");
+		return (await super.isElementPresent(countdownTimer));
+	}
 
    async  clickButtonOK(){
         logger.info(this.name+"button OK :");
@@ -63,9 +106,9 @@ class InvestPage extends Page{
         logger.info(this.name+"button Contribute :");
         await super.clickWithWait(buttonContribute);
     }
-async getWarningText(){
-    logger.info(this.name+"Warning text :");
-    return  await super.getTextByLocator(warningText);
+    async getWarningText(){
+        logger.info(this.name+"Warning text :");
+        return  await super.getTextByLocator(warningText);
 
 }
     async getErrorText(){

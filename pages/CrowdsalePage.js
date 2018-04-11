@@ -16,9 +16,11 @@ class CrowdsalePage extends page.Page{
         super(driver);
         this.URL;
         this.name="Crowdsale page :";
-
     }
-
+   async isPresentButtonInvest() {
+	   logger.info(this.name+" button Invest :");
+	   return super.isElementPresent(buttonInvest);
+   }
    async  clickButtonInvest(){
         logger.info(this.name+"button Invest :");
         await super.clickWithWait(buttonInvest);
@@ -28,4 +30,4 @@ class CrowdsalePage extends page.Page{
 }
 module.exports={
     CrowdsalePage:CrowdsalePage
-    }
+}

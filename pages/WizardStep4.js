@@ -42,11 +42,12 @@ class WizardStep4 extends page.Page{
 	}
 
 	async getABI(){
-
-		await this.initFields();
+//*[@id="root"]/div/section/div[2]/div[2]/div[7]/div[2]/pre
+ 		await this.initFields();
     	logger.info(this.name+": get ABI: ");
     	let element = this.fieldTokenABI;
     	let abi=await super.getTextByElement(element);
+    	abi=JSON.parse(abi);
     	return abi;
 
 	}

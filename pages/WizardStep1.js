@@ -11,7 +11,6 @@ const By=by.By;
 const  buttonContinue= By.className("button button_fill");
 
 
-
 class WizardStep1 extends page.Page{
 
     constructor(driver){
@@ -36,7 +35,7 @@ class WizardStep1 extends page.Page{
     }
    async  open(){
         logger.info(this.name+"open");
-      await  this.driver.get(this.URL);
+        await  this.driver.get(this.URL);
 
     }
 

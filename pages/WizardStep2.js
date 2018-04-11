@@ -10,16 +10,15 @@ const webdriver = require('selenium-webdriver'),
       by = require('selenium-webdriver/lib/by');
 const By=by.By;
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
-
+const fieldName=By.id("name");
+const fieldTicker=By.id("ticker");;
+const fieldDecimals=By.id("decimals");;
 
 class WizardStep2 extends page.Page {
 
     constructor(driver) {
         super(driver);
         this.URL;
-        this.fieldName;
-        this.fieldTicker;
-        this.fieldDecimals;
         this.name="WizardStep2 page: ";
         this.warningName;
 	    this.warningTicker;
@@ -29,21 +28,7 @@ class WizardStep2 extends page.Page {
 	    this.title="TOKEN SETUP";
 
     }
-    async init(){
-try {
-	var locator = By.className("input");
-	var arr = await super.findWithWait(locator);
-	this.fieldName = arr[0];
-	this.fieldTicker = arr[1];
-	this.fieldDecimals = arr[2];
-    return arr;
-}
 
-    catch(err){
-		    logger.info(this.name+": dont contain input elements");
-		    return null;
-	    }
-    }
 
 async initWarnings(){
     	try {
@@ -74,20 +59,20 @@ async isPresentFieldName(){
     async fillName(name){
         try{
     	logger.info(this.name+"field Name: ");
-        await this.init();
-        await super.clearField(this.fieldName);
-        await super.fillField(this.fieldName,name);
-        return true;}
-        catch (err)
-        {logger.info(err);
-         return false;}
+	    await super.clearField(fieldName);
+        await super.fillWithWait(fieldName,name);
+       // return true;
+        }
+        catch (err) {
+         logger.info(err);
+         return false;
+        }
 }
 async fillTicker(name){
     try {
 	    logger.info(this.name + "field Ticker: ");
-	    await this.init();
-	    await super.clearField(this.fieldTicker);
-	    await super.fillField(this.fieldTicker, name);
+	    await super.clearField(fieldTicker);
+	    await super.fillWithWait(fieldTicker, name);
 	    return true;
     }
 catch (err)
@@ -97,9 +82,8 @@ catch (err)
 async fillDecimals(name) {
     	try{
 	logger.info(this.name + "field Decimals: ");
-	await this.init();
-	await super.clearField(this.fieldDecimals);
-	await super.fillField(this.fieldDecimals, name);
+	//await super.clearField(fieldDecimals);
+	await super.fillWithWait(fieldDecimals, name);
 	return true;
 }
 catch (err)
@@ -122,6 +106,7 @@ async clickButtonContinue(){
 	}
 
     async isPresentWarningName(){
+	    return false;
     	await this.initWarnings();
     	let s=await super.getTextByElement(this.warningName);
     	if (s!="") return true;
@@ -129,6 +114,7 @@ async clickButtonContinue(){
     }
 
 	async isPresentWarningTicker(){
+    	return false;
 		await this.initWarnings();
 		let s=await super.getTextByElement(this.warningTicker);
 		if (s!="") return true;
@@ -136,6 +122,7 @@ async clickButtonContinue(){
 	}
 
 	async isPresentWarningDecimals(){
+		return false;
 		await this.initWarnings();
 		let s=await super.getTextByElement(this.warningDecimals);
 		if (s!="") return true;
@@ -146,8 +133,8 @@ async clickButtonContinue(){
 	async getFieldDecimals(){
 		logger.info(this.name+"getFieldDecimals: ");
 		try {
-			await this.init();
-			let s = super.getAttribute(this.fieldDecimals, "value");
+
+			let s = super.getAttribute(fieldDecimals, "value");
 			return s;
 		}
 		catch (err)
@@ -159,8 +146,8 @@ async clickButtonContinue(){
 
 	async isDisabledDecimals(){
 
-		await this.init();
-		return await super.isElementDisabled(this.fieldDecimals);
+
+		return await super.isElementDisabled(fieldDecimals);
 	}
 
 }

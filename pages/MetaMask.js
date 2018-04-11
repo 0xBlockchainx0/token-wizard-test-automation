@@ -90,10 +90,10 @@ class MetaMask extends page.Page{
         await super.clickWithWait(buttonUnlock);
 }
 
-	async open()
+	async activate()
 	{
 		await this.switchToNextPage();
-		logger.info(this.name+"open: "+this.URL);
+		logger.info(this.name+"activate: "+this.URL);
 
 		await this.driver.get(this.URL);
 		await this.driver.sleep(2000);
@@ -112,11 +112,11 @@ class MetaMask extends page.Page{
 		logger.info("Button 2nd Accept");
 		await super.clickWithWait(buttonAccept);
 		logger.info("Fill password");
-		//await this.driver.sleep(10000);
 		let cc=50;
-		do{
+		do {
 			await this.driver.sleep(1000);
-			if (super.isElementPresentWithWait(fieldNewPass)) break;
+			if (super.isElementPresentWithWait(fieldNewPass))
+			  break;
 		} while(cc-->0);
 		if (cc<=0) throw Error("Metamask haven't downloaded");
 		await super.clickWithWait(fieldNewPass);
@@ -164,7 +164,7 @@ class MetaMask extends page.Page{
        await  super.fillWithWait(fieldPrivateKey,user.privateKey);
        await  this.driver.sleep(1000);
        await  super.clickWithWait(buttonImport);
-        user.accN=accN-1;
+        user.accountOrderInMetamask=accN-1;
 
 
        await super.switchToNextPage();
@@ -176,7 +176,7 @@ class MetaMask extends page.Page{
        // this.clickImportAccount();
         await  this.chooseProvider(user.networkID);
         await super.clickWithWait(popupAccount);
-        await this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(user.accN)+"].click();");
+        await this.driver.executeScript( "document.getElementsByClassName('dropdown-menu-item')["+(user.accountOrderInMetamask)+"].click();");
 
         await this.driver.sleep(1000);//!!!!!!!!!!!!!!!
         await this.switchToNextPage();
@@ -246,7 +246,6 @@ async isPresentButtonSubmit()
 
         switch(provider)
         {
-
             case 77:{
             url="https://sokol.poa.network";
             networks.push(77);
