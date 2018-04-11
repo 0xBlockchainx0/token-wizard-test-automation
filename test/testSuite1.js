@@ -96,7 +96,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		crowdsaleForE2Etests2=await  Utils.getCrowdsaleInstance(scenarioWhYMdYRt1Tr1);
 
 
-		logger.info("Version 2.1.0");
+		logger.info("Version 2.1.1");
 		driver = await Utils.startBrowserWithMetamask();
 		console.log("FFFEKEMFLKEM");
 		console.log(user8545_56B2File);
