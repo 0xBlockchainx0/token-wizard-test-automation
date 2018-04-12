@@ -240,26 +240,30 @@ class ManagePage extends Page  {
 
 	async isEnabledDistribute() {
 		logger.info(this.name + "button Distribute :");
+		await this.refresh();
+		await this.driver.sleep(2000);
 		if (!(await this.isPresentButtonDistribute())) {
+			logger.info("not present");
 			return false;
 		}
+
 		await this.driver.sleep(1000);
-		let result = await this.driver.findElement(buttonDistribute).getAttribute("className");
+		let result = await this.driver.findElement(buttonDistribute).getAttribute("class");
 		logger.info("class name= " + result);
-		if (result == "button button_disabled") {
+		if (result === "button button_disabled") {
 			logger.info("present and disabled");
 			return false;
 		}
 		else {
-			logger.info("present and enabled")
+			logger.info("present and enabled");
 			return true;
 		}
 	}
 
 	async isPresentButtonDistribute() {
 	    logger.info(this.name+"button Distribute :");
-	    let result=await super.isElementPresent(buttonDistribute);
-	    return result;
+	   return await super.isElementPresent(buttonDistribute);
+
 	}
 
 	async clickButtonDistribute() {
@@ -270,13 +274,13 @@ class ManagePage extends Page  {
 	async isEnabledFinalize(){
         logger.info(this.name+"button Finalize :");
         let button=await this.getButtonFinalize();
-        let result=await button.getAttribute("className");
-        if (result=="button button_fill") {
+        let result=await button.getAttribute("class");
+        if (result==="button button_fill") {
             logger.info("present and enabled");
             return true;
         }
             else {
-        	    logger.info("disabled");
+	            logger.info("present and enabled");
                 return false;
             }
     }

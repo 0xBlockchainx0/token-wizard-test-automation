@@ -95,7 +95,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		crowdsaleForE2Etests2=await  Utils.getCrowdsaleInstance(scenarioWhYMdYRt1Tr1);
 
 
-		logger.info("Version 2.1.1");
+		logger.info("Version 2.1.2");
 		driver = await Utils.startBrowserWithMetamask();
 		console.log("FFFEKEMFLKEM");
 		console.log(user8545_56B2File);
@@ -141,7 +141,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		await fs.ensureDirSync(outputPath);
 		await fs.copySync(tempOutputPath,outputPath);
 		//await fs.remove(tempOutputPath);
-		await driver.quit();
+		//await driver.quit();
 	});
 
 
@@ -152,7 +152,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
             console.log("testr");
 			let owner = Owner;
 			await owner.setMetaMaskAccount();
-			let Tfactor=4;
+			let Tfactor=10;
 			await owner.createCrowdsale(crowdsaleForE2Etests1,Tfactor);
 			logger.info("TokenAddress:  " + crowdsaleForE2Etests1.tokenAddress);
 			logger.info("ContractAddress:  " + crowdsaleForE2Etests1.contractAddress);
@@ -248,10 +248,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		async function() {
 
 			let investor = Investor1;
-			await investor.openInvestPage(crowdsaleForE2Etests1);
-			do{ driver.sleep(5000);}
-			while(!await investPage.isCrowdsaleTimeOver());
-			driver.sleep(5000);
+
 			let contribution=crowdsaleForE2Etests1.tiers[0].supply;
 			let result  = await investor.contribute(contribution);
 			return await assert.equal(result, false, "Test FAILED. Investor can  buy if crowdsale is finalized");

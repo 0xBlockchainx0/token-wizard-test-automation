@@ -257,8 +257,17 @@ try{
   async distribute(crowdsale) {
 
   	logger.info(this.account + ": distribution:");
+
   	let mngPage=await this.openManagePage(crowdsale);
-	await mngPage.waitUntilLoaderGone();
+	  logger.info("Snapshot:");
+	  logger.info("Time now: "+Utils.getDate());
+	  logger.info("Start time: "+await mngPage.getStartTimeTier(1));
+	  logger.info("End time: "+await mngPage.getEndTimeTier(1));
+	  logger.info("isDistributionEnabled: "+await mngPage.isEnabledDistribute());
+	  logger.info("isFinalizeEnabled: "+await mngPage.isEnabledFinalize());
+	  logger.info("walletAddress: "+await mngPage.getWalletAddressTier(1));
+
+    await mngPage.waitUntilLoaderGone();
 	await this.driver.sleep(3000);
 	await mngPage.refresh();
 	await this.driver.sleep(3000);

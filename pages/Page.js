@@ -9,7 +9,7 @@ const By=by.By;
 const loader=By.className("loading-container");
 const titles=By.className("title");
 
-const Twait=14000;
+const Twait=20000;
 Twaittransaction=5000;
 
 class Page {
