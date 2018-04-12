@@ -3,14 +3,13 @@ const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
 
 const page=require('./Page.js');
+const Page=page.Page;
 const webdriver = require('selenium-webdriver'),
-    chrome = require('selenium-webdriver/chrome'),
-    firefox = require('selenium-webdriver/firefox'),
-    by = require('selenium-webdriver/lib/by');
+      by = require('selenium-webdriver/lib/by');
 const By=by.By;
 const buttonInvest=By.className("button button_fill");
 
-class CrowdsalePage extends page.Page{
+class CrowdsalePage extends Page {
 
     constructor(driver){
         super(driver);
@@ -21,11 +20,10 @@ class CrowdsalePage extends page.Page{
 	   logger.info(this.name+" button Invest :");
 	   return super.isElementPresent(buttonInvest);
    }
-   async  clickButtonInvest(){
+   async  clickButtonInvest() {
         logger.info(this.name+"button Invest :");
         await super.clickWithWait(buttonInvest);
-
-    }
+   }
 
 }
 module.exports={

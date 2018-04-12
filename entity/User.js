@@ -264,18 +264,18 @@ try{
 	await this.driver.sleep(3000);
 	let result=false;
 	for (let i=0;i<5;i++) {
-	  result=result|await mngPage.isEnabledDistribute();
+	  result=result||await mngPage.isEnabledDistribute();
 	}
     if (result) {
       await mngPage.clickButtonDistribute();
     }
       else {
 	    return false;
-	}
+	  }
     let metaMask = new meta.MetaMask(this.driver);
     await metaMask.doTransaction(5);
     await mngPage.waitUntilLoaderGone();
-    await mngPage.confirmPopup();
+    result = await mngPage.confirmPopup();
     return true;
   }
 
@@ -548,11 +548,11 @@ try{
 	await this.driver.sleep(1000);
 	await investPage.refresh();
 	await this.driver.sleep(2000);
-    let s=await investPage.getBalance();
-    let arr=s.split(" ");
-    s=arr[0].trim();
-    logger.info("received "+ s);
-    return s;
+    let result=await investPage.getBalance();
+    let arr=result.split(" ");
+	result=arr[0].trim();
+    logger.info("received "+ result);
+    return result;
   }
 
 }

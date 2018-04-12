@@ -3,7 +3,7 @@ const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
 
 const page=require('./Page.js');
-Page=page.Page;
+const Page=page.Page;
 const webdriver = require('selenium-webdriver'),
       chrome = require('selenium-webdriver/chrome'),
       firefox = require('selenium-webdriver/firefox'),
@@ -30,28 +30,28 @@ class InvestPage extends Page{
         this.name="Invest page :";
         this.timer=[];
     }
-    async initTimer(){
+
+    async initTimer() {
 	   logger.info(this.name+ ":init countdown timer : ");
         try  {
 		    let arr = await super.findWithWait(countdownTimer);
 		    this.timer = arr[0];
 		    return arr;
 	    }
-        catch(err){
+        catch(err) {
 		    logger.info(this.name+": dont contain countdown timer ");
 		    return null;
 	    }
-
-
     }
-    async initFields(){
+
+    async initFields() {
         var arr = await super.findWithWait(fields);
         this.fieldTokenAddress = arr[1];
         this.fieldContractAddress = arr[2];
         this.fieldCurrentAccount=arr[0];
     }
 
-    async isCrowdsaleTimeOver(){
+    async isCrowdsaleTimeOver() {
         try {
 	        logger.info(this.name + " :isCrowdsaleTimeOver:");
 	        let arr = await super.findWithWait(countdownTimerValue);
@@ -63,13 +63,10 @@ class InvestPage extends Page{
 
 	        return (result===0);
         }
-        catch (err){
+        catch (err) {
             logger.info("Can not find timer");
             return false;
         }
-
-
-
     }
 
     async getBalance(){
@@ -94,11 +91,11 @@ class InvestPage extends Page{
    async  clickButtonOK(){
         logger.info(this.name+"button OK :");
       await  super.clickWithWait(buttonOk);
-      //await super.oneClick(buttonOk);//////////////!!!!!!!!!!!!!!!!
+
     }
 
-    async fillInvest(amount)
-    {   logger.info(this.name+"field Contribute :");
+    async fillInvest(amount) {
+       logger.info(this.name+"field Contribute :");
        await super.fillWithWait(fieldInvest,amount);
     }
 
@@ -106,35 +103,33 @@ class InvestPage extends Page{
         logger.info(this.name+"button Contribute :");
         await super.clickWithWait(buttonContribute);
     }
-    async getWarningText(){
+    async getWarningText() {
         logger.info(this.name+"Warning text :");
         return  await super.getTextByLocator(warningText);
-
-}
-    async getErrorText(){
-        logger.info(this.name+"Error text :");
-        return  await super.getTextByLocator(errorNotice);
-
     }
 
-     async getTokenAddress(){
+    async getErrorText() {
+        logger.info(this.name+"Error text :");
+        return  await super.getTextByLocator(errorNotice);
+    }
+
+     async getTokenAddress() {
         logger.info(this.name+"field TokenAddress :");
         await  this.initFields();
         return  await super.getTextByElement(this.fieldTokenAddress);
     }
-    async getContractAddress(){
+
+    async getContractAddress() {
         logger.info(this.name+"field ContractAddress :");
         await  this.initFields();
         return  await super.getTextByElement(this.fieldContractAddress);
     }
+
     async getCurrentAccount(){
         logger.info(this.name+"field CurrentAccount :");
         await  this.initFields();
         return  await super.getTextByElement(this.fieldCurrentAccount);
     }
-
-
-
 
 }
 module.exports.InvestPage=InvestPage;

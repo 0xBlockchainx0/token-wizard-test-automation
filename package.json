@@ -6,10 +6,8 @@
     "startGanache": "npm install -g ganache-cli && ganache-cli &",
     "e2e-deployRegistry": "node  ./contracts/DeployRegistry.js",
     "test1": "mocha -b ./test/testSuite1.js",
-    "test2": "mocha ./test/testSuite2.js",
-    "ind": "node ./index.js",
-    "ra": "node ./test/testRA.js",
-    "test3":"mocha ./test/test3.js"
+    "ra": "node ./test/testRA.js"
+
   },
   "dependencies": {
     "chromedriver": "^2.35.0",
