@@ -106,7 +106,10 @@ async clickButtonContinue(){
 	}
 
     async isPresentWarningName(){
+
 	    return false;
+
+
     	await this.initWarnings();
     	let s=await super.getTextByElement(this.warningName);
     	if (s!="") return true;
@@ -122,7 +125,9 @@ async clickButtonContinue(){
 	}
 
 	async isPresentWarningDecimals(){
+
 		return false;
+
 		await this.initWarnings();
 		let s=await super.getTextByElement(this.warningDecimals);
 		if (s!="") return true;

@@ -1202,6 +1202,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			newBalance=await tierPage.amountAddedWhitelist();
 			logger.info("NewBal"+newBalance);
 			assert.equal(newBalance,0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+
 		});*/
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
