@@ -256,7 +256,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	test.it('Owner able to distribute if crowdsale time expired but not all tokens were sold',
 		async function() {
-
+await driver.sleep(120000);
 			let owner = Owner;
 			await owner.setMetaMaskAccount();
 			let result = await owner.distribute(crowdsaleForE2Etests1);
