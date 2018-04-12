@@ -259,6 +259,7 @@ try{
   	logger.info(this.account + ": distribution:");
 
   	let mngPage=await this.openManagePage(crowdsale);
+  	await mngPage.refresh();
 	  logger.info("Snapshot:");
 	  logger.info("Time now: "+Utils.getDate());
 	  logger.info("Start time: "+await mngPage.getStartTimeTier(1));
