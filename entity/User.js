@@ -268,8 +268,16 @@ try{
 	  logger.info("isFinalizeEnabled: "+await mngPage.isEnabledFinalize());
 	  logger.info("walletAddress: "+await mngPage.getWalletAddressTier(1));
 
-    await mngPage.waitUntilLoaderGone();
-	await this.driver.sleep(3000);
+	  await mngPage.waitUntilLoaderGone();
+	  await this.driver.sleep(3000);
+	  if (await mngPage.isEnabledFinalize())
+	  	  await mngPage.clickButtonFinalize();
+	  await Utils.zoom(this.driver,0.5);
+
+	  await Utils.takeScreenshoot(this.driver,"manage1");
+	  await Utils.zoom(this.driver,1);
+
+	  await mngPage.waitUntilLoaderGone();
 	await mngPage.refresh();
 	await this.driver.sleep(3000);
 	let result=false;
@@ -278,7 +286,7 @@ try{
 	}
 	await Utils.zoom(this.driver,0.5);
 
-	await Utils.takeScreenshoot(this.driver,"manage");
+	await Utils.takeScreenshoot(this.driver,"manage2");
 	await Utils.zoom(this.driver,1);
 
     if (result) {
