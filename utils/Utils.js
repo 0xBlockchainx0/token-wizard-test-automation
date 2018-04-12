@@ -262,12 +262,12 @@ return q;
 
 
 
-    static async takeScreenshoot(driver) { return;
+    static async takeScreenshoot(driver,name) {
 
 	    var res=await driver.takeScreenshot();
 	    var buf = new Buffer(res, 'base64');
-
-	    await fs.writeFileSync(tempOutputPath + "screenshoot" + Utils.getDate() + '.png', buf);
+        console.log("Take screenshot. Path "+tempOutputPath + name+'.png');
+	    await fs.writeFileSync(tempOutputPath + name + '.png', buf);
 
 
     }

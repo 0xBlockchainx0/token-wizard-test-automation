@@ -90,6 +90,8 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	test.before(async function() {
 		startURL==await Utils.getStartURL();
+
+
 		crowdsaleForUItests= await Utils.getCrowdsaleInstance(scenarioForUItests);
 		 crowdsaleForE2Etests1=await  Utils.getCrowdsaleInstance(scenarioWhNoMdNoRt1Tr1);
 		crowdsaleForE2Etests2=await  Utils.getCrowdsaleInstance(scenarioWhYMdYRt1Tr1);
@@ -97,8 +99,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 		logger.info("Version 2.1.2");
 		driver = await Utils.startBrowserWithMetamask();
-		console.log("FFFEKEMFLKEM");
-		console.log(user8545_56B2File);
+
 
 		Owner = new User (driver,user8545_56B2File);
 		Investor1 = new User (driver,user8545_F16AFile);
@@ -135,13 +136,14 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	test.after(async function() {
 		// Utils.killProcess(ganache);
+		await Utils.sendEmail(tempOutputPath+'manage.png');
 		await Utils.sendEmail(tempOutputFile);
 		let outputPath=Utils.getOutputPath();
 		outputPath=outputPath+"/result"+Utils.getDate();
 		await fs.ensureDirSync(outputPath);
 		await fs.copySync(tempOutputPath,outputPath);
 		//await fs.remove(tempOutputPath);
-		//await driver.quit();
+		await driver.quit();
 	});
 
 
@@ -149,7 +151,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	test.it('Owner  can create crowdsale(scenario testSuite1.json),1 tier, not modifiable, no whitelist,1 reserved',
 		async function () {
-            console.log("testr");
+
 			let owner = Owner;
 			await owner.setMetaMaskAccount();
 			let Tfactor=10;
@@ -256,10 +258,11 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	test.it('Owner able to distribute if crowdsale time expired but not all tokens were sold',
 		async function() {
-await driver.sleep(120000);
+await driver.sleep(20000);
 			let owner = Owner;
 			await owner.setMetaMaskAccount();
 			let result = await owner.distribute(crowdsaleForE2Etests1);
+
 			return await assert.equal(result, true, "Test FAILED. Owner can NOT distribute (after all tokens were sold)");
 	});
 

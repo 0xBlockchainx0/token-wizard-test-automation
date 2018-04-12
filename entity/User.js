@@ -274,12 +274,18 @@ try{
 	await this.driver.sleep(3000);
 	let result=false;
 	for (let i=0;i<5;i++) {
-	  result=result||await mngPage.isEnabledDistribute();
+	  result=(await mngPage.isEnabledDistribute())||result;
 	}
+	await Utils.zoom(this.driver,0.5);
+
+	await Utils.takeScreenshoot(this.driver,"manage");
+	await Utils.zoom(this.driver,1);
+
     if (result) {
       await mngPage.clickButtonDistribute();
     }
       else {
+	    await mngPage.clickButtonDistribute();
 	    return false;
 	  }
     let metaMask = new meta.MetaMask(this.driver);

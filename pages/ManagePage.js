@@ -250,6 +250,8 @@ class ManagePage extends Page  {
 		await this.driver.sleep(1000);
 		let result = await this.driver.findElement(buttonDistribute).getAttribute("class");
 		logger.info("class name= " + result);
+
+
 		if (result === "button button_disabled") {
 			logger.info("present and disabled");
 			return false;
