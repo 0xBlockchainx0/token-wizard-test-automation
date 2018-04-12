@@ -82,7 +82,6 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 	let tierPage;
 	let reservedTokensPage;
     let investPage;
-	let startTimeOfCrowdsale;
 	let startURL;
 	let crowdsaleForUItests;
 	let crowdsaleForE2Etests1;
@@ -610,7 +609,6 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
             console.log("testr");
 			let owner = Owner;
 			await owner.setMetaMaskAccount();
-			startTimeOfCrowdsale=new Date(Date.now()).getTime()+80000+180000;
 			let Tfactor=4;
 			await owner.createCrowdsale(crowdsaleForE2Etests1,Tfactor);
 			logger.info("TokenAddress:  " + crowdsaleForE2Etests1.tokenAddress);
@@ -620,7 +618,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 				         (crowdsaleForE2Etests1.contractAddress != "") &&
 				         (crowdsaleForE2Etests1.url != "");
 			return await assert.equal(result, true, "Test FAILED. Crowdsale has NOT created ");
-			logger.error("Test PASSED. Owner  can create crowdsale,no whitelist,reserved");
+
 
 		});
 
@@ -938,28 +936,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 			});
 
-		test.it('Manage page:  start time changed  after modifying ',
-			async function () {
-				let adjust = 90000;
-				let newTime = Utils.getTimeWithAdjust(adjust, "utc");
-				let newDate = Utils.getDateWithAdjust(adjust, "utc");
-				let tierNumber = 1;
-				let owner = Owner;
-				await owner.openManagePage(crowdsaleForE2Etests2);
-
-				let startTime = await  owner.getStartTime(tierNumber);
-				let result = Utils.compare(startTime, newDate, newTime);
-
-				return await assert.equal(result, true, 'Test FAILED. Start time  doest match the given value');
-
-
-			});
-
-
-
-
-
-					test.it('Owner is able to modify the end time before start of crowdsale',
+							test.it('Owner is able to modify the end time before start of crowdsale',
 						async function () {
 
 

@@ -42,15 +42,13 @@ const network=process.argv[3];
 	let user4_F16AFile='./users/user4_F16A.json';//Rinkeby
 	let user8545_56B2File='./users/user8545_56B2.json';//Ganache
 	let user77_56B2File='./users/user77_56B2.json';//Sokol
-	  let Owner;
+	let Owner;
 	  switch(network)
 	  {
 		  case '4': { Owner = new User (driver,user4_F16AFile);break;}
 		  case '8545':{Owner = new User (driver,user8545_56B2File);break;}
 		  default: {Owner =  new User (driver,user77_56B2File);break;}
 	  }
-
-
 
 	await Utils.increaseBalance(Owner,20);
 	logger.info("Owner = "+Owner.account);
@@ -59,11 +57,10 @@ const network=process.argv[3];
 	await mtMask.activate();//return activated Metamask and empty page
     await Owner.setMetaMaskAccount();
     var scenario = './scenarios/testRA.json';
-    let currency=Currency.createCurrency(scenario);
-	let crowdsale;
-	crowdsale = await Owner.createCrowdsale(scenario,5,'reserved');
+    let crowdsale = await Utils.getCrowdsaleInstance(scenario);
+    crowdsale = await Owner.createCrowdsale(crowdsale,5,'reserved');
 
-	await Owner.open(crowdsale.url);
+	await Owner.openInvestPage(crowdsale);
 	await driver.sleep(15000);
 	await Owner.contribute(crowdsale.currency.tiers[0].supply);
 	await Owner.distribute(crowdsale);
@@ -76,7 +73,7 @@ const network=process.argv[3];
     for (let i=0;i<bundleRA.length;i++) {
 
 	if (bundleRA[i].dimension=='percentage')
-      shouldBe=bundleRA[i].value*crowdsale.currency.tiers[0].supply/100;
+      shouldBe=bundleRA[i].value*crowdsale.tiers[0].supply/100;
 	  else shouldBe=bundleRA[i].value;
 
 	user.account=bundleAccounts[i].address;
