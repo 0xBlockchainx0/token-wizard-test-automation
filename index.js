@@ -19,8 +19,6 @@ const webdriver = require('selenium-webdriver'),
 const By=by.By;
 const currency= require('./entity/Currency.js');
 const Currency=currency.Currency;
-const metaMaskWallet=require('./entity/MetaMaskWallet.js');
-const MetaMaskWallet=metaMaskWallet.MetaMaskWallet;
 const tierpage=require('./pages/TierPage.js');
 const TierPage=tierpage.TierPage;
 const Web3 = require('web3');
@@ -109,7 +107,7 @@ async function run() {
 
     driver= await Utils.startBrowserWithMetamask();
     var mtMask = new MetaMask(driver);
-    await mtMask.open();//return activated Metamask and empty page
+    await mtMask.activate();//return activated Metamask and empty page
 
     var test1 = new Test1(driver,Utils.getOutputPath());
   // var d=await Utils.getDateFormat(driver);

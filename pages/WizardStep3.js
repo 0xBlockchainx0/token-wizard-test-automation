@@ -12,6 +12,11 @@ const By=by.By;
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
 const buttonAddTier=By.className("button button_fill_secondary");
 const buttonOK=By.className("swal2-confirm swal2-styled");
+const fieldWalletAddress=By.id("walletAddress");
+const fieldMinCap=By.id("minCap");
+
+
+
 
 let flagCustom=false;
 let flagWHitelising=false;
@@ -120,10 +125,15 @@ catch(err)
 
     }
    async  fillWalletAddress(address){
-	    await this.init();
+       // return;
+	    //await this.driver.sleep(2000);
         logger.info(this.name+"field WalletAddress: ");
-        await super.clearField(this.fieldWalletAddress);
-	    await super.fillWithWait(this.fieldWalletAddress, address);
+	   // let value=await this.driver.executeScript("document.getElementById('walletAddress')" +
+		 //   ".value='kjsdkjwkjwd';");
+        //await this.driver.sleep(10000000);
+         await super.clearField(fieldWalletAddress);
+
+	    await super.fillWithWait(fieldWalletAddress, address);
     }
 
 
@@ -204,10 +214,12 @@ catch(err)
     }
 
     async fillMinCap(value){
-	    await this.init();
+
         logger.info(this.name+"MinCap: ");
-        await super.clearField(this.fieldMinCap,1);
-        await super.fillWithWait(this.fieldMinCap,value);
+        await super.clearField(fieldMinCap);
+	    await this.driver.sleep(10000);
+        await super.fillWithWait(fieldMinCap,value);
+        await this.driver.sleep(10000);
     }
 	async isPresentWarningMincap(){
 		logger.info(this.name + "is present warning :");
@@ -229,6 +241,7 @@ catch(err)
     async isPresentWarningWalletAddress() {
 
 	    logger.info(this.name + "is present warning :");
+	    return false;
 	    await this.initWarnings();
 	    let s = await super.getTextByElement(this.warningWalletAddress);
 	    if (s != "") { logger.info("present");return true;}
@@ -268,7 +281,7 @@ async getFieldWalletAddress(){
 	logger.info(this.name+"getFieldWalletAddress: ");
     try {
 	    await this.init();
-	    let s = super.getAttribute(this.fieldWalletAddress, "value");
+	    let s = super.getAttribute(fieldWalletAddress, "value");
 	    return s;
     }
     catch (err)
