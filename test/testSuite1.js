@@ -136,14 +136,15 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	test.after(async function() {
 		// Utils.killProcess(ganache);
-		await Utils.sendEmail(tempOutputPath+'manage.png');
+		await Utils.sendEmail(tempOutputPath+'manage1.png');
+		await Utils.sendEmail(tempOutputPath+'manage2.png');
 		await Utils.sendEmail(tempOutputFile);
 		let outputPath=Utils.getOutputPath();
 		outputPath=outputPath+"/result"+Utils.getDate();
 		await fs.ensureDirSync(outputPath);
 		await fs.copySync(tempOutputPath,outputPath);
 		//await fs.remove(tempOutputPath);
-		await driver.quit();
+		//await driver.quit();
 	});
 
 
