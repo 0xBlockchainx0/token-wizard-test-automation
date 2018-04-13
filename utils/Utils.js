@@ -78,6 +78,7 @@ static async getProviderUrl(id)
 		let url;
 		switch(network)
 		{
+			case 3:{url="https://ropsten.infura.io";break;}
 			case 4:{url="https://rinkeby.infura.io/";break;}
 			case 77:{url="https://sokol.poa.network";break;}
 			case 8545:{url="http://localhost:8545"; break;}

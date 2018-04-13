@@ -1,0 +1,42 @@
+{
+
+  "name": "test2_ropsten.json",
+  "ticker": "test2",
+  "decimals": 18,
+  "reservedTokens":[
+    {
+      "address" :"0x76b3aD518Ed1a731Db0EbC6D04a75bC0e76491ea",
+      "dimension": "percentage",
+      "value": 250
+    },
+    {
+      "address" :  "0x41B4073E966c169dB22185805A951A0f1b805320",
+      "dimension": "tokens",
+      "value":100000000
+    }
+
+  ],
+  "walletAddress":"0x41B4073E966c169dB22185805A951A0f1b805320",
+  "gasprice": 1,
+  "mincap": 1,
+  "whitelisting":true,
+  "tiers":[
+    {
+      "name":"###1",
+      "allowModify": true,
+      "startDate": "01/01/2030",
+      "startTime": "01:11",
+      "endDate":"01/01/2031",
+      "endTime":"02:22",
+      "rate":20000,
+      "supply": 250,
+      "whitelist":[
+        {
+          "address": "0x45D990b04004aea469443d0484BfaB050da0EBF4",
+          "min": 50,
+          "max": 150
+        }
+      ]
+    }]
+
+}
