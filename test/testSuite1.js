@@ -40,7 +40,7 @@ const crowdsale=require('../entity/Crowdsale.js');
 const Crowdsale=crowdsale.Crowdsale;
 
 const supplyTier1=200;
-const rateTier1=500;
+const rateTier1=50000;
 const mincapForInvestor2=20;
 const maxForInvestor2=200;
 const minReservedAddress=15;
@@ -141,8 +141,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		wizardStep2 = new WizardStep2(driver);
 		wizardStep3 = new WizardStep3(driver);
 		investPage = new InvestPage(driver);
-		reservedTokensPage=new ReservedTokensPage(driver);
-		tierPage=new TierPage(driver,crowdsaleForUItests.tiers[0]);
+
 
 	});
 

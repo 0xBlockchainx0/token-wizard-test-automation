@@ -24,7 +24,7 @@ class InvestPage extends Page{
     constructor(driver){
         super(driver);
         this.URL;
-        this.fieldTokenAddress;
+        this.fieldExecutionID;
         this.fieldContractAddress;
         this.fieldCurrentAccount;
         this.name="Invest page :";
@@ -46,8 +46,8 @@ class InvestPage extends Page{
 
     async initFields() {
         var arr = await super.findWithWait(fields);
-        this.fieldTokenAddress = arr[1];
-        this.fieldContractAddress = arr[2];
+        this.fieldExecutionID = arr[1];
+
         this.fieldCurrentAccount=arr[0];
     }
 
@@ -113,17 +113,12 @@ class InvestPage extends Page{
         return  await super.getTextByLocator(errorNotice);
     }
 
-     async getTokenAddress() {
+     async getExecutionID() {
         logger.info(this.name+"field TokenAddress :");
         await  this.initFields();
-        return  await super.getTextByElement(this.fieldTokenAddress);
+        return  await super.getTextByElement(this.fieldExecutionID);
     }
 
-    async getContractAddress() {
-        logger.info(this.name+"field ContractAddress :");
-        await  this.initFields();
-        return  await super.getTextByElement(this.fieldContractAddress);
-    }
 
     async getCurrentAccount(){
         logger.info(this.name+"field CurrentAccount :");

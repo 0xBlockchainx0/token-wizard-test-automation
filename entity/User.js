@@ -96,7 +96,7 @@ try{
         await welcomePage.clickButtonChooseContract();*/
 
 	let mngPage=new ManagePage(this.driver);
-    mngPage.URL=startURL+"manage/"+crowdsale.contractAddress;
+    mngPage.URL=startURL+"manage/"+crowdsale.executionID;
     await mngPage.open();
     await mngPage.waitUntilLoaderGone();
     if (await mngPage.isPresentButtonOK()) return false;
@@ -438,7 +438,7 @@ try{
 	    else {
           logger.info("Transaction# "+counterTransactions+" is successfull");
         }
-      await this.driver.sleep(Tfactor*500);//anyway won't be faster than start time
+      await this.driver.sleep(Tfactor*3000);//anyway won't be faster than start time
       if (await wizardStep4.isPresentButtonSkipTransaction()) {
         await wizardStep4.clickButtonSkipTransaction();
 
@@ -477,7 +477,7 @@ try{
 	             "\n"+ "Transaction were skipped: "+skippedTransactions);
 
 	await this.driver.sleep(5000);
-	const abi=await wizardStep4.getABI();
+	//const abi=await wizardStep4.getABI();
 
     await wizardStep4.clickButtonContinue();
     await wizardStep4.waitUntilLoaderGone();
@@ -488,16 +488,16 @@ try{
 
     const  urlInvestPage=await investPage.getURL();
     await investPage.waitUntilLoaderGone();
-    const tokenAddress=await investPage.getTokenAddress();
-    const contractAddress=await investPage.getContractAddress();
-	logger.info(JSON.stringify(abi));
+    const executionID=await investPage.getExecutionID();
+
+	//logger.info(JSON.stringify(abi));
     logger.info("Final invest page link: "+urlInvestPage);
-    logger.info("token address: "+tokenAddress);
-    logger.info("contract address: "+contractAddress);
-    crowdsale.tokenAddress=tokenAddress;
-    crowdsale.contractAddress=contractAddress;
+    logger.info("token address: "+executionID);
+
+    crowdsale.executionID=executionID;
+
     crowdsale.url=urlInvestPage;
-    crowdsale.tokenContractAbi=abi;
+    crowdsale.tokenContractAbi="";
 	return crowdsale;
   }
 

@@ -1,0 +1,2 @@
+curl -X POST  -H "Content-Type: application/json" -d '{"toWhom":"0x5ACC1e56E6d738Ed69374fE2b778d3b5D9154143"}
+ ' https://ropsten.faucet.b9lab.com/tap

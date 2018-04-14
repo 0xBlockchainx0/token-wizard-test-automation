@@ -23,6 +23,7 @@ class Crowdsale {
       this.contractAddress;
       this.url;
       this.tokenContractAbi;
+      this.executionID;
   }
 
 	async parser(fileName) {
