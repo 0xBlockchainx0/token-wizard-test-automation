@@ -32,6 +32,16 @@ class Page {
 	  }
 
 
+	async getPageTitle(element){
+		logger.info("get title: ");
+		let array = await this.initTitles();
+		let result;
+		if (array!=null) result = await this.getTextByElement(this.pageTitle);
+		logger.info("result ");
+        return result;
+	}
+
+
 	  async isElementDisabled(element) {
 		logger.info("isElementDisabled :")
 		try {
@@ -224,6 +234,18 @@ class Page {
 	    logger.info("refresh :");
 	    await this.driver.navigate().refresh();
 	  }
+
+	async findWithoutWait(element) {
+		logger.info("find with wait ");
+		try {
+			await this.driver.wait(webdriver.until.elementLocated(element), 1000);
+			return await this.driver.findElements(element);
+		}
+		catch(err) {
+			logger.info("Element "+ element+" have not appeared in"+ Twait+" sec.");
+			return null;
+		}
+	}
 
 	  async findWithWait(element) {
 	    logger.info("find with wait ");

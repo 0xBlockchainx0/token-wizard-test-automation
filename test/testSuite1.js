@@ -89,7 +89,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function() {
-		startURL==await Utils.getStartURL();
+		startURL=await Utils.getStartURL();
 
 
 		crowdsaleForUItests= await Utils.getCrowdsaleInstance(scenarioForUItests);
@@ -97,7 +97,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		crowdsaleForE2Etests2=await  Utils.getCrowdsaleInstance(scenarioWhYMdYRt1Tr1);
 
 
-		logger.info("Version 2.1.2");
+		logger.info("Version 2.1.3");
 		driver = await Utils.startBrowserWithMetamask();
 
 
@@ -144,12 +144,149 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		await fs.ensureDirSync(outputPath);
 		await fs.copySync(tempOutputPath,outputPath);
 		//await fs.remove(tempOutputPath);
-		//await driver.quit();
+		await driver.quit();
 	});
 
 
 //////////////////////////////////////////////////////////////////////////////
+	test.it('User is able to open wizard welcome page' ,
+		async function () {
+			let result = await  welcomePage.open();
+			return await assert.equal(result, startURL, "Test FAILED. User can not activate Wizard ");
 
+		});
+
+	test.it('Welcome page: button NewCrowdsale present ',
+		async function () {
+			let result = await welcomePage.isPresentButtonNewCrowdsale();
+			return await assert.equal(result, true, "Test FAILED. Button NewCrowdsale not present ");
+
+		});
+
+	test.it('Welcome page: button ChooseContract present ',
+		async function () {
+			let result = await welcomePage.isPresentButtonChooseContract();
+			return await assert.equal(result, true, "Test FAILED. button ChooseContract not present ");
+
+		});
+
+	test.it('Welcome page: user is able to activate Step1 by clicking button NewCrowdsale ',
+		async function () {
+			await welcomePage.clickButtonNewCrowdsale();
+			let result = await wizardStep1.isPresentButtonContinue();
+			return await assert.equal(result, true, "Test FAILED. User is not able to activate Step1 by clicking button NewCrowdsale");
+
+		});
+
+	test.it('Wizard step#1: user is able to activate Step2 by clicking button Continue ',
+		async function () {
+		let count=10;
+			do {
+				await driver.sleep(1000);
+				if  ((await wizardStep1.isPresentButtonContinue()) &&
+					!(await wizardStep2.isPresentFieldName()) )
+				{
+					await wizardStep1.clickButtonContinue();
+				}
+				else break;
+			}
+			while (count-->0);
+			let result=await wizardStep2.isPresentFieldName();
+			return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
+
+		});
+
+	test.it('Wizard step#2: user able to fill out field Ticker with valid data',
+		async function () {
+			await wizardStep2.fillTicker("test");
+			let result = await wizardStep2.isPresentWarningTicker();
+			return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not  able to fill out field Ticker with valid data ");
+
+		});
+
+	test.it('Wizard step#2: user able to fill Name field with valid data',
+		async function () {
+			await wizardStep2.fillName("name");
+			let result = await wizardStep2.isPresentWarningName();
+			return await assert.equal(result, false, "Test FAILED. Wizard step#2: user able to fill Name field with valid data ");
+
+		});
+
+	test.it.skip("Wizard step#2: user is not able to proceed if Decimals field empty ",
+		async function () {
+			await wizardStep2.fillDecimals("");
+			await wizardStep2.clickButtonContinue();
+			let result = await wizardStep2.getPageTitle();
+			result=(result==wizardStep2.title);
+			if (!result)  await wizardStep3.goBack();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#2: user is  able to proceed if Decimals field empty ");
+		});
+
+	test.it('Wizard step#2: user able to fill out field Decimals with valid data',
+		async function () {
+			await wizardStep2.fillDecimals("1");
+			let result=await wizardStep2.isPresentWarningDecimals();
+			return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not able to fill Decimals  field with valid data ");
+
+		});
+
+	test.it('Wizard step#2: user is able to add reserved tokens ',
+		async function () {
+
+			for (let i=0;i<crowdsaleForUItests.reservedTokens.length;i++)
+			{
+				await reservedTokensPage.fillReservedTokens(crowdsaleForUItests.reservedTokens[i]);
+				await reservedTokensPage.clickButtonAddReservedTokens();
+			}
+			let result = await reservedTokensPage.amountAddedReservedTokens();
+			return await assert.equal(result, crowdsaleForUItests.reservedTokens.length, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+
+
+		});
+
+	test.it('Wizard step#2: field Decimals disabled if reserved tokens added ',
+		async function () {
+
+			let result  = await wizardStep2.isDisabledDecimals();
+			return await assert.equal(result, true, "Wizard step#2: field Decimals enabled if reserved tokens added ");
+		});
+
+	test.it('Wizard step#2: user is able to remove one of reserved tokens ',
+		async function () {
+
+			let amountBefore = await reservedTokensPage.amountAddedReservedTokens();
+			await reservedTokensPage.removeReservedTokens(1);
+			let amountAfter = await reservedTokensPage.amountAddedReservedTokens();
+			return await  assert.equal(amountBefore, amountAfter+1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+
+
+		});
+
+	test.it('Wizard step#2: ClearAll button present ',
+		async function () {
+
+			let result  = await reservedTokensPage.isPresentButtonClearAll();
+			return await  assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
+		});
+
+	test.it('Wizard step#2: Alert present after clicking ClearAll and button No present',
+		async function () {
+			await reservedTokensPage.clickButtonClearAll();
+			let result = await reservedTokensPage.isPresentButtonNoAlert();
+			return await assert.equal(result, true, "Test FAILED.Alert does NOT present after select ClearAll or button No does NOT present");
+		});
+
+	test.it('Wizard step#2: user is able bulk delete of reserved tokens ',
+		async function () {
+			await reservedTokensPage.clickButtonYesAlert();
+			await driver.sleep(2000);
+			let result = await reservedTokensPage.amountAddedReservedTokens();
+			return await assert.equal(result, 0, "Wizard step#2: user is NOT able bulk delete of reserved tokens");
+
+	});
+
+
+//////////////////////// Test SUITE #1 /////////////////////////////
 	test.it('Owner  can create crowdsale(scenario testSuite1.json),1 tier, not modifiable, no whitelist,1 reserved',
 		async function () {
 
@@ -257,7 +394,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			return await assert.equal(result, false, "Test FAILED. Investor can  buy if crowdsale is finalized");
 	});
 
-	test.it('Owner able to distribute if crowdsale time expired but not all tokens were sold',
+	test.it.skip('Owner able to distribute if crowdsale time expired but not all tokens were sold',
 		async function() {
 await driver.sleep(20000);
 			let owner = Owner;
@@ -267,7 +404,7 @@ await driver.sleep(20000);
 			return await assert.equal(result, true, "Test FAILED. Owner can NOT distribute (after all tokens were sold)");
 	});
 
-	test.it('Reserved address has received correct quantity of tokens after distribution',
+	test.it.skip('Reserved address has received correct quantity of tokens after distribution',
 		async function() {
 
 			let newBalance=await ReservedAddress.getTokenBalance(crowdsaleForE2Etests1)/1e18;
@@ -277,7 +414,7 @@ await driver.sleep(20000);
 			return await assert.equal(balance, newBalance,"Test FAILED.'Investor has received "+newBalance+" tokens instead "+ balance );
 	});
 
-	test.it('Owner able to finalize (if crowdsale time expired but not all tokens were sold)',
+	test.it.skip('Owner able to finalize (if crowdsale time expired but not all tokens were sold)',
 		async function() {
 
 			let owner = Owner;
@@ -285,7 +422,7 @@ await driver.sleep(20000);
 			return await assert.equal(result , true, "Test FAILED.'Owner can NOT finalize ");
 	});
 
-	test.it('Investor has received correct quantity of tokens after finalization', async function() {
+	test.it.skip('Investor has received correct quantity of tokens after finalization', async function() {
 
 		let investor=Investor1;
 		let newBalance=await investor.getTokenBalance(crowdsaleForE2Etests1)/1e18;
@@ -703,12 +840,13 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Owner able to finalize (after all tokens were sold)', async function() {
+	test.it('Owner able to finalize (after all tokens were sold)',
+		async function() {
 
-		let owner=Owner;
-		await owner.setMetaMaskAccount();
-		let result  = await owner.finalize(crowdsaleForE2Etests2);
-		return await assert.equal(result, true, "Test FAILED.'Owner can NOT finalize (after all tokens were sold)");
+			let owner=Owner;
+			await owner.setMetaMaskAccount();
+			let result  = await owner.finalize(crowdsaleForE2Etests2);
+			return await assert.equal(result, true, "Test FAILED.'Owner can NOT finalize (after all tokens were sold)");
 
 	});
 
@@ -736,77 +874,29 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Investor #2 has received correct amount of tokens after finalization', async function() {
+	test.it('Investor #2 has received correct amount of tokens after finalization',
+		async function() {
 
-		let investor=Investor2;
-		let newBalance=await investor.getTokenBalance(crowdsaleForE2Etests2)/1e18;
-		let balance=supplyTier1-crowdsaleForE2Etests2.tiers[0].whitelist[0].max;
-		logger.info("Investor should receive  = "+balance);
-		logger.info("Investor has received balance = "+newBalance);
-		return await assert.equal(balance, newBalance,"Test FAILED.'Investor has received "+newBalance+" tokens instead "+ balance );
+			let investor=Investor2;
+			let newBalance=await investor.getTokenBalance(crowdsaleForE2Etests2)/1e18;
+			let balance=supplyTier1-crowdsaleForE2Etests2.tiers[0].whitelist[0].max;
+			logger.info("Investor should receive  = "+balance);
+			logger.info("Investor has received balance = "+newBalance);
+			return await assert.equal(balance, newBalance,"Test FAILED.'Investor has received "+newBalance+" tokens instead "+ balance );
 
 
 	});
 
+
+
+
 });
-/*	test.it.skip('User is able to activate wizard welcome page:'+startURL ,
-		async function () {
-		    let result = await  welcomePage.open();
-			return await assert.equal(result, startURL, "Test FAILED. User can not activate Wizard ");
-
-		});
 /*
-	test.it.skip('Welcome page: button NewCrowdsale present ',
-		async function () {
-			result = await welcomePage.isPresentButtonNewCrowdsale();
-			assert.equal(result, true, "Test FAILED. Button NewCrowdsale not present ");
-			logger.info("Test PASSED. Button NewCrowdsale present");
-		});
-
-	test.it.skip('Welcome page: button ChooseContract present ',
-		async function () {
-			result = await welcomePage.isPresentButtonChooseContract();
-			assert.equal(result, true, "Test FAILED. button ChooseContract not present ");
-			logger.info("Test PASSED. Button ChooseContract present");
-		});
-
-	test.it.skip('Welcome page: user is able to activate Step1 by clicking button NewCrowdsale ',
-		async function () {
-			await welcomePage.clickButtonNewCrowdsale();
-			result = await wizardStep1.isPresentButtonContinue();
-			assert.equal(result, true, "Test FAILED. User is not able to activate Step1 by clicking button NewCrowdsale");
-			logger.error("Test PASSED. User is able to activate Step2 by clicking button NewCrowdsale");
-
-		});
-	test.it.skip('Wizard step#1: user is able to activate Step2 by clicking button Continue ',
-		async function () {
-		let count=10;
-			do {
-				await driver.sleep(1000);
-				if  ((await wizardStep1.isPresentButtonContinue()) &&
-					!(await wizardStep2.isPresentFieldName()) )
-				{
-					await wizardStep1.clickButtonContinue();
-				}
-				else break;
-			}
-			while (count-->0)
-			result=await wizardStep2.isPresentFieldName();
-			assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
-			logger.error("Test PASSED. User is able to activate Step2 by clicking button Continue");
-
-		});
 
 	////////////////////////// S T E P 2 //////////////////////////////////////////////////////////////////////////////
 
 
-	test.it.skip('Wizard step#2: user able to fill out field Ticker with valid data',
-		async function () {
-			await wizardStep2.fillTicker("test");
-			b=await wizardStep2.isPresentWarningTicker();
-			assert.equal(b, false, "Test FAILED. Wizard step#2: user is not  able to fill out field Ticker with valid data ");
 
-		});
 
 ///////Name////
 	test.it.skip("Wizard step#2: warning is presented if field Name  is empty ",
@@ -835,13 +925,7 @@ await driver.sleep(20000);
 			assert.equal(b, true, "Test FAILED. Wizard step#2: user is  able to proceed if name's warning presented");
 		});
 
-	test.it.skip('Wizard step#2: user able to fill Name field with valid data',
-		async function () {
-			await wizardStep2.fillName(currencyForE2Etests.name);
-			b=await wizardStep2.isPresentWarningName();
-			assert.equal(b, false, "Test FAILED. Wizard step#2: user able to fill Name field with valid data ");
 
-		});
 
 	////Ticker////
 
@@ -950,6 +1034,13 @@ await driver.sleep(20000);
 			assert.equal(b, false, "Test FAILED. Wizard step#2: warnings are presented if user fill out address and value fields with valid data ");
 
 		});
+test.it("Wizard step#2: user is not able to add reserved tokens if address is invalid ",
+		async function () {
+			await reservedTokensPage.clickButtonAddReservedTokens();
+			let newBalance=await reservedTokensPage.amountAddedReservedTokens();
+			assert.equal(newBalance, 0, "Test FAILED. Wizard step#2: user is not able to add reserved tokens if address is invalid");
+
+		});
 
 	test.it.skip("Wizard step#2: warning is presented if address of reserved tokens is invalid ",
 		async function () {
@@ -959,13 +1050,7 @@ await driver.sleep(20000);
 
 		});
 
-	test.it.skip("Wizard step#2: user is not able to add reserved tokens if address is invalid ",
-		async function () {
-			await reservedTokensPage.clickButtonAddReservedTokens();
-			newBalance=await reservedTokensPage.amountAddedReservedTokens();
-			assert.equal(newBalance, 0, "Test FAILED. Wizard step#2: user is not able to add reserved tokens if address is invalid");
 
-		});
 
 	test.it.skip("Wizard step#2: warning present if value of reserved tokens  is negative ",
 		async function () {
@@ -997,83 +1082,6 @@ await driver.sleep(20000);
 
 		});
 
-	test.it.skip('Wizard step#2: field Decimals disabled if reserved tokens added ',
-		async function () {
-
-			b = await wizardStep2.isDisabledDecimals();
-			assert.equal(b, true, "Wizard step#2: field Decimals enabled if reserved tokens added ");
-		});
-
-	test.it.skip('Wizard step#2: user is able to remove one of reserved tokens ',
-		async function () {
-			b=false;
-			balance=await reservedTokensPage.amountAddedReservedTokens();
-			contribution=currencyForUItests.reservedTokens.length-1;
-			await reservedTokensPage.removeReservedTokens(contribution);
-			newBalance=await reservedTokensPage.amountAddedReservedTokens();
-			assert.equal(balance, newBalance+1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
-			logger.error("Test PASSED. Wizard step#2: user is able to add reserved tokens");
-
-		});
-
-	test.it.skip('Wizard step#2: ClearAll button present ',
-		async function () {
-
-			b = await reservedTokensPage.isPresentButtonClearAll();
-			assert.equal(b, true, "Test FAILED.ClearAll button is NOT present");
-		});
-
-	test.it.skip('Wizard step#2: Alert present after clicking ClearAll and button No present',
-		async function () {
-			await reservedTokensPage.clickButtonClearAll();
-			b = await reservedTokensPage.isPresentButtonNoAlert();
-			assert.equal(b, true, "Test FAILED.Alert does NOT present after select ClearAll or button No does NOT present");
-		});
-	test.it.skip('Wizard step#2: User able to click button No and warning disappear ',
-		async function () {
-
-			await  reservedTokensPage.clickButtonNoAlert();
-			await driver.sleep(2000);
-			b = await reservedTokensPage.isPresentButtonYesAlert();
-			assert.equal(b, false, "Test FAILED.User is not able to click button No or warning does not disappear");
-		});
-
-	test.it.skip('Wizard step#2: Alert present after select ClearAll and button Yes present',
-		async function () {
-			await reservedTokensPage.clickButtonClearAll();
-			b = await reservedTokensPage.isPresentButtonYesAlert();
-			assert.equal(b, true, "Test FAILED.Alert does NOT present after select ClearAll or button Yes does NOT present");
-		});
-
-	test.it.skip('Wizard step#2: user is able bulk delete of reserved tokens ',
-		async function () {
-			await reservedTokensPage.clickButtonYesAlert();
-			await driver.sleep(2000);
-			newBalance = await reservedTokensPage.amountAddedReservedTokens();
-			assert.equal(newBalance, 0, "Wizard step#2: user is NOT able bulk delete of reserved tokens");
-			logger.error("Test PASSED. Wizard step#2: user is able bulk delete of reserved tokens");
-
-		});
-
-	test.it.skip('Wizard step#2: field Decimals enabled if no reserved tokens',
-		async function () {
-
-			b = await wizardStep2.isDisabledDecimals();
-			assert.equal(b, false, "Wizard step#2: field Decimals disabled  after deletion of reserved tokens");
-		});
-	test.it.skip('Wizard step#2: user is able to add one reserved tokens address after deletion ',
-		async function () {
-			b=false;
-			for (var i=0;i<currencyForE2Etests.reservedTokens.length;i++)
-			{
-				await reservedTokensPage.fillReservedTokens(currencyForE2Etests.reservedTokens[i]);
-				await reservedTokensPage.clickButtonAddReservedTokens();
-			}
-			b=await reservedTokensPage.amountAddedReservedTokens();
-			assert.equal(b, currencyForE2Etests.reservedTokens.length, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens after deletion");
-			logger.error("Test PASSED. Wizard step#2: user is able to add reserved tokens after deletion");
-
-		});
 
 	test.it.skip('Wizard step#2: button Continue present ',
 		async function () {

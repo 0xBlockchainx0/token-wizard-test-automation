@@ -27,6 +27,7 @@ class WizardStep2 extends page.Page {
 	    this.warningValue;
 	    this.title="TOKEN SETUP";
 
+
     }
 
 
@@ -45,7 +46,6 @@ async initWarnings(){
     		return null;
 	    }
 }
-
 
 async isPresentFieldName(){
         logger.info(this.name+"is present field name: ");
@@ -82,7 +82,7 @@ catch (err)
 async fillDecimals(name) {
     	try{
 	logger.info(this.name + "field Decimals: ");
-	//await super.clearField(fieldDecimals);
+	await super.clearField(fieldDecimals);
 	await super.fillWithWait(fieldDecimals, name);
 	return true;
 }

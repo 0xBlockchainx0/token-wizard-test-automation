@@ -13,8 +13,8 @@ const itemsRemove=By.className("item-remove");
 const buttonClearAll=By.className("fa fa-trash");
 const buttonYesAlert=By.className("swal2-confirm swal2-styled");
 const buttonNoAlert=By.className("swal2-cancel swal2-styled");
-
-class ReservedTokensPage extends Page{
+//const buttonClearAll = By.className("clear-all-tokens");
+class ReservedTokensPage extends Page {
 
     constructor(driver) {
         super(driver);
@@ -52,7 +52,7 @@ class ReservedTokensPage extends Page{
     }
 	async initReservedTokensContainer(){
 
-		var arr = await super.findWithWait(ReservedTokensContainer);
+		var arr = await super.findWithoutWait(ReservedTokensContainer);
 		return arr;
 
 	}
@@ -89,7 +89,18 @@ class ReservedTokensPage extends Page{
 	}
 
 
+    async clickButtonClearAll(){
+	    logger.info(this.name+" click ButtonClearAll :");
+	   try {
+		   await super.clickWithWait(buttonClearAll);
+		   return true;
+	   }
+	     catch(err) {
+	   	      logger.info("Can not click ButtonClearAll ");
+	   	      return false;
+	     }
 
+    }
 
 	async fillReservedTokens(reservedTokens){
           logger.info(this.name+"fill : ");
@@ -126,7 +137,7 @@ class ReservedTokensPage extends Page{
             logger.info("Wallet address"+address);
             let arr=await this.init();
             logger.info("LLL"+arr.length);
-	        //await super.clearField(this.fieldAddress);
+	        await super.clearField(this.fieldAddress);
             await super.fillWithWait(this.fieldAddress, address);
         }
 
@@ -136,7 +147,7 @@ class ReservedTokensPage extends Page{
 
         if (value==undefined) return;
         await this.init();
-	    //await super.clearField(this.fieldValue);
+	    await super.clearField(this.fieldValue);
         await super.fillWithWait(this.fieldValue,value);
     }
 
@@ -163,9 +174,7 @@ class ReservedTokensPage extends Page{
 
     }
 
-    async clickButtonClearAll(){
-        await super.clickWithWait(buttonClearAll);
-    }
+
     async isPresentButtonClearAll(){
         return await super.isElementPresent(buttonClearAll);
     }
