@@ -85,8 +85,8 @@ async printWarnings(){
 
 	async init(){
 try{
-		var locator = By.className("input");
-		var arr = await super.findWithWait(locator);
+		let locator = By.className("input");
+		let arr = await super.findWithWait(locator);
 		this.fieldWalletAddress = arr[0];
 		if (flagCustom)
         { this.fieldMinCap=arr[2];
@@ -281,8 +281,8 @@ async getFieldWalletAddress(){
 	logger.info(this.name+"getFieldWalletAddress: ");
     try {
 	    await this.init();
-	    let s = super.getAttribute(fieldWalletAddress, "value");
-	    return s;
+	    let result = super.getAttribute(fieldWalletAddress, "value");
+	    return result;
     }
     catch (err)
     {

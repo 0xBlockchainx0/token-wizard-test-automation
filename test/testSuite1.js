@@ -89,6 +89,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function() {
+
 		startURL=await Utils.getStartURL();
 
 
@@ -123,6 +124,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
+		await Owner.setMetaMaskAccount();
 
 		welcomePage = new WizardWelcome(driver,startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -144,7 +146,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		await fs.ensureDirSync(outputPath);
 		await fs.copySync(tempOutputPath,outputPath);
 		//await fs.remove(tempOutputPath);
-		await driver.quit();
+		//await driver.quit();
 	});
 
 
@@ -285,6 +287,39 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	});
 
+	test.it('Wizard step#2: button Continue present ',
+		async function () {
+			let result = await wizardStep2.isPresentButtonContinue();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#2: button Continue  not present ");
+
+	});
+
+	test.it('Wizard step#2: user is able to activate Step3 by clicking button Continue ',
+		async function () {
+			await wizardStep2.clickButtonContinue();
+			await driver.sleep(2000);
+			let result = await wizardStep3.getPageTitle();
+			result=(result==wizardStep3.title);
+			return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
+	});
+
+	test.it('Wizard step#3: field Wallet address contains current metamask account address  ',
+		async function () {
+
+			let result = await wizardStep3.getFieldWalletAddress();
+			console.log(result);
+			console.log(Owner.account);
+			result=(result==Owner.account);
+			return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
+	});
+
+
+
+
+
+
+
+
 
 //////////////////////// Test SUITE #1 /////////////////////////////
 	test.it('Owner  can create crowdsale(scenario testSuite1.json),1 tier, not modifiable, no whitelist,1 reserved',
@@ -365,7 +400,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		async function() {
 		    let investor = Investor1;
 		    await investor.openInvestPage(crowdsaleForE2Etests1);
-		    let contribution = smallAmount;
+		    let contribution = smallAmount+10;
 		    let result = await investor.contribute(contribution);
 			return await assert.equal(result, true, "Test FAILED. Investor can not buy less than mincap after first transaction");
 	});
@@ -379,7 +414,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 				driver.sleep(5000);
 			}
 			while ((!await investPage.isCrowdsaleTimeOver()) && (counter-- > 0));
-			driver.sleep(5000);
+			driver.sleep(10000);
 			let result=(counter>0);
     		return await assert.equal(result, true, "Test FAILED. Crowdsale has not finished in time");
 	});
@@ -396,7 +431,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	test.it.skip('Owner able to distribute if crowdsale time expired but not all tokens were sold',
 		async function() {
-await driver.sleep(20000);
+
 			let owner = Owner;
 			await owner.setMetaMaskAccount();
 			let result = await owner.distribute(crowdsaleForE2Etests1);
@@ -426,7 +461,7 @@ await driver.sleep(20000);
 
 		let investor=Investor1;
 		let newBalance=await investor.getTokenBalance(crowdsaleForE2Etests1)/1e18;
-		let balance=crowdsaleForE2Etests1.minCap+smallAmount;
+		let balance=crowdsaleForE2Etests1.minCap+smallAmount+10;
 		logger.info("Investor should receive  = "+balance);
 		logger.info("Investor has received balance = "+newBalance);
 		logger.info("Difference = "+(newBalance-balance));
@@ -1083,33 +1118,7 @@ test.it("Wizard step#2: user is not able to add reserved tokens if address is in
 		});
 
 
-	test.it.skip('Wizard step#2: button Continue present ',
-		async function () {
-			b=false;
-			b=await wizardStep2.isPresentButtonContinue();
 
-			assert.equal(b, true, "Test FAILED. Wizard step#2: button Continue  not present ");
-
-		});
-	test.it.skip('Wizard step#2: user is able to activate Step3 by clicking button Continue ',
-		async function () {
-			b=false;
-			await wizardStep2.clickButtonContinue();
-			await driver.sleep(2000);
-			b=await wizardStep3.isPresentFieldWalletAddress();
-			assert.equal(b, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
-			logger.error("Test PASSED. User is able to activate Step3 by clicking button Continue");
-
-		});
-
-	test.it.skip('Wizard step#3: field Wallet address contains the metamask account address  ',
-		async function () {
-
-			s=await wizardStep3.getFieldWalletAddress();
-			b=(s==Owner.account);
-			assert.equal(b, true, "Test FAILED. Wallet address does not match the metamask account address ");
-
-		});
 
 	test.it.skip('Wizard step#3: User is able to set "Safe and cheap gasprice" checkbox ',
 		async function () {
