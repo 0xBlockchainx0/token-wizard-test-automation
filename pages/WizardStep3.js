@@ -176,8 +176,8 @@ catch(err)
 
         await super.clearField(this.fieldGasPriceCustom,1);
 
-        let b=await super.fillWithWait(this.fieldGasPriceCustom,value);
-        return b;
+        return await super.fillWithWait(this.fieldGasPriceCustom,value);
+
     }
     async clickCheckboxWhitelistYes()
     {   await this.initCheckboxes();
@@ -258,24 +258,7 @@ catch(err)
 
 	}
 
-	async uploadCSV(){
-		logger.info('Upload CSV');
-     try {
 
-	     const loc=By.xpath('//input[@type="file"]');
-	     var el = this.driver.findElement(loc);
-	     //el.sendKeys("/home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/MyWhitelist.csv");
-	     el.sendKeys("/home/travis/build/poanetwork/token-wizard/submodules/token-wizard-test-automation/MyWhitelist.csv");
-	     //el.sendKeys("/Users/person/WebstormProjects/token-wizard-test-automation/MyWhitelist.csv")
-
-	     return true;
-     }
-     catch (err){
-     	logger.info(err);
-     	return false;
-     }
-
-	}
 
 async getFieldWalletAddress(){
 	logger.info(this.name+"getFieldWalletAddress: ");

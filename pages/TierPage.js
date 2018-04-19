@@ -17,7 +17,11 @@ var COUNT_TIERS;
 const itemsRemove=By.className("item-remove");
 const buttonAdd=By.className("button button_fill button_fill_plus");
 const WhitelistContainer=By.className("white-list-item-container-inner");
-const buttonClearAll=By.className("fa fa-trash");
+//const buttonClearAll=By.className("fa fa-trash");
+//const buttonClearAll=By.xpath("//*[@id=\"root\"]/div/section/form/div[2]/div[1]/div[2]/div[2]/div[7]/div[1]/text()");
+
+//const buttonClearAll=By.xpath('//i[@class="fa fa-trash"]');
+
 const buttonYesAlert=By.className("swal2-confirm swal2-styled");
 
 
@@ -100,9 +104,14 @@ class TierPage extends page.Page {
 	}
 	async initWhitelistContainer(){
 
-		var arr = await super.findWithWait(WhitelistContainer);
+		var arr = await super.findWithoutWait(WhitelistContainer);
 		return arr;
 
+	}
+	async isPresentWhitelistContainer(){
+    	await this.init();
+    	if (this.fieldWhAddressTier!= undefined) return true;
+    	else return false;
 	}
 
 
@@ -332,7 +341,7 @@ class TierPage extends page.Page {
 
 	async amountAddedWhitelist(){
 		try {
-			let arr = await this.initWhitelistContainer()
+			let arr = await this.initWhitelistContainer();
 			logger.info("Whitelisted addresses added=" + arr.length);
 			return arr.length;
 		}
@@ -341,12 +350,33 @@ class TierPage extends page.Page {
 		}
 
 	}
-async clickButtonClearAll(){
-	await super.clickWithWait(buttonClearAll);
-}
-	async clickButtonYesAlert(){
-		await super.clickWithWait(buttonYesAlert);
 
+    async clickButtonClearAll() {
+
+    	//logger.info("fucken button")
+    	try {
+    		logger.info(this.name+": clickButtonClearAll:");
+	         const buttonClearAll=By.className("fa fa-trash");
+		     await this.driver.executeScript("document.getElementsByClassName('fa fa-trash')[0].click();");
+             return true;
+        }
+	        catch (err) {
+    		logger.info(err);
+	            return false;
+		    }
+
+	}
+
+
+	async clickButtonYesAlert() {
+		try {
+			logger.info(this.name+": clickButtonYesAlert:");
+			await super.clickWithWait(buttonYesAlert);
+			return true;
+		}
+		catch (err) {
+			return false;
+		}
 	}
 
 
@@ -417,6 +447,26 @@ async clickButtonClearAll(){
 		else {logger.info("not present");return false;}
 	}
 
+	async uploadCSV(){
+
+		try {
+			let pwd=process.env.PWD;
+			const locator=By.xpath('//input[@type="file"]');
+
+
+			let element = await this.driver.findElement(locator);
+			let path=pwd+"/MyWhitelist.csv";
+			logger.info(this.name+": uploadCSV: from path: "+path);
+			await element.sendKeys(path);
+
+			return true;
+		}
+		catch (err){
+			logger.info(err);
+			return false;
+		}
+
+	}
 
 
 }

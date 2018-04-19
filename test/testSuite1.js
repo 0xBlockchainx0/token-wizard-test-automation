@@ -98,7 +98,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		crowdsaleForE2Etests2=await  Utils.getCrowdsaleInstance(scenarioWhYMdYRt1Tr1);
 
 
-		logger.info("Version 2.1.3");
+		logger.info("Version 2.1.4");
 		driver = await Utils.startBrowserWithMetamask();
 
 
@@ -302,6 +302,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			result=(result==wizardStep3.title);
 			return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
 	});
+	//////////////// STEP 3 /////////////////////
 
 	test.it('Wizard step#3: field Wallet address contains current metamask account address  ',
 		async function () {
@@ -313,12 +314,84 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
 	});
 
+	test.it('Wizard step#3: Whitelist container present if checkbox "Whitelist enabled" is selected',
+		async function () {
 
+			await wizardStep3.clickCheckboxWhitelistYes();
 
+			let result= await tierPage.isPresentWhitelistContainer();
+			return await  assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to set checkbox  "Whitelist enabled"');
+	});
 
+	test.it('Wizard step#3: User is able to download CSV file with whitelisted addresses',
+		async function () {
 
+			let result = await tierPage.uploadCSV();
+			await wizardStep3.clickButtonOk();
+			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
+	});
 
+	test.it('Wizard step#3: Number of added whitelisted addresses is correct',
+		async function () {
+			let shouldBe=5;
+			let inReality=await tierPage.amountAddedWhitelist();
+			return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
 
+		});
+
+	test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
+		async function () {
+			let result = await tierPage.clickButtonClearAll();
+			await driver.sleep(2000);
+
+           //await driver.sleep(5000);
+			await tierPage.clickButtonYesAlert();
+			return await assert.equal(result,true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+		});
+
+	test.it('Wizard step#3: All whitelisted addresses removed after deletion ',
+		async function () {
+			let result = await tierPage.amountAddedWhitelist();
+			return await assert.equal(result,0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+		});
+
+	test.it('Wizard step#3: User is able to add several whitelisted addresses',
+		async function () {
+			let result = await tierPage.fillWhitelist();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
+	});
+
+	test.it('Wizard step#3: User is able to remove one whitelisted address',
+		async function () {
+			let beforeRemoving = await tierPage.amountAddedWhitelist();
+			let numberAddressForRemove=1;
+			await tierPage.removeWhiteList(numberAddressForRemove-1);
+			let afterRemoving=await tierPage.amountAddedWhitelist();
+			return await assert.equal(beforeRemoving, afterRemoving+1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
+	});
+
+	test.it('Wizard step#3: User is able to set "Custom Gasprice" checkbox',
+		async function () {
+
+			let result = await wizardStep3.clickCheckboxGasPriceCustom();
+			return await assert.equal(result, true, 'Test FAILED. User is not able to set "Custom Gasprice" checkbox');
+
+		});
+
+	test.it ('Wizard step#3: User is able to fill "Custom Gasprice" with valid value',
+		async function () {
+		    let customValue=100;
+			let result = await wizardStep3.fillGasPriceCustom(customValue);
+			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
+
+		});
+
+	test.it ('Wizard step#3: User is able to set "Safe and cheap gasprice" checkbox ',
+		async function () {
+			let result = await wizardStep3.clickCheckboxGasPriceSafe();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
+
+		});
 
 
 //////////////////////// Test SUITE #1 /////////////////////////////
@@ -926,14 +999,10 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 
 });
+
+
+
 /*
-
-	////////////////////////// S T E P 2 //////////////////////////////////////////////////////////////////////////////
-
-
-
-
-///////Name////
 	test.it.skip("Wizard step#2: warning is presented if field Name  is empty ",
 		async function () {
 			await wizardStep2.fillName(" ");
@@ -1140,21 +1209,7 @@ test.it("Wizard step#2: user is not able to add reserved tokens if address is in
 			assert.equal(b, true, 'Test FAILED. User is not able to set "Fast Gasprice" checkbox');
 
 		});
-	test.it.skip('Wizard step#3: User is able to set "Custom Gasprice" checkbox',
-		async function () {
 
-			b=await wizardStep3.clickCheckboxGasPriceCustom();
-			assert.equal(b, true, 'Test FAILED. User is not able to set "Custom Gasprice" checkbox');
-
-		});
-
-	test.it.skip('Wizard step#3: User is able to fill "Custom Gasprice" with valid value',
-		async function () {
-
-			b=await wizardStep3.fillGasPriceCustom(currencyForE2Etests.gasPrice);
-			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
-
-		});
 	test.it.skip('Wizard step#3: User is able to set checkbox  "Whitelist disabled" ',
 		async function () {
 			b=true;
@@ -1162,64 +1217,7 @@ test.it("Wizard step#2: user is not able to add reserved tokens if address is in
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to set checkbox  "Whitelist disabled"');
 
 		});
-	test.it.skip('Wizard step#3: User is able to set checkbox  "Whitelist enabled"',
-		async function () {
 
-			b=await wizardStep3.clickCheckboxWhitelistYes();
-			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to set checkbox  "Whitelist enabled"');
-
-		});
-
-
-
-	test.it.skip('Wizard step#3: User is able to download CSV file with whitelisted addresses',
-		async function () {
-			let rightAddresses=11;
-
-			b=await wizardStep3.uploadCSV();
-			newBalance=await tierPage.amountAddedWhitelist();
-			await wizardStep3.clickButtonOk();
-			if (b&&(newBalance==rightAddresses)) b=true;
-			else b=false;
-			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
-
-		});
-
-	test.it.skip('Wizard step#3: Downloaded whitelist addresses dont contain invalid data',
-		async function () {
-			assert.equal(true, true, "Test FAILED. Wizard step#3: Downloaded whitelist addresses contain invalid data");
-
-		});
-
-
-
-	test.it.skip('Wizard step#3: User is able to add several whitelisted addresses',
-		async function () {
-
-			b=await tierPage.fillWhitelist();
-			assert.equal(b, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
-
-
-		});
-
-	test.it.skip('Wizard step#3: User is able to remove one whitelisted address',
-		async function () {
-			balance=await tierPage.amountAddedWhitelist();
-			await tierPage.removeWhiteList(0);
-			newBalance=await tierPage.amountAddedWhitelist();
-
-			logger.info("Bal"+balance);
-			logger.info("NewBal"+newBalance);
-			assert.equal(balance, newBalance+1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
-		});
-
-	test.it.skip('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
-		async function () {
-			await tierPage.clickButtonClearAll();
-			await tierPage.clickButtonYesAlert();
-			newBalance=await tierPage.amountAddedWhitelist();
-			logger.info("NewBal"+newBalance);
-			assert.equal(newBalance,0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-		});*/
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+*/
