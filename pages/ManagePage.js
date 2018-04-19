@@ -15,7 +15,7 @@ const adj="";
 const buttonDistribute=By.xpath("//*[contains(text(),'Distribute tokens')]");
 const buttonFinalize=By.xpath("//*[contains(text(),'Finalize Crowdsale')]");
 const buttonYesFinalize=By.className("swal2-confirm swal2-styled");
-const buttonSave=By.className("no_arrow button button_fill");
+const buttonSave=By.className("no-arrow button button_fill");
 
 const warningEndTimeTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[2]/div[2]/div[2]/p[2]");
 const warningEndTimeTier2=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[4]/div/div[1]/div[2]/div[2]/p[2]");

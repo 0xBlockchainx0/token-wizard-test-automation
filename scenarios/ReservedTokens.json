@@ -79,27 +79,8 @@
           "address" :"0x2C683fE4dac1f28c51Aa710Ed74196CdFcb04E20",
           "min": 54,
           "max": 154
-        },
-        {
-          "address" :"0xAAcd9926862A2ECC1F0D547aF9D9d6FcBD3928f6",
-          "min": 55,
-          "max": 155
-        },
-        {
-          "address" :"0xE743AaF851663e84D3Ec3648638662a6c41cEe2A",
-          "min": 56,
-          "max": 156
-        },
-        {
-          "address" :"0x9D76b08c6815feDbaC6096aF6665Bbc1D31491C5",
-          "min": 57,
-          "max": 157
-        },
-        {
-          "address" :"0xa75C1001f527898A7377c34AF5aec6A7B2A309DA",
-          "min": 58,
-          "max": 158
         }
+
       ]
     }]
 

@@ -15,7 +15,7 @@ const modal=By.className("modal");
 const buttonOK=By.className("swal2-confirm swal2-styled");
 const buttonSkipTransaction=By.className("no_image button button_fill");
 const buttonYes=By.className("swal2-confirm swal2-styled");
-
+const buttonCancelDeployment=By.className("button button_outline");
 class WizardStep4 extends page.Page{
 
     constructor(driver){
@@ -79,15 +79,26 @@ async isPresentModal(){
 	}
 	async clickButtonSkipTransaction(){
 		logger.info(this.name+"buttonSkipTransaction: ");
-		await this.driver.executeScript( "document.getElementsByClassName('no_image button button_fill')[0].click();");
 
+		try {
+			await this.driver.executeScript("document.getElementsByClassName('no_image button button_fill')[0].click();");
+			return true;
+		}
+			catch(err) {
+				logger.info("Error: "+ err);
+				return false;
+			}
 	}
 
-	async clickButtonYes(){
+	async clickButtonYes() {
 		logger.info(this.name+"clickButtonYes: ");
-		await super.clickWithWait(buttonYes);
+		return await super.clickWithWait(buttonYes);
 	}
 
+	async clickButtonCancelDeployment() {
+		logger.info(this.name+"buttonCancelDeployment: ");
+		return await super.clickWithWait(buttonCancelDeployment);
+    }
 
 
 }

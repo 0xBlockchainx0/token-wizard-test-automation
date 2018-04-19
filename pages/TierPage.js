@@ -17,11 +17,6 @@ var COUNT_TIERS;
 const itemsRemove=By.className("item-remove");
 const buttonAdd=By.className("button button_fill button_fill_plus");
 const WhitelistContainer=By.className("white-list-item-container-inner");
-//const buttonClearAll=By.className("fa fa-trash");
-//const buttonClearAll=By.xpath("//*[@id=\"root\"]/div/section/form/div[2]/div[1]/div[2]/div[2]/div[7]/div[1]/text()");
-
-//const buttonClearAll=By.xpath('//i[@class="fa fa-trash"]');
-
 const buttonYesAlert=By.className("swal2-confirm swal2-styled");
 
 
@@ -196,7 +191,7 @@ class TierPage extends page.Page {
         let locator=this.fieldRateTier;
         await super.clearField(locator);
 
-        await super.fillWithWait(locator,this.tier.rate);
+        return await super.fillWithWait(locator,this.tier.rate);
     }
 
     async fillSupply()
@@ -204,7 +199,7 @@ class TierPage extends page.Page {
     	logger.info(this.name+"field Supply: ");
         let locator=this.fieldSupplyTier;
        // await super.clearField(locator);
-        await super.fillWithWait(locator,this.tier.supply);
+       return await super.fillWithWait(locator,this.tier.supply);
 
     }
 
@@ -330,7 +325,7 @@ class TierPage extends page.Page {
     }
     async clickButtonAdd(){
         logger.info(this.name+"button Add: ");
-        await super.clickWithWait(buttonAdd);
+        return await super.clickWithWait(buttonAdd);
     }
 	async removeWhiteList(number)
 	{

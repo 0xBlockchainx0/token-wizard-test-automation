@@ -5,6 +5,8 @@ const Utils=utils.Utils;
 const key = require('selenium-webdriver').Key;
 const webdriver = require('selenium-webdriver'),
       by = require('selenium-webdriver/lib/by');
+//const Alert = require('selenium-webdriver');
+//const Alert=webdriver.Alert;
 const By=by.By;
 const loader=By.className("loading-container");
 const titles=By.className("title");
@@ -187,7 +189,7 @@ class Page {
 	    logger.info("click with wait" +element);
 	    try {
 	      let field;
-		  if (element.constructor.name!="WebElement") {
+		  if (element.constructor.name!=="WebElement") {
 	        field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
 	      }
 	        else field = element;
@@ -333,6 +335,37 @@ class Page {
 	      logger.info("current handle: "+curHandle);
 	    }
 	  }
+
+
+	  async isPresentAlert() {
+
+	  	logger.info("isPresentAlert:")
+        try {
+
+	        let result = await this.driver.switchTo().alert().getText();
+	        logger.info("alert text:  "+result);
+	        return true;
+        }
+        catch (err) {
+
+	        logger.info(err);
+	        return false;
+        }
+	  }
+	async acceptAlert() {
+
+		logger.info("acceptAlert:")
+		try {
+
+			 this.driver.switchTo().alert().accept();
+			 return true;
+		}
+		catch (err) {
+
+			logger.info(err);
+			return false;
+		}
+	}
 
 }
 module.exports.Page=Page;

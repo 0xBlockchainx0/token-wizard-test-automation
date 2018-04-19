@@ -79,6 +79,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 	let wizardStep1 ;
 	let wizardStep2;
 	let wizardStep3;
+	let wizardStep4;
 	let tierPage;
 	let reservedTokensPage;
     let investPage;
@@ -130,9 +131,10 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		wizardStep1 = new WizardStep1(driver);
 		wizardStep2 = new WizardStep2(driver);
 		wizardStep3 = new WizardStep3(driver);
+		wizardStep4 = new WizardStep4(driver);
 		investPage = new InvestPage(driver);
-		reservedTokensPage=new ReservedTokensPage(driver);
-		tierPage=new TierPage(driver,crowdsaleForUItests.tiers[0]);
+		reservedTokensPage = new ReservedTokensPage(driver);
+		tierPage = new TierPage(driver,crowdsaleForUItests.tiers[0]);
 
 	});
 
@@ -376,7 +378,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			let result = await wizardStep3.clickCheckboxGasPriceCustom();
 			return await assert.equal(result, true, 'Test FAILED. User is not able to set "Custom Gasprice" checkbox');
 
-		});
+	});
 
 	test.it ('Wizard step#3: User is able to fill "Custom Gasprice" with valid value',
 		async function () {
@@ -384,15 +386,108 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			let result = await wizardStep3.fillGasPriceCustom(customValue);
 			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
 
-		});
+	});
 
 	test.it ('Wizard step#3: User is able to set "Safe and cheap gasprice" checkbox ',
 		async function () {
 			let result = await wizardStep3.clickCheckboxGasPriceSafe();
 			return await assert.equal(result, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
 
+	});
+
+	test.it ('Wizard step#3: User is able to fill out field "Rate" with valid data',
+		async function () {
+		    tierPage.tier.rate = 1234;
+			let result = await tierPage.fillRate();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
+
 		});
 
+	test.it ('Wizard step#3: User is able to fill out field "Supply" with valid data',
+		async function () {
+			tierPage.tier.supply = 4342.1;
+			let result = await tierPage.fillSupply();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+	});
+
+	test.it ('Wizard step#3: User is able to add tier',
+		async function () {
+			let result = await wizardStep3.clickButtonAddTier();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: Wizard step#3: User is able to add tier");
+		});
+
+	test.it ('Wizard step#3:Tier#2: User is able to fill out field "Rate" with valid data',
+		async function () {
+		    tierPage.number=1;
+			tierPage.tier.rate = 5678;
+			let result = await tierPage.fillRate();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
+	});
+
+	test.it ('Wizard step#3:Tier#2: User is able to fill out field "Supply" with valid data',
+		async function () {
+			tierPage.tier.supply = 1e18;
+			let result = await tierPage.fillSupply();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+	});
+
+
+	test.it('Wizard step#3: user is able to proceed to Step4 by clicking button Continue ',
+		async function () {
+			await wizardStep3.clickButtonContinue();
+			await driver.sleep(2000);
+			let result = await wizardStep4.isPresentModal();
+			return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
+	});
+/////////////// STEP4 //////////////
+	test.it('Wizard step#4: alert present if user refresh the page ',
+		async function () {
+			await wizardStep4.refresh();
+			await driver.sleep(2000);
+			let result = await wizardStep4.isPresentAlert();
+			return await assert.equal(result, true, "Test FAILED.  Alert does not present if user refresh the page");
+	});
+
+	test.it('Wizard step#4: user is able to accept alert ',
+		async function () {
+
+			let result = await wizardStep4.acceptAlert() ;
+			await driver.sleep(2000);
+		    result = result && await wizardStep4.isPresentModal();
+			return await assert.equal(result, true, "Test FAILED. Modal does not present after user has accepted alert");
+	});
+
+	test.it('Wizard step#4: button "Skip transaction" present if user reject the transaction ',
+		async function () {
+			await metaMask.rejectTransaction();
+			await metaMask.rejectTransaction();
+			let result = await wizardStep4.isPresentButtonSkipTransaction();
+			return await assert.equal(result, true, "Test FAILED. button'Skip transaction' does not present if user reject the transaction");
+	});
+
+	test.it('Wizard step#4: user is able to skip transaction ',
+		async function () {
+
+			let result = await wizardStep4.clickButtonSkipTransaction();
+			await driver.sleep(2000);
+			result = result && await wizardStep4.clickButtonYes();
+			return await assert.equal(result, true, "Test FAILED. user is not able to skip transaction");
+	});
+
+	test.it('Wizard step#4: Alert present if user wants to leave the site ',
+		async function () {
+
+		    let result = await  welcomePage.openWithAlertConfirmation();
+			return await assert.equal(result, false, "Test FAILED. Alert does not present if user wants to leave the site");
+		});
+
+	test.it('Wizard step#4: User is able to stop deployment ',
+		async function () {
+			await driver.sleep(5000);
+			let result =  await wizardStep4.clickButtonCancelDeployment();
+			result = result && await wizardStep4.clickButtonYes();
+			return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
+	});
 
 //////////////////////// Test SUITE #1 /////////////////////////////
 	test.it('Owner  can create crowdsale(scenario testSuite1.json),1 tier, not modifiable, no whitelist,1 reserved',
