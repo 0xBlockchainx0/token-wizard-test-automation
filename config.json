@@ -1,5 +1,5 @@
 {
-  "startURL" : "https://deploy-preview-800--housing-agent-freight-81421.netlify.com/",
+  "startURL" : "http://localhost:3000/",
   "outputPath":"./results",
   "installMetaMask":true
 
