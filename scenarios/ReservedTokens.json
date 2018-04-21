@@ -23,27 +23,8 @@
       "address" :"0xA6C8045C3989fD15d2b506084517E20a0A801637",
       "dimension": "tokens",
       "value": 12345
-    },
-    {
-      "address" :"0x783CA4B3d53Bf76368BF8a3aFEc6fABd90F1fE51",
-      "dimension": "percentage",
-      "value": 32.6
-    },
-    {
-      "address" :"0x408238CE2fA008535790F38f6B8f89Cd9958aF81",
-      "dimension": "tokens",
-      "value": 5432
-    },
-    {
-      "address" :"0x0e036E74F31aDDb9e0ADcB80dEA9Ed1E187DFe50",
-      "dimension": "percentage",
-      "value": 100
-    },
-    {
-      "address" :"0x9E963042D581D262AdE4E31541360e7FDAeE70C6",
-      "dimension": "tokens",
-      "value": 4312
     }
+
   ],
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
   "gasprice": 1,

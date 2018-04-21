@@ -10,9 +10,8 @@ const webdriver = require('selenium-webdriver'),
     by = require('selenium-webdriver/lib/by');
 const By=by.By;
 const utils=require('../utils/Utils.js');
-const wizardStep3=require("./WizardStep3.js");
 const Utils=utils.Utils;
-
+const wizardStep3=require("./WizardStep3.js");
 var COUNT_TIERS;
 const itemsRemove=By.className("item-remove");
 const buttonAdd=By.className("button button_fill button_fill_plus");
@@ -348,11 +347,10 @@ class TierPage extends page.Page {
 
     async clickButtonClearAll() {
 
-    	//logger.info("fucken button")
+	    logger.info(this.name+": clickButtonClearAll:");
     	try {
-    		logger.info(this.name+": clickButtonClearAll:");
-	         const buttonClearAll=By.className("fa fa-trash");
-		     await this.driver.executeScript("document.getElementsByClassName('fa fa-trash')[0].click();");
+
+	         await this.driver.executeScript("document.getElementsByClassName('fa fa-trash')[0].click();");
              return true;
         }
 	        catch (err) {
@@ -442,16 +440,13 @@ class TierPage extends page.Page {
 		else {logger.info("not present");return false;}
 	}
 
-	async uploadCSV(){
+	async uploadWhitelistCSVFile(){
 
 		try {
-			let pwd=process.env.PWD;
+			let path = await Utils.getPathToFileInPWD("bulkWhitelist.csv");
+			logger.info(this.name+": uploadWhitelistCSVFile: from path: "+path);
 			const locator=By.xpath('//input[@type="file"]');
-
-
 			let element = await this.driver.findElement(locator);
-			let path=pwd+"/MyWhitelist.csv";
-			logger.info(this.name+": uploadCSV: from path: "+path);
 			await element.sendKeys(path);
 
 			return true;

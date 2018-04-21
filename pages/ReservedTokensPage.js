@@ -1,8 +1,8 @@
 const Logger= require('../entity/Logger.js');
 const logger=Logger.logger;
 const tempOutputPath=Logger.tempOutputPath;
-
-
+const utils=require('../utils/Utils.js');
+const Utils=utils.Utils;
 const page=require('./Page.js');
 const Page=page.Page;
 const  by = require('selenium-webdriver/lib/by');
@@ -13,6 +13,7 @@ const itemsRemove=By.className("item-remove");
 const buttonClearAll=By.className("fa fa-trash");
 const buttonYesAlert=By.className("swal2-confirm swal2-styled");
 const buttonNoAlert=By.className("swal2-cancel swal2-styled");
+const buttonOK=By.className("swal2-confirm swal2-styled");
 //const buttonClearAll = By.className("clear-all-tokens");
 class ReservedTokensPage extends Page {
 
@@ -91,14 +92,15 @@ class ReservedTokensPage extends Page {
 
     async clickButtonClearAll(){
 	    logger.info(this.name+" click ButtonClearAll :");
-	   try {
-		   await super.clickWithWait(buttonClearAll);
-		   return true;
-	   }
-	     catch(err) {
-	   	      logger.info("Can not click ButtonClearAll ");
-	   	      return false;
-	     }
+	    try {
+		    await this.driver.executeScript("document.getElementsByClassName('fa fa-trash')[0].click();");
+		    return true;
+	    }
+	    catch (err) {
+		    logger.info(err);
+		    return false;
+	    }
+
 
     }
 
@@ -209,6 +211,30 @@ class ReservedTokensPage extends Page {
 		if (s!="") return true;
 		else return false;
 	}
+
+	async uploadReservedCSVFile(){
+
+		try {
+			const locator=By.xpath('//input[@type="file"]');
+			let element = await this.driver.findElement(locator);
+			let path = await Utils.getPathToFileInPWD("bulkReservedAddresses.csv");
+			logger.info(this.name+": uploadReservedAddressesCSVFile: from path: "+path);
+			await element.sendKeys(path);
+			return true;
+		}
+		catch (err){
+			logger.info(err);
+			return false;
+		}
+
+	}
+
+	async clickButtonOk(){
+		logger.info("Confirm popup");
+		await super.clickWithWait(buttonOK);
+
+	}
+
 
 
 }

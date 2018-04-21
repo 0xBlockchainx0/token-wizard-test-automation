@@ -7,12 +7,12 @@
     {
       "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",
       "dimension": "percentage",
-      "value": 250
+      "value": 250.9
     },
     {
       "address" :  "0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
       "dimension": "tokens",
-      "value":100000000
+      "value":100.987654321123456789
     }
 
   ],
