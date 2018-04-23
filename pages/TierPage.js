@@ -110,30 +110,50 @@ class TierPage extends page.Page {
 
 
 
-	async init(){
+	async init() {
+try {
+	let locator = By.className("input");
+	let arr = await super.findWithWait(locator);
+	let ci_tresh = 2;
+	let ci_mult = 5;
 
-		var locator = By.className("input");
-		var arr = await super.findWithWait(locator);
-		let ci_tresh=2;
-		let ci_mult=5;
+	if (wizardStep3.WizardStep3.getFlagCustom()) ci_tresh = 3;
+	if (wizardStep3.WizardStep3.getFlagWHitelising()) ci_mult = 8;
 
-		if (wizardStep3.WizardStep3.getFlagCustom()) ci_tresh=3;
-		if (wizardStep3.WizardStep3.getFlagWHitelising()) ci_mult=8;
+	this.fieldNameTier = arr[ci_tresh + (this.number) * ci_mult];
+	this.fieldStartTimeTier = arr[ci_tresh + (this.number) * ci_mult + 1];
+	this.fieldEndTimeTier = arr[ci_tresh + (this.number) * ci_mult + 2];
+	this.fieldRateTier = arr[ci_tresh + (this.number) * ci_mult + 3];
+	this.fieldSupplyTier = arr[ci_tresh + (this.number) * ci_mult + 4];
+	this.fieldWhAddressTier = arr[ci_tresh + (this.number) * ci_mult + 5];
+	this.fieldMinTier = arr[ci_tresh + (this.number) * ci_mult + 6];
+	this.fieldMaxTier = arr[ci_tresh + (this.number) * ci_mult + 7];
+	return arr;
+}
+catch(err) {
+	logger.info(this.name+": dont contain warning elements");
+	return null;
 
-		this.fieldNameTier = arr[ci_tresh+(this.number)*ci_mult];
-		this.fieldStartTimeTier=arr[ci_tresh+(this.number)*ci_mult+1];
-		this.fieldEndTimeTier=arr[ci_tresh+(this.number)*ci_mult+2];
-		this.fieldRateTier=arr[ci_tresh+(this.number)*ci_mult+3];
-		this.fieldSupplyTier=arr[ci_tresh+(this.number)*ci_mult+4];
-		this.fieldWhAddressTier=arr[ci_tresh+(this.number)*ci_mult+5];
-		this.fieldMinTier=arr[ci_tresh+(this.number)*ci_mult+6];
-		this.fieldMaxTier=arr[ci_tresh+(this.number)*ci_mult+7];
+}
 
-		locator = By.className("radio-inline");
-		arr = await super.findWithWait(locator);
+	}
 
-		this.checkboxModifyOn=arr[6+2*this.number];
-		this.checkboxModifyOff=arr[7+2*this.number];
+
+
+	async initCheckboxes(){
+    	try {
+		    let locator = By.className("radio-inline");
+		    let arr = await super.findWithWait(locator);
+
+		    this.checkboxModifyOn = arr[6 + 2 * this.number];
+		    this.checkboxModifyOff = arr[7 + 2 * this.number];
+		    return arr;
+	    }
+	    catch(err) {
+		    logger.info(this.name+": dont contain warning elements");
+		    return null;
+	    }
+
 
 	}
 
@@ -185,12 +205,19 @@ class TierPage extends page.Page {
     }
 
     async fillRate()
-    {   await this.init();
-    	logger.info(this.name+"field Rate: ");
-        let locator=this.fieldRateTier;
-        await super.clearField(locator);
+    {
+    	let arr = await this.init();
+	    //console.log(arr.length);
 
-        return await super.fillWithWait(locator,this.tier.rate);
+    	logger.info(this.name+"field Rate: ");
+    	//console.log(this.fieldRateTier);
+        let locator=this.fieldRateTier;
+	    //console.log(locator.constructor.name);
+        await super.clearField(locator);
+        console.log(this.tier.rate);
+        let result=await super.fillWithWait(locator,this.tier.rate);
+        //await this.driver.sleep(10000);
+        return result;
     }
 
     async fillSupply()
@@ -198,13 +225,15 @@ class TierPage extends page.Page {
     	logger.info(this.name+"field Supply: ");
         let locator=this.fieldSupplyTier;
        // await super.clearField(locator);
-       return await super.fillWithWait(locator,this.tier.supply);
+	    let result = await super.fillWithWait(locator,this.tier.supply);
+	    //await this.driver.sleep(10000);
+	    return result;
 
     }
 
     async setModify() {
         logger.info(this.name+"checkbox Modify: ");
-        await this.init();
+        await this.initCheckboxes();
 
 	    if (this.tier.allowModify) {
 		    await super.clickWithWait(this.checkboxModifyOn);

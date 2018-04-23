@@ -405,15 +405,15 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	});
 
-	test.it ('Wizard step#3:Tier#2: User is able to fill out field "Rate" with valid data',
+	test.it ('Wizard step#3:Tier#1: User is able to fill out field "Rate" with valid data',
 		async function () {
-			tierPage.number=1;
+			tierPage.number=0;
 			tierPage.tier.rate = 5678;
 			let result = await tierPage.fillRate();
 			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
 	});
 
-	test.it ('Wizard step#3:Tier#2: User is able to fill out field "Supply" with valid data',
+	test.it ('Wizard step#3:Tier#1: User is able to fill out field "Supply" with valid data',
 		async function () {
 			tierPage.tier.supply = 1e18;
 			let result = await tierPage.fillSupply();
@@ -426,6 +426,20 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			let result = await wizardStep3.clickButtonAddTier();
 			return await assert.equal(result, true, "Test FAILED. Wizard step#3: Wizard step#3: User is able to add tier");
 	});
+	test.it ('Wizard step#3:Tier#2: User is able to fill out field "Rate" with valid data',
+		async function () {
+			tierPage.number=1;
+			tierPage.tier.rate = 5678;
+			let result = await tierPage.fillRate();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
+		});
+
+	test.it ('Wizard step#3:Tier#2: User is able to fill out field "Supply" with valid data',
+		async function () {
+			tierPage.tier.supply = 1e18;
+			let result = await tierPage.fillSupply();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+		});
 
 
 	test.it('Wizard step#3: user is able to proceed to Step4 by clicking button Continue ',
