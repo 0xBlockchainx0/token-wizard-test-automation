@@ -12,7 +12,7 @@ const buttonOk=By.xpath("/html/body/div[2]/div/div[3]/button[1]");
 
 const modal=By.className("modal");
 const adj="";
-const buttonDistribute=By.xpath("//*[contains(text(),'Distribute tokens')]");
+const buttonDistribute=By.xpath("//*[contains(text(),'Distribute reserved tokens')]");
 const buttonFinalize=By.xpath("//*[contains(text(),'Finalize Crowdsale')]");
 const buttonYesFinalize=By.className("swal2-confirm swal2-styled");
 const buttonSave=By.className("no_arrow button button_fill");
