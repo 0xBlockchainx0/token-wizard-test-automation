@@ -99,7 +99,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		crowdsaleForE2Etests2=await  Utils.getCrowdsaleInstance(scenarioWhYMdYRt1Tr1);
 
 
-		logger.info("Version 2.1.5");
+		logger.info("Version 2.1.6");
 		driver = await Utils.startBrowserWithMetamask();
 
 
