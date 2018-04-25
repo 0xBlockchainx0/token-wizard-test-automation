@@ -205,7 +205,9 @@ class ReservedTokensPage extends Page {
 	}
 
 	async isPresentWarningValue(){
+
     	return false;
+
 		await this.initWarnings();
 		let s=await super.getTextByElement(this.warningValue);
 		if (s!="") return true;
