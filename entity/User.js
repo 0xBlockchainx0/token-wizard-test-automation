@@ -272,22 +272,22 @@ try{
 	  await this.driver.sleep(3000);
 	  if (await mngPage.isEnabledFinalize())
 	  	  await mngPage.clickButtonFinalize();
-	  await Utils.zoom(this.driver,0.5);
 
-	  await Utils.takeScreenshoot(this.driver,"manage1");
-	  await Utils.zoom(this.driver,1);
+	  //await Utils.zoom(this.driver,0.5);
+	  //await Utils.takeScreenshoot(this.driver,"manage1");
+	  //await Utils.zoom(this.driver,1);
 
 	  await mngPage.waitUntilLoaderGone();
 	await mngPage.refresh();
 	await this.driver.sleep(3000);
 	let result=false;
-	for (let i=0;i<5;i++) {
+	for (let i=0;i<2;i++) {
 	  result=(await mngPage.isEnabledDistribute())||result;
 	}
-	await Utils.zoom(this.driver,0.5);
+	//await Utils.zoom(this.driver,0.5);
 
-	await Utils.takeScreenshoot(this.driver,"manage2");
-	await Utils.zoom(this.driver,1);
+	//await Utils.takeScreenshoot(this.driver,"manage2");
+	//await Utils.zoom(this.driver,1);
 
     if (result) {
       await mngPage.clickButtonDistribute();
@@ -297,7 +297,7 @@ try{
 	    return false;
 	  }
     let metaMask = new meta.MetaMask(this.driver);
-    await metaMask.doTransaction(5);
+    await metaMask.doTransaction(10);
     await mngPage.waitUntilLoaderGone();
     result = await mngPage.confirmPopup();
     return true;

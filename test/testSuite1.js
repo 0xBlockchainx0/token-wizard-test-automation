@@ -79,6 +79,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 	let wizardStep1 ;
 	let wizardStep2;
 	let wizardStep3;
+	let wizardStep4;
 	let tierPage;
 	let reservedTokensPage;
     let investPage;
@@ -89,6 +90,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function() {
+
 		startURL=await Utils.getStartURL();
 
 
@@ -97,7 +99,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		crowdsaleForE2Etests2=await  Utils.getCrowdsaleInstance(scenarioWhYMdYRt1Tr1);
 
 
-		logger.info("Version 2.1.3");
+		logger.info("Version 2.1.6");
 		driver = await Utils.startBrowserWithMetamask();
 
 
@@ -123,28 +125,30 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
+		await Owner.setMetaMaskAccount();
 
 		welcomePage = new WizardWelcome(driver,startURL);
 		wizardStep1 = new WizardStep1(driver);
 		wizardStep2 = new WizardStep2(driver);
 		wizardStep3 = new WizardStep3(driver);
+		wizardStep4 = new WizardStep4(driver);
 		investPage = new InvestPage(driver);
-		reservedTokensPage=new ReservedTokensPage(driver);
-		tierPage=new TierPage(driver,crowdsaleForUItests.tiers[0]);
+		reservedTokensPage = new ReservedTokensPage(driver);
+		tierPage = new TierPage(driver,crowdsaleForUItests.tiers[0]);
 
 	});
 
 	test.after(async function() {
 		// Utils.killProcess(ganache);
-		await Utils.sendEmail(tempOutputPath+'manage1.png');
-		await Utils.sendEmail(tempOutputPath+'manage2.png');
+		//await Utils.sendEmail(tempOutputPath+'manage1.png');
+		//await Utils.sendEmail(tempOutputPath+'manage2.png');
 		await Utils.sendEmail(tempOutputFile);
 		let outputPath=Utils.getOutputPath();
 		outputPath=outputPath+"/result"+Utils.getDate();
 		await fs.ensureDirSync(outputPath);
 		await fs.copySync(tempOutputPath,outputPath);
 		//await fs.remove(tempOutputPath);
-		await driver.quit();
+		//await driver.quit();
 	});
 
 
@@ -168,17 +172,17 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			let result = await welcomePage.isPresentButtonChooseContract();
 			return await assert.equal(result, true, "Test FAILED. button ChooseContract not present ");
 
-		});
+	});
 
-	test.it('Welcome page: user is able to activate Step1 by clicking button NewCrowdsale ',
+	test.it('Welcome page: user is able to open Step1 by clicking button NewCrowdsale ',
 		async function () {
 			await welcomePage.clickButtonNewCrowdsale();
 			let result = await wizardStep1.isPresentButtonContinue();
 			return await assert.equal(result, true, "Test FAILED. User is not able to activate Step1 by clicking button NewCrowdsale");
 
-		});
+	});
 
-	test.it('Wizard step#1: user is able to activate Step2 by clicking button Continue ',
+	test.it('Wizard step#1: user is able to open Step2 by clicking button Continue ',
 		async function () {
 		let count=10;
 			do {
@@ -192,9 +196,17 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			}
 			while (count-->0);
 			let result=await wizardStep2.isPresentFieldName();
-			return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
+			return await assert.equal(result, true, "Test FAILED. User is not able to open Step2 by clicking button Continue");
 
-		});
+	});
+
+	test.it('Wizard step#2: user able to fill out Name field with valid data',
+		async function () {
+			await wizardStep2.fillName("name");
+			let result = await wizardStep2.isPresentWarningName();
+			return await assert.equal(result, false, "Test FAILED. Wizard step#2: user able to fill Name field with valid data ");
+
+	});
 
 	test.it('Wizard step#2: user able to fill out field Ticker with valid data',
 		async function () {
@@ -202,35 +214,64 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			let result = await wizardStep2.isPresentWarningTicker();
 			return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not  able to fill out field Ticker with valid data ");
 
-		});
+	});
 
-	test.it('Wizard step#2: user able to fill Name field with valid data',
-		async function () {
-			await wizardStep2.fillName("name");
-			let result = await wizardStep2.isPresentWarningName();
-			return await assert.equal(result, false, "Test FAILED. Wizard step#2: user able to fill Name field with valid data ");
-
-		});
-
-	test.it.skip("Wizard step#2: user is not able to proceed if Decimals field empty ",
+	test.it("Wizard step#2: user is not able to open Step2 if Decimals field empty ",
 		async function () {
 			await wizardStep2.fillDecimals("");
 			await wizardStep2.clickButtonContinue();
 			let result = await wizardStep2.getPageTitle();
-			result=(result==wizardStep2.title);
+			result=(result===wizardStep2.title);
 			if (!result)  await wizardStep3.goBack();
 			return await assert.equal(result, true, "Test FAILED. Wizard step#2: user is  able to proceed if Decimals field empty ");
-		});
+	});
 
-	test.it('Wizard step#2: user able to fill out field Decimals with valid data',
+	test.it('Wizard step#2: user able to fill out  Decimals field with valid data',
 		async function () {
-			await wizardStep2.fillDecimals("1");
+			await wizardStep2.fillDecimals("18");
 			let result=await wizardStep2.isPresentWarningDecimals();
 			return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not able to fill Decimals  field with valid data ");
 
 		});
 
-	test.it('Wizard step#2: user is able to add reserved tokens ',
+	test.it('Wizard step#2: User is able to download CSV file with reserved addresses',
+		async function () {
+
+			let result = await reservedTokensPage.uploadReservedCSVFile();
+			await reservedTokensPage.clickButtonOk();
+			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
+	});
+
+	test.it('Wizard step#2: number of added reserved tokens is correct ',
+		async function () {
+		    let correctNumberReservedTokens=20;
+			let result = await reservedTokensPage.amountAddedReservedTokens();
+			return await assert.equal(result,correctNumberReservedTokens, "Test FAILED. Wizard step#2: number of added reserved tokens is correct");
+	});
+
+	test.it('Wizard step#2: button ClearAll is displayed ',
+		async function () {
+
+			let result  = await reservedTokensPage.isPresentButtonClearAll();
+			return await  assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
+	});
+
+	test.it('Wizard step#2: alert present after clicking ClearAll',
+		async function () {
+			await reservedTokensPage.clickButtonClearAll();
+			let result = await reservedTokensPage.isPresentButtonNoAlert();
+			return await assert.equal(result, true, "Test FAILED.Alert does NOT present after select ClearAll or button No does NOT present");
+	});
+
+	test.it('Wizard step#2: user is able to bulk delete of reserved tokens ',
+		async function () {
+			await reservedTokensPage.clickButtonYesAlert();
+			await driver.sleep(2000);
+			let result = await reservedTokensPage.amountAddedReservedTokens();
+			return await assert.equal(result, 0, "Wizard step#2: user is NOT able bulk delete of reserved tokens");
+	});
+
+	test.it('Wizard step#2: user is able to add reserved tokens one by one ',
 		async function () {
 
 			for (let i=0;i<crowdsaleForUItests.reservedTokens.length;i++)
@@ -240,16 +281,14 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			}
 			let result = await reservedTokensPage.amountAddedReservedTokens();
 			return await assert.equal(result, crowdsaleForUItests.reservedTokens.length, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+	});
 
-
-		});
-
-	test.it('Wizard step#2: field Decimals disabled if reserved tokens added ',
+	test.it('Wizard step#2: field Decimals is disabled if reserved tokens are added ',
 		async function () {
 
 			let result  = await wizardStep2.isDisabledDecimals();
 			return await assert.equal(result, true, "Wizard step#2: field Decimals enabled if reserved tokens added ");
-		});
+	});
 
 	test.it('Wizard step#2: user is able to remove one of reserved tokens ',
 		async function () {
@@ -258,33 +297,208 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			await reservedTokensPage.removeReservedTokens(1);
 			let amountAfter = await reservedTokensPage.amountAddedReservedTokens();
 			return await  assert.equal(amountBefore, amountAfter+1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+	});
 
 
-		});
 
-	test.it('Wizard step#2: ClearAll button present ',
+	test.it('Wizard step#2: button Continue is displayed ',
 		async function () {
-
-			let result  = await reservedTokensPage.isPresentButtonClearAll();
-			return await  assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
-		});
-
-	test.it('Wizard step#2: Alert present after clicking ClearAll and button No present',
-		async function () {
-			await reservedTokensPage.clickButtonClearAll();
-			let result = await reservedTokensPage.isPresentButtonNoAlert();
-			return await assert.equal(result, true, "Test FAILED.Alert does NOT present after select ClearAll or button No does NOT present");
-		});
-
-	test.it('Wizard step#2: user is able bulk delete of reserved tokens ',
-		async function () {
-			await reservedTokensPage.clickButtonYesAlert();
-			await driver.sleep(2000);
-			let result = await reservedTokensPage.amountAddedReservedTokens();
-			return await assert.equal(result, 0, "Wizard step#2: user is NOT able bulk delete of reserved tokens");
+			let result = await wizardStep2.isPresentButtonContinue();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#2: button Continue  not present ");
 
 	});
 
+	test.it('Wizard step#2: user is able to open Step3 with clicking button Continue ',
+		async function () {
+			await wizardStep2.clickButtonContinue();
+			await driver.sleep(2000);
+			let result = await wizardStep3.getPageTitle();
+			result=(result==wizardStep3.title);
+			return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
+	});
+	//////////////// STEP 3 /////////////////////
+
+	test.it('Wizard step#3: field Wallet address contains current metamask account address  ',
+		async function () {
+
+			let result = await wizardStep3.getFieldWalletAddress();
+			console.log(result);
+			console.log(Owner.account);
+			result=(result===Owner.account);
+			return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
+	});
+
+	test.it('Wizard step#3: Whitelist container present if checkbox "Whitelist enabled" is selected',
+		async function () {
+
+			await wizardStep3.clickCheckboxWhitelistYes();
+
+			let result= await tierPage.isPresentWhitelistContainer();
+			return await  assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to set checkbox  "Whitelist enabled"');
+	});
+
+	test.it('Wizard step#3: User is able to download CSV file with whitelisted addresses',
+		async function () {
+
+			let result = await tierPage.uploadWhitelistCSVFile();
+			await wizardStep3.clickButtonOk();
+			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
+	});
+
+	test.it('Wizard step#3: Number of added whitelisted addresses is correct',
+		async function () {
+			let shouldBe=6;
+			let inReality=await tierPage.amountAddedWhitelist();
+			return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
+
+		});
+
+	test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
+		async function () {
+			let result = await tierPage.clickButtonClearAll();
+			await driver.sleep(2000);
+			await tierPage.clickButtonYesAlert();
+			return await assert.equal(result,true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+		});
+
+	test.it('Wizard step#3: All whitelisted addresses removed after deletion ',
+		async function () {
+			let result = await tierPage.amountAddedWhitelist();
+			return await assert.equal(result,0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+		});
+
+	test.it('Wizard step#3: User is able to add several whitelisted addresses one by one ',
+		async function () {
+			let result = await tierPage.fillWhitelist();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
+	});
+
+	test.it('Wizard step#3: User is able to remove one whitelisted address',
+		async function () {
+			let beforeRemoving = await tierPage.amountAddedWhitelist();
+			let numberAddressForRemove=1;
+			await tierPage.removeWhiteList(numberAddressForRemove-1);
+			let afterRemoving=await tierPage.amountAddedWhitelist();
+			return await assert.equal(beforeRemoving, afterRemoving+1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
+	});
+
+	test.it('Wizard step#3: User is able to set "Custom Gasprice" checkbox',
+		async function () {
+
+			let result = await wizardStep3.clickCheckboxGasPriceCustom();
+			return await assert.equal(result, true, 'Test FAILED. User is not able to set "Custom Gasprice" checkbox');
+
+	});
+
+	test.it (' Wizard step#3: User is able to fill out the  CustomGasprice field with valid value' ,
+		async function () {
+		    let customValue=100;
+			let result = await wizardStep3.fillGasPriceCustom(customValue);
+			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
+
+	});
+
+	test.it('Wizard step#3: User is able to set SafeAndCheapGasprice checkbox ',
+		async function () {
+			let result = await wizardStep3.clickCheckboxGasPriceSafe();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
+
+	});
+
+	test.it ('Wizard step#3:Tier#1: User is able to fill out field "Rate" with valid data',
+		async function () {
+			tierPage.number=0;
+			tierPage.tier.rate = 5678;
+			let result = await tierPage.fillRate();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
+	});
+
+	test.it ('Wizard step#3:Tier#1: User is able to fill out field "Supply" with valid data',
+		async function () {
+			tierPage.tier.supply = 1e18;
+			let result = await tierPage.fillSupply();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+	});
+
+
+	test.it('Wizard step#3: User is able to add tier',
+		async function () {
+			let result = await wizardStep3.clickButtonAddTier();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: Wizard step#3: User is able to add tier");
+	});
+	test.it ('Wizard step#3:Tier#2: User is able to fill out field "Rate" with valid data',
+		async function () {
+			tierPage.number=1;
+			tierPage.tier.rate = 5678;
+			let result = await tierPage.fillRate();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
+		});
+
+	test.it ('Wizard step#3:Tier#2: User is able to fill out field "Supply" with valid data',
+		async function () {
+			tierPage.tier.supply = 1e18;
+			let result = await tierPage.fillSupply();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+		});
+
+
+	test.it('Wizard step#3: user is able to proceed to Step4 by clicking button Continue ',
+		async function () {
+			await wizardStep3.clickButtonContinue();
+			await driver.sleep(2000);
+			let result = await wizardStep4.isPresentModal();
+			return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
+	});
+/////////////// STEP4 //////////////
+	test.it('Wizard step#4: alert present if user reload the page ',
+		async function () {
+			await wizardStep4.refresh();
+			await driver.sleep(2000);
+			let result = await wizardStep4.isPresentAlert();
+			return await assert.equal(result, true, "Test FAILED.  Alert does not present if user refresh the page");
+	});
+
+	test.it('Wizard step#4: user is able to accept alert after reloading the page ',
+		async function () {
+
+			let result = await wizardStep4.acceptAlert() ;
+			await driver.sleep(2000);
+		    result = result && await wizardStep4.isPresentModal();
+			return await assert.equal(result, true, "Test FAILED. Modal does not present after user has accepted alert");
+	});
+
+	test.it('Wizard step#4: button SkipTransaction is  presented if user reject a transaction ',
+		async function () {
+			await metaMask.rejectTransaction();
+			await metaMask.rejectTransaction();
+			let result = await wizardStep4.isPresentButtonSkipTransaction();
+			return await assert.equal(result, true, "Test FAILED. button'Skip transaction' does not present if user reject the transaction");
+	});
+
+	test.it('Wizard step#4: user is able to skip transaction ',
+		async function () {
+
+			let result = await wizardStep4.clickButtonSkipTransaction();
+			await driver.sleep(2000);
+			result = result && await wizardStep4.clickButtonYes();
+			return await assert.equal(result, true, "Test FAILED. user is not able to skip transaction");
+	});
+
+	test.it('Wizard step#4: alert is presented if user wants to leave the wizard ',
+		async function () {
+
+		    let result = await  welcomePage.openWithAlertConfirmation();
+			return await assert.equal(result, false, "Test FAILED. Alert does not present if user wants to leave the site");
+	});
+
+	test.it('Wizard step#4: User is able to stop deployment ',
+		async function () {
+			await driver.sleep(5000);
+			let result =  await wizardStep4.clickButtonCancelDeployment();
+			result = result && await wizardStep4.clickButtonYes();
+			await metaMask.doTransaction(5);
+			return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
+	});
 
 //////////////////////// Test SUITE #1 /////////////////////////////
 	test.it('Owner  can create crowdsale(scenario testSuite1.json),1 tier, not modifiable, no whitelist,1 reserved',
@@ -341,7 +555,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy amount = min');
 	});
 
-	test.it('Invest page:  displayed correct balance after purchase',
+	test.it('Invest page: Investors balance is changed accordingly after purchase ',
 		async function () {
 			let investor = Investor1;
 			let contribution = crowdsaleForE2Etests1.minCap;
@@ -351,7 +565,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
 	});
 
-	test.it('Investor not able to buy amount significally  more than total supply',
+	test.it('Investor is not able to buy amount which significally more than total supply',
 		async function() {
 
 		    let investor = Investor1;
@@ -361,16 +575,16 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			return await assert.equal(result, false, "Test FAILED. Investor is able to buy amount significally  more than total supply");
 	});
 
-	test.it('Investor can buy less than mincap after first transaction',
+	test.it('Investor is able to buy less than mincap after first transaction',
 		async function() {
 		    let investor = Investor1;
 		    await investor.openInvestPage(crowdsaleForE2Etests1);
-		    let contribution = smallAmount;
+		    let contribution = smallAmount+10;
 		    let result = await investor.contribute(contribution);
 			return await assert.equal(result, true, "Test FAILED. Investor can not buy less than mincap after first transaction");
 	});
 
-	test.it('Crowdsale finishes in time',
+	test.it('Crowdsale is finished in time',
 		async function() {
 			let investor = Investor1;
 			await investor.openInvestPage(crowdsaleForE2Etests1);
@@ -379,7 +593,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 				driver.sleep(5000);
 			}
 			while ((!await investPage.isCrowdsaleTimeOver()) && (counter-- > 0));
-			driver.sleep(5000);
+			driver.sleep(10000);
 			let result=(counter>0);
     		return await assert.equal(result, true, "Test FAILED. Crowdsale has not finished in time");
 	});
@@ -396,7 +610,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	test.it.skip('Owner able to distribute if crowdsale time expired but not all tokens were sold',
 		async function() {
-await driver.sleep(20000);
+
 			let owner = Owner;
 			await owner.setMetaMaskAccount();
 			let result = await owner.distribute(crowdsaleForE2Etests1);
@@ -414,7 +628,7 @@ await driver.sleep(20000);
 			return await assert.equal(balance, newBalance,"Test FAILED.'Investor has received "+newBalance+" tokens instead "+ balance );
 	});
 
-	test.it.skip('Owner able to finalize (if crowdsale time expired but not all tokens were sold)',
+	test.it.skip('Owner is able to finalize (if crowdsale time expired but not all tokens were sold)',
 		async function() {
 
 			let owner = Owner;
@@ -426,7 +640,7 @@ await driver.sleep(20000);
 
 		let investor=Investor1;
 		let newBalance=await investor.getTokenBalance(crowdsaleForE2Etests1)/1e18;
-		let balance=crowdsaleForE2Etests1.minCap+smallAmount;
+		let balance=crowdsaleForE2Etests1.minCap+smallAmount+10;
 		logger.info("Investor should receive  = "+balance);
 		logger.info("Investor has received balance = "+newBalance);
 		logger.info("Difference = "+(newBalance-balance));
@@ -520,7 +734,7 @@ await driver.sleep(20000);
 	});
 
 
-	test.it.skip('Owner is able to modify the rate before start of crowdsale',
+	test.it.skip('Manage page: Owner is able to modify the rate before start of crowdsale',
 		async function () {
 
 			let owner = Owner;
@@ -531,7 +745,7 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Manage page:  rate changed  after modifying',
+	test.it('Manage page:rate changed accordingly after modifying',
 		async function () {
 
 			let owner = Owner;
@@ -542,7 +756,7 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Owner is able to modify the total supply before start of crowdsale',
+	test.it('Manage page: owner is able to modify the total supply before start of crowdsale',
 		async function () {
 
 			let owner = Owner;
@@ -552,7 +766,7 @@ await driver.sleep(20000);
 			return await assert.equal(result,true,'Test FAILED.Owner can NOT modify the total supply before start of crowdsale ');
 	});
 
-	test.it('Manage page:  total supply changed  suitably  after changing',
+	test.it('Manage page:  total supply changed accordingly  after changing',
 		async function () {
 			let owner = Owner;
 			await owner.openManagePage(crowdsaleForE2Etests2);
@@ -561,7 +775,7 @@ await driver.sleep(20000);
 			return await assert.equal(balance, supplyTier1, 'Test FAILED. New value of supply does not match given value ');
 	});
 
-	test.it('Owner is able to modify the start time  before start of crowdsale ',
+	test.it('Manage page: owner is able to modify the start time  before start of crowdsale ',
 		async function () {
 			let adjust = 90000;
 			let newTime = Utils.getTimeWithAdjust(adjust, "utc");
@@ -593,7 +807,7 @@ await driver.sleep(20000);
 			return await assert.equal(result, true, 'Test FAILED. End time doest match the given value');
 	});
 
-	test.it('Warning present if end time earlier than start time',
+	test.it('Manage page: warning is displayed if end time earlier than start time',
 		async function () {
 
 			let owner = Owner;
@@ -615,7 +829,7 @@ await driver.sleep(20000);
 			return await assert.equal(result, false, 'Test FAILED.Warning "NOT OWNER" doesnt present');
 	});
 
-	test.it('Disabled to modify the start time if crowdsale has begun',
+	test.it('Manage page: disabled to modify the start time if crowdsale has begun',
 		async function () {
 
 			let owner = Owner;
@@ -630,7 +844,7 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Disabled to modify the total supply if crowdsale has begun',
+	test.it('Manage page: disabled to modify the total supply if crowdsale has begun',
 		async function () {
 
 			let owner = Owner;
@@ -641,7 +855,7 @@ await driver.sleep(20000);
 			return await assert.equal(result,false,'Test FAILED.Owner able to modify the total supply after start of crowdsale ');
 	});
 
-	test.it('Disabled to modify the rate if crowdsale has begun',
+	test.it('Manage page: disabled to modify the rate if crowdsale has begun',
 		async function () {
 
 			let owner = Owner;
@@ -651,7 +865,7 @@ await driver.sleep(20000);
 			return await assert.equal(result,false,'Test FAILED.Owner able to modify the rate after start of crowdsale ');
 	});
 
-	test.it('Owner is able to modify the end time after start of crowdsale',
+	test.it('Manage page: owner is able to modify the end time after start of crowdsale',
 		async function () {
 
 			let owner = Owner;
@@ -663,7 +877,7 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Manage page:  end time changed  after modifying ',
+	test.it('Manage page:  end time changed  accordingly after modifying ',
 		async function () {
 
 			let owner = Owner;
@@ -675,7 +889,7 @@ await driver.sleep(20000);
 	});
 
 
-	test.it('Owner is able to add whitelisted address if crowdsale has begun',
+	test.it('Manage page: owner is able to add whitelisted address if crowdsale has begun',
 		async function () {
 			let owner = Owner;
 			let investor=ReservedAddress;
@@ -697,7 +911,7 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Whitelisted investor can buy amount equal min',
+	test.it('Whitelisted investor can buy amount equal mincap',
 		async function() {
 
 			let investor=Investor1;
@@ -707,7 +921,7 @@ await driver.sleep(20000);
 			return await assert.equal(result,true,'Test FAILED. Investor can not buy amount = min');
 	});
 
-	test.it('Whitelisted investor is able to buy less than min after first transaction',
+	test.it('Whitelisted investor is able to buy less than mincap after first transaction',
 		async function() {
 			let investor=Investor1;
 			await investor.openInvestPage(crowdsaleForE2Etests2);
@@ -717,7 +931,7 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Whitelisted investor is  NOT able to buy more than assigned max',
+	test.it('Whitelisted investor is not able to buy more than assigned max',
 		async function() {
 
 			let investor=Investor1;
@@ -741,7 +955,7 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Whitelisted investor is NOT able to buy more than total supply in tier',
+	test.it('Whitelisted investor is not able to buy more than total supply in tier',
 		async function() {
 
 			let investor=Investor2;
@@ -752,7 +966,7 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Owner is NOT able to distribute before all tokens are sold and crowdsale is not finished ',
+	test.it('Owner is not able to distribute before all tokens are sold and crowdsale is not finished ',
 		async function() {
 
 			let owner=Owner;
@@ -762,7 +976,7 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Owner is NOT able to finalize before  all tokens are sold and crowdsale is not finished ',
+	test.it('Owner is not able to finalize before  all tokens are sold and crowdsale is not finished ',
 		async function() {
 
 			let owner=Owner;
@@ -771,7 +985,7 @@ await driver.sleep(20000);
 
 	});
 
-	test.it('Whitelisted investor able to buy total supply ',
+	test.it('Whitelisted investor is able to buy total supply ',
 		async function() {
 
 			let investor=Investor2;
@@ -782,7 +996,7 @@ await driver.sleep(20000);
 			return await assert.equal(result, true, "Test FAILED.Investor can not buy total supply");
 	});
 
-	test.it('Whitelisted investor is NOT able to buy if all tokens were sold',
+	test.it('Whitelisted investor is not able to buy if all tokens were sold',
 		async function () {
 
 			let investor=ReservedAddress;
@@ -891,14 +1105,10 @@ await driver.sleep(20000);
 
 
 });
+
+
+
 /*
-
-	////////////////////////// S T E P 2 //////////////////////////////////////////////////////////////////////////////
-
-
-
-
-///////Name////
 	test.it.skip("Wizard step#2: warning is presented if field Name  is empty ",
 		async function () {
 			await wizardStep2.fillName(" ");
@@ -1083,33 +1293,7 @@ test.it("Wizard step#2: user is not able to add reserved tokens if address is in
 		});
 
 
-	test.it.skip('Wizard step#2: button Continue present ',
-		async function () {
-			b=false;
-			b=await wizardStep2.isPresentButtonContinue();
 
-			assert.equal(b, true, "Test FAILED. Wizard step#2: button Continue  not present ");
-
-		});
-	test.it.skip('Wizard step#2: user is able to activate Step3 by clicking button Continue ',
-		async function () {
-			b=false;
-			await wizardStep2.clickButtonContinue();
-			await driver.sleep(2000);
-			b=await wizardStep3.isPresentFieldWalletAddress();
-			assert.equal(b, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
-			logger.error("Test PASSED. User is able to activate Step3 by clicking button Continue");
-
-		});
-
-	test.it.skip('Wizard step#3: field Wallet address contains the metamask account address  ',
-		async function () {
-
-			s=await wizardStep3.getFieldWalletAddress();
-			b=(s==Owner.account);
-			assert.equal(b, true, "Test FAILED. Wallet address does not match the metamask account address ");
-
-		});
 
 	test.it.skip('Wizard step#3: User is able to set "Safe and cheap gasprice" checkbox ',
 		async function () {
@@ -1131,21 +1315,7 @@ test.it("Wizard step#2: user is not able to add reserved tokens if address is in
 			assert.equal(b, true, 'Test FAILED. User is not able to set "Fast Gasprice" checkbox');
 
 		});
-	test.it.skip('Wizard step#3: User is able to set "Custom Gasprice" checkbox',
-		async function () {
 
-			b=await wizardStep3.clickCheckboxGasPriceCustom();
-			assert.equal(b, true, 'Test FAILED. User is not able to set "Custom Gasprice" checkbox');
-
-		});
-
-	test.it.skip('Wizard step#3: User is able to fill "Custom Gasprice" with valid value',
-		async function () {
-
-			b=await wizardStep3.fillGasPriceCustom(currencyForE2Etests.gasPrice);
-			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
-
-		});
 	test.it.skip('Wizard step#3: User is able to set checkbox  "Whitelist disabled" ',
 		async function () {
 			b=true;
@@ -1153,65 +1323,8 @@ test.it("Wizard step#2: user is not able to add reserved tokens if address is in
 			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to set checkbox  "Whitelist disabled"');
 
 		});
-	test.it.skip('Wizard step#3: User is able to set checkbox  "Whitelist enabled"',
-		async function () {
-
-			b=await wizardStep3.clickCheckboxWhitelistYes();
-			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to set checkbox  "Whitelist enabled"');
-
-		});
 
 
 
-	test.it.skip('Wizard step#3: User is able to download CSV file with whitelisted addresses',
-		async function () {
-			let rightAddresses=11;
+*/
 
-			b=await wizardStep3.uploadCSV();
-			newBalance=await tierPage.amountAddedWhitelist();
-			await wizardStep3.clickButtonOk();
-			if (b&&(newBalance==rightAddresses)) b=true;
-			else b=false;
-			assert.equal(b, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
-
-		});
-
-	test.it.skip('Wizard step#3: Downloaded whitelist addresses dont contain invalid data',
-		async function () {
-			assert.equal(true, true, "Test FAILED. Wizard step#3: Downloaded whitelist addresses contain invalid data");
-
-		});
-
-
-
-	test.it.skip('Wizard step#3: User is able to add several whitelisted addresses',
-		async function () {
-
-			b=await tierPage.fillWhitelist();
-			assert.equal(b, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
-
-
-		});
-
-	test.it.skip('Wizard step#3: User is able to remove one whitelisted address',
-		async function () {
-			balance=await tierPage.amountAddedWhitelist();
-			await tierPage.removeWhiteList(0);
-			newBalance=await tierPage.amountAddedWhitelist();
-
-			logger.info("Bal"+balance);
-			logger.info("NewBal"+newBalance);
-			assert.equal(balance, newBalance+1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
-		});
-
-	test.it.skip('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
-		async function () {
-			await tierPage.clickButtonClearAll();
-			await tierPage.clickButtonYesAlert();
-			newBalance=await tierPage.amountAddedWhitelist();
-			logger.info("NewBal"+newBalance);
-			assert.equal(newBalance,0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-
-		});*/
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////

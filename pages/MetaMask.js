@@ -14,6 +14,8 @@ const By=by.By;
 const IDMetaMask="nkbihfbeogaeaoehlefnkodbefgpgknn";
 const URL="chrome-extension://"+IDMetaMask+"//popup.html";
 const buttonSubmit=By.className("confirm btn-green");
+const buttonReject=By.className("cancel btn-red");
+const buttonRejectAll=By.className("cancel btn-red");
 const buttonAccept=By.xpath('//*[@id="app-content"]/div/div[4]/div/button');
 const agreement=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div/p[1]/strong");
 const fieldNewPass=By.xpath("//*[@id=\"password-box\"]");
@@ -137,7 +139,7 @@ class MetaMask extends page.Page {
 	    logger.info(this.name+"wait and submit transaction :");
 	    await this.switchToNextPage();
 	    var counter=0;
-		var timeLimit=5;
+		var timeLimit=15;
 	    if (refreshCount!=undefined) timeLimit=refreshCount;
 	    do {
 	        await this.refresh();
@@ -171,7 +173,7 @@ class MetaMask extends page.Page {
      async addNetwork(provider) {
         await  this.driver.sleep(1000);//5000
         logger.info(this.name+"add network :");
-        var url;
+        let url;
 
         switch(provider) {
             case 77: {
@@ -198,6 +200,39 @@ class MetaMask extends page.Page {
         await super.clickWithWait(arrowBackRPCURL);
         return;
      }
+     async clickButtonReject(){
+
+		     logger.info(this.name+": button Reject :");
+		     return await super.clickWithWait(buttonReject);
+     }
+
+     async rejectTransaction(refreshCount) {
+
+	     logger.info(this.name+"wait and reject transaction :");
+	     await this.switchToNextPage();
+	     let counter=0;
+	     let timeLimit=15;
+	     if (refreshCount!=undefined) timeLimit=refreshCount;
+	     do {
+		     await this.refresh();
+		     await super.waitUntilLocated(iconChangeAccount);
+		     if (await this.isElementPresentWithWait(buttonReject)) {
+			     await this.clickButtonReject();
+			     await this.switchToNextPage();
+			     return true;
+		     }
+		     counter++;
+		     logger.info("counter #"+ counter);
+		     logger.info("Time limit " +timeLimit);
+
+		     if (counter>=timeLimit) {
+			     await this.switchToNextPage();
+			     return false;
+		     }
+	     } while(true);
+     }
+
+
 
 }
 

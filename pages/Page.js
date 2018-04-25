@@ -5,6 +5,8 @@ const Utils=utils.Utils;
 const key = require('selenium-webdriver').Key;
 const webdriver = require('selenium-webdriver'),
       by = require('selenium-webdriver/lib/by');
+//const Alert = require('selenium-webdriver');
+//const Alert=webdriver.Alert;
 const By=by.By;
 const loader=By.className("loading-container");
 const titles=By.className("title");
@@ -92,7 +94,12 @@ class Page {
 	  async isElementPresent(element) {
 		  logger.info("is element present :");
 	      try {
-	          await this.driver.findElement(element).isDisplayed();
+	      	let field;
+		      if (element.constructor.name!=="WebElement") {
+			      field =  await this.driver.findElement(element);
+		      }
+		      else field=element;
+	          await field.isDisplayed();
 		      logger.info(" element present");
 		      return true;
 	      }
@@ -187,7 +194,7 @@ class Page {
 	    logger.info("click with wait" +element);
 	    try {
 	      let field;
-		  if (element.constructor.name!="WebElement") {
+		  if (element.constructor.name!=="WebElement") {
 	        field = await this.driver.wait(webdriver.until.elementLocated(element), Twait);
 	      }
 	        else field = element;
@@ -242,7 +249,7 @@ class Page {
 			return await this.driver.findElements(element);
 		}
 		catch(err) {
-			logger.info("Element "+ element+" have not appeared in"+ Twait+" sec.");
+			logger.info("Element "+ element+" have not appeared in"+ 1000+" sec.");
 			return null;
 		}
 	}
@@ -333,6 +340,37 @@ class Page {
 	      logger.info("current handle: "+curHandle);
 	    }
 	  }
+
+
+	  async isPresentAlert() {
+
+	  	logger.info("isPresentAlert:")
+        try {
+
+	        let result = await this.driver.switchTo().alert().getText();
+	        logger.info("alert text:  "+result);
+	        return true;
+        }
+        catch (err) {
+
+	        logger.info(err);
+	        return false;
+        }
+	  }
+	async acceptAlert() {
+
+		logger.info("acceptAlert:")
+		try {
+
+			 this.driver.switchTo().alert().accept();
+			 return true;
+		}
+		catch (err) {
+
+			logger.info(err);
+			return false;
+		}
+	}
 
 }
 module.exports.Page=Page;

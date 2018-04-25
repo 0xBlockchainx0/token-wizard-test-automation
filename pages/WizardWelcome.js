@@ -34,11 +34,27 @@ class WizardWelcome extends page.Page{
 
     async open()
     {
-        logger.info(this.name+": ");
+      logger.info(this.name+":open " + this.URL);
       await   super.open(this.URL);
       return await super.getURL();
 
     }
+
+	async openWithAlertConfirmation() {
+		logger.info(this.name+": openWithAlertConfirmation");
+		try {
+			await   super.open(this.URL);
+			return true;
+        }
+        catch(err) {
+		    await super.acceptAlert();
+		    return false;
+        }
+
+
+
+    }
+
     async isPresentButtonNewCrowdsale(){
 	    return await super.isElementPresent(buttonNewCrowdsale);
     }

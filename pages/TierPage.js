@@ -10,14 +10,12 @@ const webdriver = require('selenium-webdriver'),
     by = require('selenium-webdriver/lib/by');
 const By=by.By;
 const utils=require('../utils/Utils.js');
-const wizardStep3=require("./WizardStep3.js");
 const Utils=utils.Utils;
-
+const wizardStep3=require("./WizardStep3.js");
 var COUNT_TIERS;
 const itemsRemove=By.className("item-remove");
 const buttonAdd=By.className("button button_fill button_fill_plus");
 const WhitelistContainer=By.className("white-list-item-container-inner");
-const buttonClearAll=By.className("fa fa-trash");
 const buttonYesAlert=By.className("swal2-confirm swal2-styled");
 
 
@@ -100,37 +98,62 @@ class TierPage extends page.Page {
 	}
 	async initWhitelistContainer(){
 
-		var arr = await super.findWithWait(WhitelistContainer);
+		var arr = await super.findWithoutWait(WhitelistContainer);
 		return arr;
+
+	}
+	async isPresentWhitelistContainer(){
+    	await this.init();
+    	if (this.fieldWhAddressTier!= undefined) return true;
+    	else return false;
+	}
+
+
+
+	async init() {
+try {
+	let locator = By.className("input");
+	let arr = await super.findWithWait(locator);
+	let ci_tresh = 2;
+	let ci_mult = 5;
+
+	if (wizardStep3.WizardStep3.getFlagCustom()) ci_tresh = 3;
+	if (wizardStep3.WizardStep3.getFlagWHitelising()) ci_mult = 8;
+
+	this.fieldNameTier = arr[ci_tresh + (this.number) * ci_mult];
+	this.fieldStartTimeTier = arr[ci_tresh + (this.number) * ci_mult + 1];
+	this.fieldEndTimeTier = arr[ci_tresh + (this.number) * ci_mult + 2];
+	this.fieldRateTier = arr[ci_tresh + (this.number) * ci_mult + 3];
+	this.fieldSupplyTier = arr[ci_tresh + (this.number) * ci_mult + 4];
+	this.fieldWhAddressTier = arr[ci_tresh + (this.number) * ci_mult + 5];
+	this.fieldMinTier = arr[ci_tresh + (this.number) * ci_mult + 6];
+	this.fieldMaxTier = arr[ci_tresh + (this.number) * ci_mult + 7];
+	return arr;
+}
+catch(err) {
+	logger.info(this.name+": dont contain warning elements");
+	return null;
+
+}
 
 	}
 
 
 
-	async init(){
+	async initCheckboxes(){
+    	try {
+		    let locator = By.className("radio-inline");
+		    let arr = await super.findWithWait(locator);
 
-		var locator = By.className("input");
-		var arr = await super.findWithWait(locator);
-		let ci_tresh=2;
-		let ci_mult=5;
+		    this.checkboxModifyOn = arr[6 + 2 * this.number];
+		    this.checkboxModifyOff = arr[7 + 2 * this.number];
+		    return arr;
+	    }
+	    catch(err) {
+		    logger.info(this.name+": dont contain warning elements");
+		    return null;
+	    }
 
-		if (wizardStep3.WizardStep3.getFlagCustom()) ci_tresh=3;
-		if (wizardStep3.WizardStep3.getFlagWHitelising()) ci_mult=8;
-
-		this.fieldNameTier = arr[ci_tresh+(this.number)*ci_mult];
-		this.fieldStartTimeTier=arr[ci_tresh+(this.number)*ci_mult+1];
-		this.fieldEndTimeTier=arr[ci_tresh+(this.number)*ci_mult+2];
-		this.fieldRateTier=arr[ci_tresh+(this.number)*ci_mult+3];
-		this.fieldSupplyTier=arr[ci_tresh+(this.number)*ci_mult+4];
-		this.fieldWhAddressTier=arr[ci_tresh+(this.number)*ci_mult+5];
-		this.fieldMinTier=arr[ci_tresh+(this.number)*ci_mult+6];
-		this.fieldMaxTier=arr[ci_tresh+(this.number)*ci_mult+7];
-
-		locator = By.className("radio-inline");
-		arr = await super.findWithWait(locator);
-
-		this.checkboxModifyOn=arr[6+2*this.number];
-		this.checkboxModifyOff=arr[7+2*this.number];
 
 	}
 
@@ -182,12 +205,19 @@ class TierPage extends page.Page {
     }
 
     async fillRate()
-    {   await this.init();
-    	logger.info(this.name+"field Rate: ");
-        let locator=this.fieldRateTier;
-        await super.clearField(locator);
+    {
+    	let arr = await this.init();
+	    //console.log(arr.length);
 
-        await super.fillWithWait(locator,this.tier.rate);
+    	logger.info(this.name+"field Rate: ");
+    	//console.log(this.fieldRateTier);
+        let locator=this.fieldRateTier;
+	    //console.log(locator.constructor.name);
+        await super.clearField(locator);
+        //console.log(this.tier.rate);
+        let result=await super.fillWithWait(locator,this.tier.rate);
+        //await this.driver.sleep(10000);
+        return result;
     }
 
     async fillSupply()
@@ -195,13 +225,15 @@ class TierPage extends page.Page {
     	logger.info(this.name+"field Supply: ");
         let locator=this.fieldSupplyTier;
        // await super.clearField(locator);
-        await super.fillWithWait(locator,this.tier.supply);
+	    let result = await super.fillWithWait(locator,this.tier.supply);
+	    //await this.driver.sleep(10000);
+	    return result;
 
     }
 
     async setModify() {
         logger.info(this.name+"checkbox Modify: ");
-        await this.init();
+        await this.initCheckboxes();
 
 	    if (this.tier.allowModify) {
 		    await super.clickWithWait(this.checkboxModifyOn);
@@ -321,7 +353,7 @@ class TierPage extends page.Page {
     }
     async clickButtonAdd(){
         logger.info(this.name+"button Add: ");
-        await super.clickWithWait(buttonAdd);
+        return await super.clickWithWait(buttonAdd);
     }
 	async removeWhiteList(number)
 	{
@@ -332,7 +364,7 @@ class TierPage extends page.Page {
 
 	async amountAddedWhitelist(){
 		try {
-			let arr = await this.initWhitelistContainer()
+			let arr = await this.initWhitelistContainer();
 			logger.info("Whitelisted addresses added=" + arr.length);
 			return arr.length;
 		}
@@ -341,12 +373,32 @@ class TierPage extends page.Page {
 		}
 
 	}
-async clickButtonClearAll(){
-	await super.clickWithWait(buttonClearAll);
-}
-	async clickButtonYesAlert(){
-		await super.clickWithWait(buttonYesAlert);
 
+    async clickButtonClearAll() {
+
+	    logger.info(this.name+": clickButtonClearAll:");
+    	try {
+
+	         await this.driver.executeScript("document.getElementsByClassName('fa fa-trash')[0].click();");
+             return true;
+        }
+	        catch (err) {
+    		logger.info(err);
+	            return false;
+		    }
+
+	}
+
+
+	async clickButtonYesAlert() {
+		try {
+			logger.info(this.name+": clickButtonYesAlert:");
+			await super.clickWithWait(buttonYesAlert);
+			return true;
+		}
+		catch (err) {
+			return false;
+		}
 	}
 
 
@@ -417,6 +469,23 @@ async clickButtonClearAll(){
 		else {logger.info("not present");return false;}
 	}
 
+	async uploadWhitelistCSVFile(){
+
+		try {
+			let path = await Utils.getPathToFileInPWD("bulkWhitelist.csv");
+			logger.info(this.name+": uploadWhitelistCSVFile: from path: "+path);
+			const locator=By.xpath('//input[@type="file"]');
+			let element = await this.driver.findElement(locator);
+			await element.sendKeys(path);
+
+			return true;
+		}
+		catch (err){
+			logger.info(err);
+			return false;
+		}
+
+	}
 
 
 }

@@ -6,7 +6,8 @@
     "startGanache": "npm install -g ganache-cli && ganache-cli &",
     "e2e-deployRegistry": "node  ./contracts/DeployRegistry.js",
     "test1": "mocha -b ./test/testSuite1.js",
-    "ra": "node ./test/testRA.js"
+    "ra": "node ./test/testRA.js",
+    "t": "node ./test/t.js"
 
   },
   "dependencies": {

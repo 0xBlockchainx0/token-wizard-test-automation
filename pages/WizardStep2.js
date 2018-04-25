@@ -155,5 +155,6 @@ async clickButtonContinue(){
 		return await super.isElementDisabled(fieldDecimals);
 	}
 
+
 }
 module.exports.WizardStep2=WizardStep2;
