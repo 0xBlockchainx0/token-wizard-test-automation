@@ -1,5 +1,5 @@
 {
-  "startURL" : "https://deploy-preview-824--ico-wizard.netlify.com/",
+  "startURL" : "http://localhost:3000/",
   "outputPath":"./results",
   "installMetaMask":true
 
