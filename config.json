@@ -1,5 +1,5 @@
 {
-  "startURL" : "https://wizard.oracles.org/",
+  "startURL" : "https://deploy-preview-824--ico-wizard.netlify.com/",
   "outputPath":"./results",
   "installMetaMask":true
 

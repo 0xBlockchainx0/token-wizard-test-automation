@@ -398,7 +398,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 	});
 
-	test.it(' - Wizard step#3: User is able to set SafeAndCheapGasprice checkbox ',
+	test.it('Wizard step#3: User is able to set SafeAndCheapGasprice checkbox ',
 		async function () {
 			let result = await wizardStep3.clickCheckboxGasPriceSafe();
 			return await assert.equal(result, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");

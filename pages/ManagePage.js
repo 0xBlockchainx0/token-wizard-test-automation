@@ -12,7 +12,7 @@ const buttonOk=By.xpath("/html/body/div[2]/div/div[3]/button[1]");
 
 const modal=By.className("modal");
 const adj="";
-const buttonDistribute=By.xpath("//*[contains(text(),'Distribute tokens')]");
+const buttonDistribute=By.xpath("//*[contains(text(),'Distribute reserved tokens')]");
 const buttonFinalize=By.xpath("//*[contains(text(),'Finalize Crowdsale')]");
 const buttonYesFinalize=By.className("swal2-confirm swal2-styled");
 const buttonSave=By.className("no_arrow button button_fill");
@@ -39,6 +39,15 @@ class ManagePage extends Page  {
 	    this.fieldMinTier=[];
 	    this.fieldMaxTier=[];
 	    this.buttonAddWh=[];
+
+	    this.buttonDistribute;
+    }
+    async initButtonDistribute() {
+	    let locator = buttonDistribute;
+	    let arr = await super.findWithWait(locator);
+	    this.buttonDistribute=arr[1];
+
+	   // console.log("LLL buttonDistribute"+ arr.length) ;
     }
 
     async initButtons(){
@@ -239,7 +248,9 @@ class ManagePage extends Page  {
 	}
 
 	async isEnabledDistribute() {
+
 		logger.info(this.name + "button Distribute :");
+		await this.initButtonDistribute();
 		await this.refresh();
 		await this.driver.sleep(2000);
 		if (!(await this.isPresentButtonDistribute())) {
@@ -248,7 +259,7 @@ class ManagePage extends Page  {
 		}
 
 		await this.driver.sleep(1000);
-		let result = await this.driver.findElement(buttonDistribute).getAttribute("class");
+		let result =await this.buttonDistribute.getAttribute("class");
 		logger.info("class name= " + result);
 
 
@@ -263,14 +274,17 @@ class ManagePage extends Page  {
 	}
 
 	async isPresentButtonDistribute() {
+
 	    logger.info(this.name+"button Distribute :");
-	   return await super.isElementPresent(buttonDistribute);
+		await this.initButtonDistribute();
+	    return await super.isElementPresent(this.buttonDistribute);
 
 	}
 
 	async clickButtonDistribute() {
 	     logger.info(this.name+"button Distribute :");
-	     await super.clickWithWait(buttonDistribute);
+	    await this.initButtonDistribute();
+	     await super.clickWithWait(this.buttonDistribute);
 	}
 
 	async isEnabledFinalize(){

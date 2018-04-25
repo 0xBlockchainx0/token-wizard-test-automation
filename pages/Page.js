@@ -94,7 +94,12 @@ class Page {
 	  async isElementPresent(element) {
 		  logger.info("is element present :");
 	      try {
-	          await this.driver.findElement(element).isDisplayed();
+	      	let field;
+		      if (element.constructor.name!=="WebElement") {
+			      field =  await this.driver.findElement(element);
+		      }
+		      else field=element;
+	          await field.isDisplayed();
 		      logger.info(" element present");
 		      return true;
 	      }

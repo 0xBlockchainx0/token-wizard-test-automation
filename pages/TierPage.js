@@ -214,7 +214,7 @@ catch(err) {
         let locator=this.fieldRateTier;
 	    //console.log(locator.constructor.name);
         await super.clearField(locator);
-        console.log(this.tier.rate);
+        //console.log(this.tier.rate);
         let result=await super.fillWithWait(locator,this.tier.rate);
         //await this.driver.sleep(10000);
         return result;
