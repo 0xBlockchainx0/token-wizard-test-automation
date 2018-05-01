@@ -157,7 +157,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 
 	/////// Tests
-	test.it('Owner  can create crowdsale: 1 tier, no reserved, no whitelist' ,
+	test.it.skip('Owner  can create crowdsale: 1 tier, no reserved, no whitelist' ,
 
 		async function () {
 			await  welcomePage.open();

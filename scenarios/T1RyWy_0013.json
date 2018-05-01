@@ -4,7 +4,16 @@
   "ticker": "t0013",
   "decimals": 3,
   "reservedTokens":[
-
+    {
+      "address" :"0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+      "dimension": "percentage",
+      "value": 1
+    },
+    {
+      "address" :"0x6f53002497203d167771eb0852b4c1caDA7a585f",
+      "dimension": "tokens",
+      "value": 2
+    }
   ],
   "walletAddress":"0x0e036E74F31aDDb9e0ADcB80dEA9Ed1E187DFe50",
   "gasprice": 40,

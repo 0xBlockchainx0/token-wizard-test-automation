@@ -23,8 +23,8 @@ class WizardStep2 extends Page {
     }
 
     async initWarnings() {
+	    logger.info(this.name + " :init warnings");
     	try {
-		    logger.info(this.name + " :init warnings");
 		    const locator = By.className("error");
 		    let array = await super.findWithWait(locator);
 		    this.warningName = array[0];
@@ -45,24 +45,24 @@ class WizardStep2 extends Page {
     }
 
     async fillName(value) {
-       	logger.info(this.name+"fillName ");
+       	logger.info(this.name+"fillName with value=" + value);
 	    return await this.clearField(fieldName) &&
                await super.fillWithWait(fieldName,value);
     }
 
 	async fillTicker(value) {
-	    logger.info(this.name + "fillTicker ");
+	    logger.info(this.name + "fillTicker with value=" + value);
 	    return await super.clearField(fieldTicker) &&
 	           await super.fillWithWait(fieldTicker, value);
 	}
 
 	async fillDecimals(value) {
-    	logger.info(this.name + "fillDecimals ");
+    	logger.info(this.name + "fillDecimals with value=" + value);
 		return await super.fillWithWait(fieldDecimals, value);
 	}
 
 	async fillSupply(value) {
-		logger.info(this.name + "fillSupply ");
+		logger.info(this.name + "fillSupply with value=" + value);
 		return await super.clearField(fieldSupply) &&
 			   await super.fillWithWait(fieldSupply, value);
 	}
