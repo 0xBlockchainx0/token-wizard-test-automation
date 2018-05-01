@@ -132,7 +132,7 @@ catch(err)
 		 //   ".value='kjsdkjwkjwd';");
         //await this.driver.sleep(10000000);
          await super.clearField(fieldWalletAddress);
-
+	  // await this.driver.sleep(10000);
 	    await super.fillWithWait(fieldWalletAddress, address);
     }
 

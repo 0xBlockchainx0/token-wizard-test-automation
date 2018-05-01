@@ -109,8 +109,8 @@ class TierPage extends page.Page {
 
 	async init(){
 
-		var locator = By.className("input");
-		var arr = await super.findWithWait(locator);
+		let locator = By.className("input");
+		let arr = await super.findWithWait(locator);
 		let ci_tresh=2;
 		let ci_mult=5;
 
@@ -188,6 +188,7 @@ class TierPage extends page.Page {
         await super.clearField(locator);
 
         await super.fillWithWait(locator,this.tier.rate);
+
     }
 
     async fillSupply()

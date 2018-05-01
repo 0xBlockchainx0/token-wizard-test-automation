@@ -40,7 +40,7 @@ class MetaMask extends Page {
 				await this.open(this.URL) &&
 				await this.clickWithWait(buttonAccept) &&
 				await this.clickWithWait(agreement) &&
-				await this.clickKey(key.TAB,15) &&
+				await this.pressKey(key.TAB,15) &&
 				await this.clickWithWait(buttonAccept) &&
 				await this.waitUntilLocated(fieldNewPass) &&
 				await this.clickWithWait(fieldNewPass) &&
