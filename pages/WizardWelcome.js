@@ -14,12 +14,12 @@ class WizardWelcome extends Page {
     }
 
     async clickButtonNewCrowdsale() {
-        logger.info(this.name + "button NewCrowdsale");
+        logger.info(this.name + "clickButtonNewCrowdsale");
         return await super.clickWithWait(buttonNewCrowdsale);
     }
 
     async clickButtonChooseContract() {
-        logger.info(this.name + "button ChooseContract");
+        logger.info(this.name + "clickButtonChooseContract");
         return await  super.clickWithWait(buttonChooseContract);
     }
 
@@ -30,7 +30,7 @@ class WizardWelcome extends Page {
     }
 
     async isPresentButtonNewCrowdsale() {
-	    logger.info(this.name + ": isPresentButtonNewCrowdsale");
+    	logger.info(this.name + ": isPresentButtonNewCrowdsale:");
 	    return await super.isElementDisplayed(buttonNewCrowdsale);
     }
 
