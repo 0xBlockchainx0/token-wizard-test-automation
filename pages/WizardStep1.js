@@ -9,30 +9,50 @@ class WizardStep1 extends Page {
         super(driver);
         this.name = "WizardStep1 page: ";
 	    this.title="CROWDSALE CONTRACT";
+	    this.checkboxWhitelistWithCap;
+	    this.checkboxDutchAuction;
+	}
+
+    async initCheckboxes() {
+		try {
+			logger.info(this.name + "initCheckboxes ");
+			let locator = By.className("radio");
+			let array = await super.findWithWait(locator);
+			this.checkboxWhitelistWithCap = array[0];
+			this.checkboxDutchAuction = array[1];
+			return array;
+		}
+		catch(err){
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
+
+    async isPresentButtonContinue() {
+	    logger.info(this.name+": isPresentButtonContinue: ");
+        return  await super.isElementDisplayed(buttonContinue);
     }
 
-    async isPresentButtonContinue(){
-	    logger.info(this.name+": is present button Continue: ");
-        var b=await super.isElementDisplayed(buttonContinue);
-        logger.info(this.name+": is present button Continue: "+b);
-		return b;
-
+    async clickButtonContinue() {
+        logger.info(this.name+"clickButtonContinue: ");
+        return await super.clickWithWait(buttonContinue);
     }
 
-    async clickButtonContinue(){
-        logger.info(this.name+"buttonContinue");
-       await super.clickWithWait(buttonContinue);
-
-
-    }
-   async  open(){
+    async  open() {
         logger.info(this.name+"open");
-        await  this.driver.get(this.URL);
-
+        return  await  super.open (this.URL);
     }
 
+    async clickCheckboxWhitelistWithCap() {
+	    logger.info(this.name + "clickCheckboxWhitelistWithCap: ");
+	    await this.initCheckboxes();
+        return await super.clickWithWait(this.checkboxWhitelistWithCap);
+    }
 
-
-
+	async clickCheckboxDutchAuction() {
+		logger.info(this.name + "clickCheckboxDutchAuction: ");
+		await this.initCheckboxes();
+		return await super.clickWithWait(this.checkboxDutchAuction);
+	}
 }
 module.exports.WizardStep1=WizardStep1;

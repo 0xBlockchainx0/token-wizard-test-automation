@@ -154,6 +154,24 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		//await driver.quit();
 	});
 
+
+
+	/////// Tests
+	test.it('Owner  can create crowdsale: 1 tier, no reserved, no whitelist' ,
+
+		async function () {
+			await  welcomePage.open();
+			await  welcomePage.clickButtonNewCrowdsale();
+
+
+		    await wizardStep1.clickCheckboxDutchAuction();
+		    await driver.sleep(5000);
+			await wizardStep1.clickCheckboxWhitelistWithCap();
+
+
+			return await assert.equal(true,false,"stop");
+
+		});
 ////////////////// Simple scenario  /////////////////////////////////////////////////
 
 	test.it('Owner  can create crowdsale: 1 tier, no reserved, no whitelist' ,

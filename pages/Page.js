@@ -171,7 +171,7 @@ class Page {
 	}
 
 	async clickWithWait(element,Twaiting) {
-		logger.info("click with wait" +element);
+		logger.info("click with wait: " +element);
 		try {
 			let field = await this.getElement(element,Twaiting);
 			await field.click();
