@@ -265,8 +265,14 @@ class Page {
 	}
 
 	async goBack() {
-		logger.info("go back :");
-		this.driver.navigate().back();
+		try {
+			logger.info("go back :");
+			this.driver.navigate().back();
+			return true;
+		} catch (err) {
+			logger.info("Error: "+err);
+			return false;
+		}
 	}
 }
 module.exports.Page=Page;
