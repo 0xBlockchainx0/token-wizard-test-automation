@@ -1,31 +1,31 @@
 const logger = require('../entity/Logger.js').logger;
-const page =require('./Page.js').Page;
+const Page =require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 
 const buttonNewCrowdsale=By.className("button button_fill");
 const buttonChooseContract=By.className("button button_outline");
 
-class WizardWelcome extends page.Page{
+class WizardWelcome extends Page {
 
-    constructor(driver,URL){
+    constructor(driver,Url) {
         super(driver);
-        this.URL = URL;
+        this.Url = Url;
         this.name = "WizardWelcome page: ";
     }
 
-    async clickButtonNewCrowdsale(){
+    async clickButtonNewCrowdsale() {
         logger.info(this.name + "button NewCrowdsale");
         return await super.clickWithWait(buttonNewCrowdsale);
     }
 
-    async clickButtonChooseContract(){
+    async clickButtonChooseContract() {
         logger.info(this.name + "button ChooseContract");
         return await  super.clickWithWait(buttonChooseContract);
     }
 
     async open() {
 	    logger.info(this.name + ": open");
-	    await super.open(this.URL);
+	    await super.open(this.Url);
 	    return await super.getUrl();
     }
 
@@ -39,7 +39,7 @@ class WizardWelcome extends page.Page{
 		return await super.isElementDisplayed(buttonChooseContract);
 	}
 
-	async isPage(){
+	async isPage() {
         return await super.isElementDisplayed(buttonNewCrowdsale) &&
 	           await super.isElementDisplayed(buttonChooseContract);
     }
