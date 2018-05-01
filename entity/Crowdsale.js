@@ -45,8 +45,8 @@ class Crowdsale {
 		this.gasPrice=obj.gasprice;
 		this.minCap=obj.mincap;
 		this.whitelisting=obj.whitelisting;
-		for (var i=0;i<obj.tiers.length;i++) {
-			var isWhitelist;
+		for (let i=0;i<obj.tiers.length;i++) {
+			let isWhitelist;
 			if (this.whitelisting) {
 				isWhitelist = obj.tiers[i].whitelist;
 			}

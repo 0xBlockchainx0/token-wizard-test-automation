@@ -15,8 +15,8 @@ const ReservedTokens=reservedTokens.ReservedTokens;
 const reservedTokensPage=require('../pages/ReservedTokensPage.js');
 const ReservedTokensPage=reservedTokensPage.ReservedTokensPage;
 webdriver = require('selenium-webdriver');
-var test = require('selenium-webdriver/testing');
-var assert = require('assert');
+let test = require('selenium-webdriver/testing');
+let assert = require('assert');
 const fs = require('fs-extra');
 const eth_wallet=require('ethereumjs-wallet');
 const bundleRA=[];
@@ -25,7 +25,7 @@ const bundleAccounts=[];
 const number=process.argv[2];
 const network=process.argv[3];
 
-//testRA();
+testRA();
 
   async function testRA() {
 
@@ -37,12 +37,14 @@ const network=process.argv[3];
 
 	logger.info("Test: create crowdsale with bundle of reserved tokens");
 	let driver = await Utils.startBrowserWithMetamask();
+	let user3_F16AFile='./users/user3_F16A.json';//Rinkeby
 	let user4_F16AFile='./users/user4_F16A.json';//Rinkeby
 	let user8545_56B2File='./users/user8545_56B2.json';//Ganache
 	let user77_56B2File='./users/user77_56B2.json';//Sokol
 	let Owner;
 	  switch(network)
 	  {
+	  	  case '3': { Owner = new User (driver,user3_F16AFile);break;}
 		  case '4': { Owner = new User (driver,user4_F16AFile);break;}
 		  case '8545':{Owner = new User (driver,user8545_56B2File);break;}
 		  default: {Owner =  new User (driver,user77_56B2File);break;}
@@ -54,14 +56,18 @@ const network=process.argv[3];
 	let mtMask = new MetaMask(driver);
 	await mtMask.activate();//return activated Metamask and empty page
     await Owner.setMetaMaskAccount();
-    var scenario = './scenarios/testRA.json';
+    let scenario = './scenarios/testRA.json';
     let crowdsale = await Utils.getCrowdsaleInstance(scenario);
-    crowdsale = await Owner.createCrowdsale(crowdsale,5,'reserved');
+
+
+   crowdsale = await Owner.createCrowdsale(crowdsale,1,'reserved');
 
 	await Owner.openInvestPage(crowdsale);
 	await driver.sleep(15000);
-	await Owner.contribute(crowdsale.currency.tiers[0].supply);
-	await Owner.distribute(crowdsale);
+	await driver.sleep(180000);
+	//await Owner.contribute(crowdsale.tiers[0].supply);
+	await Owner.contribute(20);
+	//await Owner.distribute(crowdsale);
 	await Owner.finalize(crowdsale);
     let obj;
 	let balance;
@@ -70,7 +76,7 @@ const network=process.argv[3];
     let user= Owner;
     for (let i=0;i<bundleRA.length;i++) {
 
-	if (bundleRA[i].dimension=='percentage')
+	if (bundleRA[i].dimension === 'percentage')
       shouldBe=bundleRA[i].value*crowdsale.tiers[0].supply/100;
 	  else shouldBe=bundleRA[i].value;
 
@@ -79,8 +85,8 @@ const network=process.argv[3];
 	user.networkID=Owner.networkID;
 	balance=await user.getTokenBalance(crowdsale)/1e18;
 	bundleAccounts[i].balance=balance;
-	isPass=isPass&&(shouldBe==balance);
-	logger.info("#"+i+"   should be:"+ shouldBe+"    balance: "+balance+"   "+ (shouldBe==balance));
+	isPass=isPass&&(shouldBe === balance);
+	logger.info("#"+i+"   should be:"+ shouldBe+"    balance: "+balance+"   "+ (shouldBe === balance));
     }
 
     logger.info("RESULT: "+isPass);
@@ -107,11 +113,11 @@ const network=process.argv[3];
 	   let RA;
   	logger.info("fill reserved tokens for testRA")
 	   const reservedTokensPage=new ReservedTokensPage(driver);
-	   for (var i=0;i<number;i++) {
+	   for (let i=0;i<number;i++) {
 	   account=await generateAccount();
 
 	   dimension=Math.round(Math.random());
-	   if (dimension==0) dimension='percentage';
+	   if (dimension === 0) dimension='percentage';
 	     else dimension='tokens';
 
 	   value=Math.trunc(Math.random()*1000);

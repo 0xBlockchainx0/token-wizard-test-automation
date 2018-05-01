@@ -130,7 +130,7 @@ class ManagePage extends Page  {
 	async isPresentWarningStartTimeTier1(){
 		try {
 		logger.info(this.name+"red warning if data wrong :");
-		let result=await super.getTextByLocatorFast(warningStartTimeTier1);
+		let result=await super.getTextForElement(warningStartTimeTier1,1);
 		logger.info("Text="+result);
 			return (result!=="");
 		}
@@ -144,7 +144,7 @@ class ManagePage extends Page  {
     	try {
 		    logger.info(this.name + "red warning if data wrong :");
 		    await this.driver.sleep(1000);
-		    let result = await super.getTextByLocatorFast(warningStartTimeTier2);
+		    let result = await super.getTextForElement(warningStartTimeTier2,1);
 		    logger.info("Text=" + result);
 		    return (result!=="");
 	    }
@@ -157,14 +157,14 @@ class ManagePage extends Page  {
 	async isPresentWarningEndTimeTier2(){
 		logger.info(this.name+"red warning if data wrong :");
 		await this.driver.sleep(1000);
-		let result=await super.getTextByLocatorFast(warningEndTimeTier2);
+		let result=await super.getTextForElement(warningEndTimeTier2,1);
 		logger.info("Text="+result);
 		return (result!=="");
 	}
     async isPresentWarningEndTimeTier1(){
 	    logger.info(this.name+"red warning if data wrong :");
     	await this.driver.sleep(500);
-    	var result=await super.getTextByLocatorFast(warningEndTimeTier1);
+    	var result=await super.getTextForElement(warningEndTimeTier1,1);
     	logger.info("Text="+result);
     	return (result!=="");
     }
@@ -264,7 +264,7 @@ class ManagePage extends Page  {
 
 	async isPresentButtonDistribute() {
 	    logger.info(this.name+"button Distribute :");
-	   return await super.isElementPresent(buttonDistribute);
+	   return await super.isElementDisplayed(buttonDistribute);
 
 	}
 
@@ -304,12 +304,12 @@ class ManagePage extends Page  {
 
     async isPresentPopupYesFinalize() {
     	logger.info(this.name+"confirm Finalize/Yes :");
-        return await super.isElementPresent(buttonYesFinalize);
+        return await super.isElementDisplayed(buttonYesFinalize);
     }
 
 	async isPresentButtonOK(){
 	    logger.info(this.name+"button OK :");
-	    return await super.isElementPresent(buttonOk);
+	    return await super.isElementDisplayed(buttonOk);
 	}
 
 	async clickButtonOK() {

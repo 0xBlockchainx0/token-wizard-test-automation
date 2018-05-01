@@ -21,7 +21,7 @@ class WizardStep1 extends page.Page{
     }
 
     async isPresentButtonContinue(){
-		var b=await super.isElementPresent(buttonContinue);
+		var b=await super.isElementDisplayed(buttonContinue);
         logger.info(this.name+": is present button Continue: "+b);
 		return b;
 

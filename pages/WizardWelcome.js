@@ -36,17 +36,17 @@ class WizardWelcome extends page.Page{
     {
         logger.info(this.name+": ");
       await   super.open(this.URL);
-      return await super.getURL();
+      return await super.getUrl();
 
     }
     async isPresentButtonNewCrowdsale(){
-	    return await super.isElementPresent(buttonNewCrowdsale);
+	    return await super.isElementDisplayed(buttonNewCrowdsale);
     }
 	async isPresentButtonChooseContract(){
-		return await super.isElementPresent(buttonChooseContract);
+		return await super.isElementDisplayed(buttonChooseContract);
 	}
 	async isPage(){
-        return await super.isElementPresent(buttonNewCrowdsale) &&  await super.isElementPresent(buttonChooseContract);
+        return await super.isElementDisplayed(buttonNewCrowdsale) &&  await super.isElementDisplayed(buttonChooseContract);
     }
 
 

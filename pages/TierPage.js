@@ -209,7 +209,7 @@ class TierPage extends page.Page {
 
     }
     async fillStartTime()
-    {
+    {  if((this.tier.startDate=="")) return;
 	    await this.init();
         logger.info(this.name+"field StartTime: ");
 
@@ -230,8 +230,12 @@ class TierPage extends page.Page {
 
 	    }
 	    await super.clickWithWait(locator);
+
+
 	    await super.fillWithWait(locator,this.tier.startDate);
-        const action=this.driver.actions();
+
+
+	    const action=this.driver.actions();
         await action.sendKeys(key.TAB).perform();
         await super.fillWithWait(locator,this.tier.startTime);
 
@@ -239,6 +243,7 @@ class TierPage extends page.Page {
     }
     async fillEndTime()
     {
+	    if((this.tier.endDate=="")) return;
 	    await this.init();
         logger.info(this.name+"field EndTime: ");
 
@@ -252,7 +257,7 @@ class TierPage extends page.Page {
         }
 
 
-        if((this.tier.endDate=="")) return;
+
 	    else
 	    if (format=="mdy") {
 		    this.tier.endDate=Utils.convertDateToMdy(this.tier.endDate);
@@ -354,7 +359,7 @@ async clickButtonClearAll(){
 		logger.info(this.name + "is present warning :");
 		return false;
 		await this.initWarnings();
-		let s = await super.getTextByElement(this.warningName);
+		let s = await super.getTextForElement(this.warningName);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}
@@ -362,7 +367,7 @@ async clickButtonClearAll(){
 		logger.info(this.name + "is present warning :");
 		return false;
 		await this.initWarnings();
-		let s = await super.getTextByElement(this.warningStartTime);
+		let s = await super.getTextForElement(this.warningStartTime);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}
@@ -370,7 +375,7 @@ async clickButtonClearAll(){
 		logger.info(this.name + "is present warning :");
 		return false;
 		await this.initWarnings();
-		let s = await super.getTextByElement(this.warningEndTime);
+		let s = await super.getTextForElement(this.warningEndTime);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}
@@ -379,7 +384,7 @@ async clickButtonClearAll(){
 		return false;
 
 		await this.initWarnings();
-		let s = await super.getTextByElement(this.warningRate);
+		let s = await super.getTextForElement(this.warningRate);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}
@@ -388,7 +393,7 @@ async clickButtonClearAll(){
 		return false;
 		return false;
 		await this.initWarnings();
-		let s = await super.getTextByElement(this.warningSupply);
+		let s = await super.getTextForElement(this.warningSupply);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}
@@ -396,7 +401,7 @@ async clickButtonClearAll(){
 		logger.info(this.name + "is present warning :");
 		return false;
 		await this.initWarnings();
-		let s = await super.getTextByElement(this.warningWhAddress);
+		let s = await super.getTextForElement(this.warningWhAddress);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}
@@ -404,7 +409,7 @@ async clickButtonClearAll(){
 		logger.info(this.name + "is present warning :");
 		return false;
 		await this.initWarnings();
-		let s = await super.getTextByElement(this.warningWhMin);
+		let s = await super.getTextForElement(this.warningWhMin);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}
@@ -412,7 +417,7 @@ async clickButtonClearAll(){
 		logger.info(this.name + "is present warning :");
 		return false;
 		await this.initWarnings();
-		let s = await super.getTextByElement(this.warningWhMax);
+		let s = await super.getTextForElement(this.warningWhMax);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}

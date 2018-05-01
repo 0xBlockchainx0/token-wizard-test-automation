@@ -46,7 +46,7 @@ class WizardStep4 extends page.Page{
  		await this.initFields();
     	logger.info(this.name+": get ABI: ");
     	let element = this.fieldTokenABI;
-    	let abi=await super.getTextByElement(element);
+    	let abi=await super.getTextForElement(element);
     	abi=JSON.parse(abi);
     	return abi;
 
@@ -55,7 +55,7 @@ class WizardStep4 extends page.Page{
 
 async isPresentModal(){
 	logger.info(this.name+"Is present Modal: ");
-        return await super.isElementPresent(modal);
+        return await super.isElementDisplayed(modal);
 }
     async clickButtonContinue(){
         logger.info(this.name+"buttonContinue: ");
@@ -69,12 +69,12 @@ async isPresentModal(){
     }
     async isPresentButtonOk(){
 		logger.info(this.name+"Is present buttonOK: ");
-		return await super.isElementPresent(buttonOK);
+		return await super.isElementDisplayed(buttonOK);
 
 	}
 	async isPresentButtonSkipTransaction(){
 		logger.info(this.name+"Is present buttonSkipTransaction: ");
-		return await super.isElementPresent(buttonSkipTransaction);
+		return await super.isElementDisplayed(buttonSkipTransaction);
 
 	}
 	async clickButtonSkipTransaction(){

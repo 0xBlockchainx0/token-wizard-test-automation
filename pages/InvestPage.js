@@ -57,7 +57,7 @@ class InvestPage extends Page{
 	        let arr = await super.findWithWait(countdownTimerValue);
 	        let result = 0;
 	        for (let i = 0; i < arr.length; i++) {
-		        result = result + parseInt((await this.getTextByElement(arr[i])));
+		        result = result + parseInt((await this.getTextForElement(arr[i])));
 	        }
             if (result<0) result=0;
 
@@ -73,19 +73,19 @@ class InvestPage extends Page{
 
         logger.info(this.name+"get Balance :");
         //await this.driver.sleep(5000);
-        return  await super.getTextByLocator(fieldBalance);
+        return  await super.getTextForElement(fieldBalance);
     }
     async isPresentError(){
         logger.info(this.name+"Error text :");
-        return (await super.isElementPresent(errorNotice));
+        return (await super.isElementDisplayed(errorNotice));
     }
     async isPresentWarning(){
         logger.info(this.name+"Warning  :");
-        return (await super.isElementPresent(buttonOk));
+        return (await super.isElementDisplayed(buttonOk));
     }
 	async isPresentCountdownTimer(){
 		logger.info(this.name+"countdown timer  :");
-		return (await super.isElementPresent(countdownTimer));
+		return (await super.isElementDisplayed(countdownTimer));
 	}
 
    async  clickButtonOK(){
@@ -105,25 +105,25 @@ class InvestPage extends Page{
     }
     async getWarningText() {
         logger.info(this.name+"Warning text :");
-        return  await super.getTextByLocator(warningText);
+        return  await super.getTextForElement(warningText);
     }
 
     async getErrorText() {
         logger.info(this.name+"Error text :");
-        return  await super.getTextByLocator(errorNotice);
+        return  await super.getTextForElement(errorNotice);
     }
 
      async getExecutionID() {
         logger.info(this.name+"field TokenAddress :");
         await  this.initFields();
-        return  await super.getTextByElement(this.fieldExecutionID);
+        return  await super.getTextForElement(this.fieldExecutionID);
     }
 
 
     async getCurrentAccount(){
         logger.info(this.name+"field CurrentAccount :");
         await  this.initFields();
-        return  await super.getTextByElement(this.fieldCurrentAccount);
+        return  await super.getTextForElement(this.fieldCurrentAccount);
     }
 
 }

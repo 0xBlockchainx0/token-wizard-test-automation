@@ -167,14 +167,14 @@ class ReservedTokensPage extends Page{
         await super.clickWithWait(buttonClearAll);
     }
     async isPresentButtonClearAll(){
-        return await super.isElementPresent(buttonClearAll);
+        return await super.isElementDisplayed(buttonClearAll);
     }
 
     async isPresentButtonYesAlert(){
-		return await super.isElementPresent(buttonYesAlert);
+		return await super.isElementDisplayed(buttonYesAlert);
 	}
 	async isPresentButtonNoAlert(){
-		return await super.isElementPresent(buttonNoAlert);
+		return await super.isElementDisplayed(buttonNoAlert);
 	}
 
 	async clickButtonYesAlert(){
@@ -188,7 +188,7 @@ class ReservedTokensPage extends Page{
 	async isPresentWarningAddress(){
     	return false;
 		await this.initWarnings();
-		let s=await super.getTextByElement(this.warningAddress);
+		let s=await super.getTextForElement(this.warningAddress);
 		if (s!="") return true;
 		else return false;
 	}
@@ -196,7 +196,7 @@ class ReservedTokensPage extends Page{
 	async isPresentWarningValue(){
     	return false;
 		await this.initWarnings();
-		let s=await super.getTextByElement(this.warningValue);
+		let s=await super.getTextForElement(this.warningValue);
 		if (s!="") return true;
 		else return false;
 	}

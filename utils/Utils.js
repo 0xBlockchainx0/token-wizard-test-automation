@@ -273,25 +273,15 @@ return q;
 
     }
 
-        static async  startBrowserWithMetamask() {
-        var source = 'MetaMask.crx';
-        if (!fs.existsSync(source)) source = '.node_modules/token-wizard-test-automation/MetaMask.crx';
-
-        logger.info("Metamask source:"+source);
-        var options = new chrome.Options();
-        options.addExtensions(source);
-        //options.addArguments("user-data-dir=/home/d/GoogleProfile");
-        //options.addArguments("user-data-dir=/home/d/.config/google-chrome/");
-       //
-	     // options.addArguments('headless');
-        //options.addArguments('--start-maximized');
-        options.addArguments('disable-popup-blocking');
-        //options.addArguments('test-type');
-        var driver=await new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
-
-	     return driver;
-
-    }
+	static async  startBrowserWithMetamask() {
+		let source = './MetaMask.crx';
+		let options = new chrome.Options();
+		await options.addExtensions(source);
+		await options.addArguments('disable-popup-blocking');
+		let driver = await new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
+		await driver.sleep(5000);
+		return driver;
+	}
 
 
     static async zoom(driver,z){

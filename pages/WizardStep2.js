@@ -99,7 +99,7 @@ async clickButtonContinue(){
 
 }
 	async isPresentButtonContinue(){
-		var b=await super.isElementPresent(buttonContinue);
+		var b=await super.isElementDisplayed(buttonContinue);
 		logger.info(this.name+": is present button Continue: "+b);
 		return b;
 
@@ -108,7 +108,7 @@ async clickButtonContinue(){
     async isPresentWarningName(){
 	    return false;
     	await this.initWarnings();
-    	let s=await super.getTextByElement(this.warningName);
+    	let s=await super.getTextForElement(this.warningName);
     	if (s!="") return true;
     	else return false;
     }
@@ -116,7 +116,7 @@ async clickButtonContinue(){
 	async isPresentWarningTicker(){
     	return false;
 		await this.initWarnings();
-		let s=await super.getTextByElement(this.warningTicker);
+		let s=await super.getTextForElement(this.warningTicker);
 		if (s!="") return true;
 		else return false;
 	}
@@ -124,7 +124,7 @@ async clickButtonContinue(){
 	async isPresentWarningDecimals(){
 		return false;
 		await this.initWarnings();
-		let s=await super.getTextByElement(this.warningDecimals);
+		let s=await super.getTextForElement(this.warningDecimals);
 		if (s!="") return true;
 		else return false;
 	}

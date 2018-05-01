@@ -18,7 +18,7 @@ class CrowdsalePage extends Page {
     }
    async isPresentButtonInvest() {
 	   logger.info(this.name+" button Invest :");
-	   return super.isElementPresent(buttonInvest);
+	   return super.isElementDisplayed(buttonInvest);
    }
    async  clickButtonInvest() {
         logger.info(this.name+"button Invest :");

@@ -38,7 +38,7 @@ class User {
   constructor(driver,file){
 try{
 	   this.driver = driver;
-	   var obj = JSON.parse(fs.readFileSync(file, "utf8"));
+	   let obj = JSON.parse(fs.readFileSync(file, "utf8"));
 	   this.account = obj.account;
 	   this.privateKey = obj.privateKey;
 	   this.networkID = obj.networkID;
@@ -50,6 +50,23 @@ try{
      }
 
   }
+	async getTokenBalanceAuthos(crowdsale) {
+  	const MintedCappedCrowdsale_InitCrowdsale=[{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"},{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"allowed","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"getTokensSold","outputs":[{"name":"tokens_sold","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"},{"name":"_tier_index","type":"uint256"}],"name":"getTierWhitelist","outputs":[{"name":"num_whitelisted","type":"uint256"},{"name":"whitelist","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"},{"name":"_tier_index","type":"uint256"},{"name":"_buyer","type":"address"}],"name":"getWhitelistStatus","outputs":[{"name":"minimum_contribution","type":"uint256"},{"name":"max_spend_remaining","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"},{"name":"_index","type":"uint256"}],"name":"getTierStartAndEndDates","outputs":[{"name":"tier_start","type":"uint256"},{"name":"tier_end","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"decimals","outputs":[{"name":"token_decimals","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"},{"name":"_index","type":"uint256"}],"name":"getCrowdsaleTier","outputs":[{"name":"tier_name","type":"bytes32"},{"name":"tier_sell_cap","type":"uint256"},{"name":"tier_price","type":"uint256"},{"name":"tier_duration","type":"uint256"},{"name":"duration_is_modifiable","type":"bool"},{"name":"whitelist_enabled","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"totalSupply","outputs":[{"name":"total_supply","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"getCrowdsaleStartAndEndTimes","outputs":[{"name":"start_time","type":"uint256"},{"name":"end_time","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"symbol","outputs":[{"name":"token_symbol","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"},{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"owner_balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"getCrowdsaleMaxRaise","outputs":[{"name":"wei_raise_cap","type":"uint256"},{"name":"total_sell_cap","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"},{"name":"_agent","type":"address"}],"name":"getTransferAgentStatus","outputs":[{"name":"is_transfer_agent","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"},{"name":"_destination","type":"address"}],"name":"getReservedDestinationInfo","outputs":[{"name":"destination_list_index","type":"uint256"},{"name":"num_tokens","type":"uint256"},{"name":"num_percent","type":"uint256"},{"name":"percent_decimals","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"isCrowdsaleFull","outputs":[{"name":"is_crowdsale_full","type":"bool"},{"name":"max_sellable","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"getCrowdsaleUniqueBuyers","outputs":[{"name":"num_unique","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"getAdmin","outputs":[{"name":"admin","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"getReservedTokenDestinationList","outputs":[{"name":"num_destinations","type":"uint256"},{"name":"reserved_destinations","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"getTokenInfo","outputs":[{"name":"token_name","type":"bytes32"},{"name":"token_symbol","type":"bytes32"},{"name":"token_decimals","type":"uint256"},{"name":"total_supply","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"getCrowdsaleInfo","outputs":[{"name":"wei_raised","type":"uint256"},{"name":"team_wallet","type":"address"},{"name":"minimum_contribution","type":"uint256"},{"name":"is_initialized","type":"bool"},{"name":"is_finalized","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_team_wallet","type":"address"},{"name":"_start_time","type":"uint256"},{"name":"_initial_tier_name","type":"bytes32"},{"name":"_initial_tier_price","type":"uint256"},{"name":"_initial_tier_duration","type":"uint256"},{"name":"_initial_tier_token_sell_cap","type":"uint256"},{"name":"_initial_tier_is_whitelisted","type":"bool"},{"name":"_initial_tier_duration_is_modifiable","type":"bool"},{"name":"_admin","type":"address"}],"name":"init","outputs":[{"name":"store_data","type":"bytes32[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"name","outputs":[{"name":"token_name","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"getCurrentTierInfo","outputs":[{"name":"tier_name","type":"bytes32"},{"name":"tier_index","type":"uint256"},{"name":"tier_ends_at","type":"uint256"},{"name":"tier_tokens_remaining","type":"uint256"},{"name":"tier_price","type":"uint256"},{"name":"duration_is_modifiable","type":"bool"},{"name":"whitelist_enabled","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_storage","type":"address"},{"name":"_exec_id","type":"bytes32"}],"name":"getCrowdsaleTierList","outputs":[{"name":"crowdsale_tiers","type":"bytes32[]"}],"payable":false,"stateMutability":"view","type":"function"}]
+
+		logger.info("GetTokenBalance: account="+this.account);
+		logger.info("Token exec ID="+crowdsale.executionID);
+		try {
+			let web3 = Utils.setNetwork(this.networkID);
+			//let MintedCappedCrowdsale_InitCrowdsale = "0xBd9383C930974cca9AB8629e77557AB336aB5Dd7";
+			let MyContract = new web3.eth.Contract(MintedCappedCrowdsale_InitCrowdsale);
+			return await MyContract.methods.balanceOf("0x8D1084B586Cb4B298BEA5550AD020C9DE7fc48c5",
+				"0xb9fe5427ada7c3b12c705267f54bfb2d6927465d83ff738584eea6ebe0c2da7f",this.account).call();
+		}
+		catch(err) {
+			logger.info("Can not get balance. "+err);
+			return 0;
+		}
+	}
 
   async getTokenBalance(crowdsale) {
     logger.info("GetTokenBalance: account="+this.account);
@@ -147,7 +164,7 @@ try{
 	  await mngPage.fillRateTier(tier, value);
 	  await mngPage.clickButtonSave();
 	  let metaMask = new MetaMask(this.driver);
-	  await metaMask.doTransaction(5);
+	  await metaMask.signTransaction(5);
 	  await mngPage.waitUntilLoaderGone();
 	  let result = await this.confirmPopup();
       await mngPage.waitUntilLoaderGone();
@@ -165,7 +182,7 @@ try{
 	let mngPage=new ManagePage(this.driver);
 	await mngPage.fillWhitelist(tier,address,min,max);
 	let metaMask = new MetaMask(this.driver);
-	let result=await metaMask.doTransaction(5);
+	let result=await metaMask.signTransaction(5);
 	if (!result) return false;
 	await mngPage.waitUntilLoaderGone();
 	result = await this.confirmPopup();
@@ -181,7 +198,7 @@ try{
 	  await mngPage.fillSupplyTier(tier, value);
 	  await mngPage.clickButtonSave();
 	  let metaMask = new MetaMask(this.driver);
-	  await metaMask.doTransaction(5);
+	  await metaMask.signTransaction(5);
 	  await mngPage.waitUntilLoaderGone();
 	  let result = await this.confirmPopup();
 	  await mngPage.waitUntilLoaderGone();
@@ -212,7 +229,7 @@ try{
       }
 	await mngPage.clickButtonSave();
 	let metaMask = new MetaMask(this.driver);
-	await metaMask.doTransaction(5);
+	await metaMask.signTransaction(5);
 	await mngPage.waitUntilLoaderGone();
     b = await this.confirmPopup();
 	await mngPage.waitUntilLoaderGone();
@@ -242,7 +259,7 @@ try{
         return false;
       await mngPage.clickButtonSave();
 	  let metaMask = new MetaMask(this.driver);
-	  await metaMask.doTransaction();
+	  await metaMask.signTransaction();
 	  await mngPage.waitUntilLoaderGone();
       result = await this.confirmPopup();
 	  await mngPage.waitUntilLoaderGone();
@@ -297,7 +314,7 @@ try{
 	    return false;
 	  }
     let metaMask = new meta.MetaMask(this.driver);
-    await metaMask.doTransaction(5);
+    await metaMask.signTransaction(5);
     await mngPage.waitUntilLoaderGone();
     result = await mngPage.confirmPopup();
     return true;
@@ -308,11 +325,6 @@ try{
     await this.openManagePage(crowdsale);
     let mngPage=new ManagePage(this.driver);
     await mngPage.waitUntilLoaderGone();
-    await this.driver.sleep(3000);
-    await mngPage.refresh();
-    await this.driver.sleep(3000);
-	await mngPage.clickButtonDistribute();
-    await mngPage.refresh();
     await this.driver.sleep(3000);
     if ( await mngPage.isEnabledFinalize()) {
       await mngPage.clickButtonFinalize();
@@ -327,7 +339,7 @@ try{
     } while(!(await mngPage.isPresentPopupYesFinalize()));
     await mngPage.clickButtonYesFinalize();
     let metaMask = new meta.MetaMask(this.driver);
-    await metaMask.doTransaction(5);
+    await metaMask.signTransaction(5);
     await mngPage.waitUntilLoaderGone();
     await mngPage.confirmPopup();
     return true;
@@ -337,7 +349,7 @@ try{
 
   	logger.info("create crowdsale:")
 	let refreshCount=5;
-	if ((this.networkID!=8545)&&(this.networkID!=77)) refreshCount=15;
+	//if ((this.networkID!=8545)&&(this.networkID!=77)) refreshCount=15;
 
     const  startURL=Utils.getStartURL();
 	const welcomePage = new WizardWelcome(this.driver,startURL);
@@ -380,11 +392,11 @@ try{
     do { await wizardStep2.fillDecimals(crowdsale.decimals);
     } while(await wizardStep2.isPresentWarningDecimals());
 
-    if (option=='reserved') {
+    if (option ==='reserved') {
     	await testRA.fillReservedTokens(this.driver); //for testing bundle of reserved addresses
     }
       else
-        for (var i=0;i<crowdsale.reservedTokens.length;i++) {
+        for (let i=0;i<crowdsale.reservedTokens.length;i++) {
           await reservedTokens.fillReservedTokens(crowdsale.reservedTokens[i]);
           await reservedTokens.clickButtonAddReservedTokens();
         }
@@ -400,13 +412,17 @@ try{
 	} else {
 		do { await wizardStep3.fillMinCap(crowdsale.minCap);
 		} while(await wizardStep3.isPresentWarningMincap())
-	  };
+	  }
 
-    for (var i = 0; i < crowdsale.tiers.length - 1; i++) {
+    for (let i = 0; i < crowdsale.tiers.length - 1; i++) {
       await tiers[i].fillTier();
       await wizardStep3.clickButtonAddTier();
     }
     await tiers[crowdsale.tiers.length - 1].fillTier();
+
+	await this.driver.sleep(10000);
+
+
     count=30;
     do {
       await this.driver.sleep(1000);
@@ -416,7 +432,7 @@ try{
         await wizardStep3.clickButtonContinue();
 	  }
 	    else break;
-	  if (count==1) {
+	  if (count === 1) {
 	    logger.info("Incorrect data in tiers");
 		//await wizardStep3.printWarnings();
 		return null;
@@ -430,7 +446,7 @@ try{
     let timeLimit=timeLimitTransactions*crowdsale.tiers.length;
 
     do  {
-      result=await metaMask.doTransaction(refreshCount);
+      result=await metaMask.signTransaction(refreshCount);
 	  counterTransactions++;
       if (!result) {
 	    logger.info("Transaction #"+counterTransactions+" didn't appear.");
@@ -438,7 +454,7 @@ try{
 	    else {
           logger.info("Transaction# "+counterTransactions+" is successfull");
         }
-      await this.driver.sleep(Tfactor*3000);//anyway won't be faster than start time
+      await this.driver.sleep(Tfactor*2000);//anyway won't be faster than start time
       if (await wizardStep4.isPresentButtonSkipTransaction()) {
         await wizardStep4.clickButtonSkipTransaction();
 
@@ -463,7 +479,7 @@ try{
 	    isContinue=false;
       }
 
-	  if((timeLimit--)==0) {
+	  if((timeLimit--) === 0) {
       	logger.info("Deployment failed because time expired."+"\n"+
 	                " Transaction were done:"+ (counterTransactions-skippedTransactions)+
                     "\n"+ "Transaction were skipped: "+skippedTransactions);
@@ -476,7 +492,7 @@ try{
 	             (counterTransactions-skippedTransactions)+
 	             "\n"+ "Transaction were skipped: "+skippedTransactions);
 
-	await this.driver.sleep(5000);
+	//await this.driver.sleep(5000);
 	//const abi=await wizardStep4.getABI();
 
     await wizardStep4.clickButtonContinue();
@@ -486,7 +502,7 @@ try{
 	do { await crowdsalePage.clickButtonInvest();}
     while (! await investPage.isPresentCountdownTimer())
 
-    const  urlInvestPage=await investPage.getURL();
+    const  urlInvestPage=await investPage.getUrl();
     await investPage.waitUntilLoaderGone();
     const executionID=await investPage.getExecutionID();
 
@@ -542,7 +558,7 @@ try{
       }
     } while(isContinue);
 
-    let result=await new MetaMask(this.driver).doTransaction(5);
+    let result=await new MetaMask(this.driver).signTransaction(5);
     if (!result) {
     	return false;
     }
@@ -564,12 +580,10 @@ try{
   async getBalanceFromInvestPage(crowdsale) {
   	logger.info("get balance from "+crowdsale.url);
     const investPage = new InvestPage(this.driver);
-    const curURL=await investPage.getURL();
+    const curURL=await investPage.getUrl();
     if(crowdsale.url!=curURL) await investPage.open(crowdsale.url);
     await investPage.waitUntilLoaderGone();
-    await this.driver.sleep(2000);
-	await investPage.refresh();
-	await this.driver.sleep(1000);
+    await this.driver.sleep(10000);
 	await investPage.refresh();
 	await this.driver.sleep(2000);
     let result=await investPage.getBalance();

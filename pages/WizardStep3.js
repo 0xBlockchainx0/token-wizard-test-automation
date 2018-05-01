@@ -57,7 +57,7 @@ async printWarnings(){
     	var arr=await this.initWarnings();
     	for (var i=0;i<arr.length;i++)
 	    {
-	    	logger.info(i+" : "+ await super.getTextByElement(arr[i]));
+	    	logger.info(i+" : "+ await super.getTextForElement(arr[i]));
 	    }
 }
 	async initWarnings(){
@@ -225,7 +225,7 @@ catch(err)
 		logger.info(this.name + "is present warning :");
 		return false;
 		await this.initWarnings();
-		let s = await super.getTextByElement(this.warningMincap);
+		let s = await super.getTextForElement(this.warningMincap);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}
@@ -233,7 +233,7 @@ catch(err)
 		return false;
 		logger.info(this.name + "is present warning :");
 		await this.initWarnings();
-		let s = await super.getTextByElement(this.warningCustomGasPrice);
+		let s = await super.getTextForElement(this.warningCustomGasPrice);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
 	}
@@ -243,7 +243,7 @@ catch(err)
 	    logger.info(this.name + "is present warning :");
 	    return false;
 	    await this.initWarnings();
-	    let s = await super.getTextByElement(this.warningWalletAddress);
+	    let s = await super.getTextForElement(this.warningWalletAddress);
 	    if (s != "") { logger.info("present");return true;}
 	    else {logger.info("not present");return false;}
     }
@@ -298,7 +298,7 @@ async clickButtonOk(){
 }
 
 	async isPresentButtonContinue(){
-		var b=await super.isElementPresent(buttonContinue);
+		var b=await super.isElementDisplayed(buttonContinue);
 		logger.info(this.name+": is present button Continue: "+b);
 		return b;
 
