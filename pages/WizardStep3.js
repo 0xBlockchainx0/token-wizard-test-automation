@@ -1,13 +1,7 @@
-const Logger= require('../entity/Logger.js');
-const logger=Logger.logger;
-const tempOutputPath=Logger.tempOutputPath;
+const logger = require('../entity/Logger.js').logger;
+const Page = require('./Page.js').Page;
+const By = require('selenium-webdriver/lib/by').By;
 
-const page=require('./Page.js');
-const webdriver = require('selenium-webdriver'),
-      chrome = require('selenium-webdriver/chrome'),
-      firefox = require('selenium-webdriver/firefox'),
-      by = require('selenium-webdriver/lib/by');
-const By=by.By;
 
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
 const buttonAddTier=By.className("button button_fill_secondary");
@@ -21,7 +15,7 @@ const fieldMinCap=By.id("minCap");
 let flagCustom=false;
 let flagWHitelising=false;
 var COUNT_TIERS=0;
-class WizardStep3 extends page.Page{
+class WizardStep3 extends Page{
 
     constructor(driver){
         super(driver);

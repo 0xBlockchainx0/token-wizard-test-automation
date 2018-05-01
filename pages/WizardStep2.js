@@ -5,7 +5,7 @@ const buttonContinue = By.xpath("//*[contains(text(),'Continue')]");
 const fieldName = By.id("name");
 const fieldTicker = By.id("ticker");
 const fieldDecimals = By.id("decimals");
-const fieldSuplly = By.id("supply");
+const fieldSupply = By.id("supply");
 
 class WizardStep2 extends Page {
 
@@ -63,8 +63,8 @@ class WizardStep2 extends Page {
 
 	async fillSupply(value) {
 		logger.info(this.name + "fillSupply ");
-		return await super.clearField(value) &&
-			   await super.fillWithWait(fieldSuplly, value);
+		return await super.clearField(fieldSupply) &&
+			   await super.fillWithWait(fieldSupply, value);
 	}
 
 	async clickButtonContinue() {
