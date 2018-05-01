@@ -1,13 +1,7 @@
-const Logger= require('../entity/Logger.js');
-const logger=Logger.logger;
-const tempOutputPath=Logger.tempOutputPath;
+const logger = require('../entity/Logger.js').logger;
+const page =require('./Page.js').Page;
+const By = require('selenium-webdriver/lib/by').By;
 
-const page=require('./Page.js');
-const webdriver = require('selenium-webdriver'),
-      chrome = require('selenium-webdriver/chrome'),
-      firefox = require('selenium-webdriver/firefox'),
-      by = require('selenium-webdriver/lib/by');
-const By=by.By;
 const buttonNewCrowdsale=By.className("button button_fill");
 const buttonChooseContract=By.className("button button_outline");
 
@@ -17,39 +11,34 @@ class WizardWelcome extends page.Page{
         super(driver);
         this.URL=URL;
         this.name="WizardWelcome page: ";
-
     }
 
     async clickButtonNewCrowdsale(){
         logger.info(this.name+"button NewCrowdsale");
-        await super.clickWithWait(buttonNewCrowdsale);
-
-
-
+        return await super.clickWithWait(buttonNewCrowdsale);
     }
+
     async clickButtonChooseContract(){
         logger.info(this.name+"button ChooseContract");
-       await  super.clickWithWait(buttonChooseContract);
-        }
-
-    async open()
-    {
-        logger.info(this.name+": ");
-      await   super.open(this.URL);
-      return await super.getUrl();
-
+        return await  super.clickWithWait(buttonChooseContract);
     }
-    async isPresentButtonNewCrowdsale(){
+
+    async open() {
+	    logger.info(this.name+": open");
+	    await   super.open(this.URL);
+	    return await super.getUrl();
+    }
+
+    async isPresentButtonNewCrowdsale() {
 	    return await super.isElementDisplayed(buttonNewCrowdsale);
     }
-	async isPresentButtonChooseContract(){
+
+	async isPresentButtonChooseContract() {
 		return await super.isElementDisplayed(buttonChooseContract);
 	}
+
 	async isPage(){
         return await super.isElementDisplayed(buttonNewCrowdsale) &&  await super.isElementDisplayed(buttonChooseContract);
     }
-
-
-
 }
 module.exports.WizardWelcome=WizardWelcome;
