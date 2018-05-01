@@ -502,7 +502,7 @@ try{
 	do { await crowdsalePage.clickButtonInvest();}
     while (! await investPage.isPresentCountdownTimer())
 
-    const  urlInvestPage=await investPage.getUrl();
+    const  urlInvestPage=await investPage.getURL();
     await investPage.waitUntilLoaderGone();
     const executionID=await investPage.getExecutionID();
 
@@ -580,7 +580,7 @@ try{
   async getBalanceFromInvestPage(crowdsale) {
   	logger.info("get balance from "+crowdsale.url);
     const investPage = new InvestPage(this.driver);
-    const curURL=await investPage.getUrl();
+    const curURL=await investPage.getURL();
     if(crowdsale.url!=curURL) await investPage.open(crowdsale.url);
     await investPage.waitUntilLoaderGone();
     await this.driver.sleep(10000);

@@ -123,7 +123,7 @@ class Page {
 		}
 	}
 
-	async getUrl() {
+	async getURL() {
 		logger.info("get current page URL ");
 		return await this.driver.getCurrentUrl();
 	}

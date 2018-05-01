@@ -7,9 +7,9 @@ const buttonChooseContract=By.className("button button_outline");
 
 class WizardWelcome extends Page {
 
-    constructor(driver,Url) {
+    constructor(driver,URL) {
         super(driver);
-        this.Url = Url;
+        this.URL = URL;
         this.name = "WizardWelcome page: ";
     }
 
@@ -25,8 +25,8 @@ class WizardWelcome extends Page {
 
     async open() {
 	    logger.info(this.name + ": open");
-	    await super.open(this.Url);
-	    return await super.getUrl();
+	    await super.open(this.URL);
+	    return await super.getURL();
     }
 
     async isPresentButtonNewCrowdsale() {
