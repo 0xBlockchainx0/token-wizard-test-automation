@@ -376,7 +376,7 @@ try{
     do {
       await this.driver.sleep(1000);
       if  ((await wizardStep1.isPresentButtonContinue()) &&
-          !(await wizardStep2.isPresentFieldName()) )
+          !(await wizardStep2.isDisplayedFieldName()) )
       {
        	await wizardStep1.clickButtonContinue();
       }
@@ -384,13 +384,13 @@ try{
     } while (count-->0)
 
     do { await  wizardStep2.fillName(crowdsale.name);
-    } while(await wizardStep2.isPresentWarningName());
+    } while(await wizardStep2.isDisplayedWarningName());
 
     do { await wizardStep2.fillTicker(crowdsale.ticker);
-    } while(await wizardStep2.isPresentWarningTicker());
+    } while(await wizardStep2.isDisplayedWarningTicker());
 
     do { await wizardStep2.fillDecimals(crowdsale.decimals);
-    } while(await wizardStep2.isPresentWarningDecimals());
+    } while(await wizardStep2.isDisplayedWarningDecimals());
 
     if (option ==='reserved') {
     	await testRA.fillReservedTokens(this.driver); //for testing bundle of reserved addresses

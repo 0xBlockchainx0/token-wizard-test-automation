@@ -223,7 +223,9 @@ class Page {
 				}
 				await this.driver.sleep(200);
 				content = await field.getAttribute('value');
-			} while ((content !== "") && (counter-- > 0));
+				if (content === "") return true;
+			} while (counter-- > 0);
+			return false;
 		} catch(err) {
 			logger.info("Error: "+err);
 			return false;

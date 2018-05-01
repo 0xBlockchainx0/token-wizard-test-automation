@@ -21,8 +21,7 @@ class WizardStep1 extends Page {
 			this.checkboxWhitelistWithCap = array[0];
 			this.checkboxDutchAuction = array[1];
 			return array;
-		}
-		catch(err){
+		} catch(err){
 			logger.info("Error: " + err);
 			return null;
 		}

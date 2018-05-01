@@ -165,10 +165,10 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 
 		    await wizardStep1.clickCheckboxDutchAuction();
-		    await driver.sleep(5000);
+		    await driver.sleep(2000);
 			await wizardStep1.clickCheckboxWhitelistWithCap();
-
-
+await wizardStep1.clickButtonContinue();
+console.log( await wizardStep2.isDisplayedFieldName());
 			return await assert.equal(true,false,"stop");
 
 		});

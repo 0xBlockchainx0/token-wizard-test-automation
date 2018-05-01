@@ -1,20 +1,13 @@
+const logger = require('../entity/Logger.js').logger;
+const Page = require('./Page.js').Page;
+const By = require('selenium-webdriver/lib/by').By;
+const buttonContinue = By.xpath("//*[contains(text(),'Continue')]");
+const fieldName = By.id("name");
+const fieldTicker = By.id("ticker");
+const fieldDecimals = By.id("decimals");
+const fieldSuplly = By.id("supply");
 
-const Logger= require('../entity/Logger.js');
-const logger=Logger.logger;
-const tempOutputPath=Logger.tempOutputPath;
-
-const page=require('./Page.js');
-const webdriver = require('selenium-webdriver'),
-      chrome = require('selenium-webdriver/chrome'),
-      firefox = require('selenium-webdriver/firefox'),
-      by = require('selenium-webdriver/lib/by');
-const By=by.By;
-const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
-const fieldName=By.id("name");
-const fieldTicker=By.id("ticker");;
-const fieldDecimals=By.id("decimals");;
-
-class WizardStep2 extends page.Page {
+class WizardStep2 extends Page {
 
     constructor(driver) {
         super(driver);
@@ -25,130 +18,105 @@ class WizardStep2 extends page.Page {
 	    this.warningDecimals;
 	    this.warningAddress;
 	    this.warningValue;
+	    this.warningSupply;
 	    this.title="TOKEN SETUP";
-
     }
 
-
-async initWarnings(){
+    async initWarnings() {
     	try {
-		    logger.info(this.name + " :init warnings:");
+		    logger.info(this.name + " :init warnings");
 		    const locator = By.className("error");
-		    var arr = await super.findWithWait(locator);
-		    this.warningName = arr[0];
-		    this.warningTicker = arr[1];
-		    this.warningDecimals = arr[2];
-		    return arr;
+		    let array = await super.findWithWait(locator);
+		    this.warningName = array[0];
+		    this.warningTicker = array[1];
+		    this.warningDecimals = array[2];
+		    this.warningSupply = array[3];
+		    return array;
 	    }
-	    catch(err){
-    		logger.info(this.name+": dont contain warning elements");
+	    catch(err) {
+    		logger.info("Error: " + err);
     		return null;
 	    }
-}
-
-
-async isPresentFieldName(){
-        logger.info(this.name+"is present field name: ");
-        var locator = By.className("input");
-		var arr=await this.driver.findElements(locator);
-		if (arr.length>0)return true;
-		else return false;
-
-    }
-
-    async fillName(name){
-        try{
-    	logger.info(this.name+"field Name: ");
-	    await super.clearField(fieldName);
-        await super.fillWithWait(fieldName,name);
-       // return true;
-        }
-        catch (err) {
-         logger.info(err);
-         return false;
-        }
-}
-async fillTicker(name){
-    try {
-	    logger.info(this.name + "field Ticker: ");
-	    await super.clearField(fieldTicker);
-	    await super.fillWithWait(fieldTicker, name);
-	    return true;
-    }
-catch (err)
-	{logger.info(err);
-		return false;}
-}
-async fillDecimals(name) {
-    	try{
-	logger.info(this.name + "field Decimals: ");
-	//await super.clearField(fieldDecimals);
-	await super.fillWithWait(fieldDecimals, name);
-	return true;
-}
-catch (err)
-	{logger.info(err);
-		return false;}
-}
-
-
-async clickButtonContinue(){
-    logger.info(this.name+"button Continue: ");
-    await super.clickWithWait(buttonContinue);
-
-
-}
-	async isPresentButtonContinue(){
-		var b=await super.isElementDisplayed(buttonContinue);
-		logger.info(this.name+": is present button Continue: "+b);
-		return b;
-
 	}
 
-    async isPresentWarningName(){
+    async isDisplayedFieldName() {
+        logger.info(this.name+"isDisplayedFieldName ");
+        return await this.isElementDisplayed(fieldName);
+    }
+
+    async fillName(value) {
+       	logger.info(this.name+"fillName ");
+	    return await this.clearField(fieldName) &&
+               await super.fillWithWait(fieldName,value);
+    }
+
+	async fillTicker(value) {
+	    logger.info(this.name + "fillTicker ");
+	    return await super.clearField(fieldTicker) &&
+	           await super.fillWithWait(fieldTicker, value);
+	}
+
+	async fillDecimals(value) {
+    	logger.info(this.name + "fillDecimals ");
+		return await super.fillWithWait(fieldDecimals, value);
+	}
+
+	async fillSupply(value) {
+		logger.info(this.name + "fillSupply ");
+		return await super.clearField(value) &&
+			   await super.fillWithWait(fieldSuplly, value);
+	}
+
+	async clickButtonContinue() {
+	    logger.info(this.name+"clickButtonContinue ");
+	    return await super.clickWithWait(buttonContinue);
+	}
+
+	async isDisplayedButtonContinue() {
+		logger.info(this.name+"isPresentButtonContinue ");
+		return await super.isElementDisplayed(buttonContinue);
+	}
+
+    async isDisplayedWarningName() {
+	    logger.info(this.name+"isDisplayedWarningName ");
 	    return false;
     	await this.initWarnings();
-    	let s=await super.getTextForElement(this.warningName);
-    	if (s!="") return true;
+    	if ((await super.getTextForElement(this.warningName)) != "") return true;
     	else return false;
     }
 
-	async isPresentWarningTicker(){
+	async isDisplayedWarningTicker() {
+		logger.info(this.name+"isDisplayedWarningTicker ");
     	return false;
 		await this.initWarnings();
-		let s=await super.getTextForElement(this.warningTicker);
-		if (s!="") return true;
+		if ((await super.getTextForElement(this.warningTicker)) != "") return true;
 		else return false;
 	}
 
-	async isPresentWarningDecimals(){
+	async isDisplayedWarningDecimals() {
+		logger.info(this.name+"isDisplayedWarningDecimals ");
 		return false;
 		await this.initWarnings();
-		let s=await super.getTextForElement(this.warningDecimals);
-		if (s!="") return true;
+		if ((await super.getTextForElement(this.warningDecimals)) != "") return true;
 		else return false;
 	}
 
-
-	async getFieldDecimals(){
-		logger.info(this.name+"getFieldDecimals: ");
-		try {
-
-			let s = super.getAttribute(fieldDecimals, "value");
-			return s;
-		}
-		catch (err)
-		{
-			logger.info(err);
-			return "";
-		}
+	async isDisplayedWarningSupply() {
+		logger.info(this.name+"isDisplayedWarningSupply ");
+		return false;
+		await this.initWarnings();
+		if ((await super.getTextForElement(this.warningSupply)) != "") return true;
+		else return false;
 	}
 
-	async isDisabledDecimals(){
+	async getFieldDecimals() {
+		logger.info(this.name+"getFieldDecimals ");
+		return super.getAttribute(fieldDecimals, "value");
+	}
 
-
+	async isDisabledDecimals() {
+		logger.info(this.name+"isDisabledDecimals ");
 		return await super.isElementDisabled(fieldDecimals);
 	}
-
 }
 module.exports.WizardStep2=WizardStep2;
