@@ -1,44 +1,30 @@
-const Logger= require('../entity/Logger.js');
-const logger=Logger.logger;
-const tempOutputPath=Logger.tempOutputPath;
-
+const logger = require('../entity/Logger.js').logger;
 const key = require('selenium-webdriver').Key;
-const page=require('./Page.js');
-const webdriver = require('selenium-webdriver'),
-    chrome = require('selenium-webdriver/chrome'),
-    firefox = require('selenium-webdriver/firefox'),
-    by = require('selenium-webdriver/lib/by');
-const By=by.By;
-const utils=require('../utils/Utils.js');
-const wizardStep3=require("./WizardStep3.js");
-const Utils=utils.Utils;
+const Page =require('./Page.js').Page;
+const By = require('selenium-webdriver/lib/by').By;
+const Utils = require('../utils/Utils.js').Utils;
+const wizardStep3 = require("./WizardStep3.js");
+const itemsRemove = By.className("item-remove");
+const buttonAdd = By.className("button button_fill button_fill_plus");
+const WhitelistContainer = By.className("white-list-item-container-inner");
+const buttonClearAll = By.className("fa fa-trash");
+const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 
-var COUNT_TIERS;
-const itemsRemove=By.className("item-remove");
-const buttonAdd=By.className("button button_fill button_fill_plus");
-const WhitelistContainer=By.className("white-list-item-container-inner");
-const buttonClearAll=By.className("fa fa-trash");
-const buttonYesAlert=By.className("swal2-confirm swal2-styled");
+let COUNT_TIERS;
 
+class TierPage extends Page {
 
-
-
-class TierPage extends page.Page {
-
-    constructor(driver,tier){
+    constructor(driver,tier) {
         super(driver);
         this.URL;
         this.tier=tier;
-	    COUNT_TIERS=wizardStep3.WizardStep3.getCountTiers();
+
+        COUNT_TIERS=wizardStep3.WizardStep3.getCountTiers();
         this.number=COUNT_TIERS++;
 	    wizardStep3.WizardStep3.setCountTiers(COUNT_TIERS);
-        this.name="Tier #"+this.number+": ";
 
-	    this.fieldNameTier;
-	    this.fieldStartTimeTier;
-	    this.fieldEndTimeTier;
-	    this.fieldRateTier;
-	    this.fieldSupplyTier;
+	    this.name="Tier #"+this.number+": ";
+
 	    this.fieldWhAddressTier;
 	    this.fieldMinTier;
 	    this.fieldMaxTier;
@@ -56,16 +42,152 @@ class TierPage extends page.Page {
 	    this.warningWhMax;
     }
 
+    async getFieldSetupName () {
+	    logger.info(this.name+"getFieldSetupName ");
+    	const locator = By.id("tiers[" + this.number +"].tier");
+    	return await super.getElement(locator);
+    }
 
-	async initWarnings(){
+	async fillSetupName() {
+		logger.info(this.name+"fillSetupName ");
+		let element = await this.getFieldSetupName();
+	 	return await super.clearField(element) &&
+			   await super.fillWithWait(element,this.tier.name);
+	}
+
+	async getFieldRate () {
+		logger.info(this.name+"getFieldRate ");
+		const locator = By.id("tiers[" + this.number +"].rate");
+		return await super.getElement(locator);
+	}
+
+	async fillRate() {
+		logger.info(this.name+"fillRate ");
+		let element = await this.getFieldRate();
+		return await super.clearField(element) &&
+			   await super.fillWithWait(element,this.tier.rate);
+	}
+
+	async getFieldSupply () {
+		logger.info(this.name+"getFieldSupply ");
+		const locator = By.id("tiers[" + this.number +"].supply");
+		return await super.getElement(locator);
+	}
+
+	async fillSupply() {
+		logger.info(this.name+"fillSupply ");
+		let element = await this.getFieldSupply();
+		return await super.clearField(element) &&
+			   await super.fillWithWait(element,this.tier.supply);
+	}
+
+	async getFieldStartTime () {
+		logger.info(this.name+"getFieldStartTime ");
+		const locator = By.id("tiers[" + this.number +"].startTime");
+		return await super.getElement(locator);
+	}
+
+	async fillStartTime() {
+		logger.info(this.name+"fillStartTime ");
+    	//if(this.tier.startDate === "") return true;
+		let locator = await this.getFieldStartTime();
+		let format=await Utils.getDateFormat(this.driver);
+		if (this.tier.startDate === "") {
+			this.tier.startDate=Utils.getDateWithAdjust(80000,format);
+			this.tier.startTime=Utils.getTimeWithAdjust(80000,format);
+		}
+		else
+			if (format === "mdy") {
+				this.tier.startDate=Utils.convertDateToMdy(this.tier.startDate);
+				this.tier.startTime=Utils.convertTimeToMdy(this.tier.startTime);
+		}
+		return await super.clickWithWait(locator) &&
+               await super.fillWithWait(locator,this.tier.startDate) &&
+			   await super.pressKey(key.TAB,1) &&
+			   await super.fillWithWait(locator,this.tier.startTime);
+	}
+
+	async getFieldEndTime () {
+		logger.info(this.name+"getFieldEndTime ");
+		const locator = By.id("tiers[" + this.number +"].endTime");
+		return await super.getElement(locator);
+	}
+
+	async fillEndTime()	{
+		logger.info(this.name+"fillEndTime ");
+		//if (this.tier.endDate === "") return true;
+		let locator = await this.getFieldEndTime();
+		let format=await Utils.getDateFormat(this.driver);
+		if (! this.tier.endDate.includes("/")) {
+			this.tier.endTime=Utils.getTimeWithAdjust(parseInt(this.tier.endDate),"utc");
+			this.tier.endDate=Utils.getDateWithAdjust(parseInt(this.tier.endDate),"utc");
+		}
+		else
+			if (format === "mdy") {
+				this.tier.endDate=Utils.convertDateToMdy(this.tier.endDate);
+				this.tier.endTime=Utils.convertTimeToMdy(this.tier.endTime);
+			}
+		return await super.clickWithWait(locator) &&
+			   await super.fillWithWait(locator,this.tier.endDate) &&
+			   await super.pressKey(key.TAB,1) &&
+		       await super.fillWithWait(locator,this.tier.endTime);
+	}
+
+	async initItemsRemove() {
+		logger.info(this.name+"initItemsRemove ");
 		try {
-			logger.info(this.name + " :init warnings:");
-			const locator = By.xpath("//p[@style='color: red; font-weight: bold; font-size: 12px; width: 100%; height: 10px;']");
-			var arr = await super.findWithWait(locator);
+			let array = await super.findWithWait(itemsRemove);
+			for (let i = 0; i < array.length; i++) {
+				this.itemsRemove[i] = array[i];
+			}
+			return array;
+		}
+		catch(err) {
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
 
+	async initWhitelistFields() {
+		logger.info(this.name+"initWhitelistContainer ");
+		let locator = By.className("input");
+		let array = await super.findWithWait(locator);
+		if ((await super.findWithWait(WhitelistContainer)).length() >0 ) {
+			this.fieldWhAddressTier = array[8];
+			this.fieldMinTier = array[9];
+			this.fieldMaxTier = array[10];
+		}
+
+		//if (await super.findWithWait(WhitelistContainer)) && (await )
+
+		return array;
+	}
+
+
+
+////////////////////////
+
+	async initCheckboxes() {
+		logger.info(this.name + "initCheckboxes ");
+		try {
+			const locator = By.className("radio-inline");
+			let array = await super.findWithWait(locator);
+			this.checkboxModifyOn = array[6 + 2 * this.number];
+			this.checkboxModifyOff = array[7 + 2 * this.number];
+		}
+		catch(err){
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
+
+	async initWarnings() {
+		logger.info(this.name + "initWarnings ");
+		try {
+			const locator = By.xpath("//p[@style='color: red; font-weight: bold; font-size: 12px; width: 100%; height: 10px;']");
+			let array = await super.findWithWait(locator);
 			let ci_tresh=2;
 			let ci_mult=5;
-
 			if (wizardStep3.WizardStep3.getFlagCustom()) ci_tresh=3;
 			if (wizardStep3.WizardStep3.getFlagWHitelising()) ci_mult=8;
 			this.warningName = arr[ci_tresh+(this.number)*ci_mult];
@@ -76,7 +198,7 @@ class TierPage extends page.Page {
 			this.warningWhAddress=arr[ci_tresh+(this.number)*ci_mult+5];
 			this.warningWhMin=arr[ci_tresh+(this.number)*ci_mult+6];
 			this.warningWhMax=arr[ci_tresh+(this.number)*ci_mult+7];
-			return arr;
+			return array;
 		}
 		catch(err){
 			logger.info(this.name+": dont contain warning elements");
@@ -89,50 +211,12 @@ class TierPage extends page.Page {
 
 
 
-	async initItemsRemove(){
-		var arr = await super.findWithWait(itemsRemove);
-		for (var i=0;i<arr.length;i++)
-		{
-			this.itemsRemove[i]=arr[i];
-		}
-
-		return arr;
-	}
-	async initWhitelistContainer(){
-
-		var arr = await super.findWithWait(WhitelistContainer);
-		return arr;
-
-	}
 
 
 
-	async init(){
 
-		let locator = By.className("input");
-		let arr = await super.findWithWait(locator);
-		let ci_tresh=2;
-		let ci_mult=5;
 
-		if (wizardStep3.WizardStep3.getFlagCustom()) ci_tresh=3;
-		if (wizardStep3.WizardStep3.getFlagWHitelising()) ci_mult=8;
 
-		this.fieldNameTier = arr[ci_tresh+(this.number)*ci_mult];
-		this.fieldStartTimeTier=arr[ci_tresh+(this.number)*ci_mult+1];
-		this.fieldEndTimeTier=arr[ci_tresh+(this.number)*ci_mult+2];
-		this.fieldRateTier=arr[ci_tresh+(this.number)*ci_mult+3];
-		this.fieldSupplyTier=arr[ci_tresh+(this.number)*ci_mult+4];
-		this.fieldWhAddressTier=arr[ci_tresh+(this.number)*ci_mult+5];
-		this.fieldMinTier=arr[ci_tresh+(this.number)*ci_mult+6];
-		this.fieldMaxTier=arr[ci_tresh+(this.number)*ci_mult+7];
-
-		locator = By.className("radio-inline");
-		arr = await super.findWithWait(locator);
-
-		this.checkboxModifyOn=arr[6+2*this.number];
-		this.checkboxModifyOff=arr[7+2*this.number];
-
-	}
 
 	async fillTier()
     {   logger.info(this.name+"fill tier: ");
@@ -171,34 +255,9 @@ class TierPage extends page.Page {
 
     }
 
-    async fillSetupName()
-    {
-    	await this.init();
-        logger.info(this.name+"field SetupName: ");
-        let locator=this.fieldNameTier;
-        await super.clearField(locator);
-        await  super.fillWithWait(locator,this.tier.name);
 
-    }
 
-    async fillRate()
-    {   await this.init();
-    	logger.info(this.name+"field Rate: ");
-        let locator=this.fieldRateTier;
-        await super.clearField(locator);
 
-        await super.fillWithWait(locator,this.tier.rate);
-
-    }
-
-    async fillSupply()
-    {  await this.init();
-    	logger.info(this.name+"field Supply: ");
-        let locator=this.fieldSupplyTier;
-       // await super.clearField(locator);
-        await super.fillWithWait(locator,this.tier.supply);
-
-    }
 
     async setModify() {
         logger.info(this.name+"checkbox Modify: ");
@@ -209,71 +268,7 @@ class TierPage extends page.Page {
 	    }
 
     }
-    async fillStartTime()
-    {  if((this.tier.startDate=="")) return;
-	    await this.init();
-        logger.info(this.name+"field StartTime: ");
 
-	    let locator=this.fieldStartTimeTier;
-	    var format=await Utils.getDateFormat(this.driver);
-
-
-
-	    if((this.tier.startDate==""))
-	    {
-		    this.tier.startDate=Utils.getDateWithAdjust(80000,format);
-		    this.tier.startTime=Utils.getTimeWithAdjust(80000,format);
-
-	    } else
-	    if (format=="mdy") {
-	        this.tier.startDate=Utils.convertDateToMdy(this.tier.startDate);
-		    this.tier.startTime=Utils.convertTimeToMdy(this.tier.startTime);
-
-	    }
-	    await super.clickWithWait(locator);
-
-
-	    await super.fillWithWait(locator,this.tier.startDate);
-
-
-	    const action=this.driver.actions();
-        await action.sendKeys(key.TAB).perform();
-        await super.fillWithWait(locator,this.tier.startTime);
-
-
-    }
-    async fillEndTime()
-    {
-	    if((this.tier.endDate=="")) return;
-	    await this.init();
-        logger.info(this.name+"field EndTime: ");
-
-        let locator=this.fieldEndTimeTier;
-        var format=await Utils.getDateFormat(this.driver);
-
-        if (! this.tier.endDate.includes("/"))
-        {
-	         this.tier.endTime=Utils.getTimeWithAdjust(parseInt(this.tier.endDate),"utc");
-        	 this.tier.endDate=Utils.getDateWithAdjust(parseInt(this.tier.endDate),"utc");
-        }
-
-
-
-	    else
-	    if (format=="mdy") {
-		    this.tier.endDate=Utils.convertDateToMdy(this.tier.endDate);
-		    this.tier.endTime=Utils.convertTimeToMdy(this.tier.endTime);
-
-	    }
-	    await super.clickWithWait(locator);
-	    await super.fillWithWait(locator,this.tier.endDate);
-        const action=this.driver.actions();
-        await action.sendKeys(key.TAB).perform();
-        await super.fillWithWait(locator,this.tier.endTime);
-
-
-
-    }
 
     async fillWhitelist(){
 
@@ -421,6 +416,24 @@ async clickButtonClearAll(){
 		let s = await super.getTextForElement(this.warningWhMax);
 		if (s != "") { logger.info("present");return true;}
 		else {logger.info("not present");return false;}
+	}
+
+	async uploadWhitelistCSVFile(){
+
+		try {
+			let path = await Utils.getPathToFileInPWD("bulkWhitelist.csv");
+			logger.info(this.name+": uploadWhitelistCSVFile: from path: "+path);
+			const locator=By.xpath('//input[@type="file"]');
+			let element = await this.driver.findElement(locator);
+			await element.sendKeys(path);
+
+			return true;
+		}
+		catch (err){
+			logger.info(err);
+			return false;
+		}
+
 	}
 
 

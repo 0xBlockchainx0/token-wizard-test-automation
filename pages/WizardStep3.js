@@ -1,303 +1,215 @@
 const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
-
-
 const buttonContinue=By.xpath("//*[contains(text(),'Continue')]");
 const buttonAddTier=By.className("button button_fill_secondary");
 const buttonOK=By.className("swal2-confirm swal2-styled");
+
 const fieldWalletAddress=By.id("walletAddress");
 const fieldMinCap=By.id("minCap");
 
 
-
-
 let flagCustom=false;
 let flagWHitelising=false;
-var COUNT_TIERS=0;
-class WizardStep3 extends Page{
+let COUNT_TIERS=0;
+
+class WizardStep3 extends Page {
 
     constructor(driver){
         super(driver);
+	    this.title="CROWDSALE SETUP";
         this.URL;
         this.tier;
         this.name="WizardStep3 page: ";
+
         this.boxGasPriceSafe;
 	    this.boxGasPriceNormal;
 	    this.boxGasPriceFast;
 	    this.boxGasPriceCustom;
+
 	    this.boxWhitelistingYes;
 	    this.boxWhitelistingNo;
+
 	    this.fieldGasPriceCustom  ;
-	    this.fieldWalletAddress;
-	    this.fieldMinCap;
-        this.title="CROWDSALE SETUP";
+
 	    this.warningWalletAddress;
 	    this.warningCustomGasPrice;
 	    this.warningMincap;
-
-
-
-
     }
-static getFlagCustom(){return flagCustom;}
-static getFlagWHitelising(){return flagWHitelising;}
-static setFlagCustom(value){flagCustom=value;}
-static setFlagWHitelising(value){flagWHitelising=value;}
-static getCountTiers(){return COUNT_TIERS}
-static setCountTiers(value){COUNT_TIERS=value}
 
-async printWarnings(){
-    	var arr=await this.initWarnings();
-    	for (var i=0;i<arr.length;i++)
-	    {
-	    	logger.info(i+" : "+ await super.getTextForElement(arr[i]));
-	    }
-}
-	async initWarnings(){
-		try {
-			logger.info(this.name + " :init warnings:");
+	async initWarnings() {
+		logger.info(this.name + "initWarnings ");
+    	try {
 			const locator = By.className("error");
-
-			var arr = await super.findWithWait(locator);
-			this.warningWalletAddress = arr[0];
-			if (flagCustom)
-			{ this.warningMincap=arr[2];
-				this.warningCustomGasPrice=arr[1];
-			}
-			else
-			{ this.warningMincap=arr[1];
-			}
-			return arr;
+			let array = await super.findWithWait(locator);
+			this.warningWalletAddress = array[0];
+        	this.warningMincap = array[2];
+        	this.warningCustomGasPrice = array[1];
+			return array;
 		}
 		catch(err){
-			logger.info(this.name+": dont contain warning elements");
+			logger.info("Error: " + err);
 			return null;
 		}
 	}
 
-
-	async init(){
-try{
-		var locator = By.className("input");
-		var arr = await super.findWithWait(locator);
-		this.fieldWalletAddress = arr[0];
-		if (flagCustom)
-        { this.fieldMinCap=arr[2];
-          this.fieldGasPriceCustom=arr[1];
-         }
-          else
-        { this.fieldMinCap=arr[1];
-          }
-
-          return arr;}
-	catch(err)
-		{return null;}
-
+	async initInputFields() {
+		logger.info(this.name + "initInputFields ");
+		try{
+			const locator = By.className("input");
+			let array = await super.findWithWait(locator);
+            this.fieldGasPriceCustom = array[1];
+            return array;
+		}
+		catch(err) {
+			logger.info("Error: " + err);
+			return null;
+		}
 	}
 
-async initCheckboxes(){
-try {
-	var locator = By.className("radio-inline");
-	var arr = await super.findWithWait(locator);
-	this.boxGasPriceSafe = arr[0];
-	this.boxGasPriceNormal = arr[1];
-	this.boxGasPriceFast = arr[2];
-	this.boxGasPriceCustom = arr[3];
-	this.boxWhitelistingYes = arr[4];
-	this.boxWhitelistingNo = arr[5];
-	return arr;
-}
-catch(err)
-{return null;}
+	async initCheckboxes() {
+		logger.info(this.name + "initCheckboxes ");
+		try {
+			let locator = By.className("radio-inline");
+			let array = await super.findWithWait(locator);
+			this.boxGasPriceSafe = array[0];
+			this.boxGasPriceNormal = array[1];
+			this.boxGasPriceFast = array[2];
+			this.boxGasPriceCustom = array[3];
+			this.boxWhitelistingYes = array[4];
+			this.boxWhitelistingNo = array[5];
+			return array;
+		}
+		catch(err) {
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
 
-}
-
-    async clickButtonContinue(){
-        logger.info(this.name+"button Continue: ");
+    async clickButtonContinue() {
+        logger.info(this.name+"clickButtonContinue ");
         return await super.clickWithWait(buttonContinue);
 
     }
-   async  fillWalletAddress(address){
-       // return;
-	    //await this.driver.sleep(2000);
+
+    async  fillWalletAddress(value) {
         logger.info(this.name+"field WalletAddress: ");
-	   // let value=await this.driver.executeScript("document.getElementById('walletAddress')" +
-		 //   ".value='kjsdkjwkjwd';");
-        //await this.driver.sleep(10000000);
-         await super.clearField(fieldWalletAddress);
-	  // await this.driver.sleep(10000);
-	    await super.fillWithWait(fieldWalletAddress, address);
+	    return await super.clearField(fieldWalletAddress) &&
+		       await super.fillWithWait(fieldWalletAddress, value);
     }
 
-
-    async clickCheckboxGasPriceSafe()
-    {
-	    await this.initCheckboxes();
-        logger.info(this.name+"CheckboxGasPriceSafe: ");
-	    flagCustom=false;
-	    return await super.clickWithWait(this.boxGasPriceSafe);
-
+    async clickCheckboxGasPriceSafe() {
+	    logger.info(this.name+"CheckboxGasclickCheckboxGasPriceSafe ");
+	    return (await this.initCheckboxes() !== null) &&
+				await super.clickWithWait(this.boxGasPriceSafe);
     }
-    async clickCheckboxGasPriceNormal()
-    {
-	    await this.initCheckboxes();
-        logger.info(this.name+"CheckboxGasPriceNormal: ");
-	    flagCustom=false;
-	    return  await super.clickWithWait(this.boxGasPriceNormal);
 
+    async clickCheckboxGasPriceNormal() {
+	    logger.info(this.name+"clickCheckboxGasPriceNormal ");
+	    return (await this.initCheckboxes() !== null) &&
+		        await super.clickWithWait(this.boxGasPriceNormal);
     }
-    async clickCheckboxGasPriceFast()
-    {
-	    await this.initCheckboxes();
-        logger.info(this.name+"CheckboxGasPriceFast: ");
-	    flagCustom=false;
-	    return await super.clickWithWait(this.boxGasPriceFast);
+
+    async clickCheckboxGasPriceFast() {
+	    logger.info(this.name+"clickCheckboxGasPriceFast ");
+	    return (await this.initCheckboxes() !== null) &&
+	            await super.clickWithWait(this.boxGasPriceFast);
     }
-    async clickCheckboxGasPriceCustom()
-    {
 
-    	await this.initCheckboxes();
-        logger.info(this.name+"CheckboxGasPriceCustom: ");
-	    flagCustom=true;
-        return await super.clickWithWait(this.boxGasPriceCustom);
-
-
+    async clickCheckboxGasPriceCustom() {
+	    logger.info(this.name+"clickCheckboxGasPriceCustom ");
+	    return (await this.initCheckboxes() !== null) &&
+                await super.clickWithWait(this.boxGasPriceCustom);
     }
-    async fillGasPriceCustom(value){
-	    await this.init();
-        logger.info(this.name+"GasPriceCustom: ");
 
-        await super.clearField(this.fieldGasPriceCustom,1);
-
-        let b=await super.fillWithWait(this.fieldGasPriceCustom,value);
-        return b;
+    async fillGasPriceCustom(value) {
+	    logger.info(this.name+"fillGasPriceCustom ");
+        return (await this.initInputFields() !== null) &&
+	            await super.clearField(this.fieldGasPriceCustom) &&
+	            await super.fillWithWait(this.fieldGasPriceCustom,value);
     }
-    async clickCheckboxWhitelistYes()
-    {   await this.initCheckboxes();
-        logger.info(this.name+"CheckboxWhitelistYes: ");
-	    flagWHitelising=true;
-        return await super.clickWithWait(this.boxWhitelistingYes);
 
+    async clickCheckboxWhitelistYes() {
+	    logger.info(this.name+"clickCheckboxWhitelistYes ");
+    	return (await this.initCheckboxes() !== null) &&
+                await super.clickWithWait(this.boxWhitelistingYes);
     }
-	async clickCheckboxWhitelistNo()
-	{   await this.initCheckboxes();
-		logger.info(this.name+"CheckboxWhitelistNo: ");
-		flagWHitelising=false;
-		return await super.clickWithWait(this.boxWhitelistingNo);
 
+	async clickCheckboxWhitelistNo() {
+		logger.info(this.name+"clickCheckboxWhitelistNo ");
+		return (await this.initCheckboxes() !== null) &&
+				await super.clickWithWait(this.boxWhitelistingNo);
 	}
 
-    async clickButtonAddTier()
-    {
-        logger.info(this.name+"ButtonAddTier: ");
-       return await super.clickWithWait(buttonAddTier);
+    async clickButtonAddTier() {
+        logger.info(this.name+"clickButtonAddTier: ");
+        return await super.clickWithWait(buttonAddTier);
     }
 
-    async setGasPrice(value){
-        logger.info(this.name+"setGasPrice: =" + value);
-    switch(value){
-       case 1:{await this.clickCheckboxGasPriceSafe();break;}
-       case 4:{await this.clickCheckboxGasPriceNormal();break;}
-       case 30:{await this.clickCheckboxGasPriceFast();break;}
-       default:{
-           await this.clickCheckboxGasPriceCustom();
-           await this.fillGasPriceCustom(value);
-            }
-            }
+    async setGasPrice(value) {
+        logger.info(this.name+"setGasPrice with value= " + value);
+        return await this.clickCheckboxGasPriceCustom() &&
+               await this.fillGasPriceCustom(value);
     }
 
-    async fillMinCap(value){
-
-        logger.info(this.name+"MinCap: ");
-        await super.clearField(fieldMinCap);
-	    await this.driver.sleep(10000);
-        await super.fillWithWait(fieldMinCap,value);
-        await this.driver.sleep(10000);
+    async fillMinCap(value) {
+        logger.info(this.name+"fillMinCap ");
+        return await super.clearField(fieldMinCap) &&
+	           await super.fillWithWait(fieldMinCap,value);
     }
-	async isPresentWarningMincap(){
-		logger.info(this.name + "is present warning :");
+
+	async isDisplayedWarningMincap() {
+		logger.info(this.name + "isDisplayedWarningMincap ");
 		return false;
-		await this.initWarnings();
-		let s = await super.getTextForElement(this.warningMincap);
-		if (s != "") { logger.info("present");return true;}
-		else {logger.info("not present");return false;}
-	}
-	async isPresentWarningCustomGasPrice(){
-		return false;
-		logger.info(this.name + "is present warning :");
-		await this.initWarnings();
-		let s = await super.getTextForElement(this.warningCustomGasPrice);
-		if (s != "") { logger.info("present");return true;}
-		else {logger.info("not present");return false;}
+		return (await this.initWarnings() !== null) &&
+			   (await super.getTextForElement(this.warningMincap) !== "");
 	}
 
-    async isPresentWarningWalletAddress() {
+	async isDisplayedWarningCustomGasPrice() {
+		logger.info(this.name + "isPresentWarningCustomGasPrice ");
+    	return false;
+		return (await this.initWarnings() !== null) &&
+			   (await super.getTextForElement(this.warningCustomGasPrice) !== "");
+	}
 
-	    logger.info(this.name + "is present warning :");
+    async isDisplayedWarningWalletAddress() {
+	    logger.info(this.name + "isDisplayedWarningWalletAddress ");
 	    return false;
-	    await this.initWarnings();
-	    let s = await super.getTextForElement(this.warningWalletAddress);
-	    if (s != "") { logger.info("present");return true;}
-	    else {logger.info("not present");return false;}
-    }
-
-	async isPresentFieldWalletAddress(){
-		return false;
-		var arr=await this.init();
-		if (arr==null) return false;
-		logger.info(arr.length);
-		if (arr.length>0)return true;
-		else return false;
-
+	    return (await this.initWarnings() !== null) &&
+		       (await super.getTextForElement(this.warningWalletAddress) !== "");
 	}
 
-	async uploadCSV(){
-		logger.info('Upload CSV');
-     try {
-
-	     const loc=By.xpath('//input[@type="file"]');
-	     var el = this.driver.findElement(loc);
-	     //el.sendKeys("/home/travis/build/dennis00010011b/travistest/node_modules/token-wizard-test-automation/MyWhitelist.csv");
-	     el.sendKeys("/home/travis/build/poanetwork/token-wizard/submodules/token-wizard-test-automation/MyWhitelist.csv");
-	     //el.sendKeys("/Users/person/WebstormProjects/token-wizard-test-automation/MyWhitelist.csv")
-
-	     return true;
-     }
-     catch (err){
-     	logger.info(err);
-     	return false;
-     }
-
+	async isDisplayedFieldWalletAddress() {
+		logger.info(this.name + "isPresentFieldWalletAddress ");
+		return await super.isElementDisplayed(fieldWalletAddress)
 	}
 
-async getFieldWalletAddress(){
-	logger.info(this.name+"getFieldWalletAddress: ");
-    try {
-	    await this.init();
-	    let s = super.getAttribute(fieldWalletAddress, "value");
-	    return s;
-    }
-    catch (err)
-    {
-    	logger.info(err);
-    	return "";
-    }
-}
+	async getValueFromFieldWalletAddress() {
+		logger.info(this.name+"getValueFromFieldWalletAddress ");
+		return await super.getAttribute(fieldWalletAddress, "value");
+	}
 
-async clickButtonOk(){
-    	logger.info("Confirm popup");
-    	await super.clickWithWait(buttonOK);
+    async clickButtonOk() {
+	    logger.info(this.name+"clickButtonOk ");
+    	return await super.clickWithWait(buttonOK);
+	}
 
-}
+	async isDisplayedButtonContinue() {
+		logger.info(this.name+"isDisplayedButtonContinue ");
+		return await super.isElementDisplayed(buttonContinue);
+	}
 
-	async isPresentButtonContinue(){
-		var b=await super.isElementDisplayed(buttonContinue);
-		logger.info(this.name+": is present button Continue: "+b);
-		return b;
-
+	async isDisplayedFieldGasPriceCustom() {
+		logger.info(this.name+"isDisplayedFieldCustomGasPrice ");
+		return await super.isElementDisplayed(this.fieldGasPriceCustom);
 	}
 
 
+//	static getFlagCustom() { return flagCustom;}
+    //static getFlagWHitelising(){return flagWHitelising;}
+//static setFlagCustom(value){flagCustom=value;}
+//static setFlagWHitelising(value){flagWHitelising=value;}
+	static getCountTiers(){return COUNT_TIERS}
+	static setCountTiers(value){COUNT_TIERS=value}
 }
 module.exports.WizardStep3=WizardStep3;

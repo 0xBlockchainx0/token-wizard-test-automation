@@ -79,10 +79,16 @@ class Page {
 	}
 
 	async getElement(element,Twaiting ) {
-		    if (Twaiting === undefined) Twaiting = 180;
+		try {
+			logger.info("getElement: " + element);
+			if (Twaiting === undefined) Twaiting = 180;
 			if (element.constructor.name !== "WebElement")
-			  return await this.driver.wait(webdriver.until.elementLocated(element), Twaiting*333);
-		    else return element;
+				return await this.driver.wait(webdriver.until.elementLocated(element), Twaiting * 333);
+			else return element;
+		} catch (err) {
+			logger.info("Error: "+err);
+			return false;
+		}
 	}
 
 	async isElementDisabled(element) {

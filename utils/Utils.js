@@ -306,7 +306,10 @@ return q;
 
 	}
 
-
+	static async getPathToFileInPWD(fileName)
+	{
+		return  process.env.PWD+"/" +fileName;
+	}
 
 }
 module.exports={

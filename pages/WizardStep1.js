@@ -28,7 +28,7 @@ class WizardStep1 extends Page {
 	}
 
     async isPresentButtonContinue() {
-	    logger.info(this.name+": isPresentButtonContinue: ");
+	    logger.info(this.name+": isDisplayedButtonContinue: ");
         return  await super.isElementDisplayed(buttonContinue);
     }
 

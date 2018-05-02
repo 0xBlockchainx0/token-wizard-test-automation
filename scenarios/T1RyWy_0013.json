@@ -23,10 +23,10 @@
     {
       "name":"###1",
       "allowModify": true,
-      "startDate": "",
-      "startTime": "",
-      "endDate":"",
-      "endTime":"",
+      "startDate": "12/05/2018",
+      "startTime": "13:14",
+      "endDate":"13/05/2018",
+      "endTime":"14:15",
       "rate":1000,
       "supply": 100,
       "whitelist":[
@@ -35,6 +35,25 @@
           "min":6,
           "max":100
         }]
-    }]
+    },
+    {
+      "name":"###2",
+      "allowModify": true,
+      "startDate": "16/05/2018",
+      "startTime": "13:14",
+      "endDate":"17/05/2018",
+      "endTime":"23:24",
+      "rate":11230,
+      "supply": 1032,
+      "whitelist":[
+        {
+          "address":"0x27F2f56e6Ee35E4995A965337ba2A7b4ec492FcC",
+          "min":6,
+          "max":100
+        }]
+    }
+
+
+  ]
 
 }

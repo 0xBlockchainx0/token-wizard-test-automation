@@ -359,8 +359,8 @@ try{
 	const wizardStep3 = new WizardStep3(this.driver);
 
 	WizardStep3.setCountTiers(0);
-	WizardStep3.setFlagCustom(false);
-	WizardStep3.setFlagWHitelising(false);
+	//WizardStep3.setFlagCustom(false);
+	//WizardStep3.setFlagWHitelising(false);
 
 	const wizardStep4 = new WizardStep4(this.driver);
 	const crowdsalePage = new CrowdsalePage(this.driver);
@@ -404,14 +404,14 @@ try{
     await wizardStep2.clickButtonContinue();
     await wizardStep3.waitUntilLoaderGone();
 	do { await wizardStep3.fillWalletAddress(crowdsale.walletAddress);
-    } while (await wizardStep3.isPresentWarningWalletAddress());
+    } while (await wizardStep3.isDisplayedWarningWalletAddress());
 
 	await wizardStep3.setGasPrice(crowdsale.gasPrice);
 	if (crowdsale.whitelisting) {
 	  await wizardStep3.clickCheckboxWhitelistYes();
 	} else {
 		do { await wizardStep3.fillMinCap(crowdsale.minCap);
-		} while(await wizardStep3.isPresentWarningMincap())
+		} while(await wizardStep3.isDisplayedWarningMincap())
 	  }
 
     for (let i = 0; i < crowdsale.tiers.length - 1; i++) {
@@ -426,7 +426,7 @@ try{
     count=30;
     do {
       await this.driver.sleep(1000);
-      if  ((await wizardStep3.isPresentButtonContinue()) &&
+      if  ((await wizardStep3.isDisplayedButtonContinue()) &&
           !(await wizardStep4.isPresentModal()) )
       {
         await wizardStep3.clickButtonContinue();

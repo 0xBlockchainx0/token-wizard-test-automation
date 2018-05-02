@@ -73,40 +73,36 @@ class WizardStep2 extends Page {
 	}
 
 	async isDisplayedButtonContinue() {
-		logger.info(this.name+"isPresentButtonContinue ");
+		logger.info(this.name+"isDisplayedButtonContinue ");
 		return await super.isElementDisplayed(buttonContinue);
 	}
 
     async isDisplayedWarningName() {
 	    logger.info(this.name+"isDisplayedWarningName ");
 	    return false;
-    	await this.initWarnings();
-    	if ((await super.getTextForElement(this.warningName)) != "") return true;
-    	else return false;
+    	return (await this.initWarnings() !== null) &&
+		       (await this.getTextForElement(this.warningName) !== "");
     }
 
 	async isDisplayedWarningTicker() {
 		logger.info(this.name+"isDisplayedWarningTicker ");
     	return false;
-		await this.initWarnings();
-		if ((await super.getTextForElement(this.warningTicker)) != "") return true;
-		else return false;
+		return (await this.initWarnings() !== null) &&
+			   (await this.getTextForElement(this.warningTicker) !== "");
 	}
 
 	async isDisplayedWarningDecimals() {
-		logger.info(this.name+"isDisplayedWarningDecimals ");
+		logger.info(this.name + "isDisplayedWarningDecimals ");
 		return false;
-		await this.initWarnings();
-		if ((await super.getTextForElement(this.warningDecimals)) != "") return true;
-		else return false;
+		return (await this.initWarnings() !== null) &&
+			   (await this.getTextForElement(this.warningDecimals) !== "");
 	}
 
 	async isDisplayedWarningSupply() {
 		logger.info(this.name+"isDisplayedWarningSupply ");
 		return false;
-		await this.initWarnings();
-		if ((await super.getTextForElement(this.warningSupply)) != "") return true;
-		else return false;
+		return (await this.initWarnings() !== null) &&
+		       (await this.getTextForElement(this.warningSupply) !== "");
 	}
 
 	async getFieldDecimals() {
