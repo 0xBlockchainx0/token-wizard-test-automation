@@ -167,29 +167,39 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		   // await wizardStep1.clickCheckboxDutchAuction();
 		   // await driver.sleep(2000);
 			//await wizardStep1.clickCheckboxWhitelistWithCap();
-await wizardStep1.clickButtonContinue();
+          await wizardStep1.clickButtonContinue();
 
 			await wizardStep2.fillName("nama");
 			await wizardStep2.fillTicker("tik");
 			await wizardStep2.clickButtonContinue();
 
+
 			tierPage = new TierPage(driver,crowdsale1.tiers[0]);
+
 			 await driver.sleep(5000);
+			 await wizardStep3.clickCheckboxGasPriceCustom();
+			 //console.log(await tierPage.isDisplayedFieldCistomGasPrice());
+			 await wizardStep3.clickCheckboxWhitelistYes()
+			 await tierPage.fillWhitelist();
+
 			await tierPage.fillSetupName();
 			await tierPage.fillRate();
 			await tierPage.fillSupply();
 			await tierPage.fillStartTime();
 			await tierPage.fillEndTime();
-		await wizardStep3.clickButtonAddTier();
 
+			await tierPage.setModify();
+
+			 await wizardStep3.clickButtonAddTier();
 			tierPage = new TierPage(driver,crowdsale1.tiers[1]);
+			await tierPage.fillWhitelist();
 			await driver.sleep(5000);
 			await tierPage.fillSetupName();
 			await tierPage.fillRate();
 			await tierPage.fillSupply();
 			await tierPage.fillStartTime();
 			await tierPage.fillEndTime();
-
+await tierPage.setModify();
 
 
 

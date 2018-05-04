@@ -8,7 +8,6 @@ const buttonOK=By.className("swal2-confirm swal2-styled");
 const fieldWalletAddress=By.id("walletAddress");
 const fieldMinCap=By.id("minCap");
 
-
 let flagCustom=false;
 let flagWHitelising=false;
 let COUNT_TIERS=0;
@@ -204,12 +203,5 @@ class WizardStep3 extends Page {
 		return await super.isElementDisplayed(this.fieldGasPriceCustom);
 	}
 
-
-//	static getFlagCustom() { return flagCustom;}
-    //static getFlagWHitelising(){return flagWHitelising;}
-//static setFlagCustom(value){flagCustom=value;}
-//static setFlagWHitelising(value){flagWHitelising=value;}
-	static getCountTiers(){return COUNT_TIERS}
-	static setCountTiers(value){COUNT_TIERS=value}
 }
 module.exports.WizardStep3=WizardStep3;

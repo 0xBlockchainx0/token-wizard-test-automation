@@ -79,8 +79,8 @@ class Page {
 	}
 
 	async getElement(element,Twaiting ) {
+		logger.info("getElement: " + element);
 		try {
-			logger.info("getElement: " + element);
 			if (Twaiting === undefined) Twaiting = 180;
 			if (element.constructor.name !== "WebElement")
 				return await this.driver.wait(webdriver.until.elementLocated(element), Twaiting * 333);
@@ -273,13 +273,23 @@ class Page {
 	}
 
 	async goBack() {
+		logger.info("go back :");
 		try {
-			logger.info("go back :");
 			this.driver.navigate().back();
 			return true;
 		} catch (err) {
 			logger.info("Error: "+err);
 			return false;
+		}
+	}
+
+	async getChildFromElementByClassName (child,element) {
+		logger.info("getChildFromElementByClassName");
+		try {
+			return await element.findElements(By.className(child));
+		} catch (err) {
+			logger.info("Error: "+err);
+			return null;
 		}
 	}
 }

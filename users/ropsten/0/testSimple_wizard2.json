@@ -1,5 +1,4 @@
 {
-
   "name": "testSimple_wizard2.json",
   "ticker": "test2",
   "decimals": 18,
@@ -22,13 +21,13 @@
   "tiers":[
     {
       "name":"###1",
-      "allowModify": true,
+      "allowModify": false,
       "startDate": "",
       "startTime": "",
       "endDate":"",
       "endTime":"",
       "rate":20000,
-      "supply": 250,
+      "supply": 2500,
       "whitelist":[
 
       ]
