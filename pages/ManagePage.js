@@ -1,15 +1,8 @@
-const Logger= require('../entity/Logger.js');
-const logger=Logger.logger;
-const tempOutputPath=Logger.tempOutputPath;
+const logger=require('../entity/Logger.js').logger;
 const key = require('selenium-webdriver').Key;
-const by = require('selenium-webdriver/lib/by');
-const page=require('./Page.js');
-const Page=page.Page;
-const By=by.By;
-const utils=require('../utils//Utils.js');
-const Utils=utils.Utils;
+const By = require('selenium-webdriver/lib/by').By;
+const Page=require('./Page.js').Page;
 const buttonOk=By.xpath("/html/body/div[2]/div/div[3]/button[1]");
-
 const modal=By.className("modal");
 const adj="";
 const buttonDistribute=By.xpath("//*[contains(text(),'Distribute tokens')]");
@@ -41,93 +34,124 @@ class ManagePage extends Page  {
 	    this.buttonAddWh=[];
     }
 
-    async initButtons(){
-		let locator = By.className("button button_fill button_fill_plus");
-		let arr = await super.findWithWait(locator);
-		for (let i=0; i<arr.length;i++)
-		    this.buttonAddWh[i]=arr[i];
+    async initButtons() {
+	    logger.info(this.name + "initButtons ");
+    	try {
+		    let locator = By.className("button button_fill button_fill_plus");
+		    let array = await super.findWithWait(locator);
+		    for (let i = 0; i < array.length; i++)
+			    this.buttonAddWh[i] = array[i];
+		    return array;
+	    } catch(err) {
+		    logger.info("Error: " + err);
+		    return null;
+	    }
 	}
 
 	async initInputs() {
-		let locator = By.className("input");
-		let arr = await super.findWithWait(locator);
-		let amountTiers=1;
-		let tierLength=6;
+		logger.info(this.name + "initInputs ");
+		try {
+			let locator = By.className("input");
+			let array = await super.findWithWait(locator);
+			let amountTiers = 1;
+			let tierLength = 6;
 
-		if (arr.length>9) {
-			amountTiers=2;}
-		if ((arr.length>15)||(arr.length==9)) tierLength=9;
-	    for (var i=0;i<amountTiers;i++) {
-	         this.fieldNameTier[i]=arr[i*tierLength+0];
-	         this.fieldWalletAddressTier[i]=arr[i*tierLength+1];
-	         this.fieldStartTimeTier[i]=arr[i*tierLength+2];
-	         this.fieldEndTimeTier[i]=arr[i*tierLength+3];
-	         this.fieldRateTier[i]=arr[i*tierLength+4];
-	         this.fieldSupplyTier[i]=arr[i*tierLength+5];
-	         this.fieldWhAddressTier[i]=undefined;
-	         this.fieldMinTier[i]=undefined;
-	         this.fieldMaxTier[i]=undefined;
-
-		    if ((tierLength==9)||(tierLength==18)) {
-			     this.fieldWhAddressTier[i]=arr[i*tierLength+6];
-			     this.fieldMinTier[i]=arr[i*tierLength+7];
-			     this.fieldMaxTier[i]=arr[i*tierLength+8];
+			if (array.length > 9) {
+				amountTiers = 2;
 			}
-	    }
+			if ((array.length > 15) || (array.length == 9)) tierLength = 9;
+			for (let i = 0; i < amountTiers; i++) {
+				this.fieldNameTier[i] = array[i * tierLength + 0];
+				this.fieldWalletAddressTier[i] = array[i * tierLength + 1];
+				this.fieldStartTimeTier[i] = array[i * tierLength + 2];
+				this.fieldEndTimeTier[i] = array[i * tierLength + 3];
+				this.fieldRateTier[i] = array[i * tierLength + 4];
+				this.fieldSupplyTier[i] = array[i * tierLength + 5];
+				this.fieldWhAddressTier[i] = undefined;
+				this.fieldMinTier[i] = undefined;
+				this.fieldMaxTier[i] = undefined;
 
-	    if (arr.length==15) {
-			this.fieldWhAddressTier[1]=arr[12];
-			this.fieldMinTier[1]=arr[13];
-			this.fieldMaxTier[1]=arr[14];
+				if ((tierLength == 9) || (tierLength == 18)) {
+					this.fieldWhAddressTier[i] = array[i * tierLength + 6];
+					this.fieldMinTier[i] = array[i * tierLength + 7];
+					this.fieldMaxTier[i] = array[i * tierLength + 8];
+				}
+			}
+
+			if (array.length == 15) {
+				this.fieldWhAddressTier[1] = array[12];
+				this.fieldMinTier[1] = array[13];
+				this.fieldMaxTier[1] = array[14];
+			}
+			return array;
+		} catch(err) {
+			logger.info("Error: " + err);
+			return null;
 		}
     }
 
 	async getNameTier(tier) {
-	    await this.initInputs();
-	    return await super.getAttribute(this.fieldNameTier[tier-1],"value");
+		logger.info(this.name + "getNameTier ");
+	    if (await this.initInputs() === null) return null;
+	    else
+	        return await super.getAttribute(this.fieldNameTier[tier-1],"value");
     }
 
     async isDisabledNameTier(tier) {
-	    await this.initInputs();
-	    return await this.isElementDisabled(this.fieldNameTier[tier - 1]);
+	    logger.info(this.name + "isDisabledNameTier ");
+	    if (await this.initInputs() === null) return null;
+	    else
+	    	return await this.isElementDisabled(this.fieldNameTier[tier - 1]);
 	}
 
 	async getWalletAddressTier(tier) {
-	    await this.initInputs();
-	    return await super.getAttribute(this.fieldWalletAddressTier[tier-1],"value");
+		logger.info(this.name + "getWalletAddressTier ");
+		if (await this.initInputs() === null) return null;
+		else
+			return await super.getAttribute(this.fieldWalletAddressTier[tier-1],"value");
 	}
 
 	async isDisabledWalletAddressTier(tier) {
-	    await this.initInputs();
-	    return await this.isElementDisabled(this.fieldWalletAddressTier[tier - 1]);
+		logger.info(this.name + "isDisabledWalletAddressTier ");
+		if (await this.initInputs() === null) return null;
+	    else
+	    	return await this.isElementDisabled(this.fieldWalletAddressTier[tier - 1]);
 	}
 
-	async getRateTier(tier){
-	    await this.initInputs();
-	    return await super.getAttribute(this.fieldRateTier[tier-1],"value");
+	async getRateTier(tier) {
+		logger.info(this.name + "getRateTier ");
+		if (await this.initInputs() === null) return null;
+		else
+			return await super.getAttribute(this.fieldRateTier[tier-1],"value");
 	}
 
-	async getSupplyTier(tier){
-	    await this.initInputs();
-	    return await super.getAttribute(this.fieldSupplyTier[tier-1],"value");
+	async getSupplyTier(tier) {
+		logger.info(this.name + "getSupplyTier ");
+		if (await this.initInputs() === null) return null;
+		else
+			return await super.getAttribute(this.fieldSupplyTier[tier-1],"value");
 	}
 
-    async getStartTimeTier(tier){
-    	await this.initInputs();
-		return await super.getAttribute(this.fieldStartTimeTier[tier-1],"value");
+    async getStartTimeTier(tier) {
+	    logger.info(this.name + "getStartTimeTier ");
+	    if (await this.initInputs() === null) return null;
+	    else
+	    	return await super.getAttribute(this.fieldStartTimeTier[tier-1],"value");
 	}
 
-	async getEndTimeTier(tier){
-	    await this.initInputs();
-    	return await super.getAttribute(this.fieldEndTimeTier[tier-1],"value");
+	async getEndTimeTier(tier) {
+		logger.info(this.name + "getEndTimeTier ");
+		if (await this.initInputs() === null) return null;
+		else return await super.getAttribute(this.fieldEndTimeTier[tier-1],"value");
 	}
 
-    async clickButtonSave(){
-	    logger.info(this.name+"button Save :");
+    async clickButtonSave() {
+	    logger.info(this.name+"clickButtonSave ");
 	    return await super.clickWithWait(buttonSave);
     }
 
-	async isPresentWarningStartTimeTier1(){
+	async isPresentWarningStartTimeTier1() {
+		logger.info(this.name+"isPresentWarningStartTimeTier1 ");
 		try {
 		logger.info(this.name+"red warning if data wrong :");
 		let result=await super.getTextForElement(warningStartTimeTier1,1);
@@ -141,6 +165,7 @@ class ManagePage extends Page  {
 	}
 
 	async isPresentWarningStartTimeTier2() {
+		logger.info(this.name+"isPresentWarningStartTimeTier2 ");
     	try {
 		    logger.info(this.name + "red warning if data wrong :");
 		    await this.driver.sleep(1000);
@@ -154,8 +179,9 @@ class ManagePage extends Page  {
     	}
 	}
 
-	async isPresentWarningEndTimeTier2(){
-		logger.info(this.name+"red warning if data wrong :");
+	async isPresentWarningEndTimeTier2() {
+
+		logger.info(this.name+"isPresentWarningEndTimeTier2 ");
 		await this.driver.sleep(1000);
 		let result=await super.getTextForElement(warningEndTimeTier2,1);
 		logger.info("Text="+result);
@@ -172,7 +198,7 @@ class ManagePage extends Page  {
 
 
 	async fillWhitelist(tier,address,min,max) {
-
+		logger.info(this.name+"fillWhitelist  ");
 	    await this.initInputs();
 	    try {
 	       if (this.fieldWhAddressTier[tier-1]==undefined) {

@@ -32,7 +32,7 @@ class Crowdsale {
 		this.name=obj.name;
 		this.ticker=obj.ticker;
 		this.decimals=obj.decimals;
-		for (var i=0;i<obj.reservedTokens.length;i++) {
+		for (let i=0;i<obj.reservedTokens.length;i++) {
 			this.reservedTokens.push (
 				new ReservedTokens (
 					obj.reservedTokens[i].address,

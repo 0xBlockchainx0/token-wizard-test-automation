@@ -1,36 +1,20 @@
-const Logger = require('../entity/Logger.js');
-const logger = Logger.logger;
-const meta = require('../pages/MetaMask.js');
-const MetaMask = meta.MetaMask;
-const wizardWelcome = require('../pages/WizardWelcome.js');
-const WizardWelcome = wizardWelcome.WizardWelcome;
-const wizStep1 = require('../pages/WizardStep1.js');
-const WizardStep1 = wizStep1.WizardStep1;
-const wizStep2 = require('../pages/WizardStep2.js');
-const WizardStep2 = wizStep2.WizardStep2;
-const wizStep3 = require('../pages/WizardStep3.js');
-const WizardStep3 = wizStep3.WizardStep3;
-const wizStep4 = require('../pages/WizardStep4.js');
-const WizardStep4 = wizStep4.WizardStep4;
-const tierpage = require('../pages/TierPage.js');
-const TierPage = tierpage.TierPage;
-const reservedTokensPage = require('../pages/ReservedTokensPage.js');
-const ReservedTokensPage = reservedTokensPage.ReservedTokensPage;
-const crowdPage = require('../pages/CrowdsalePage.js');
-const CrowdsalePage = crowdPage.CrowdsalePage;
-const investPage = require('../pages/InvestPage.js');
-const InvestPage = investPage.InvestPage;
-const managePage = require('../pages/ManagePage.js');
-const ManagePage = managePage.ManagePage;
-const utils = require('../utils/Utils.js');
-const Utils = utils.Utils;
-const fs = require('fs');
-const crowdsale = require('../entity/Crowdsale.js');
-const Crowdsale = crowdsale.Crowdsale;
-const page = require('../pages/Page.js');
-const Page = page.Page;
+const logger = require('../entity/Logger.js').logger;
+const MetaMask = require('../pages/MetaMask.js').MetaMask;
+const WizardWelcome = require('../pages/WizardWelcome.js').WizardWelcome;
+const WizardStep1 = require('../pages/WizardStep1.js').WizardStep1;
+const WizardStep2 = require('../pages/WizardStep2.js').WizardStep2;
+const WizardStep3 = require('../pages/WizardStep3.js').WizardStep3;
+const WizardStep4 = require('../pages/WizardStep4.js').WizardStep4;
+const TierPage = require('../pages/TierPage.js').TierPage;
+const ReservedTokensPage = require('../pages/ReservedTokensPage.js').ReservedTokensPage;
+const CrowdsalePage = require('../pages/CrowdsalePage.js').CrowdsalePage;
+const InvestPage = require('../pages/InvestPage.js').InvestPage;
+const ManagePage = require('../pages/ManagePage.js').ManagePage;
+const Utils = require('../utils/Utils.js').Utils;
+const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
+const Page = require('../pages/Page.js').Page;
 const testRA = require('../test/testRA.js');
-
+const fs = require('fs');
 const timeLimitTransactions = 25;
 
 class User {
@@ -49,477 +33,6 @@ class User {
 			logger.info(err);
 		}
 
-	}
-
-	async getTokenBalanceAuthos(crowdsale) {
-		const MintedCappedCrowdsale_InitCrowdsale = [{
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {
-				"name": "_exec_id",
-				"type": "bytes32"
-			}, {
-				"name": "_owner",
-				"type": "address"
-			}, {"name": "_spender", "type": "address"}],
-			"name": "allowance",
-			"outputs": [{
-				"name": "allowed",
-				"type": "uint256"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "getTokensSold",
-			"outputs": [{
-				"name": "tokens_sold",
-				"type": "uint256"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {
-				"name": "_exec_id",
-				"type": "bytes32"
-			}, {"name": "_tier_index", "type": "uint256"}],
-			"name": "getTierWhitelist",
-			"outputs": [{
-				"name": "num_whitelisted",
-				"type": "uint256"
-			}, {"name": "whitelist", "type": "address[]"}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {
-				"name": "_exec_id",
-				"type": "bytes32"
-			}, {
-				"name": "_tier_index",
-				"type": "uint256"
-			}, {"name": "_buyer", "type": "address"}],
-			"name": "getWhitelistStatus",
-			"outputs": [{
-				"name": "minimum_contribution",
-				"type": "uint256"
-			}, {
-				"name": "max_spend_remaining",
-				"type": "uint256"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {
-				"name": "_exec_id",
-				"type": "bytes32"
-			}, {"name": "_index", "type": "uint256"}],
-			"name": "getTierStartAndEndDates",
-			"outputs": [{
-				"name": "tier_start",
-				"type": "uint256"
-			}, {"name": "tier_end", "type": "uint256"}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "decimals",
-			"outputs": [{
-				"name": "token_decimals",
-				"type": "uint256"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {
-				"name": "_exec_id",
-				"type": "bytes32"
-			}, {"name": "_index", "type": "uint256"}],
-			"name": "getCrowdsaleTier",
-			"outputs": [{
-				"name": "tier_name",
-				"type": "bytes32"
-			}, {
-				"name": "tier_sell_cap",
-				"type": "uint256"
-			}, {
-				"name": "tier_price",
-				"type": "uint256"
-			}, {
-				"name": "tier_duration",
-				"type": "uint256"
-			}, {
-				"name": "duration_is_modifiable",
-				"type": "bool"
-			}, {
-				"name": "whitelist_enabled",
-				"type": "bool"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "totalSupply",
-			"outputs": [{
-				"name": "total_supply",
-				"type": "uint256"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "getCrowdsaleStartAndEndTimes",
-			"outputs": [{
-				"name": "start_time",
-				"type": "uint256"
-			}, {"name": "end_time", "type": "uint256"}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "symbol",
-			"outputs": [{
-				"name": "token_symbol",
-				"type": "bytes32"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {
-				"name": "_exec_id",
-				"type": "bytes32"
-			}, {"name": "_owner", "type": "address"}],
-			"name": "balanceOf",
-			"outputs": [{
-				"name": "owner_balance",
-				"type": "uint256"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "getCrowdsaleMaxRaise",
-			"outputs": [{
-				"name": "wei_raise_cap",
-				"type": "uint256"
-			}, {
-				"name": "total_sell_cap",
-				"type": "uint256"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {
-				"name": "_exec_id",
-				"type": "bytes32"
-			}, {"name": "_agent", "type": "address"}],
-			"name": "getTransferAgentStatus",
-			"outputs": [{
-				"name": "is_transfer_agent",
-				"type": "bool"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {
-				"name": "_exec_id",
-				"type": "bytes32"
-			}, {"name": "_destination", "type": "address"}],
-			"name": "getReservedDestinationInfo",
-			"outputs": [{
-				"name": "destination_list_index",
-				"type": "uint256"
-			}, {
-				"name": "num_tokens",
-				"type": "uint256"
-			}, {
-				"name": "num_percent",
-				"type": "uint256"
-			}, {
-				"name": "percent_decimals",
-				"type": "uint256"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "isCrowdsaleFull",
-			"outputs": [{
-				"name": "is_crowdsale_full",
-				"type": "bool"
-			}, {"name": "max_sellable", "type": "uint256"}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "getCrowdsaleUniqueBuyers",
-			"outputs": [{
-				"name": "num_unique",
-				"type": "uint256"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "getAdmin",
-			"outputs": [{
-				"name": "admin",
-				"type": "address"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "getReservedTokenDestinationList",
-			"outputs": [{
-				"name": "num_destinations",
-				"type": "uint256"
-			}, {
-				"name": "reserved_destinations",
-				"type": "address[]"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "getTokenInfo",
-			"outputs": [{
-				"name": "token_name",
-				"type": "bytes32"
-			}, {
-				"name": "token_symbol",
-				"type": "bytes32"
-			}, {
-				"name": "token_decimals",
-				"type": "uint256"
-			}, {"name": "total_supply", "type": "uint256"}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "getCrowdsaleInfo",
-			"outputs": [{
-				"name": "wei_raised",
-				"type": "uint256"
-			}, {
-				"name": "team_wallet",
-				"type": "address"
-			}, {
-				"name": "minimum_contribution",
-				"type": "uint256"
-			}, {
-				"name": "is_initialized",
-				"type": "bool"
-			}, {"name": "is_finalized", "type": "bool"}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_team_wallet",
-				"type": "address"
-			}, {
-				"name": "_start_time",
-				"type": "uint256"
-			}, {
-				"name": "_initial_tier_name",
-				"type": "bytes32"
-			}, {
-				"name": "_initial_tier_price",
-				"type": "uint256"
-			}, {
-				"name": "_initial_tier_duration",
-				"type": "uint256"
-			}, {
-				"name": "_initial_tier_token_sell_cap",
-				"type": "uint256"
-			}, {
-				"name": "_initial_tier_is_whitelisted",
-				"type": "bool"
-			}, {
-				"name": "_initial_tier_duration_is_modifiable",
-				"type": "bool"
-			}, {"name": "_admin", "type": "address"}],
-			"name": "init",
-			"outputs": [{
-				"name": "store_data",
-				"type": "bytes32[]"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "name",
-			"outputs": [{
-				"name": "token_name",
-				"type": "bytes32"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "getCurrentTierInfo",
-			"outputs": [{
-				"name": "tier_name",
-				"type": "bytes32"
-			}, {
-				"name": "tier_index",
-				"type": "uint256"
-			}, {
-				"name": "tier_ends_at",
-				"type": "uint256"
-			}, {
-				"name": "tier_tokens_remaining",
-				"type": "uint256"
-			}, {
-				"name": "tier_price",
-				"type": "uint256"
-			}, {
-				"name": "duration_is_modifiable",
-				"type": "bool"
-			}, {
-				"name": "whitelist_enabled",
-				"type": "bool"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}, {
-			"constant": true,
-			"inputs": [{
-				"name": "_storage",
-				"type": "address"
-			}, {"name": "_exec_id", "type": "bytes32"}],
-			"name": "getCrowdsaleTierList",
-			"outputs": [{
-				"name": "crowdsale_tiers",
-				"type": "bytes32[]"
-			}],
-			"payable": false,
-			"stateMutability": "view",
-			"type": "function"
-		}]
-
-		logger.info("GetTokenBalance: account=" + this.account);
-		logger.info("Token exec ID=" + crowdsale.executionID);
-		try {
-			let web3 = Utils.setNetwork(this.networkID);
-			//let MintedCappedCrowdsale_InitCrowdsale = "0xBd9383C930974cca9AB8629e77557AB336aB5Dd7";
-			let MyContract = new web3.eth.Contract(MintedCappedCrowdsale_InitCrowdsale);
-			return await MyContract.methods.balanceOf("0x8D1084B586Cb4B298BEA5550AD020C9DE7fc48c5",
-				"0xb9fe5427ada7c3b12c705267f54bfb2d6927465d83ff738584eea6ebe0c2da7f", this.account).call();
-		}
-		catch (err) {
-			logger.info("Can not get balance. " + err);
-			return 0;
-		}
 	}
 
 	async getTokenBalance(crowdsale) {
@@ -561,11 +74,6 @@ class User {
 	async openManagePage(crowdsale) {
 		logger.info("Open manage page")
 		const startURL = Utils.getStartURL();
-		/* var welcomePage=new WizardWelcome(this.driver);
-			welcomePage.URL=startURL;
-			await welcomePage.activate();
-			await welcomePage.clickButtonChooseContract();*/
-
 		let mngPage = new ManagePage(this.driver);
 		mngPage.URL = startURL + "manage/" + crowdsale.executionID;
 		await mngPage.open();
@@ -811,11 +319,6 @@ class User {
 		const wizardStep1 = new WizardStep1(this.driver);
 		const wizardStep2 = new WizardStep2(this.driver);
 		const wizardStep3 = new WizardStep3(this.driver);
-
-		//WizardStep3.setCountTiers(0);
-		//WizardStep3.setFlagCustom(false);
-		//WizardStep3.setFlagWHitelising(false);
-
 		const wizardStep4 = new WizardStep4(this.driver);
 		const crowdsalePage = new CrowdsalePage(this.driver);
 		const investPage = new InvestPage(this.driver);
@@ -824,6 +327,7 @@ class User {
 		let tiers = [];
 		for (let i = 0; i < crowdsale.tiers.length; i++)
 			tiers.push(new TierPage(this.driver, crowdsale.tiers[i]));
+
 		await  welcomePage.open();
 		await  welcomePage.clickButtonNewCrowdsale();
 		let count = 30;
@@ -834,7 +338,7 @@ class User {
 				await wizardStep1.clickButtonContinue();
 			}
 			else break;
-		} while (count-- > 0)
+		} while (count-- > 0);
 
 		do {
 			await  wizardStep2.fillName(crowdsale.name);
@@ -871,6 +375,8 @@ class User {
 				await wizardStep3.fillMinCap(crowdsale.minCap);
 			} while (await wizardStep3.isDisplayedWarningMincap())
 		}
+
+		//console.log(crowdsale.tiers.length - 1);
 
 		for (let i = 0; i < crowdsale.tiers.length - 1; i++) {
 			await tiers[i].fillTier();

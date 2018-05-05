@@ -334,16 +334,18 @@ class TierPage extends Page {
 
 	async fillTier() {
 		logger.info(this.name + "fillTier ");
-		return await this.fillWhitelist() &&
-			await this.fillRate() &&
+		return 	await this.fillRate() &&
 			await this.fillSetupName() &&
 			await this.fillSupply() &&
 			await this.fillStartTime() &&
 			await this.fillEndTime() &&
-			await this.setModify();
+			await this.setModify()&&
+		    await this.fillWhitelist();
+
 	}
 
 	async fillWhitelist() {
+		logger.info(this.name + "fillWhitelist ");
 		try {
 			for (let i = 0; i < this.tier.whitelist.length; i++) {
 				logger.info(this.name + "fillWhitelist #" + i + ": ");

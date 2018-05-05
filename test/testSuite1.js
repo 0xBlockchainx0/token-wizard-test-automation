@@ -53,9 +53,6 @@ const endDateForTestEarlier="01/07/2049";
 const endTimeForTestLater="11:23";
 const endDateForTestLater="01/07/2050";
 
-
-
-
 test.describe('POA token-wizard. Test suite #1',  async function() {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
@@ -101,7 +98,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			case 0:{
 				scenario="./users/ropsten/0/test0_ropsten.json";
 				//scenario1 = "./users/ropsten/0/testSimple_wizard2.json";
-				scenario1 = "./scenarios/T1RyWy_0013.json";
+				scenario1 = "./scenarios/simple.json";
 
 				Owner = new User (driver,"./users/ropsten/0/user3_0e03.json");
 				Investor1 = new User (driver,"./users/ropsten/0/user3_2a77.json");
@@ -127,8 +124,13 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 			}
 		}
-		crowdsale=await  Utils.getCrowdsaleInstance(scenario);
+
 		crowdsale1=await  Utils.getCrowdsaleInstance(scenario1);
+		console.log(crowdsale1.tiers.length);
+
+
+		crowdsale=await  Utils.getCrowdsaleInstance(scenario);
+
 
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
@@ -157,7 +159,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 
 
 	/////// Tests
-	test.it('Owner  can create crowdsale: 1 tier, no reserved, no whitelist' ,
+	test.it.skip('Owner  can create crowdsale: 1 tier, no reserved, no whitelist' ,
 
 		async function () {
 			await  welcomePage.open();
@@ -200,33 +202,82 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 			await tierPage.fillStartTime();
 			await tierPage.fillEndTime();
 await tierPage.setModify();
-
-
-
 			return await assert.equal(true,false,"stop");
 
 		});
 ////////////////// Simple scenario  /////////////////////////////////////////////////
+	test.it('Owner  can create crowdsale: 1 tier, no reserved, no whitelist' ,
+		async function () {
+			let owner = Owner;//Owner
+			balance = 0;
+			await owner.setMetaMaskAccount();
+			let Tfactor=1;
+			await owner.createCrowdsale(crowdsale1,Tfactor);
+			logger.info("Execution ID:  " + crowdsale1.executionID);
+			logger.info("url:  " + crowdsale1.url);
+			//return await assert.equal(true,false,"stop");
+			return await assert.notEqual(crowdsale1.executionID, "", 'Test FAILED. Crowdsale has not created ');
+		});
+
+	test.it('Investor can buy half of total supply',
+		async function() {
+			//await driver.sleep(180000);
+			let investor=Owner;
+			await investor.openInvestPage(crowdsale1);
+			let contribution=crowdsale1.tier[0].supply/2;
+			balance = balance + contribution;
+			await investor.contribute(contribution);
+			let result = await investor.getBalanceFromInvestPage(crowdsale);
+			return await assert.equal(result,balance,'Test FAILED. Investor can not buy amount = min');
+		});
+	test.it('Investor can not buy more than total supply',
+		async function() {
+			//await driver.sleep(180000);
+			let investor=Owner;
+			await investor.openInvestPage(crowdsale1);
+			let contribution=crowdsale1.tier[0].supply+10;
+			await investor.contribute(contribution);
+			let result = await investor.getBalanceFromInvestPage(crowdsale);
+			return await assert.equal(result,balance,'Test FAILED. Investor can not buy amount = min');
+		});
+	test.it('Investor can  buy  total supply',
+		async function() {
+			//await driver.sleep(180000);
+			let investor=Owner;
+			await investor.openInvestPage(crowdsale1);
+			let contribution=crowdsale1.tier[0].supply/2;
+			balance = balance + contribution;
+			await investor.contribute(contribution);
+			let result = await investor.getBalanceFromInvestPage(crowdsale);
+			return await assert.equal(result,balance,'Test FAILED. Investor can not buy amount = min');
+		});
+
+
+
+
+
+
+
+
+	////////////////// MinCap scenario  /////////////////////////////////////////////////
+
 
 	test.it('Owner  can create crowdsale: 1 tier, no reserved, no whitelist' ,
-
 		async function () {
-
 			let owner = Owner;//Owner
 			await owner.setMetaMaskAccount();
 			let Tfactor=1;
 			await owner.createCrowdsale(crowdsale1,Tfactor);
 			logger.info("Execution ID:  " + crowdsale1.executionID);
 			logger.info("url:  " + crowdsale1.url);
-			return await assert.equal(true,false,"stop");
-			//return await assert.notEqual(crowdsale1.executionID, "", 'Test FAILED. Crowdsale has not created ');
+			//return await assert.equal(true,false,"stop");
+			return await assert.notEqual(crowdsale1.executionID, "", 'Test FAILED. Crowdsale has not created ');
 	});
 
 	test.it('Investor is NOT able to buy less than mincap in first transaction',
 		async function() {
 			let owner = Owner;//Owner
 			await owner.setMetaMaskAccount();
-
 			await owner.openInvestPage(crowdsale1);
 			await owner.contribute(crowdsale1.minCap * 0.5);
 			let result = await owner.getBalanceFromInvestPage(crowdsale1);

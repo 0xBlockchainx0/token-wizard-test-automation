@@ -2,22 +2,13 @@
 
   "name": "simple.json",
   "ticker": "test",
-  "decimals": 18,
+  "decimals": 6,
   "reservedTokens":[
-    {
-    "address" :  "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
-    "dimension": "percentage",
-    "value": 99
-  },
-    {
-      "address" :  "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
-      "dimension": "tokens",
-      "value":333
-    }
+
   ],
-  "walletAddress":"0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+  "walletAddress":"0x0e036E74F31aDDb9e0ADcB80dEA9Ed1E187DFe50",
   "gasprice":40,
-  "mincap": 1,
+  "mincap": 0,
   "whitelisting":false,
   "tiers":[
     {
