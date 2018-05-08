@@ -54,6 +54,8 @@ const endTimeForTestLater="11:23";
 const endDateForTestLater="01/07/2050";
 
 test.describe('POA token-wizard. Test suite #1',  async function() {
+
+
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 

@@ -2,11 +2,12 @@ const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const ReservedTokensContainer = By.className("reserved-tokens-item-container-inner");
-const buttonAdd = By.className("button button_fill button_fill_plus");
+const buttonAdd = By.className("button button_fill button_no_icon");
 const itemsRemove = By.className("item-remove");
 const buttonClearAll = By.className("fa fa-trash");
 const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const buttonNoAlert = By.className("swal2-cancel swal2-styled");
+
 
 class ReservedTokensPage extends Page {
 

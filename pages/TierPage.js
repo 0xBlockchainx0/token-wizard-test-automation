@@ -86,7 +86,7 @@ class TierPage extends Page {
 
 	async fillStartTime() {
 		logger.info(this.name + "fillStartTime ");
-		//if(this.tier.startDate === "") return true;
+		if(this.tier.startDate === "") return true;
 		let locator = await this.getFieldStartTime();
 		let format = await Utils.getDateFormat(this.driver);
 		if (this.tier.startDate === "") {
@@ -111,7 +111,7 @@ class TierPage extends Page {
 
 	async fillEndTime() {
 		logger.info(this.name + "fillEndTime ");
-		//if (this.tier.endDate === "") return true;
+		if (this.tier.endDate === "") return true;
 		let locator = await this.getFieldEndTime();
 		let format = await Utils.getDateFormat(this.driver);
 		if (!this.tier.endDate.includes("/")) {

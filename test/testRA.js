@@ -34,7 +34,7 @@ testRA();
 	  const tempOutputFile=tempOutputPath+'resultReservedBundle'+Date.now()+'.json';
 	  fs.ensureFileSync(tempOutputFile);
 
-
+	  console.log(Date.now());
 	logger.info("Test: create crowdsale with bundle of reserved tokens");
 	let driver = await Utils.startBrowserWithMetamask();
 	let user3_F16AFile='./users/user3_F16A.json';//Rinkeby
