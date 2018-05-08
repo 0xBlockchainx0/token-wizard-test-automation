@@ -8,7 +8,6 @@
     "test1": "mocha -b ./test/testSuite1.js",
     "ra": "node ./test/testRA.js",
     "t": "node ./test/t.js"
-
   },
   "dependencies": {
     "chromedriver": "^2.35.0",
