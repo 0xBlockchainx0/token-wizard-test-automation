@@ -60,7 +60,7 @@ testRA();
     let crowdsale = await Utils.getCrowdsaleInstance(scenario);
 
 
-   crowdsale = await Owner.createCrowdsale(crowdsale,1,'reserved');
+   crowdsale = await Owner.createMintedCappedCrowdsale(crowdsale,1,'reserved');
 
 	await Owner.openInvestPage(crowdsale);
 	await driver.sleep(15000);

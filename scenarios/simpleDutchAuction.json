@@ -1,0 +1,24 @@
+{
+
+  "name": "simpleDutchAuction.json",
+  "ticker": "test",
+  "decimals": 18,
+  "totalSupply":10000,
+  "reservedTokens":[
+   ],
+  "walletAddress":"0x0e036E74F31aDDb9e0ADcB80dEA9Ed1E187DFe50",
+  "gasprice":40,
+  "mincap": 110,
+  "whitelisting":false,
+  "tiers":[
+    {
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
+      "minRate":1750,
+      "maxRate":3500,
+      "supply": 200,
+      "whitelist":[]
+    }]
+}

@@ -214,7 +214,7 @@ await tierPage.setModify();
 			balance = 0;
 			await owner.setMetaMaskAccount();
 			let Tfactor=1;
-			await owner.createCrowdsale(crowdsale1,Tfactor);
+			await owner.createMintedCappedCrowdsale(crowdsale1,Tfactor);
 			logger.info("Execution ID:  " + crowdsale1.executionID);
 			logger.info("url:  " + crowdsale1.url);
 			//return await assert.equal(true,false,"stop");
@@ -269,7 +269,7 @@ await tierPage.setModify();
 			let owner = Owner;//Owner
 			await owner.setMetaMaskAccount();
 			let Tfactor=1;
-			await owner.createCrowdsale(crowdsale1,Tfactor);
+			await owner.createMintedCappedCrowdsale(crowdsale1,Tfactor);
 			logger.info("Execution ID:  " + crowdsale1.executionID);
 			logger.info("url:  " + crowdsale1.url);
 			//return await assert.equal(true,false,"stop");

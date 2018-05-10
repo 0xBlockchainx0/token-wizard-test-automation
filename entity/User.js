@@ -307,12 +307,89 @@ class User {
 		return true;
 	}
 
-	async createCrowdsale(crowdsale, Tfactor, option) {
 
-		logger.info("create crowdsale:")
+
+	async confirmPopup() {
+		logger.info("confirm popup");
+		let investPage = new InvestPage(this.driver);
+		await this.driver.sleep(1000);
+		let counter = 10;
+		while (counter-- > 0) {
+			await this.driver.sleep(1000);
+			if (await investPage.isPresentWarning()) {
+				await this.driver.sleep(1000);
+				await investPage.clickButtonOK();
+				return true;
+			}
+			return false;
+		}
+	}
+
+	async contribute(amount) {
+		logger.info(" contribution = " + amount);
+		const investPage = new InvestPage(this.driver);
+		await investPage.waitUntilLoaderGone();
+		await investPage.fillInvest(amount);
+		await investPage.clickButtonContribute();
+		let counter = 0;
+		let isContinue = true;
+		let timeLimit = 2;
+		do {
+			await this.driver.sleep(500);
+			if (await investPage.isPresentWarning()) {
+				await logger.info(this.name + ": warning:" + await investPage.getWarningText());
+				return false;
+			}
+			if (await investPage.isPresentError()) {
+				await logger.info(this.name + ": error:" + await investPage.getErrorText());
+				return false;
+			}
+			counter++;
+			if (counter >= timeLimit) {
+				isContinue = false;
+			}
+		} while (isContinue);
+
+		let result = await new MetaMask(this.driver).signTransaction(5);
+		if (!result) {
+			return false;
+		}
+		await investPage.waitUntilLoaderGone();
+		counter = 0;
+		timeLimit = 5;
+		while (counter++ < timeLimit) {
+			await this.driver.sleep(500);
+			if (await investPage.isPresentWarning()) {
+				await investPage.clickButtonOK();
+				await investPage.waitUntilLoaderGone();
+				await this.driver.sleep(2000);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	async getBalanceFromInvestPage(crowdsale) {
+		logger.info("get balance from " + crowdsale.url);
+		const investPage = new InvestPage(this.driver);
+		const curURL = await investPage.getURL();
+		if (crowdsale.url != curURL) await investPage.open(crowdsale.url);
+		await investPage.waitUntilLoaderGone();
+		await this.driver.sleep(10000);
+		await investPage.refresh();
+		await this.driver.sleep(2000);
+		let result = await investPage.getBalance();
+		let arr = result.split(" ");
+		result = arr[0].trim();
+		logger.info("received " + result);
+		return result;
+	}
+
+
+	async createMintedCappedCrowdsale(crowdsale, Tfactor, option) {
+
+		logger.info(" createMintedCappedCrowdsale ");
 		let refreshCount = 5;
-		//if ((this.networkID!=8545)&&(this.networkID!=77)) refreshCount=15;
-
 		const startURL = Utils.getStartURL();
 		const welcomePage = new WizardWelcome(this.driver, startURL);
 		const metaMask = new MetaMask(this.driver);
@@ -481,81 +558,9 @@ class User {
 		return crowdsale;
 	}
 
-	async confirmPopup() {
-		logger.info("confirm popup");
-		let investPage = new InvestPage(this.driver);
-		await this.driver.sleep(1000);
-		let counter = 10;
-		while (counter-- > 0) {
-			await this.driver.sleep(1000);
-			if (await investPage.isPresentWarning()) {
-				await this.driver.sleep(1000);
-				await investPage.clickButtonOK();
-				return true;
-			}
-			return false;
-		}
-	}
 
-	async contribute(amount) {
-		logger.info(" contribution = " + amount);
-		const investPage = new InvestPage(this.driver);
-		await investPage.waitUntilLoaderGone();
-		await investPage.fillInvest(amount);
-		await investPage.clickButtonContribute();
-		let counter = 0;
-		let isContinue = true;
-		let timeLimit = 2;
-		do {
-			await this.driver.sleep(500);
-			if (await investPage.isPresentWarning()) {
-				await logger.info(this.name + ": warning:" + await investPage.getWarningText());
-				return false;
-			}
-			if (await investPage.isPresentError()) {
-				await logger.info(this.name + ": error:" + await investPage.getErrorText());
-				return false;
-			}
-			counter++;
-			if (counter >= timeLimit) {
-				isContinue = false;
-			}
-		} while (isContinue);
 
-		let result = await new MetaMask(this.driver).signTransaction(5);
-		if (!result) {
-			return false;
-		}
-		await investPage.waitUntilLoaderGone();
-		counter = 0;
-		timeLimit = 5;
-		while (counter++ < timeLimit) {
-			await this.driver.sleep(500);
-			if (await investPage.isPresentWarning()) {
-				await investPage.clickButtonOK();
-				await investPage.waitUntilLoaderGone();
-				await this.driver.sleep(2000);
-				return true;
-			}
-		}
-		return false;
-	}
 
-	async getBalanceFromInvestPage(crowdsale) {
-		logger.info("get balance from " + crowdsale.url);
-		const investPage = new InvestPage(this.driver);
-		const curURL = await investPage.getURL();
-		if (crowdsale.url != curURL) await investPage.open(crowdsale.url);
-		await investPage.waitUntilLoaderGone();
-		await this.driver.sleep(10000);
-		await investPage.refresh();
-		await this.driver.sleep(2000);
-		let result = await investPage.getBalance();
-		let arr = result.split(" ");
-		result = arr[0].trim();
-		logger.info("received " + result);
-		return result;
-	}
 
 }
 
