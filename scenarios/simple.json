@@ -4,20 +4,11 @@
   "ticker": "test",
   "decimals": 3,
   "reservedTokens":[
-    {
-      "address" :"0x27F2f56e6Ee35E4995A965337ba2A7b4ec492FcC",
-      "dimension": "percentage",
-      "value": 20
-    },
-    {
-      "address" :"0x40cAa4BF6893dF91638305cFCf98CB8E7Fa8D17F",
-      "dimension": "tokens",
-      "value": 100
-    }
+
   ],
   "walletAddress":"0x0e036E74F31aDDb9e0ADcB80dEA9Ed1E187DFe50",
   "gasprice":40,
-  "mincap": 110.123,
+  "mincap": 0,
   "whitelisting":false,
   "tiers":[
     {
@@ -29,6 +20,8 @@
       "endTime":"",
       "rate":1750,
       "supply": 200,
-      "whitelist":[]
+      "whitelist":[
+
+      ]
     }]
 }

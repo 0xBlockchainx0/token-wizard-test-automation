@@ -114,5 +114,12 @@ class WizardStep2 extends Page {
 		logger.info(this.name+"isDisabledDecimals ");
 		return await super.isElementDisabled(fieldDecimals);
 	}
+
+	async fillPage (crowdsale) {
+		logger.info(this.name+"fillPage ");
+		return await this.fillName(crowdsale.name) &&
+			   await this.fillTicker(crowdsale.ticker) &&
+		       await this.fillDecimals(crowdsale.decimals);
+	}
 }
 module.exports.WizardStep2=WizardStep2;

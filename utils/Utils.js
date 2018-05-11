@@ -12,8 +12,9 @@ const Web3 = require('web3');
 const {spawn} = require('child_process');
 const configFile='config.json';
 
-const crowdsale=require('../entity/Crowdsale.js');
-const Crowdsale=crowdsale.Crowdsale;
+
+const Crowdsale=require('../entity/Crowdsale.js').Crowdsale;
+const DutchAuction = require("../entity/DutchAuction.js").DutchAuction;
 
 var browserHandles=[];
 
@@ -65,7 +66,7 @@ static async getProviderUrl(id)
             logger.info("Current provider "+ provider);
 		    let w=await new Web3(new Web3.providers.HttpProvider(provider));
 			//let account0 = w.eth.accounts[0];
-			let account0=await w.eth.getAccounts().then((accounts)=>{return accounts[2];});
+			let account0=await w.eth.getAccounts().then((accounts)=>{return accounts[0];});
 			//let account0=await w.eth.accounts[2];
 
 			//logger.info("Ganache balance  "+w.eth.getBalance(account0));
@@ -291,6 +292,21 @@ return q;
     static async zoom(driver,z){
         await driver.executeScript ("document.body.style.zoom = '"+z+"'");
     }
+
+	static async getDutchAuctionCrowdsaleInstance(fileName) {
+		try {
+			let crowdsale = new DutchAuction();
+			await crowdsale.parser(fileName);
+			return crowdsale;
+		}
+		catch(err) {
+			logger.info("Can not create crowdsale");
+			logger.info(err);
+			return null;
+		}
+
+	}
+
 
 	static async getCrowdsaleInstance(fileName) {
 		try {

@@ -46,13 +46,11 @@ class Crowdsale {
 		this.minCap=obj.mincap;
 		this.whitelisting=obj.whitelisting;
 		for (let i=0;i<obj.tiers.length;i++) {
-			let isWhitelist;
+			let isWhitelist=[];
 			if (this.whitelisting) {
 				isWhitelist = obj.tiers[i].whitelist;
 			}
-			else {
-				isWhitelist = null;
-			}
+
 			this.tiers.push(
 				new Tier (
 					obj.tiers[i].name,
@@ -76,7 +74,7 @@ class Crowdsale {
 		logger.info("decimals:"+this.decimals);
 		logger.info("Reserved Tokens:"+this.reservedTokens.length);
 
-		for (var i=0;i<this.reservedTokens.length;i++) {
+		for (let i=0;i<this.reservedTokens.length;i++) {
 			logger.info("Reserved tokens#:"+i);
 			logger.info("address:"+this.reservedTokens[i].address);
 			logger.info("dimension:"+this.reservedTokens[i].dimension);

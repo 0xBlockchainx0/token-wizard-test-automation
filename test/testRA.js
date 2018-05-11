@@ -122,7 +122,7 @@ testRA();
 
 	   value=Math.trunc(Math.random()*1000);
 	   RA=new ReservedTokens(account.address,dimension,value);
-	   await reservedTokensPage.fillReservedTokens(RA);
+	   await reservedTokensPage.fillOneReservedToken(RA);
 	   await reservedTokensPage.clickButtonAddReservedTokens();
 
 	    bundleRA[i]=RA;

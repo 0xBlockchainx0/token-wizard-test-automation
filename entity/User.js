@@ -15,7 +15,7 @@ const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
 const Page = require('../pages/Page.js').Page;
 const testRA = require('../test/testRA.js');
 const fs = require('fs');
-const timeLimitTransactions = 25;
+
 
 class User {
 	constructor(driver, file) {
@@ -25,7 +25,7 @@ class User {
 			this.account = obj.account;
 			this.privateKey = obj.privateKey;
 			this.networkID = obj.networkID;
-			this.accountOrderInMetamask = "undefined";//for MetaMaskPage only
+			this.accountOrderInMetamask = undefined;//for MetaMaskPage only
 			this.name = file;
 		}
 		catch (err) {
@@ -53,7 +53,7 @@ class User {
 	async setMetaMaskAccount() {
 		logger.info("Set Metamask account")
 		let metaMask = new MetaMask(this.driver);
-		if (this.accountOrderInMetamask == "undefined") {
+		if (this.accountOrderInMetamask === undefined ) {
 			await metaMask.importAccount(this);
 		}
 		else {
@@ -326,7 +326,7 @@ class User {
 	}
 
 	async contribute(amount) {
-		logger.info(" contribution = " + amount);
+		logger.info("contribute  " + amount);
 		const investPage = new InvestPage(this.driver);
 		await investPage.waitUntilLoaderGone();
 		await investPage.fillInvest(amount);
@@ -386,13 +386,11 @@ class User {
 	}
 
 
-	async createMintedCappedCrowdsale(crowdsale, Tfactor, option) {
+	async createMintedCappedCrowdsale(crowdsale) {
 
 		logger.info(" createMintedCappedCrowdsale ");
-		let refreshCount = 5;
 		const startURL = Utils.getStartURL();
 		const welcomePage = new WizardWelcome(this.driver, startURL);
-		const metaMask = new MetaMask(this.driver);
 		const wizardStep1 = new WizardStep1(this.driver);
 		const wizardStep2 = new WizardStep2(this.driver);
 		const wizardStep3 = new WizardStep3(this.driver);
@@ -401,164 +399,145 @@ class User {
 		const investPage = new InvestPage(this.driver);
 		const reservedTokens = new ReservedTokensPage(this.driver);
 
-		let tiers = [];
-		for (let i = 0; i < crowdsale.tiers.length; i++)
-			tiers.push(new TierPage(this.driver, crowdsale.tiers[i]));
+		let result = await  welcomePage.open() &&
+					 await  welcomePage.clickButtonNewCrowdsale();
 
-		await  welcomePage.open();
-		await  welcomePage.clickButtonNewCrowdsale();
-		let count = 30;
+		let counter = 200;
 		do {
-			await this.driver.sleep(1000);
-			if ((await wizardStep1.isPresentButtonContinue()) &&
+			await this.driver.sleep(300);
+			if ((await wizardStep1.isDisplayedButtonContinue()) &&
 				!(await wizardStep2.isDisplayedFieldName())) {
-				await wizardStep1.clickButtonContinue();
+				result = result && await wizardStep1.clickButtonContinue();
 			}
 			else break;
-		} while (count-- > 0);
+			if (counter === 0) return false;
+		} while (counter-- >= 0);
 
+		result = result &&
+			await wizardStep2.fillPage(crowdsale) &&
+			await reservedTokens.fillReservedTokens(crowdsale) &&
+			await wizardStep2.clickButtonContinue() &&
+			await wizardStep3.fillPage(crowdsale);
+		await this.driver.sleep(15000);
+
+		counter = 200;
 		do {
-			await  wizardStep2.fillName(crowdsale.name);
-		} while (await wizardStep2.isDisplayedWarningName());
-
-		do {
-			await wizardStep2.fillTicker(crowdsale.ticker);
-		} while (await wizardStep2.isDisplayedWarningTicker());
-
-		do {
-			await wizardStep2.fillDecimals(crowdsale.decimals);
-		} while (await wizardStep2.isDisplayedWarningDecimals());
-
-		if (option === 'reserved') {
-			await testRA.fillReservedTokens(this.driver); //for testing bundle of reserved addresses
-		}
-		else
-			for (let i = 0; i < crowdsale.reservedTokens.length; i++) {
-				await reservedTokens.fillReservedTokens(crowdsale.reservedTokens[i]);
-				await reservedTokens.clickButtonAddReservedTokens();
-			}
-
-		await wizardStep2.clickButtonContinue();
-		await wizardStep3.waitUntilLoaderGone();
-		do {
-			await wizardStep3.fillWalletAddress(crowdsale.walletAddress);
-		} while (await wizardStep3.isDisplayedWarningWalletAddress());
-
-		await wizardStep3.setGasPrice(crowdsale.gasPrice);
-		if (crowdsale.whitelisting) {
-			await wizardStep3.clickCheckboxWhitelistYes();
-		} else {
-			do {
-				await wizardStep3.fillMinCap(crowdsale.minCap);
-			} while (await wizardStep3.isDisplayedWarningMincap())
-		}
-
-		//console.log(crowdsale.tiers.length - 1);
-
-		for (let i = 0; i < crowdsale.tiers.length - 1; i++) {
-			await tiers[i].fillTier();
-			await wizardStep3.clickButtonAddTier();
-		}
-		await tiers[crowdsale.tiers.length - 1].fillTier();
-
-		await this.driver.sleep(10000);
-
-		count = 30;
-		do {
-			await this.driver.sleep(1000);
+			await this.driver.sleep(300);
 			if ((await wizardStep3.isDisplayedButtonContinue()) &&
-				!(await wizardStep4.isPresentModal())) {
-				await wizardStep3.clickButtonContinue();
+				!(await wizardStep4.isDisplayedModal())) {
+				result = result && await wizardStep3.clickButtonContinue();
 			}
 			else break;
-			if (count === 1) {
+			if (counter === 0) {
 				logger.info("Incorrect data in tiers");
-				//await wizardStep3.printWarnings();
-				return null;
+				return false;
 			}
-		} while (count-- > 0);
+		} while (counter-- >= 0);
 
-		let counterTransactions = 0;
-		let skippedTransactions = 0;
-		let isContinue = true;
-		let result = false;
-		let timeLimit = timeLimitTransactions * crowdsale.tiers.length;
+		result = result &&
+				await wizardStep4.deployContracts(crowdsale) &&
+                await wizardStep4.waitUntilDisplayedButtonContinue() &&
+				await wizardStep4.clickButtonContinue() &&
+				await wizardStep4.waitUntilLoaderGone();
 
+		counter = 200;
 		do {
-			result = await metaMask.signTransaction(refreshCount);
-			counterTransactions++;
-			if (!result) {
-				logger.info("Transaction #" + counterTransactions + " didn't appear.");
+			await this.driver.sleep(300);
+			if ((await crowdsalePage.isDisplayedButtonInvest()) &&
+				!(await investPage.isDisplayedCountdownTimer())) {
+				result = result && await crowdsalePage.clickButtonInvest();
 			}
-			else {
-				logger.info("Transaction# " + counterTransactions + " is successfull");
+			else break;
+			if (counter === 0) {
+				return false;
 			}
-			await this.driver.sleep(Tfactor * 2000);//anyway won't be faster than start time
-			if (await wizardStep4.isPresentButtonSkipTransaction()) {
-				await wizardStep4.clickButtonSkipTransaction();
+		} while (counter-- >= 0);
 
-				await this.driver.sleep(1000);
-				await wizardStep4.clickButtonYes();
-				logger.info("Transaction #" + (counterTransactions + 1) + " is skipped.");
-				counterTransactions++;
-				skippedTransactions++;
-			}
-			else {
-				if (!(await wizardStep4.isPresentModal())) {
-					await wizardStep4.waitUntilLoaderGone();
-					await wizardStep4.clickButtonOk();
-					isContinue = false;
-				}
-			}
+		result = result && await investPage.waitUntilLoaderGone();
+		crowdsale.url = await investPage.getURL();
+		crowdsale.executionID = await investPage.getExecutionID();
+		logger.info("Final invest page link: " + crowdsale.url);
+		logger.info("token address: " + crowdsale.executionID);
 
-			if (skippedTransactions > 5) {
-				logger.info("Deployment failed because too many skipped transaction." +
-					"\n" + "Transaction were done:" + (counterTransactions - skippedTransactions) +
-					"\n" + "Transaction were skipped: " + skippedTransactions);
-				isContinue = false;
-			}
-
-			if ((timeLimit--) === 0) {
-				logger.info("Deployment failed because time expired." + "\n" +
-					" Transaction were done:" + (counterTransactions - skippedTransactions) +
-					"\n" + "Transaction were skipped: " + skippedTransactions);
-				isContinue = false;
-			}
-
-		} while (isContinue);
-
-		logger.info("Crowdsale created." + "\n" + " Transaction were done:" +
-			(counterTransactions - skippedTransactions) +
-			"\n" + "Transaction were skipped: " + skippedTransactions);
-
-		//await this.driver.sleep(5000);
-		//const abi=await wizardStep4.getABI();
-
-		await wizardStep4.clickButtonContinue();
-		await wizardStep4.waitUntilLoaderGone();
-		await  this.driver.sleep(1000);
-
-		do {
-			await crowdsalePage.clickButtonInvest();
-		}
-		while (!await investPage.isPresentCountdownTimer())
-
-		const urlInvestPage = await investPage.getURL();
-		await investPage.waitUntilLoaderGone();
-		const executionID = await investPage.getExecutionID();
-
-		//logger.info(JSON.stringify(abi));
-		logger.info("Final invest page link: " + urlInvestPage);
-		logger.info("token address: " + executionID);
-
-		crowdsale.executionID = executionID;
-
-		crowdsale.url = urlInvestPage;
-		crowdsale.tokenContractAbi = "";
-		return crowdsale;
+		return result && crowdsale.executionID !== "";
 	}
 
+	async createDuthAuctionCrowdsale(crowdsale) {
 
+		logger.info(" createDuthAuctionCrowdsale ");
+		const startURL = Utils.getStartURL();
+		const welcomePage = new WizardWelcome(this.driver, startURL);
+		const wizardStep1 = new WizardStep1(this.driver);
+		const wizardStep2 = new WizardStep2(this.driver);
+		const wizardStep3 = new WizardStep3(this.driver);
+		const wizardStep4 = new WizardStep4(this.driver);
+		const crowdsalePage = new CrowdsalePage(this.driver);
+		const investPage = new InvestPage(this.driver);
+		const reservedTokens = new ReservedTokensPage(this.driver);
+
+		let result = await  welcomePage.open() &&
+			await  welcomePage.clickButtonNewCrowdsale() &&
+			await wizardStep1.waitUntilDisplayedCheckboxDutchAuction() &&
+			await wizardStep1.clickCheckboxDutchAuction();
+
+		let counter = 200;
+		do {
+			await this.driver.sleep(300);
+			if ((await wizardStep1.isDisplayedButtonContinue()) &&
+				!(await wizardStep2.isDisplayedFieldName())) {
+				result = result && await wizardStep1.clickButtonContinue();
+			}
+			else break;
+			if (counter === 0) return false;
+		} while (counter-- >= 0);
+
+		result = result &&
+			await wizardStep2.fillPage(crowdsale) &&
+			await reservedTokens.fillReservedTokens(crowdsale) &&
+			await wizardStep2.clickButtonContinue() &&
+			await wizardStep3.fillPage(crowdsale);
+
+		counter = 200;
+		do {
+			await this.driver.sleep(300);
+			if ((await wizardStep3.isDisplayedButtonContinue()) &&
+				!(await wizardStep4.isDisplayedModal())) {
+				result = result && await wizardStep3.clickButtonContinue();
+			}
+			else break;
+			if (counter === 0) {
+				logger.info("Incorrect data in tiers");
+				return false;
+			}
+		} while (counter-- >= 0);
+
+		result = result &&
+			await wizardStep4.deployContracts(crowdsale) &&
+			await wizardStep4.waitUntilDisplayedButtonContinue() &&
+			await wizardStep4.clickButtonContinue() &&
+			await wizardStep4.waitUntilLoaderGone();
+
+		counter = 200;
+		do {
+			await this.driver.sleep(300);
+			if ((await crowdsalePage.isDisplayedButtonInvest()) &&
+				!(await investPage.isDisplayedCountdownTimer())) {
+				result = result && await crowdsalePage.clickButtonInvest();
+			}
+			else break;
+			if (counter === 0) {
+				return false;
+			}
+		} while (counter-- >= 0);
+
+		result = result && await investPage.waitUntilLoaderGone();
+		crowdsale.url = await investPage.getURL();
+		crowdsale.executionID = await investPage.getExecutionID();
+		logger.info("Final invest page link: " + crowdsale.url);
+		logger.info("token address: " + crowdsale.executionID);
+
+		return result && crowdsale.executionID !== "";
+	}
 
 
 

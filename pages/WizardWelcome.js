@@ -25,9 +25,8 @@ class WizardWelcome extends Page {
 
     async open() {
 	    logger.info(this.name + ": open");
-	    await super.open(this.URL);
-	    return await super.getURL();
-    }
+	    return await super.open(this.URL);
+	}
 
     async isPresentButtonNewCrowdsale() {
     	logger.info(this.name + ": isPresentButtonNewCrowdsale:");

@@ -1,131 +1,133 @@
-const Logger= require('../entity/Logger.js');
-const logger=Logger.logger;
-const tempOutputPath=Logger.tempOutputPath;
+const logger = require('../entity/Logger.js').logger;
+const Page = require('./Page.js').Page;
+const By = require('selenium-webdriver/lib/by').By;
+const buttonContribute = By.className("button button_fill");
+const fieldInvest = By.className("invest-form-input");
+const buttonOk = By.className("swal2-confirm swal2-styled");
+const fieldBalance = By.className("balance-title");
+const fields = By.className("hashes-title");
+const warningText = By.id("swal2-content");
+const errorNotice = By.className("css-6bx4c3");
+const countdownTimer = By.className("timer");
+const countdownTimerValue = By.className("timer-count");
 
-const page=require('./Page.js');
-const Page=page.Page;
-const webdriver = require('selenium-webdriver'),
-      chrome = require('selenium-webdriver/chrome'),
-      firefox = require('selenium-webdriver/firefox'),
-      by = require('selenium-webdriver/lib/by');
-const By=by.By;
-const buttonContribute=By.className("button button_fill");
-const fieldInvest=By.className("invest-form-input");
-const buttonOk=By.className("swal2-confirm swal2-styled");
-const fieldBalance=By.className("balance-title");
-const fields=By.className("hashes-title");
-const warningText=By.id("swal2-content");
-const errorNotice=By.className("css-6bx4c3");
-const countdownTimer=By.className("timer");
-const countdownTimerValue=By.className("timer-count");
+class InvestPage extends Page {
 
-class InvestPage extends Page{
+	constructor(driver) {
+		super(driver);
+		this.URL;
+		this.fieldExecutionID;
+		this.fieldCurrentAccount;
+		this.name = "Invest page :";
+		this.timer = [];
+	}
 
-    constructor(driver){
-        super(driver);
-        this.URL;
-        this.fieldExecutionID;
-        this.fieldContractAddress;
-        this.fieldCurrentAccount;
-        this.name="Invest page :";
-        this.timer=[];
-    }
+	async initTimer() {
+		logger.info(this.name + "initTimer ");
+		try {
+			let arr = await super.findWithWait(countdownTimer);
+			this.timer = arr[0];
+			return arr;
+		}
+		catch (err) {
+			logger.info("Error " + err);
+			return null;
+		}
+	}
 
-    async initTimer() {
-	   logger.info(this.name+ ":init countdown timer : ");
-        try  {
-		    let arr = await super.findWithWait(countdownTimer);
-		    this.timer = arr[0];
-		    return arr;
-	    }
-        catch(err) {
-		    logger.info(this.name+": dont contain countdown timer ");
-		    return null;
-	    }
-    }
+	async initFields() {
+		logger.info(this.name + "initFields ");
+		try {
+			let array = await super.findWithWait(fields);
+			this.fieldCurrentAccount = array[0];
+			this.fieldExecutionID = array[1];
+			return array;
+		}
+		catch (err) {
+			logger.info("Error " + err);
+			return null;
+		}
+	}
 
-    async initFields() {
-        var arr = await super.findWithWait(fields);
-        this.fieldExecutionID = arr[1];
+	async isCrowdsaleTimeOver() {
+		logger.info(this.name + " :isCrowdsaleTimeOver ");
+		try {
+			let arr = await super.findWithWait(countdownTimerValue);
+			let result = 0;
+			for (let i = 0; i < arr.length; i++) {
+				result = result + parseInt((await this.getTextForElement(arr[i])));
+			}
+			if (result < 0) result = 0;
+			return (result === 0);
+		}
+		catch (err) {
+			logger.info("Error " + err);
+			return false;
+		}
+	}
 
-        this.fieldCurrentAccount=arr[0];
-    }
+	async getBalance() {
+		logger.info(this.name + "getBalance ");
+		return await super.getTextForElement(fieldBalance);
+	}
 
-    async isCrowdsaleTimeOver() {
-        try {
-	        logger.info(this.name + " :isCrowdsaleTimeOver:");
-	        let arr = await super.findWithWait(countdownTimerValue);
-	        let result = 0;
-	        for (let i = 0; i < arr.length; i++) {
-		        result = result + parseInt((await this.getTextForElement(arr[i])));
-	        }
-            if (result<0) result=0;
+	async isPresentError() {
+		logger.info(this.name + "isPresentError ");
+		return await super.isElementDisplayed(errorNotice);
+	}
 
-	        return (result===0);
-        }
-        catch (err) {
-            logger.info("Can not find timer");
-            return false;
-        }
-    }
+	async isPresentWarning() {
+		logger.info(this.name + "isPresentWarning ");
+		return await super.isElementDisplayed(buttonOk);
+	}
 
-    async getBalance(){
+	async isDisplayedCountdownTimer() {
+		logger.info(this.name + "isDisplayedCountdownTimer ");
+		return await super.isElementDisplayed(countdownTimer);
+	}
 
-        logger.info(this.name+"get Balance :");
-        //await this.driver.sleep(5000);
-        return  await super.getTextForElement(fieldBalance);
-    }
-    async isPresentError(){
-        logger.info(this.name+"Error text :");
-        return (await super.isElementDisplayed(errorNotice));
-    }
-    async isPresentWarning(){
-        logger.info(this.name+"Warning  :");
-        return (await super.isElementDisplayed(buttonOk));
-    }
-	async isPresentCountdownTimer(){
-		logger.info(this.name+"countdown timer  :");
+	async waitUntilDisplayedCountdownTimer() {
+		logger.info(this.name + "waitUntilDisplayedCountdownTimer ");
 		return (await super.isElementDisplayed(countdownTimer));
 	}
 
-   async  clickButtonOK(){
-        logger.info(this.name+"button OK :");
-      await  super.clickWithWait(buttonOk);
+	async clickButtonOK() {
+		logger.info(this.name + "clickButtonOK ");
+		return await super.clickWithWait(buttonOk);
+	}
 
-    }
+	async fillInvest(amount) {
+		logger.info(this.name + "field Contribute :");
+		await super.fillWithWait(fieldInvest, amount);
+	}
 
-    async fillInvest(amount) {
-       logger.info(this.name+"field Contribute :");
-       await super.fillWithWait(fieldInvest,amount);
-    }
+	async clickButtonContribute() {
+		logger.info(this.name + "button Contribute :");
+		await super.clickWithWait(buttonContribute);
+	}
 
-    async clickButtonContribute(){
-        logger.info(this.name+"button Contribute :");
-        await super.clickWithWait(buttonContribute);
-    }
-    async getWarningText() {
-        logger.info(this.name+"Warning text :");
-        return  await super.getTextForElement(warningText);
-    }
+	async getWarningText() {
+		logger.info(this.name + "Warning text :");
+		return await super.getTextForElement(warningText);
+	}
 
-    async getErrorText() {
-        logger.info(this.name+"Error text :");
-        return  await super.getTextForElement(errorNotice);
-    }
+	async getErrorText() {
+		logger.info(this.name + "Error text :");
+		return await super.getTextForElement(errorNotice);
+	}
 
-     async getExecutionID() {
-        logger.info(this.name+"field TokenAddress :");
-        await  this.initFields();
-        return  await super.getTextForElement(this.fieldExecutionID);
-    }
+	async getExecutionID() {
+		logger.info(this.name + "field TokenAddress :");
+		return (await  this.initFields() !== null) &&
+			await super.getTextForElement(this.fieldExecutionID);
+	}
 
-
-    async getCurrentAccount(){
-        logger.info(this.name+"field CurrentAccount :");
-        await  this.initFields();
-        return  await super.getTextForElement(this.fieldCurrentAccount);
-    }
-
+	async getCurrentAccount() {
+		logger.info(this.name + "getCurrentAccount ");
+		return (await  this.initFields() !== null) &&
+			await super.getTextForElement(this.fieldCurrentAccount);
+	}
 }
-module.exports.InvestPage=InvestPage;
+
+module.exports.InvestPage = InvestPage;
 

@@ -86,7 +86,7 @@ class TierPage extends Page {
 
 	async fillStartTime() {
 		logger.info(this.name + "fillStartTime ");
-		if(this.tier.startDate === "") return true;
+		if (this.tier.startDate === "") return true;
 		let locator = await this.getFieldStartTime();
 		let format = await Utils.getDateFormat(this.driver);
 		if (this.tier.startDate === "") {
@@ -334,13 +334,13 @@ class TierPage extends Page {
 
 	async fillTier() {
 		logger.info(this.name + "fillTier ");
-		return 	await this.fillRate() &&
+		return await this.fillRate() &&
 			await this.fillSetupName() &&
 			await this.fillSupply() &&
 			await this.fillStartTime() &&
 			await this.fillEndTime() &&
-			await this.setModify()&&
-		    await this.fillWhitelist();
+			await this.setModify() &&
+			await this.fillWhitelist();
 
 	}
 

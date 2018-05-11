@@ -27,7 +27,7 @@ class WizardStep1 extends Page {
 		}
 	}
 
-    async isPresentButtonContinue() {
+    async isDisplayedButtonContinue() {
 	    logger.info(this.name+": isDisplayedButtonContinue: ");
         return  await super.isElementDisplayed(buttonContinue);
     }
@@ -50,8 +50,19 @@ class WizardStep1 extends Page {
 
 	async clickCheckboxDutchAuction() {
 		logger.info(this.name + "clickCheckboxDutchAuction: ");
-		await this.initCheckboxes();
-		return await super.clickWithWait(this.checkboxDutchAuction);
+		return (await this.initCheckboxes() !== null ) &&
+			await super.clickWithWait(this.checkboxDutchAuction);
+	}
+
+	async waitUntilDisplayedButtonContinue() {
+		logger.info(this.name + "waitUntilDisplayedButtonContinue: ");
+		return await super.waitUntilDisplayed(buttonContinue);
+	}
+
+	async waitUntilDisplayedCheckboxDutchAuction() {
+		logger.info(this.name + "waitUntilDisplayedCheckboxDutchAuction: ");
+		return (await this.initCheckboxes() !== null ) &&
+			await super.waitUntilDisplayed(this.checkboxDutchAuction);
 	}
 }
 module.exports.WizardStep1=WizardStep1;

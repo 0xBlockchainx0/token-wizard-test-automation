@@ -1,3 +1,4 @@
+const logger = require('../entity/Logger.js').logger;
 const key = require('selenium-webdriver').Key;
 const Page=require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
@@ -29,6 +30,7 @@ class MetaMask extends Page {
 		super(driver);
 		this.driver=driver;
 		this.URL=URL;
+		this.name = "Metamask  "
 	}
 
 	async clickButtonSubmitTransaction() {
@@ -36,6 +38,7 @@ class MetaMask extends Page {
 	}
 
 	async activate() {
+		logger.info(this.name+ "activate ");
 		return  await this.switchToNextPage() &&
 				await this.open(this.URL) &&
 				await this.clickWithWait(buttonAccept) &&
@@ -53,7 +56,8 @@ class MetaMask extends Page {
 	}
 
 	async importAccount(user) {
-		user.accountOrderInMetamask=accountOrderNumber-1;
+		logger.info(this.name+ "importAccount ");
+		user.accountOrderInMetamask = accountOrderNumber;
 		return await  this.switchToNextPage() &&
 			await  this.setNetwork(user.networkID) &&
 			await  this.clickImportAccount() &&
@@ -64,6 +68,7 @@ class MetaMask extends Page {
 	}
 
 	async selectAccount(user) {
+		logger.info(this.name+ "selectAccount ");
 		try {
 			await this.switchToNextPage();
 			await this.setNetwork(user.networkID);
@@ -78,6 +83,7 @@ class MetaMask extends Page {
 	}
 
 	async clickImportAccount() {
+		logger.info(this.name+ "clickImportAccount ");
 		try {
 			await super.clickWithWait(popupAccount);
 			await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')["
@@ -90,6 +96,7 @@ class MetaMask extends Page {
 	}
 
 	async signTransaction(refreshCount) {
+		logger.info(this.name+ "signTransaction ");
 		await this.switchToNextPage();
 		let counter=5;
 		if (refreshCount !== undefined) counter = refreshCount;
@@ -108,6 +115,7 @@ class MetaMask extends Page {
 	}
 
 	async setNetwork(provider) {
+		logger.info(this.name+ "setNetwork ");
 		try {
 			await super.clickWithWait(popupNetwork);
 			let orderNumber = networks.indexOf(provider);
@@ -121,6 +129,7 @@ class MetaMask extends Page {
 	}
 
 	async addNetwork(provider) {
+		logger.info(this.name+ "addNetwork ");
 		let url;
 		switch(provider) {
 			case 77: {

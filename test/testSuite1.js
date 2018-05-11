@@ -88,51 +88,29 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function() {
+		logger.info("Version 2.3.0 - truffle ");
 		startURL = await Utils.getStartURL();
 
-		logger.info("Version 2.2.0 - ropsten ");
 		driver = await Utils.startBrowserWithMetamask();
 
-		//let random=Math.round(Math.random()*2);
-		let random = 0;
-		logger.info("Test set #"+random);
-		switch (random){
-			case 0:{
-				scenario="./users/ropsten/0/test0_ropsten.json";
-				//scenario1 = "./users/ropsten/0/testSimple_wizard2.json";
-				scenario1 = "./scenarios/simple.json";
+		const user8545_56B2File='./users/user8545_56B2.json';//Owner
+		const user8545_F16AFile='./users/user8545_F16A.json';//Investor1 - whitelisted before deployment
+		const user8545_f5aAFile='./users/user8545_f5aA.json';//Investor2 - added from manage page before start
+		const user8545_ecDFFile= './users/user8545_ecDF.json';//Reserved address, also wh investor that added after start time
 
-				Owner = new User (driver,"./users/ropsten/0/user3_0e03.json");
-				Investor1 = new User (driver,"./users/ropsten/0/user3_2a77.json");
-				Investor2 = new User (driver,'./users/ropsten/0/user3_4B33.json');
-				ReservedAddress = new User (driver,"./users/ropsten/0/user3_5ACC.json");
-				break;
-			}
-			case 1:{
-				scenario="./users/ropsten/1/test1_ropsten.json";
-				Owner = new User (driver,"users/ropsten/1/user3_8ce1.json");
-				Investor1 = new User (driver,"users/ropsten/1/user3_9E96.json");
-				Investor2 = new User (driver,"users/ropsten/1/user3_020F.json");
-				ReservedAddress = new User (driver,"users/ropsten/1/user3_27F2.json");
-				break;
-			}
-			case 2:{
-				scenario="./users/ropsten/2/test2_ropsten.json";
-				Owner = new User (driver,"users/ropsten/2/user3_41B.json");
-				Investor1 = new User (driver,"users/ropsten/2/user3_45D9.json");
-				Investor2 = new User (driver,"users/ropsten/2/user3_56B2.json");
-				ReservedAddress = new User (driver,"users/ropsten/2/user3_76b3.json");
-				break;
+		scenario1 = "./scenarios/simple.json";
 
-			}
-		}
+		Owner = new User (driver,user8545_56B2File);
+		Investor1 = new User (driver,user8545_F16AFile);
+		Investor2 = new User (driver,user8545_f5aAFile);
+		ReservedAddress = new User (driver,user8545_ecDFFile);
+
+		await Utils.increaseBalance(Owner,20);
+		await Utils.increaseBalance(Investor1,20);
+		await Utils.increaseBalance(Investor2,20);
+		await Utils.increaseBalance(ReservedAddress,20);
 
 		crowdsale1=await  Utils.getCrowdsaleInstance(scenario1);
-		console.log(crowdsale1.tiers.length);
-
-
-		crowdsale=await  Utils.getCrowdsaleInstance(scenario);
-
 
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
@@ -212,9 +190,11 @@ await tierPage.setModify();
 		async function () {
 			let owner = Owner;//Owner
 			balance = 0;
+			console.log("weferwf"+ Owner.accountOrderInMetamask)
 			await owner.setMetaMaskAccount();
 			let Tfactor=1;
-			await owner.createMintedCappedCrowdsale(crowdsale1,Tfactor);
+
+			await owner.createMintedCappedCrowdsale(crowdsale1);
 			logger.info("Execution ID:  " + crowdsale1.executionID);
 			logger.info("url:  " + crowdsale1.url);
 			//return await assert.equal(true,false,"stop");
@@ -223,13 +203,19 @@ await tierPage.setModify();
 
 	test.it('Investor can buy half of total supply',
 		async function() {
+			let owner = Owner;
 			//await driver.sleep(180000);
+
+			await owner.setMetaMaskAccount();
 			let investor=Owner;
+			let url="https://5af093921f12b70ce2f90775--architect-coin-64174.netlify.com/invest?exec-id=0xe1d3b0f79047e2ec124d14c0714185b98167aacd991b084ffbf1857e6d787037&networkID=3";
+			crowdsale1.url=url;
 			await investor.openInvestPage(crowdsale1);
-			let contribution=crowdsale1.tier[0].supply/2;
+			let contribution=crowdsale1.tiers[0].supply/2;
 			balance = balance + contribution;
 			await investor.contribute(contribution);
-			let result = await investor.getBalanceFromInvestPage(crowdsale);
+			let result = await investor.getBalanceFromInvestPage(crowdsale1);
+return await assert.equal(true,false,"");
 			return await assert.equal(result,balance,'Test FAILED. Investor can not buy amount = min');
 		});
 	test.it('Investor can not buy more than total supply',
