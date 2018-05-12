@@ -16,7 +16,6 @@ const Page = require('../pages/Page.js').Page;
 const testRA = require('../test/testRA.js');
 const fs = require('fs');
 
-
 class User {
 	constructor(driver, file) {
 		try {
@@ -53,7 +52,7 @@ class User {
 	async setMetaMaskAccount() {
 		logger.info("Set Metamask account")
 		let metaMask = new MetaMask(this.driver);
-		if (this.accountOrderInMetamask === undefined ) {
+		if (this.accountOrderInMetamask === undefined) {
 			await metaMask.importAccount(this);
 		}
 		else {
@@ -307,8 +306,6 @@ class User {
 		return true;
 	}
 
-
-
 	async confirmPopup() {
 		logger.info("confirm popup");
 		let investPage = new InvestPage(this.driver);
@@ -328,45 +325,16 @@ class User {
 	async contribute(amount) {
 		logger.info("contribute  " + amount);
 		const investPage = new InvestPage(this.driver);
-		await investPage.waitUntilLoaderGone();
-		await investPage.fillInvest(amount);
-		await investPage.clickButtonContribute();
-		let counter = 0;
-		let isContinue = true;
-		let timeLimit = 2;
-		do {
-			await this.driver.sleep(500);
-			if (await investPage.isPresentWarning()) {
-				await logger.info(this.name + ": warning:" + await investPage.getWarningText());
-				return false;
-			}
-			if (await investPage.isPresentError()) {
-				await logger.info(this.name + ": error:" + await investPage.getErrorText());
-				return false;
-			}
-			counter++;
-			if (counter >= timeLimit) {
-				isContinue = false;
-			}
-		} while (isContinue);
-
-		let result = await new MetaMask(this.driver).signTransaction(5);
-		if (!result) {
-			return false;
-		}
-		await investPage.waitUntilLoaderGone();
-		counter = 0;
-		timeLimit = 5;
-		while (counter++ < timeLimit) {
-			await this.driver.sleep(500);
-			if (await investPage.isPresentWarning()) {
-				await investPage.clickButtonOK();
-				await investPage.waitUntilLoaderGone();
-				await this.driver.sleep(2000);
-				return true;
-			}
-		}
-		return false;
+		return await investPage.waitUntilLoaderGone()
+			&& await investPage.fillInvest(amount)
+			&& await investPage.clickButtonContribute()
+			&& !await investPage.waitUntilShowUpErrorNotice(10)//3 sec
+			&& !await investPage.waitUntilShowUpWarning(10)//3 sec
+			&& await new MetaMask(this.driver).signTransaction(5)
+			&& await investPage.waitUntilLoaderGone()
+			&& await investPage.waitUntilShowUpWarning(10)//3 sec
+			&& await investPage.clickButtonOK()
+			&& await investPage.waitUntilLoaderGone();
 	}
 
 	async getBalanceFromInvestPage(crowdsale) {
@@ -385,7 +353,6 @@ class User {
 		return result;
 	}
 
-
 	async createMintedCappedCrowdsale(crowdsale) {
 
 		logger.info(" createMintedCappedCrowdsale ");
@@ -400,7 +367,7 @@ class User {
 		const reservedTokens = new ReservedTokensPage(this.driver);
 
 		let result = await  welcomePage.open() &&
-					 await  welcomePage.clickButtonNewCrowdsale();
+			await  welcomePage.clickButtonNewCrowdsale();
 
 		let counter = 200;
 		do {
@@ -418,7 +385,6 @@ class User {
 			await reservedTokens.fillReservedTokens(crowdsale) &&
 			await wizardStep2.clickButtonContinue() &&
 			await wizardStep3.fillPage(crowdsale);
-		await this.driver.sleep(15000);
 
 		counter = 200;
 		do {
@@ -435,10 +401,10 @@ class User {
 		} while (counter-- >= 0);
 
 		result = result &&
-				await wizardStep4.deployContracts(crowdsale) &&
-                await wizardStep4.waitUntilDisplayedButtonContinue() &&
-				await wizardStep4.clickButtonContinue() &&
-				await wizardStep4.waitUntilLoaderGone();
+			await wizardStep4.deployContracts(crowdsale) &&
+			await wizardStep4.waitUntilDisplayedButtonContinue() &&
+			await wizardStep4.clickButtonContinue() &&
+			await wizardStep4.waitUntilLoaderGone();
 
 		counter = 200;
 		do {
@@ -538,8 +504,6 @@ class User {
 
 		return result && crowdsale.executionID !== "";
 	}
-
-
 
 }
 

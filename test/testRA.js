@@ -50,7 +50,7 @@ testRA();
 		  default: {Owner =  new User (driver,user77_56B2File);break;}
 	  }
 
-	await Utils.increaseBalance(Owner,20);
+	await Utils.receiveEth(Owner,20);
 	logger.info("Owner = "+Owner.account);
 	logger.info("Owner's balance = :"+await Utils.getBalance(Owner)/1e18);
 	let mtMask = new MetaMask(driver);

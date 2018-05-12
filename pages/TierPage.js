@@ -86,12 +86,14 @@ class TierPage extends Page {
 
 	async fillStartTime() {
 		logger.info(this.name + "fillStartTime ");
-		if (this.tier.startDate === "") return true;
+		//if (this.tier.startDate === "") return true;
 		let locator = await this.getFieldStartTime();
 		let format = await Utils.getDateFormat(this.driver);
 		if (this.tier.startDate === "") {
 			this.tier.startDate = Utils.getDateWithAdjust(80000, format);
 			this.tier.startTime = Utils.getTimeWithAdjust(80000, format);
+
+
 		}
 		else if (format === "mdy") {
 			this.tier.startDate = Utils.convertDateToMdy(this.tier.startDate);

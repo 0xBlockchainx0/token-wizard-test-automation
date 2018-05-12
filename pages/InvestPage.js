@@ -10,6 +10,8 @@ const warningText = By.id("swal2-content");
 const errorNotice = By.className("css-6bx4c3");
 const countdownTimer = By.className("timer");
 const countdownTimerValue = By.className("timer-count");
+const countdownTimerStatus = By.className("timer-interval");
+const statusTimer = {start : "START", end : "END", finalized : "HAS BEEN"}
 
 class InvestPage extends Page {
 
@@ -22,12 +24,32 @@ class InvestPage extends Page {
 		this.timer = [];
 	}
 
-	async initTimer() {
+	async getTimerStatus() {
+		logger.info(this.name + "getTimerStatus ");
+		try {
+			let array = await this.initTimerFields();
+			let result = await super.getTextForElement(array[2]);
+			if (result.includes(statusTimer.start)) return statusTimer.start;
+			else if (result.includes(statusTimer.end)) return statusTimer.end;
+			else if (result.includes(statusTimer.finalized)) return statusTimer.finalized;
+		}
+		catch (err) {
+			logger.info("Error " + err);
+			return false;
+		}
+	}
+
+	async isCrowdsaleStarted() {
+		logger.info(this.name + "isCrowdsaleStarted ");
+		return (await this.getTimerStatus() !== statusTimer.start);
+	}
+
+	async initTimerFields() {
 		logger.info(this.name + "initTimer ");
 		try {
-			let arr = await super.findWithWait(countdownTimer);
-			this.timer = arr[0];
-			return arr;
+			let array = await super.findWithWait(countdownTimerStatus);
+			this.timer = array[0];
+			return array;
 		}
 		catch (err) {
 			logger.info("Error " + err);
@@ -98,12 +120,12 @@ class InvestPage extends Page {
 
 	async fillInvest(amount) {
 		logger.info(this.name + "field Contribute :");
-		await super.fillWithWait(fieldInvest, amount);
+		return await super.fillWithWait(fieldInvest, amount);
 	}
 
 	async clickButtonContribute() {
 		logger.info(this.name + "button Contribute :");
-		await super.clickWithWait(buttonContribute);
+		return await super.clickWithWait(buttonContribute);
 	}
 
 	async getWarningText() {
@@ -126,6 +148,16 @@ class InvestPage extends Page {
 		logger.info(this.name + "getCurrentAccount ");
 		return (await  this.initFields() !== null) &&
 			await super.getTextForElement(this.fieldCurrentAccount);
+	}
+
+	async waitUntilShowUpErrorNotice (Twaiting) {
+		logger.info(this.name + "waitUntilShowUpErrorNotice ");
+		return super.waitUntilDisplayed(errorNotice,Twaiting);
+	}
+
+	async waitUntilShowUpWarning (Twaiting) {
+		logger.info(this.name + "waitUntilShowUpWarning ");
+		return super.waitUntilDisplayed(buttonOk,Twaiting);
 	}
 }
 

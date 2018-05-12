@@ -88,32 +88,37 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function() {
+		console.log(Date.now());
 		logger.info("Version 2.3.0 - truffle ");
 		startURL = await Utils.getStartURL();
-
 		driver = await Utils.startBrowserWithMetamask();
+
+		scenario1 = "./scenarios/simple.json";
 
 		const user8545_56B2File='./users/user8545_56B2.json';//Owner
 		const user8545_F16AFile='./users/user8545_F16A.json';//Investor1 - whitelisted before deployment
 		const user8545_f5aAFile='./users/user8545_f5aA.json';//Investor2 - added from manage page before start
 		const user8545_ecDFFile= './users/user8545_ecDF.json';//Reserved address, also wh investor that added after start time
 
-		scenario1 = "./scenarios/simple.json";
-
 		Owner = new User (driver,user8545_56B2File);
 		Investor1 = new User (driver,user8545_F16AFile);
 		Investor2 = new User (driver,user8545_f5aAFile);
 		ReservedAddress = new User (driver,user8545_ecDFFile);
 
-		await Utils.increaseBalance(Owner,20);
-		await Utils.increaseBalance(Investor1,20);
-		await Utils.increaseBalance(Investor2,20);
-		await Utils.increaseBalance(ReservedAddress,20);
+		await Utils.receiveEth(Owner,20);
+		await Utils.receiveEth(Investor1,20);
+		await Utils.receiveEth(Investor2,20);
+		await Utils.receiveEth(ReservedAddress,20);
+
+		logger.info("Balance: Owner "+ await Utils.getBalance(Owner)/1e18);
+		logger.info("Balance: Investor1 "+ await Utils.getBalance(Investor1)/1e18);
+		logger.info("Balance: Investor2 "+ await Utils.getBalance(Investor2)/1e18);
+		logger.info("Balance: ReservedAddress "+ await Utils.getBalance(ReservedAddress)/1e18);
+
 
 		crowdsale1=await  Utils.getCrowdsaleInstance(scenario1);
-
 		metaMask = new MetaMask(driver);
-		await metaMask.activate();//return activated Metamask and empty page
+		await metaMask.activate();
 
 		welcomePage = new WizardWelcome(driver,startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -135,8 +140,6 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		//await fs.remove(tempOutputPath);
 		//await driver.quit();
 	});
-
-
 
 	/////// Tests
 	test.it.skip('Owner  can create crowdsale: 1 tier, no reserved, no whitelist' ,
@@ -190,16 +193,30 @@ await tierPage.setModify();
 		async function () {
 			let owner = Owner;//Owner
 			balance = 0;
-			console.log("weferwf"+ Owner.accountOrderInMetamask)
 			await owner.setMetaMaskAccount();
-			let Tfactor=1;
-
 			await owner.createMintedCappedCrowdsale(crowdsale1);
 			logger.info("Execution ID:  " + crowdsale1.executionID);
 			logger.info("url:  " + crowdsale1.url);
-			//return await assert.equal(true,false,"stop");
 			return await assert.notEqual(crowdsale1.executionID, "", 'Test FAILED. Crowdsale has not created ');
-		});
+	});
+	test.it('Countdown timer displayed' ,
+		async function () {
+			await investPage.waitUntilLoaderGone();
+			let result = await investPage.getTimerStatus();
+			return await assert.notEqual(result,false, 'Test FAILED. Countdown timer are not displayed ');
+	});
+
+	test.it('Tier start as scheduled' ,
+		async function () {
+			await investPage.waitUntilLoaderGone();
+			let counter =120;
+			do {
+				logger.info("wait "+ Date.now());
+				await driver.sleep(1000);
+			}
+			while( counter-->0 &&  !await investPage.isCrowdsaleStarted());
+			return await assert.equal(counter>0,true, 'Test FAILED. Tier has not start in time ');
+	});
 
 	test.it('Investor can buy half of total supply',
 		async function() {
@@ -208,14 +225,18 @@ await tierPage.setModify();
 
 			await owner.setMetaMaskAccount();
 			let investor=Owner;
-			let url="https://5af093921f12b70ce2f90775--architect-coin-64174.netlify.com/invest?exec-id=0xe1d3b0f79047e2ec124d14c0714185b98167aacd991b084ffbf1857e6d787037&networkID=3";
-			crowdsale1.url=url;
-			await investor.openInvestPage(crowdsale1);
+			//crowdsale1.url = "http://localhost:3000/invest?exec-id=0x9a62b390a67ffc0e22038d188679467872e5f2638633f553d548e4d7285d0ff1&networkID=1526069545307";
+			 await investor.openInvestPage(crowdsale1);
+
+
 			let contribution=crowdsale1.tiers[0].supply/2;
 			balance = balance + contribution;
-			await investor.contribute(contribution);
+			let r =await investor.contribute(contribution);
+			console.log("RRRRTTTTRR=   "+ r);
+
 			let result = await investor.getBalanceFromInvestPage(crowdsale1);
-return await assert.equal(true,false,"");
+			await driver.sleep(10000);
+            return await assert.equal(true,false,"");
 			return await assert.equal(result,balance,'Test FAILED. Investor can not buy amount = min');
 		});
 	test.it('Investor can not buy more than total supply',
