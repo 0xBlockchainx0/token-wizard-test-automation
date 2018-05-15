@@ -53,10 +53,10 @@ class User {
 		logger.info("Set Metamask account")
 		let metaMask = new MetaMask(this.driver);
 		if (this.accountOrderInMetamask === undefined) {
-			await metaMask.importAccount(this);
+			return await metaMask.importAccount(this);
 		}
 		else {
-			await metaMask.selectAccount(this);
+			return await metaMask.selectAccount(this);
 		}
 	}
 
@@ -67,7 +67,7 @@ class User {
 	}
 
 	async openInvestPage(crowdsale) {
-		await new Page(this.driver).open(crowdsale.url);
+		return await new Page(this.driver).open(crowdsale.url);
 	}
 
 	async openManagePage(crowdsale) {
@@ -75,10 +75,9 @@ class User {
 		const startURL = Utils.getStartURL();
 		let mngPage = new ManagePage(this.driver);
 		mngPage.URL = startURL + "manage/" + crowdsale.executionID;
-		await mngPage.open();
-		await mngPage.waitUntilLoaderGone();
-		if (await mngPage.isPresentButtonOK()) return false;
-		return mngPage;
+		return await mngPage.open()
+			&& await mngPage.waitUntilLoaderGone()
+			&& !await mngPage.isPresentButtonOK();
 	}
 
 	async getSupplyTier(tier) {
@@ -232,78 +231,21 @@ class User {
 		}
 	}
 
-	async distribute(crowdsale) {
-
-		logger.info(this.account + ": distribution:");
-
-		let mngPage = await this.openManagePage(crowdsale);
-		await mngPage.refresh();
-		logger.info("Snapshot:");
-		logger.info("Time now: " + Utils.getDate());
-		logger.info("Start time: " + await mngPage.getStartTimeTier(1));
-		logger.info("End time: " + await mngPage.getEndTimeTier(1));
-		logger.info("isDistributionEnabled: " + await mngPage.isEnabledDistribute());
-		logger.info("isFinalizeEnabled: " + await mngPage.isEnabledFinalize());
-		logger.info("walletAddress: " + await mngPage.getWalletAddressTier(1));
-
-		await mngPage.waitUntilLoaderGone();
-		await this.driver.sleep(3000);
-		if (await mngPage.isEnabledFinalize())
-			await mngPage.clickButtonFinalize();
-		await Utils.zoom(this.driver, 0.5);
-
-		await Utils.takeScreenshoot(this.driver, "manage1");
-		await Utils.zoom(this.driver, 1);
-
-		await mngPage.waitUntilLoaderGone();
-		await mngPage.refresh();
-		await this.driver.sleep(3000);
-		let result = false;
-		for (let i = 0; i < 5; i++) {
-			result = (await mngPage.isEnabledDistribute()) || result;
-		}
-		await Utils.zoom(this.driver, 0.5);
-
-		await Utils.takeScreenshoot(this.driver, "manage2");
-		await Utils.zoom(this.driver, 1);
-
-		if (result) {
-			await mngPage.clickButtonDistribute();
-		}
-		else {
-			await mngPage.clickButtonDistribute();
-			return false;
-		}
-		let metaMask = new meta.MetaMask(this.driver);
-		await metaMask.signTransaction(5);
-		await mngPage.waitUntilLoaderGone();
-		result = await mngPage.confirmPopup();
-		return true;
-	}
-
 	async finalize(crowdsale) {
-		logger.info(this.account + ": finalize:");
-		await this.openManagePage(crowdsale);
+		logger.info(this.account + ": finalize ");
+		let metaMask = new MetaMask(this.driver);
 		let mngPage = new ManagePage(this.driver);
-		await mngPage.waitUntilLoaderGone();
-		await this.driver.sleep(3000);
-		if (await mngPage.isEnabledFinalize()) {
-			await mngPage.clickButtonFinalize();
-		}
-		else {
-			return false;
-		}
-		let counter = 0;
-		do {
-			if (counter++ > 20) return false;
-			await this.driver.sleep(1000);
-		} while (!(await mngPage.isPresentPopupYesFinalize()));
-		await mngPage.clickButtonYesFinalize();
-		let metaMask = new meta.MetaMask(this.driver);
-		await metaMask.signTransaction(5);
-		await mngPage.waitUntilLoaderGone();
-		await mngPage.confirmPopup();
-		return true;
+		return await this.openManagePage(crowdsale)
+			&& await mngPage.waitUntilLoaderGone()
+			&& !await mngPage.waitUntilShowUpPopupConfirm(10) //3 sec
+			&& await mngPage.isEnabledButtonFinalize()
+			&& await mngPage.clickButtonFinalize()
+			&& await mngPage.waitUntilShowUpPopupFinalize()
+			&& await mngPage.clickButtonYesFinalize()
+			&& await metaMask.signTransaction(5)
+			&& await mngPage.waitUntilLoaderGone()
+			&& await mngPage.waitUntilShowUpPopupConfirm()
+			&& await mngPage.clickButtonOK();
 	}
 
 	async confirmPopup() {
@@ -338,19 +280,27 @@ class User {
 	}
 
 	async getBalanceFromInvestPage(crowdsale) {
-		logger.info("get balance from " + crowdsale.url);
-		const investPage = new InvestPage(this.driver);
-		const curURL = await investPage.getURL();
-		if (crowdsale.url != curURL) await investPage.open(crowdsale.url);
-		await investPage.waitUntilLoaderGone();
-		await this.driver.sleep(10000);
-		await investPage.refresh();
-		await this.driver.sleep(2000);
-		let result = await investPage.getBalance();
-		let arr = result.split(" ");
-		result = arr[0].trim();
-		logger.info("received " + result);
-		return result;
+		logger.info("getBalanceFromInvestPage " + crowdsale.url);
+		try {
+			const investPage = new InvestPage(this.driver);
+			const curURL = await investPage.getURL();
+			if (crowdsale.url !== curURL) await investPage.open(crowdsale.url);
+			await investPage.waitUntilLoaderGone();
+			await this.driver.sleep(2000);
+			await investPage.refresh();
+			await this.driver.sleep(3000);
+			await investPage.refresh();
+			await this.driver.sleep(7000);
+			let result = await investPage.getBalance();
+			let arr = result.split(" ");
+			result = arr[0].trim();
+			logger.info("received " + result);
+			return result;
+		}
+		catch (err) {
+			logger.info("Error " + err);
+			return false;
+		}
 	}
 
 	async createMintedCappedCrowdsale(crowdsale) {
@@ -365,6 +315,7 @@ class User {
 		const crowdsalePage = new CrowdsalePage(this.driver);
 		const investPage = new InvestPage(this.driver);
 		const reservedTokens = new ReservedTokensPage(this.driver);
+		await TierPage.setCountTiers(0);
 
 		let result = await  welcomePage.open() &&
 			await  welcomePage.clickButtonNewCrowdsale();

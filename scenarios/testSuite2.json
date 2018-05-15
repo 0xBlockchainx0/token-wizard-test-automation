@@ -1,5 +1,4 @@
 {
-
   "name": "TestSuite2.json",
   "ticker": "test2",
   "decimals": 18,
@@ -38,5 +37,4 @@
         }
       ]
     }]
-
 }

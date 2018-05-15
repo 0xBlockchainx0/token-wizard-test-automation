@@ -5,7 +5,7 @@ const Page=require('./Page.js').Page;
 const buttonOk=By.xpath("/html/body/div[2]/div/div[3]/button[1]");
 const modal=By.className("modal");
 const adj="";
-const buttonDistribute=By.xpath("//*[contains(text(),'Distribute tokens')]");
+
 const buttonFinalize=By.xpath("//*[contains(text(),'Finalize Crowdsale')]");
 const buttonYesFinalize=By.className("swal2-confirm swal2-styled");
 const buttonSave=By.className("no-arrow button button_fill");
@@ -32,7 +32,22 @@ class ManagePage extends Page  {
 	    this.fieldMinTier=[];
 	    this.fieldMaxTier=[];
 	    this.buttonAddWh=[];
+	    this.buttonFinalize;
     }
+async initButtonFinalize () {
+	logger.info(this.name + "initButtonFinalize ");
+	try {
+		let locator = By.className("button");
+		let array = await super.findWithWait(locator);
+		this.buttonFinalize = array [0];
+		return array;
+	}
+	catch (err) {
+		logger.info("Error: " + err);
+		return null;
+	}
+}
+
 
     async initButtons() {
 	    logger.info(this.name + "initButtons ");
@@ -92,16 +107,15 @@ class ManagePage extends Page  {
 
 	async getNameTier(tier) {
 		logger.info(this.name + "getNameTier ");
-	    if (await this.initInputs() === null) return null;
+	    if (await this.initInputs() === null) return "";
 	    else
 	        return await super.getAttribute(this.fieldNameTier[tier-1],"value");
     }
 
     async isDisabledNameTier(tier) {
 	    logger.info(this.name + "isDisabledNameTier ");
-	    if (await this.initInputs() === null) return null;
-	    else
-	    	return await this.isElementDisabled(this.fieldNameTier[tier - 1]);
+	    return (await this.initInputs() !== null)
+	         && await this.isElementDisabled(this.fieldNameTier[tier - 1]);
 	}
 
 	async getWalletAddressTier(tier) {
@@ -260,78 +274,48 @@ class ManagePage extends Page  {
 	}
 
 	async open() {
-	    logger.info(this.name+":");
-	    await super.open(this.URL);
+	    logger.info(this.name+": open  " +this.URL);
+	    return await super.open(this.URL);
 	}
 
-	async isEnabledDistribute() {
-		logger.info(this.name + "button Distribute :");
-		await this.refresh();
-		await this.driver.sleep(2000);
-		if (!(await this.isPresentButtonDistribute())) {
-			logger.info("not present");
-			return false;
-		}
-
-		await this.driver.sleep(1000);
-		let result = await this.driver.findElement(buttonDistribute).getAttribute("class");
-		logger.info("class name= " + result);
-
-
-		if (result === "button button_disabled") {
-			logger.info("present and disabled");
-			return false;
-		}
-		else {
-			logger.info("present and enabled");
-			return true;
-		}
-	}
-
-	async isPresentButtonDistribute() {
-	    logger.info(this.name+"button Distribute :");
-	   return await super.isElementDisplayed(buttonDistribute);
-
-	}
-
-	async clickButtonDistribute() {
-	     logger.info(this.name+"button Distribute :");
-	     await super.clickWithWait(buttonDistribute);
-	}
-
-	async isEnabledFinalize(){
-        logger.info(this.name+"button Finalize :");
-        let button=await this.getButtonFinalize();
-        let result=await button.getAttribute("class");
-        if (result==="button button_fill") {
+	async isEnabledButtonFinalize(){
+        logger.info(this.name+" isEnabledButtonFinalize ");
+		await this.initButtonFinalize();
+        if (await super.getAttribute(this.buttonFinalize,"class") === "button button_fill") {
             logger.info("present and enabled");
             return true;
         }
             else {
-	            logger.info("present and enabled");
+	            logger.info("present and disabled");
                 return false;
             }
     }
 
-    async getButtonFinalize() {
-        return await super.findElementInArray(buttonFinalize, "button");
-    }
-
     async clickButtonFinalize() {
-        logger.info(this.name+"button Finalize :");
-        let button=await this.getButtonFinalize();
-        button.click();
+        logger.info(this.name+" clickButtonFinalize ");
+        return (await this.initButtonFinalize() !== null)
+	        && super.clickWithWait(this.buttonFinalize);
     }
 
     async clickButtonYesFinalize() {
-        logger.info(this.name+"confirm Finalize/Yes :");
-        await super.clickWithWait(buttonYesFinalize);
+        logger.info(this.name+"clickButtonYesFinalize ");
+        return await super.clickWithWait(buttonYesFinalize);
     }
 
     async isPresentPopupYesFinalize() {
     	logger.info(this.name+"confirm Finalize/Yes :");
         return await super.isElementDisplayed(buttonYesFinalize);
     }
+
+	async waitUntilShowUpPopupFinalize (Twaiting) {
+		logger.info(this.name + "waitUntilShowUpPopupFinalize ");
+		return super.waitUntilDisplayed(buttonYesFinalize,Twaiting);
+	}
+
+	async waitUntilShowUpPopupConfirm (Twaiting) {
+		logger.info(this.name + "waitUntilShowUpPopupConfirm ");
+		return super.waitUntilDisplayed(buttonOk,Twaiting);
+	}
 
 	async isPresentButtonOK(){
 	    logger.info(this.name+"button OK :");
@@ -340,25 +324,10 @@ class ManagePage extends Page  {
 
 	async clickButtonOK() {
 		logger.info(this.name + "button OK :");
-		await super.clickWithWait(buttonOk);
+		return await super.clickWithWait(buttonOk);
 	}
 
-	async confirmPopup(){
-	    logger.info(this.name+"confirm popup Distribute/Finalize :");
-	    let result=0;
-	    let limit=10;
-	    do {
-	       await this.driver.sleep(1000);
-	       if (await this.isPresentButtonOK()) {
-	          await this.clickButtonOK();
-	          return true;
-	       }
-	       result++;
-	       if(result>=limit) {
-	       	   return false;
-	       }
-	       } while(true);
-	}
+
 
 }
 module.exports={

@@ -20,13 +20,11 @@
       "allowModify": false,
       "startDate": "",
       "startTime": "",
-      "endDate":"240000",
+      "endDate":"120000",
       "endTime":"",
       "rate":100,
       "supply": 20,
-      "whitelist":[
-
-      ]
+      "whitelist":[]
     }]
 }
 

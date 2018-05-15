@@ -12,6 +12,8 @@ const buttonClearAll = By.className("fa fa-trash");
 const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 
 let COUNT_TIERS = 0;
+const timeAdjust=80000;//relative value  for tier time
+
 
 class TierPage extends Page {
 
@@ -37,6 +39,11 @@ class TierPage extends Page {
 		this.warningWhAddress;
 		this.warningWhMin;
 		this.warningWhMax;
+	}
+
+	static async setCountTiers(value) {
+		COUNT_TIERS = value;
+		return true;
 	}
 
 	async getFieldSetupName() {
@@ -90,8 +97,8 @@ class TierPage extends Page {
 		let locator = await this.getFieldStartTime();
 		let format = await Utils.getDateFormat(this.driver);
 		if (this.tier.startDate === "") {
-			this.tier.startDate = Utils.getDateWithAdjust(80000, format);
-			this.tier.startTime = Utils.getTimeWithAdjust(80000, format);
+			this.tier.startDate = Utils.getDateWithAdjust(timeAdjust, format);
+			this.tier.startTime = Utils.getTimeWithAdjust(timeAdjust, format);
 
 
 		}
@@ -117,8 +124,8 @@ class TierPage extends Page {
 		let locator = await this.getFieldEndTime();
 		let format = await Utils.getDateFormat(this.driver);
 		if (!this.tier.endDate.includes("/")) {
-			this.tier.endTime = Utils.getTimeWithAdjust(parseInt(this.tier.endDate), "utc");
-			this.tier.endDate = Utils.getDateWithAdjust(parseInt(this.tier.endDate), "utc");
+			this.tier.endTime = Utils.getTimeWithAdjust(timeAdjust+parseInt(this.tier.endDate), "utc");
+			this.tier.endDate = Utils.getDateWithAdjust(timeAdjust+parseInt(this.tier.endDate), "utc");
 		}
 		else if (format === "mdy") {
 			this.tier.endDate = Utils.convertDateToMdy(this.tier.endDate);
