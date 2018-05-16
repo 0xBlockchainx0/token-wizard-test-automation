@@ -51,12 +51,13 @@ class Utils {
 	static async receiveEth(user, amount) {
 		try {
 			let provider = await Utils.getProviderUrl(user.networkID);
-			let w = await new Web3(new Web3.providers.HttpProvider(provider));
-			let account0 = await w.eth.getAccounts().then((accounts) => {
-				return accounts[0];
+			let web3 = await new Web3(new Web3.providers.HttpProvider(provider));
+			let account0 = await web3.eth.getAccounts().then((accounts) => {
+				return accounts[1];
 			});
+
 			logger.info("Send " + amount + " Eth from " + account0 + " to " + user.account);
-			await w.eth.sendTransaction({
+			await web3.eth.sendTransaction({
 				from: account0,
 				to: user.account,
 				value: amount * 1e18
@@ -292,7 +293,19 @@ class Utils {
 			logger.info(err);
 			return null;
 		}
+	}
 
+	static async getDutchCrowdsaleInstance(fileName) {
+		try {
+			let crowdsale = new DutchAuction();
+			await crowdsale.parser(fileName);
+			return crowdsale;
+		}
+		catch (err) {
+			logger.info("Can not create crowdsale");
+			logger.info(err);
+			return null;
+		}
 	}
 
 	static async getPathToFileInPWD(fileName) {

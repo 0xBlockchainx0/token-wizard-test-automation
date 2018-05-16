@@ -10,10 +10,13 @@ const whitelistContainer = By.className("white-list-container");
 const whitelistContainerInner = By.className("white-list-item-container-inner");
 const buttonClearAll = By.className("fa fa-trash");
 const buttonYesAlert = By.className("swal2-confirm swal2-styled");
+const fieldMinRate = By.id("tiers[0].minRate");
+const fieldMaxRate = By.id("tiers[0].maxRate");
+
+
 
 let COUNT_TIERS = 0;
-const timeAdjust=80000;//relative value  for tier time
-
+const timeAdjust = 80000;//relative value  for tier time
 
 class TierPage extends Page {
 
@@ -54,6 +57,7 @@ class TierPage extends Page {
 
 	async fillSetupName() {
 		logger.info(this.name + "fillSetupName ");
+		if (this.tier.name === undefined) return true;
 		let element = await this.getFieldSetupName();
 		return await super.clearField(element) &&
 			await super.fillWithWait(element, this.tier.name);
@@ -67,6 +71,7 @@ class TierPage extends Page {
 
 	async fillRate() {
 		logger.info(this.name + "fillRate ");
+		if (this.tier.rate === undefined) return true;
 		let element = await this.getFieldRate();
 		return await super.clearField(element) &&
 			await super.fillWithWait(element, this.tier.rate);
@@ -84,6 +89,17 @@ class TierPage extends Page {
 		return await super.clearField(element) &&
 			await super.fillWithWait(element, this.tier.supply);
 	}
+	async fillMinRate() {
+		logger.info(this.name + "fillMinRate ");
+		return await super.clearField(fieldMinRate) &&
+			await super.fillWithWait(fieldMinRate, this.tier.minRate);
+	}
+
+	async fillMaxRate() {
+		logger.info(this.name + "fillMinRate ");
+		return await super.clearField(fieldMaxRate) &&
+			await super.fillWithWait(fieldMaxRate, this.tier.maxRate);
+	}
 
 	async getFieldStartTime() {
 		logger.info(this.name + "getFieldStartTime ");
@@ -99,7 +115,6 @@ class TierPage extends Page {
 		if (this.tier.startDate === "") {
 			this.tier.startDate = Utils.getDateWithAdjust(timeAdjust, format);
 			this.tier.startTime = Utils.getTimeWithAdjust(timeAdjust, format);
-
 
 		}
 		else if (format === "mdy") {
@@ -124,8 +139,8 @@ class TierPage extends Page {
 		let locator = await this.getFieldEndTime();
 		let format = await Utils.getDateFormat(this.driver);
 		if (!this.tier.endDate.includes("/")) {
-			this.tier.endTime = Utils.getTimeWithAdjust(timeAdjust+parseInt(this.tier.endDate), "utc");
-			this.tier.endDate = Utils.getDateWithAdjust(timeAdjust+parseInt(this.tier.endDate), "utc");
+			this.tier.endTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(this.tier.endDate), "utc");
+			this.tier.endDate = Utils.getDateWithAdjust(timeAdjust + parseInt(this.tier.endDate), "utc");
 		}
 		else if (format === "mdy") {
 			this.tier.endDate = Utils.convertDateToMdy(this.tier.endDate);
@@ -205,6 +220,7 @@ class TierPage extends Page {
 
 	async clickButtonAdd() {
 		logger.info(this.name + "clickButtonAdd ");
+		if (this.tier.minRate !== undefined) return true;
 		let array = await this.findWithWait(buttonAdd);
 		if (array === null) return false;
 		else return await super.clickWithWait(array[this.number]);
@@ -343,7 +359,9 @@ class TierPage extends Page {
 
 	async fillTier() {
 		logger.info(this.name + "fillTier ");
-		return await this.fillRate() &&
+		return await this.fillMinRate() &&
+			await this.fillMaxRate() &&
+			await this.fillRate() &&
 			await this.fillSetupName() &&
 			await this.fillSupply() &&
 			await this.fillStartTime() &&
@@ -352,6 +370,8 @@ class TierPage extends Page {
 			await this.fillWhitelist();
 
 	}
+
+
 
 	async fillWhitelist() {
 		logger.info(this.name + "fillWhitelist ");

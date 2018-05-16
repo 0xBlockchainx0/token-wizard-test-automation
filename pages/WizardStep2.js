@@ -119,7 +119,8 @@ class WizardStep2 extends Page {
 		logger.info(this.name+"fillPage ");
 		return await this.fillName(crowdsale.name) &&
 			   await this.fillTicker(crowdsale.ticker) &&
-		       await this.fillDecimals(crowdsale.decimals);
+		       await this.fillDecimals(crowdsale.decimals) &&
+			   ((crowdsale.totalSupply !== undefined) ? await this.fillSupply(crowdsale.totalSupply):true);
 	}
 }
 module.exports.WizardStep2=WizardStep2;

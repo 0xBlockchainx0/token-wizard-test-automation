@@ -9,6 +9,9 @@ const buttonAddTier = By.className("button button_fill_secondary");
 const fieldWalletAddress = By.id("walletAddress");
 const fieldMinCap = By.id("minCap");
 
+
+
+
 let flagCustom = false;
 let flagWHitelising = false;
 let COUNT_TIERS = 0;
@@ -149,6 +152,7 @@ class WizardStep3 extends Page {
 
 	async fillMinCap(value) {
 		logger.info(this.name + "fillMinCap ");
+		if (value === undefined) return true;
 		return await super.clearField(fieldMinCap) &&
 			await super.fillWithWait(fieldMinCap, value);
 	}

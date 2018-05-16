@@ -9,6 +9,9 @@ class Tier {
 		this.endTime = endTime;
 		this.endDate = endDate;
 		this.whitelist = whitelist;
+		this.minRate = undefined;
+		this.maxRate = undefined;
+
 	}
 }
 module.exports.Tier = Tier;

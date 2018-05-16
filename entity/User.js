@@ -379,7 +379,7 @@ class User {
 		return result && crowdsale.executionID !== "";
 	}
 
-	async createDuthAuctionCrowdsale(crowdsale) {
+	async createDutchAuctionCrowdsale(crowdsale) {
 
 		logger.info(" createDuthAuctionCrowdsale ");
 		const startURL = Utils.getStartURL();
@@ -410,7 +410,6 @@ class User {
 
 		result = result &&
 			await wizardStep2.fillPage(crowdsale) &&
-			await reservedTokens.fillReservedTokens(crowdsale) &&
 			await wizardStep2.clickButtonContinue() &&
 			await wizardStep3.fillPage(crowdsale);
 
