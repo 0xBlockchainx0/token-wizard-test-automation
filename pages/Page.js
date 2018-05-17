@@ -190,7 +190,7 @@ class Page {
 	}
 
 	async fillWithWait(element,k, Twaiting) {
-		logger.info("fill with wait :");
+		logger.info("fill with wait : value = "+k);
 		try {
 			let field = await this.getElement(element,Twaiting);
 			await field.sendKeys(k);

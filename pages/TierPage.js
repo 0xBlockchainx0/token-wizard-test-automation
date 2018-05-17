@@ -13,8 +13,6 @@ const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const fieldMinRate = By.id("tiers[0].minRate");
 const fieldMaxRate = By.id("tiers[0].maxRate");
 
-
-
 let COUNT_TIERS = 0;
 const timeAdjust = 80000;//relative value  for tier time
 
@@ -89,14 +87,17 @@ class TierPage extends Page {
 		return await super.clearField(element) &&
 			await super.fillWithWait(element, this.tier.supply);
 	}
+
 	async fillMinRate() {
 		logger.info(this.name + "fillMinRate ");
+		if (this.tier.minRate === undefined) return true;
 		return await super.clearField(fieldMinRate) &&
 			await super.fillWithWait(fieldMinRate, this.tier.minRate);
 	}
 
 	async fillMaxRate() {
 		logger.info(this.name + "fillMinRate ");
+		if (this.tier.maxRate === undefined) return true;
 		return await super.clearField(fieldMaxRate) &&
 			await super.fillWithWait(fieldMaxRate, this.tier.maxRate);
 	}
@@ -370,8 +371,6 @@ class TierPage extends Page {
 			await this.fillWhitelist();
 
 	}
-
-
 
 	async fillWhitelist() {
 		logger.info(this.name + "fillWhitelist ");
