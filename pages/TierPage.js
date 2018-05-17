@@ -143,7 +143,7 @@ class TierPage extends Page {
 			this.tier.endTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(this.tier.endDate), "utc");
 			this.tier.endDate = Utils.getDateWithAdjust(timeAdjust + parseInt(this.tier.endDate), "utc");
 		}
-		else if (format === "mdy") {
+		if (format === "mdy") {
 			this.tier.endDate = Utils.convertDateToMdy(this.tier.endDate);
 			this.tier.endTime = Utils.convertTimeToMdy(this.tier.endTime);
 		}
