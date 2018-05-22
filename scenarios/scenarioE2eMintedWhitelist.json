@@ -1,6 +1,6 @@
 {
-  "name": "TestSuite2.json",
-  "ticker": "test2",
+  "name": "scenarioE2eMintedWhitelist.json",
+  "ticker": "test",
   "decimals": 18,
   "reservedTokens":[
     {
@@ -13,7 +13,6 @@
       "dimension": "tokens",
       "value":100000000
     }
-
   ],
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
   "gasprice": 1,
@@ -23,8 +22,8 @@
     {
       "name":"###1",
       "allowModify": true,
-      "startDate": "01/01/2030",
-      "startTime": "01:11",
+      "startDate": "130000",
+      "startTime": "130000",
       "endDate":"01/01/2031",
       "endTime":"02:22",
       "rate":20000,
