@@ -14,7 +14,7 @@ const fieldMinRate = By.id("tiers[0].minRate");
 const fieldMaxRate = By.id("tiers[0].maxRate");
 
 let COUNT_TIERS = 0;
-const timeAdjust = 80000;//relative value  for tier time
+const timeAdjust = 0;//relative value  for tier time
 
 class TierPage extends Page {
 
@@ -113,12 +113,11 @@ class TierPage extends Page {
 		//if (this.tier.startDate === "") return true;
 		let locator = await this.getFieldStartTime();
 		let format = await Utils.getDateFormat(this.driver);
-		if (this.tier.startDate === "") {
-			this.tier.startDate = Utils.getDateWithAdjust(timeAdjust, format);
-			this.tier.startTime = Utils.getTimeWithAdjust(timeAdjust, format);
-
+		if (!this.tier.startDate.includes("/")) {
+			this.tier.startTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(this.tier.startTime), "utc");
+			this.tier.startDate = Utils.getDateWithAdjust(timeAdjust + parseInt(this.tier.startDate), "utc");
 		}
-		else if (format === "mdy") {
+		if (format === "mdy") {
 			this.tier.startDate = Utils.convertDateToMdy(this.tier.startDate);
 			this.tier.startTime = Utils.convertTimeToMdy(this.tier.startTime);
 		}

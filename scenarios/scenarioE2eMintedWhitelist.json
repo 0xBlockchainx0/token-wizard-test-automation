@@ -1,5 +1,5 @@
 {
-  "name": "scenarioE2eMintedWhitelist.json",
+  "name": "scenarioE2eMintedWhitelist",
   "ticker": "test",
   "decimals": 18,
   "reservedTokens":[

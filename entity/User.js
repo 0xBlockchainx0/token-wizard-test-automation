@@ -26,6 +26,8 @@ class User {
 			this.networkID = obj.networkID;
 			this.accountOrderInMetamask = undefined;//for MetaMaskPage only
 			this.name = file;
+			this.minCap;
+			this.maxCap;
 		}
 		catch (err) {
 			logger.info("can not create User instance");
@@ -178,27 +180,16 @@ class User {
 			newTime = Utils.convertTimeToMdy(newTime);
 		}
 		let mngPage = new ManagePage(this.driver);
-		await mngPage.waitUntilLoaderGone();
-		try {
-			let b = await mngPage.fillEndTimeTier(tier, newDate, newTime);
-			if (!b) return false;
-			if (await mngPage.isPresentWarningEndTimeTier1() ||
-				await mngPage.isPresentWarningEndTimeTier2()
-			) {
-				return false;
-			}
-			await mngPage.clickButtonSave();
-			let metaMask = new MetaMask(this.driver);
-			await metaMask.signTransaction(5);
-			await mngPage.waitUntilLoaderGone();
-			b = await this.confirmPopup();
-			await mngPage.waitUntilLoaderGone();
-			return b;
-		}
-		catch (err) {
-			logger.info("can not change Supply for tier #" + tier + " ,err:" + err);
-			return false;
-		}
+		let metaMask = new MetaMask(this.driver);
+		return await mngPage.waitUntilLoaderGone()
+			&& await mngPage.fillEndTimeTier(tier, newDate, newTime)
+			&& !await mngPage.isPresentWarningEndTimeTier1()
+			&& !await mngPage.isPresentWarningEndTimeTier2()
+			&& await mngPage.clickButtonSave()
+			&& await metaMask.signTransaction(5)
+			&& await mngPage.waitUntilLoaderGone()
+			&& await this.confirmPopup()
+			&& await mngPage.waitUntilLoaderGone();
 	}
 
 	async changeStartTime(tier, newDate, newTime) {
@@ -267,7 +258,8 @@ class User {
 	async contribute(amount) {
 		logger.info("contribute  " + amount);
 		const investPage = new InvestPage(this.driver);
-		return await investPage.waitUntilLoaderGone()
+		return !await investPage.waitUntilShowUpWarning(10)
+			&& await investPage.waitUntilLoaderGone()
 			&& await investPage.fillInvest(amount)
 			&& await investPage.clickButtonContribute()
 			&& !await investPage.waitUntilShowUpErrorNotice(10)//3 sec

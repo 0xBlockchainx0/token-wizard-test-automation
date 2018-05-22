@@ -1,13 +1,18 @@
 {
 
-  "name": "testSuite#1.json",
-  "ticker": "test1",
+  "name": "scenarioE2eMintedMinCap.json",
+  "ticker": "test",
   "decimals": 18,
   "reservedTokens":[
     {
       "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",
       "dimension": "tokens",
       "value": 1000
+    },
+    {
+      "address" :"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+      "dimension": "percentage",
+      "value": 250
     }
   ],
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
@@ -18,10 +23,10 @@
     {
       "name":"###1",
       "allowModify": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate":"120000",
-      "endTime":"",
+      "startDate": "80000",
+      "startTime": "80000",
+      "endDate":"200000",
+      "endTime":"200000",
       "rate":100,
       "supply": 20,
       "whitelist":[]
