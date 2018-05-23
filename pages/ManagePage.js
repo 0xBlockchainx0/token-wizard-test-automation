@@ -33,7 +33,23 @@ class ManagePage extends Page {
 		this.fieldMaxTier = [];
 		this.buttonAddWh = [];
 		this.buttonFinalize;
+		this.buttonSave;
 	}
+
+	async initButtonSave() {
+		logger.info(this.name + "initButtonSave ");
+		try {
+			let locator = By.className("no_arrow");
+			let array = await super.findWithWait(locator);
+			this.buttonSave = array [0];
+			return array;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
+
 
 	async initButtonFinalize() {
 		logger.info(this.name + "initButtonFinalize ");
@@ -170,7 +186,21 @@ class ManagePage extends Page {
 
 	async clickButtonSave() {
 		logger.info(this.name + "clickButtonSave ");
-		return await super.clickWithWait(buttonSave);
+		return (await this.initButtonSave() !== null)
+			&& await super.clickWithWait(this.buttonSave);
+	}
+
+	async isDisabledButtonSave() {
+		logger.info(this.name + " isDisabledButtonSave ");
+		await this.initButtonSave();
+		if (await super.getAttribute(this.buttonSave, "class") === "no_arrow button button_fill button_disabled") {
+			logger.info("present and disabled");
+			return true;
+		}
+		else {
+			logger.info("Error "+ err);
+			return false;
+		}
 	}
 
 	async isPresentWarningStartTimeTier1() {
@@ -223,25 +253,14 @@ class ManagePage extends Page {
 
 	async fillWhitelist(tier, address, min, max) {
 		logger.info(this.name + "fillWhitelist  ");
-		await this.initInputs();
-		try {
-			if (this.fieldWhAddressTier[tier - 1] == undefined) {
-				throw ("WhiteList address field  not present");
-			}
-
-			logger.info(this.name + "add address in whitelist, tier #1 :");
-			await super.fillWithWait(this.fieldMinTier[tier - 1], min);
-			await super.fillWithWait(this.fieldMaxTier[tier - 1], max);
-			await super.fillWithWait(this.fieldWhAddressTier[tier - 1], address);
-			await this.initButtons();
-			await super.clickWithWait(this.buttonAddWh[tier - 1]);
-			return await this.clickButtonSave();
-
-		}
-		catch (err) {
-			logger.info("Can't fill out whitelist. Field DISABLED." + err);
-			return false;
-		}
+		return (await this.initInputs() !== null)
+			&& (this.fieldWhAddressTier[tier - 1] !== undefined)
+			&& await super.fillWithWait(this.fieldMinTier[tier - 1], min)
+			&& await super.fillWithWait(this.fieldMaxTier[tier - 1], max)
+			&& await super.fillWithWait(this.fieldWhAddressTier[tier - 1], address)
+			&& (await this.initButtons() !== null)
+			&& await super.clickWithWait(this.buttonAddWh[tier - 1])
+			&& await this.clickButtonSave();
 	}
 
 	async fillEndTimeTier(tier, date, time) {

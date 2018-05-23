@@ -16,6 +16,7 @@ const modal = By.className("modal");
 const buttonOK = By.className("swal2-confirm swal2-styled");
 const buttonSkipTransaction = By.className("no_image button button_fill");
 const buttonYes = By.className("swal2-confirm swal2-styled");
+const buttonCancelDeployment = By.className("button button_outline");
 
 class WizardStep4 extends page.Page {
 
@@ -23,39 +24,16 @@ class WizardStep4 extends page.Page {
 		super(driver);
 		this.URL;
 		this.name = "WizardStep4 page: ";
-		this.tokenContractAddress;
-		this.fieldTokenABI;
-	}
-
-	async init() {
-
-		var locator = By.className("input");
-		var arr = await super.findWithWait(locator);
-		this.tokenContractAddress = arr[2];
-	}
-
-	async initFields() {
-
-		const fields = By.css("pre");
-		var arr = await super.findWithWait(fields);
-		this.fieldTokenABI = arr[1];
-
-	}
-
-	async getABI() {
-//*[@id="root"]/div/section/div[2]/div[2]/div[7]/div[2]/pre
-		await this.initFields();
-		logger.info(this.name + ": get ABI: ");
-		let element = this.fieldTokenABI;
-		let abi = await super.getTextForElement(element);
-		abi = JSON.parse(abi);
-		return abi;
-
 	}
 
 	async isDisplayedModal() {
 		logger.info(this.name + "Is present Modal: ");
 		return await super.isElementDisplayed(modal);
+	}
+
+	async waitUntilDisplayedModal() {
+		logger.info(this.name + "waitUntilDisplayedModal: ");
+		return await super.waitUntilDisplayed(modal);
 	}
 
 	async clickButtonContinue() {
@@ -87,13 +65,19 @@ class WizardStep4 extends page.Page {
 
 	async clickButtonSkipTransaction() {
 		logger.info(this.name + "buttonSkipTransaction: ");
-		await this.driver.executeScript("document.getElementsByClassName('no_image button button_fill')[0].click();");
-
+		try {
+			await this.driver.executeScript("document.getElementsByClassName('no_image button button_fill')[0].click();");
+			return true;
+		}
+		catch (err) {
+			logger.info("Error " + err);
+			return false;
+		}
 	}
 
 	async clickButtonYes() {
 		logger.info(this.name + "clickButtonYes: ");
-		await super.clickWithWait(buttonYes);
+		return await super.clickWithWait(buttonYes);
 	}
 
 	async deployContracts(crowdsale) {
@@ -104,7 +88,6 @@ class WizardStep4 extends page.Page {
 		let skippedTransactions = 0;
 		let timeLimit = timeLimitTransactions * crowdsale.tiers.length;
 		let metaMask = new MetaMask(this.driver);
-
 		do {
 			logger.info("Transaction# " + allTransactions++);
 			if (await metaMask.signTransaction()) {
@@ -130,6 +113,10 @@ class WizardStep4 extends page.Page {
 			await this.clickButtonOk();
 	}
 
+	async clickButtonCancelDeployment() {
+		logger.info(this.name + "clickButtonCancelDeployment ");
+		return await super.clickWithWait(buttonCancelDeployment);
+	}
 }
 
 module.exports = {WizardStep4: WizardStep4}

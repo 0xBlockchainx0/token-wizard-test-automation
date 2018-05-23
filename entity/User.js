@@ -142,14 +142,13 @@ class User {
 		logger.info("fill whitelist for tier " + tier);
 		logger.info("Wh address=" + address + " , min=" + min + ", max=" + max);
 		let mngPage = new ManagePage(this.driver);
-		await mngPage.fillWhitelist(tier, address, min, max);
 		let metaMask = new MetaMask(this.driver);
-		let result = await metaMask.signTransaction(5);
-		if (!result) return false;
-		await mngPage.waitUntilLoaderGone();
-		result = await this.confirmPopup();
-		await mngPage.waitUntilLoaderGone();
-		return result;
+		return await mngPage.fillWhitelist(tier, address, min, max)
+			&& await metaMask.signTransaction(5)
+			&& await mngPage.waitUntilLoaderGone()
+			&& await this.confirmPopup()
+			&& await mngPage.waitUntilLoaderGone();
+
 	}
 
 	async changeSupply(tier, value) {
@@ -258,7 +257,7 @@ class User {
 	async contribute(amount) {
 		logger.info("contribute  " + amount);
 		const investPage = new InvestPage(this.driver);
-		return !await investPage.waitUntilShowUpWarning(10)
+		return !await investPage.waitUntilShowUpWarning(15)
 			&& await investPage.waitUntilLoaderGone()
 			&& await investPage.fillInvest(amount)
 			&& await investPage.clickButtonContribute()

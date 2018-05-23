@@ -1,35 +1,37 @@
 const logger = require('../entity/Logger.js').logger;
 const key = require('selenium-webdriver').Key;
-const Page=require('./Page.js').Page;
+const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
-const IDMetaMask="nkbihfbeogaeaoehlefnkodbefgpgknn";
-const URL="chrome-extension://"+IDMetaMask+"//popup.html";
-const buttonSubmit=By.className("confirm btn-green");
-const buttonAccept=By.xpath('//*[@id="app-content"]/div/div[4]/div/button');
-const agreement=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div/p[1]/strong");
-const fieldNewPass=By.xpath("//*[@id=\"password-box\"]");
-const fieldConfirmPass=By.xpath("//*[@id=\"password-box-confirm\"]");
-const buttonCreate=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/button");
-const buttonIveCopied=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/button[1]");
-const popupNetwork=By.className("network-name");
-const popupAccount=By.xpath("//*[@id=\"app-content\"]/div/div[1]/div/div[2]/span/div");
-const fieldPrivateKey=By.xpath("//*[@id=\"private-key-box\"]");
-const pass="qwerty12345";
-const buttonImport=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/button");
-const fieldNewRPCURL=By.id("new_rpc");
-const buttonSave=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/div/div[2]/button");
-const arrowBackRPCURL=By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[1]/i");
-const iconChangeAccount=By.className("cursor-pointer color-orange accounts-selector");
+const IDMetaMask = "nkbihfbeogaeaoehlefnkodbefgpgknn";
+const URL = "chrome-extension://" + IDMetaMask + "//popup.html";
+const buttonSubmit = By.className("confirm btn-green");
+const buttonAccept = By.xpath('//*[@id="app-content"]/div/div[4]/div/button');
+const agreement = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div/p[1]/strong");
+const fieldNewPass = By.xpath("//*[@id=\"password-box\"]");
+const fieldConfirmPass = By.xpath("//*[@id=\"password-box-confirm\"]");
+const buttonCreate = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/button");
+const buttonIveCopied = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/button[1]");
+const popupNetwork = By.className("network-name");
+const popupAccount = By.xpath("//*[@id=\"app-content\"]/div/div[1]/div/div[2]/span/div");
+const fieldPrivateKey = By.xpath("//*[@id=\"private-key-box\"]");
+const pass = "qwerty12345";
+const buttonImport = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/button");
+const fieldNewRPCURL = By.id("new_rpc");
+const buttonSave = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/div/div[2]/button");
+const arrowBackRPCURL = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[1]/i");
+const iconChangeAccount = By.className("cursor-pointer color-orange accounts-selector");
+const buttonReject = By.className("cancel btn-red");
+const buttonRejectAll = By.className("cancel btn-red");
 
-var accountOrderNumber=1;
-var networks=[0,3,42,4,8545];
+var accountOrderNumber = 1;
+var networks = [0, 3, 42, 4, 8545];
 
 class MetaMask extends Page {
 
 	constructor(driver) {
 		super(driver);
-		this.driver=driver;
-		this.URL=URL;
+		this.driver = driver;
+		this.URL = URL;
 		this.name = "Metamask  "
 	}
 
@@ -38,37 +40,37 @@ class MetaMask extends Page {
 	}
 
 	async activate() {
-		logger.info(this.name+ "activate ");
-		return  await this.switchToNextPage() &&
-				await this.open(this.URL) &&
-				await this.clickWithWait(buttonAccept) &&
-				await this.clickWithWait(agreement) &&
-				await this.pressKey(key.TAB,15) &&
-				await this.clickWithWait(buttonAccept) &&
-				await this.waitUntilLocated(fieldNewPass) &&
-				await this.clickWithWait(fieldNewPass) &&
-				await this.fillWithWait(fieldNewPass,pass) &&
-				await this.fillWithWait(fieldConfirmPass,pass) &&
-				await this.clickWithWait(buttonCreate) &&
-				await this.waitUntilDisplayed(buttonIveCopied) &&
-				await this.clickWithWait(buttonIveCopied) &&
-				await this.switchToNextPage();
+		logger.info(this.name + "activate ");
+		return await this.switchToNextPage() &&
+			await this.open(this.URL) &&
+			await this.clickWithWait(buttonAccept) &&
+			await this.clickWithWait(agreement) &&
+			await this.pressKey(key.TAB, 15) &&
+			await this.clickWithWait(buttonAccept) &&
+			await this.waitUntilLocated(fieldNewPass) &&
+			await this.clickWithWait(fieldNewPass) &&
+			await this.fillWithWait(fieldNewPass, pass) &&
+			await this.fillWithWait(fieldConfirmPass, pass) &&
+			await this.clickWithWait(buttonCreate) &&
+			await this.waitUntilDisplayed(buttonIveCopied) &&
+			await this.clickWithWait(buttonIveCopied) &&
+			await this.switchToNextPage();
 	}
 
 	async importAccount(user) {
-		logger.info(this.name+ "importAccount ");
+		logger.info(this.name + "importAccount ");
 		user.accountOrderInMetamask = accountOrderNumber;
 		return await  this.switchToNextPage() &&
 			await  this.setNetwork(user.networkID) &&
 			await  this.clickImportAccount() &&
-			await  this.fillWithWait(fieldPrivateKey,user.privateKey) &&
+			await  this.fillWithWait(fieldPrivateKey, user.privateKey) &&
 			await  this.waitUntilDisplayed(buttonImport) &&
 			await  this.clickWithWait(buttonImport) &&
 			await  this.switchToNextPage();
 	}
 
 	async selectAccount(user) {
-		logger.info(this.name+ "selectAccount ");
+		logger.info(this.name + "selectAccount ");
 		try {
 			await this.switchToNextPage();
 			await this.setNetwork(user.networkID);
@@ -77,28 +79,30 @@ class MetaMask extends Page {
 				user.accountOrderInMetamask + "].click();");
 			await this.switchToNextPage();
 			return true;
-		} catch(err) {
+		}
+		catch (err) {
 			return false;
 		}
 	}
 
 	async clickImportAccount() {
-		logger.info(this.name+ "clickImportAccount ");
+		logger.info(this.name + "clickImportAccount ");
 		try {
 			await super.clickWithWait(popupAccount);
 			await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')["
 				+ (accountOrderNumber + 1) + "].click();");
 			accountOrderNumber++;
 			return true;
-		} catch (err) {
+		}
+		catch (err) {
 			return false;
 		}
 	}
 
 	async signTransaction(refreshCount) {
-		logger.info(this.name+ "signTransaction ");
+		logger.info(this.name + "signTransaction ");
 		await this.switchToNextPage();
-		let counter=5;
+		let counter = 5;
 		if (refreshCount !== undefined) counter = refreshCount;
 		do {
 			await this.refresh();
@@ -108,51 +112,77 @@ class MetaMask extends Page {
 					await  this.switchToNextPage();
 			}
 			await this.driver.sleep(3000);
-		} while(counter-->=0);
+		} while (counter-- >= 0);
 
 		await this.switchToNextPage();
 		return false;
 	}
 
 	async setNetwork(provider) {
-		logger.info(this.name+ "setNetwork ");
+		logger.info(this.name + "setNetwork ");
 		try {
 			await super.clickWithWait(popupNetwork);
 			let orderNumber = networks.indexOf(provider);
-			let script = "document.getElementsByClassName('dropdown-menu-item')["+orderNumber + "].click();"
+			let script = "document.getElementsByClassName('dropdown-menu-item')[" + orderNumber + "].click();"
 			if (orderNumber < 0) await this.addNetwork(provider);
 			else await this.driver.executeScript(script);
 			return true;
-		} catch (err) {
+		}
+		catch (err) {
 			return false;
 		}
 	}
 
 	async addNetwork(provider) {
-		logger.info(this.name+ "addNetwork ");
+		logger.info(this.name + "addNetwork ");
 		let url;
-		switch(provider) {
+		switch (provider) {
 			case 77: {
-				url="https://sokol.poa.network";
+				url = "https://sokol.poa.network";
 				networks.push(77);
 				break;
 			}
 			case 99: {
-				url="https://core.poa.network";
+				url = "https://core.poa.network";
 				networks.push(99);
 				break;
 			}
 			default: {
-				url="https://sokol.poa.network";
+				url = "https://sokol.poa.network";
 			}
 		}
-		await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')["+
-			(networks.length-1)+"].click();");
-		return await super.fillWithWait(fieldNewRPCURL,url) &&
+		await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" +
+			(networks.length - 1) + "].click();");
+		return await super.fillWithWait(fieldNewRPCURL, url) &&
 			await super.clickWithWait(buttonSave) &&
 			await super.clickWithWait(arrowBackRPCURL);
 	}
+
+	async clickButtonReject() {
+		logger.info(this.name + "clickButtonReject ");
+		return await super.clickWithWait(buttonReject);
+	}
+
+	async rejectTransaction(refreshCount) {
+		logger.info(this.name + " rejectTransaction ");
+		let counter = 5;
+		if (refreshCount !== undefined) counter = refreshCount;
+		await this.switchToNextPage();
+		do {
+			await this.refresh();
+			await super.waitUntilLocated(iconChangeAccount);
+			if (await this.isElementDisplayed(buttonReject)) {
+				return await this.clickButtonReject()
+					&& await this.switchToNextPage();
+			}
+			await this.driver.sleep(1000);
+		} while (counter-- >= 0);
+		await this.switchToNextPage();
+		return false;
+	}
+
 }
+
 module.exports = {
-	MetaMask:MetaMask
+	MetaMask: MetaMask
 };

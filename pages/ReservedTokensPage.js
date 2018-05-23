@@ -1,12 +1,14 @@
 const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
+const Utils = require('../utils/Utils.js').Utils;
 const ReservedTokensContainer = By.className("reserved-tokens-item-container-inner");
 const buttonAdd = By.className("button button_fill button_no_icon");//("button button_fill button_no_icon");
 const itemsRemove = By.className("item-remove");
 const buttonClearAll = By.className("fa fa-trash");
 const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const buttonNoAlert = By.className("swal2-cancel swal2-styled");
+const buttonOK = By.className("swal2-confirm swal2-styled");
 
 class ReservedTokensPage extends Page {
 
@@ -54,7 +56,7 @@ class ReservedTokensPage extends Page {
 
 	async initReservedTokensContainer() {
 		logger.info(this.name + "initReservedTokensContainer warnings ");
-		return await super.findWithWait(ReservedTokensContainer);
+		return await super.findWithWait(ReservedTokensContainer,10);
 	}
 
 	async initInputFields() {
@@ -90,11 +92,14 @@ class ReservedTokensPage extends Page {
 	async amountAddedReservedTokens() {
 		logger.info(this.name + "amountAddedReservedTokens ");
 		try {
-			let arr = await this.initReservedTokensContainer();
-			logger.info("Reserved tokens added=" + arr.length);
-			return arr.length;
+			let array = await this.initReservedTokensContainer();
+			let length = 0;
+			if (array !== null) length = array.length;
+			logger.info("Reserved tokens added=" + length);
+			return length;
 		}
 		catch (err) {
+			logger.info("Error " +err);
 			return 0;
 		}
 	}
@@ -161,13 +166,20 @@ class ReservedTokensPage extends Page {
 	}
 
 	async clickButtonClearAll() {
-		logger.info(this.name + "clickButtonClearAll ");
-		return await super.clickWithWait(buttonClearAll);
+		logger.info(this.name + " clickButtonClearAll :");
+		try {
+			await this.driver.executeScript("document.getElementsByClassName('fa fa-trash')[0].click();");
+			return true;
+		}
+		catch (err) {
+			logger.info(err);
+			return false;
+		}
 	}
 
-	async isDisplayedButtonClearAll() {
-		logger.info(this.name + "isDisplayedButtonClearAll ");
-		return await super.isElementDisplayed(buttonClearAll);
+	async isLocatedButtonClearAll() {
+		logger.info(this.name + "isLocatedButtonClearAll ");
+		return await super.isElementLocated(buttonClearAll);
 	}
 
 	async isDisplayedButtonYesAlert() {
@@ -216,6 +228,28 @@ class ReservedTokensPage extends Page {
 				await this.clickButtonAddReservedTokens();
 		}
 		return result;
+	}
+
+	async uploadReservedCSVFile() {
+
+		try {
+			const locator = By.xpath('//input[@type="file"]');
+			let element = await this.driver.findElement(locator);
+			let path = await Utils.getPathToFileInPWD("bulkReservedAddresses.csv");
+			logger.info(this.name + ": uploadReservedAddressesCSVFile: from path: " + path);
+			await element.sendKeys(path);
+			return true;
+		}
+		catch (err) {
+			logger.info("Error " + err);
+			return false;
+		}
+	}
+
+	async clickButtonOk() {
+		logger.info("clickButtonOk");
+		await super.clickWithWait(buttonOK);
+
 	}
 
 }

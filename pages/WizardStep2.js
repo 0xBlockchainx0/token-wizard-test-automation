@@ -79,7 +79,7 @@ class WizardStep2 extends Page {
 
     async isDisplayedWarningName() {
 	    logger.info(this.name+"isDisplayedWarningName ");
-	    return false;
+
     	return (await this.initWarnings() !== null) &&
 		       (await this.getTextForElement(this.warningName) !== "");
     }
@@ -93,7 +93,6 @@ class WizardStep2 extends Page {
 
 	async isDisplayedWarningDecimals() {
 		logger.info(this.name + "isDisplayedWarningDecimals ");
-		return false;
 		return (await this.initWarnings() !== null) &&
 			   (await this.getTextForElement(this.warningDecimals) !== "");
 	}

@@ -223,6 +223,7 @@ class WizardStep3 extends Page {
 		return await super.clickWithWait(buttonAddTier);
 	}
 
+
 }
 
 module.exports.WizardStep3 = WizardStep3;

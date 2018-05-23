@@ -169,15 +169,21 @@ class TierPage extends Page {
 
 	async initWhitelistFields() {
 		logger.info(this.name + "initWhitelistContainer ");
-		let element = (await this.findWithWait(whitelistContainer))[this.number];
-		let array = await this.getChildFromElementByClassName("input", element);
-		if (array === null) return null;
-		else {
-			this.fieldWhAddressTier = array[0];
-			this.fieldMinTier = array[1];
-			this.fieldMaxTier = array[2];
+		try {
+			let element = (await this.findWithWait(whitelistContainer))[this.number];
+			let array = await this.getChildFromElementByClassName("input", element);
+			if (array === null) return null;
+			else {
+				this.fieldWhAddressTier = array[0];
+				this.fieldMinTier = array[1];
+				this.fieldMaxTier = array[2];
+			}
+			return array;
 		}
-		return array;
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
 	}
 
 	async initCheckboxes() {
@@ -196,26 +202,26 @@ class TierPage extends Page {
 
 	async fillAddress(address) {
 		logger.info(this.name + "fillAddress ");
-		await this.initWhitelistFields();
-		return (this.fieldWhAddressTier !== undefined) &&
+		return (await this.initWhitelistFields() !== null)
+			&& (this.fieldWhAddressTier !== undefined) &&
 			await super.clearField(this.fieldWhAddressTier) &&
 			await super.fillWithWait(this.fieldWhAddressTier, address);
 	}
 
 	async fillMin(value) {
 		logger.info(this.name + "fillMin ");
-		await this.initWhitelistFields();
-		return (this.fieldMinTier !== undefined) &&
+		return (await this.initWhitelistFields() !== null)
+			&& (this.fieldMinTier !== undefined) &&
 			await super.clearField(this.fieldMinTier) &&
 			await super.fillWithWait(this.fieldMinTier, value);
 	}
 
 	async fillMax(value) {
 		logger.info(this.name + "fillMax  ");
-		await this.initWhitelistFields();
-		return (this.fieldMaxTier !== undefined) &&
-			await super.clearField(this.fieldMaxTier) &&
-			await super.fillWithWait(this.fieldMaxTier, value);
+		return (await this.initWhitelistFields() !== null)
+			&& (this.fieldMaxTier !== undefined)
+			&& await super.clearField(this.fieldMaxTier)
+			&& await super.fillWithWait(this.fieldMaxTier, value);
 	}
 
 	async clickButtonAdd() {
@@ -240,12 +246,19 @@ class TierPage extends Page {
 			await super.clickWithWait(this.itemsRemove[number]);
 	}
 
-	async amountAddedWhitelist() {
+	async isDisplayedWhitelistContainer() {
+		logger.info(this.name + "isDisplayedWhitelistContainer ");
+		return (await this.initWhitelistFields() !== null)
+	}
+
+	async amountAddedWhitelist(Twaiting) {
 		logger.info(this.name + "amountAddedWhitelist ");
 		try {
-			let array = await this.findWithWait(whitelistContainerInner);
-			logger.info("Whitelisted addresses added=" + array.length);
-			return array.length;
+			let array = await super.findWithWait(whitelistContainerInner,Twaiting);
+			let length = 0;
+			if (array !== null) length = array.length;
+			logger.info("Whitelisted addresses added=" + length);
+			return length;
 		}
 		catch (err) {
 			return 0;
@@ -253,11 +266,24 @@ class TierPage extends Page {
 	}
 
 	async clickButtonClearAll() {
-		return await super.clickWithWait(buttonClearAll);
+		logger.info(this.name + "clickButtonClearAll:");
+		try {
+			await this.driver.executeScript("document.getElementsByClassName('fa fa-trash')[0].click();");
+			return true;
+		}
+		catch (err) {
+			logger.info("Error "+err);
+			return false;
+		}
 	}
 
 	async clickButtonYesAlert() {
 		return await super.clickWithWait(buttonYesAlert);
+	}
+
+	async waitUntilShowUpPopupConfirm(Twaiting) {
+		logger.info("waitUntilShowUpPopupConfirm: ");
+		return await this.waitUntilDisplayed(buttonYesAlert, Twaiting);
 	}
 
 	async isPresentWarningName() {
