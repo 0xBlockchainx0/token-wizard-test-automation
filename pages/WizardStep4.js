@@ -79,6 +79,10 @@ class WizardStep4 extends page.Page {
 		logger.info(this.name + "clickButtonYes: ");
 		return await super.clickWithWait(buttonYes);
 	}
+	async waitUntilShowUpPopupConfirm(Twaiting) {
+		logger.info("waitUntilShowUpPopupConfirm: ");
+		return await this.waitUntilDisplayed(buttonYes, Twaiting);
+	}
 
 	async deployContracts(crowdsale) {
 		logger.info(this.name + "deployContracts: ");
@@ -117,6 +121,12 @@ class WizardStep4 extends page.Page {
 		logger.info(this.name + "clickButtonCancelDeployment ");
 		return await super.clickWithWait(buttonCancelDeployment);
 	}
+
+	async waitUntilShowUpButtonCancelDeployment(Twaiting) {
+		logger.info("waitUntilShowUpPopupConfirm: ");
+		return await this.waitUntilDisplayed(buttonCancelDeployment, Twaiting);
+	}
+
 }
 
 module.exports = {WizardStep4: WizardStep4}

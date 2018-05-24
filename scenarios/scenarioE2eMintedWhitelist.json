@@ -22,10 +22,10 @@
     {
       "name":"###1",
       "allowModify": true,
-      "startDate": "130000",
-      "startTime": "130000",
-      "endDate":"01/01/2031",
-      "endTime":"02:22",
+      "startDate": "180000",
+      "startTime": "180000",
+      "endDate":"23/02/2050",
+      "endTime":"12:34",
       "rate":20000,
       "supply": 250,
       "whitelist":[
@@ -35,5 +35,26 @@
           "max": 150
         }
       ]
-    }]
+    },
+    {
+      "name":"###2",
+      "allowModify": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
+      "rate":10000,
+      "supply": 200,
+      "whitelist":[
+        {
+          "address": "0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7",
+          "min": 25,
+          "max": 250
+        }
+      ]
+    }
+
+
+
+  ]
 }

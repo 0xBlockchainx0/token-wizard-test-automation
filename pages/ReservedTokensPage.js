@@ -252,6 +252,11 @@ class ReservedTokensPage extends Page {
 
 	}
 
+	async waitUntilShowUpPopupConfirm(Twaiting) {
+		logger.info("waitUntilShowUpPopupConfirm: ");
+		return await this.waitUntilDisplayed(buttonYesAlert, Twaiting);
+	}
+
 }
 
 module.exports.ReservedTokensPage = ReservedTokensPage;

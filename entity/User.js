@@ -13,7 +13,7 @@ const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const Utils = require('../utils/Utils.js').Utils;
 const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
 const Page = require('../pages/Page.js').Page;
-const testRA = require('../test/testRA.js');
+
 const fs = require('fs');
 
 class User {
@@ -138,17 +138,16 @@ class User {
 		}
 	}
 
-	async fillWhitelistTier(tier, address, min, max) {
+	async addWhitelistTier(tier, address, min, max) {
 		logger.info("fill whitelist for tier " + tier);
 		logger.info("Wh address=" + address + " , min=" + min + ", max=" + max);
 		let mngPage = new ManagePage(this.driver);
 		let metaMask = new MetaMask(this.driver);
 		return await mngPage.fillWhitelist(tier, address, min, max)
-			&& await metaMask.signTransaction(5)
+			&& await metaMask.signTransaction(10)
 			&& await mngPage.waitUntilLoaderGone()
 			&& await this.confirmPopup()
 			&& await mngPage.waitUntilLoaderGone();
-
 	}
 
 	async changeSupply(tier, value) {

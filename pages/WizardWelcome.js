@@ -45,14 +45,12 @@ class WizardWelcome extends Page {
 
 	async openWithAlertConfirmation() {
 		logger.info(this.name + " openWithAlertConfirmation ");
-		try {
-			await  this.open(this.URL);
-			return true;
+		if (await  this.open(this.URL) === false) {
+			return !await super.acceptAlert();
+
 		}
-		catch (err) {
-			await super.acceptAlert();
-			return false;
-		}
+		else return true;
+
 	}
 }
 

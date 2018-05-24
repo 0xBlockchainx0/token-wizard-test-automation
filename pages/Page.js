@@ -342,7 +342,7 @@ class Page {
 			return true;
 		}
 		catch (err) {
-			logger.info("Error "+err);
+			logger.info("Error " + err);
 			return false;
 		}
 	}
@@ -355,7 +355,7 @@ class Page {
 			return true;
 		}
 		catch (err) {
-			logger.info("Error "+err);
+			logger.info("Error " + err);
 			return false;
 		}
 	}

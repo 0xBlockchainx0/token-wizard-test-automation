@@ -232,4 +232,15 @@ test.describe('POA token-wizard. Test DutchAuctionCrowdsale', async function () 
 		logger.info("Difference = " + (newBalance - balance));
 		return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance)
 	});
+
+	test.it.skip('Check persisTTTTTTTTTT', async function () {
+
+		let investor = Investor1;
+		let newBalance = await investor.getTokenBalance(crowdsaleForE2Etests) / 1e18;
+		let balance = crowdsaleForE2Etests.minCap + smallAmount + 10;
+		logger.info("Investor should receive  = " + balance);
+		logger.info("Investor has received balance = " + newBalance);
+		logger.info("Difference = " + (newBalance - balance));
+		return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance)
+	});
 });

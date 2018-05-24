@@ -4,6 +4,7 @@ const By = require('selenium-webdriver/lib/by').By;
 const Page = require('./Page.js').Page;
 const buttonOk = By.xpath("/html/body/div[2]/div/div[3]/button[1]");
 const modal = By.className("modal");
+const Utils = require('../utils/Utils.js').Utils;
 const adj = "";
 
 const buttonFinalize = By.xpath("//*[contains(text(),'Finalize Crowdsale')]");
@@ -14,6 +15,7 @@ const warningEndTimeTier1 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/d
 const warningEndTimeTier2 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[1]/div[2]/div[2]/p[2]");
 const warningStartTimeTier2 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[1]/div[2]/div[1]/p[2]");
 const warningStartTimeTier1 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[2]/div[2]/div[1]/p[2]");
+const whitelistContainer = By.className("white-list-container");
 
 class ManagePage extends Page {
 
@@ -34,6 +36,32 @@ class ManagePage extends Page {
 		this.buttonAddWh = [];
 		this.buttonFinalize;
 		this.buttonSave;
+		this.fieldWhAddress = [];
+		this.fieldWhMin = [];
+		this.fieldWhMax = [];
+
+	}
+
+	async initWhitelistFields() {
+		logger.info(this.name + "initWhitelistFields ");
+		try {
+			let arrayWh = await this.findWithWait(whitelistContainer);
+			if (arrayWh === null) return null;
+			let array;
+			for (let i = 0; i < arrayWh.length; i++) {
+				array = await this.getChildFromElementByClassName("input", arrayWh[i]);
+				if (array !== null) {
+					this.fieldWhAddress[i] = array[0];
+					this.fieldWhMin[i] = array[1];
+					this.fieldWhMax[i] = array[2];
+				}
+			}
+			return arrayWh;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
 	}
 
 	async initButtonSave() {
@@ -49,7 +77,6 @@ class ManagePage extends Page {
 			return null;
 		}
 	}
-
 
 	async initButtonFinalize() {
 		logger.info(this.name + "initButtonFinalize ");
@@ -173,9 +200,14 @@ class ManagePage extends Page {
 
 	async getStartTimeTier(tier) {
 		logger.info(this.name + "getStartTimeTier ");
-		if (await this.initInputs() === null) return null;
-		else
-			return await super.getAttribute(this.fieldStartTimeTier[tier - 1], "value");
+		let field = await this.getFieldStartTime(tier);
+		return await super.getAttribute(field, "value");
+	}
+
+	async getFieldStartTime(tier) {
+		logger.info(this.name + "getFieldStartTime ");
+		const locator = By.id("tiers[" + (tier - 1) + "].startTime");
+		return await super.getElement(locator);
 	}
 
 	async getEndTimeTier(tier) {
@@ -198,7 +230,7 @@ class ManagePage extends Page {
 			return true;
 		}
 		else {
-			logger.info("Error "+ err);
+			logger.info("Error " + err);
 			return false;
 		}
 	}
@@ -253,11 +285,10 @@ class ManagePage extends Page {
 
 	async fillWhitelist(tier, address, min, max) {
 		logger.info(this.name + "fillWhitelist  ");
-		return (await this.initInputs() !== null)
-			&& (this.fieldWhAddressTier[tier - 1] !== undefined)
-			&& await super.fillWithWait(this.fieldMinTier[tier - 1], min)
-			&& await super.fillWithWait(this.fieldMaxTier[tier - 1], max)
-			&& await super.fillWithWait(this.fieldWhAddressTier[tier - 1], address)
+		return (await this.initWhitelistFields() !== null)
+			&& await super.fillWithWait(this.fieldWhAddress[tier - 1], address)
+			&& await super.fillWithWait(this.fieldWhMin[tier - 1], min)
+			&& await super.fillWithWait(this.fieldWhMax[tier - 1], max)
 			&& (await this.initButtons() !== null)
 			&& await super.clickWithWait(this.buttonAddWh[tier - 1])
 			&& await this.clickButtonSave();
@@ -266,6 +297,12 @@ class ManagePage extends Page {
 	async fillEndTimeTier(tier, date, time) {
 		logger.info(this.name + " fill end time, tier #" + tier + ":");
 		const action = this.driver.actions();
+		if (date === "") return true;
+		let format = await Utils.getDateFormat(this.driver);
+		if (!date.includes("/")) {
+			time = Utils.getTimeWithAdjust(parseInt(time), format);
+			date = Utils.getDateWithAdjust(parseInt(date), format);
+		}
 		return (await this.initInputs() !== null)
 			&& !await this.isElementDisabled(this.fieldEndTimeTier[tier - 1])
 			&& await super.fillWithWait(this.fieldEndTimeTier[tier - 1], date)
