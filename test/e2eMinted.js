@@ -63,18 +63,25 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 	test.before(async function () {
 		logger.info("Version 2.5.0 - Wizard2.0 ");
-		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
 
 		const scenarioE2eMintedMinCap = './scenarios/scenarioE2eMintedMinCap.json';
 		const scenarioE2eMintedWhitelist = './scenarios/scenarioE2eMintedWhitelist.json';
 		const scenarioForUItests = './scenarios/ReservedTokens.json';
-		const scenarioE2eMintedMultitier = './scenarios/scenarioE2eMintedMultitier.json'
+		//const scenarioE2eMintedMultitier = './scenarios/scenarioE2eMintedMultitier.json'
 
 		crowdsaleForUItests = await Utils.getCrowdsaleInstance(scenarioForUItests);
 		e2eMinCap = await  Utils.getCrowdsaleInstance(scenarioE2eMintedMinCap);
 		e2eWhitelist = await  Utils.getCrowdsaleInstance(scenarioE2eMintedWhitelist);
-		e2eMultitier = await  Utils.getCrowdsaleInstance(scenarioE2eMintedMultitier);
+		//e2eMultitier = await  Utils.getCrowdsaleInstance(scenarioE2eMintedMultitier);
+
+		crowdsaleForUItests.print();
+		e2eMinCap.print();
+		e2eWhitelist.print();
+
+
+
+		startURL = await Utils.getStartURL();
+		driver = await Utils.startBrowserWithMetamask();
 
 		Owner = new User(driver, user8545_56B2File);
 		Investor1 = new User(driver, user8545_F16AFile);
@@ -484,6 +491,25 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
 		});
 
+	test.it.skip('Manage page: correct number of whitelisted addresses is displayed for tier#1',
+		async function () {
+			let owner = Owner;
+
+			return await assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Test FAILED.Manage page: incorrect number of whitelisted addresses is displayed for tier #1');
+		});
+
+	test.it.skip('Manage page: correct number of whitelisted addresses is displayed for tier#2',
+		async function () {
+			let owner = Owner;
+
+			return await assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Test FAILED.Manage page: incorrect number of whitelisted addresses is displayed for tier #2');
+		});
+	test.it.skip('Manage page: correct number of reserved addresses is displayed ',
+		async function () {
+			let owner = Owner;
+
+			return await assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Test FAILED.Manage page: Manage page: correct number of reserved addresses is displayed');
+		});
 	test.it.skip("Manage page: button 'Save' is  disabled by default",
 		async function () {
 			return await assert.equal(await mngPage.isDisabledButtonSave(), true, "Test FAILED. Button 'Save' is enabled by default");
@@ -502,6 +528,13 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let tierNumber = 1;
 			let result = await owner.addWhitelistTier(tierNumber, investor.account, investor.minCap, investor.maxCap);
 			return await assert.equal(result, true, 'Test FAILED.Owner is NOT able to add whitelisted address before start of crowdsale ');
+		});
+
+	test.it.skip('Manage page: correct number of whitelisted addresses is displayed for tier#1',
+		async function () {
+			let owner = Owner;
+
+			return await assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Test FAILED.Manage page: incorrect number of whitelisted addresses is displayed for tier #1');
 		});
 
 	test.it('Manage page: owner is able to modify the end time before start of crowdsale',
@@ -531,6 +564,16 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			await owner.openManagePage(e2eWhitelist);
 			let tierNumber = 2;
 			let newTime = await  owner.getStartTime(tierNumber);
+			let result = await Utils.compareDates(newTime, endDate, endTime);
+			return await assert.equal(result, true, 'Test FAILED. End time doest match the given value');
+		});
+
+	test.it.skip('Manage page:  end time of tier#2 changed  accordingly after modifying ',
+		async function () {
+			let owner = Owner;
+			await owner.openManagePage(e2eWhitelist);
+			let tierNumber = 1;
+			let newTime = await  owner.getEndTime(tierNumber);
 			let result = await Utils.compareDates(newTime, endDate, endTime);
 			return await assert.equal(result, true, 'Test FAILED. End time doest match the given value');
 		});
@@ -569,7 +612,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			while (counter-- > 0 && !await investPage.isCrowdsaleStarted());
 			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
 		});
-
+///// ???????????   OR not able????
 	test.it.skip('Manage page: owner is able to add whitelisted address if crowdsale has begun',
 		async function () {
 			let owner = Owner;
@@ -579,6 +622,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let result = await owner.addWhitelistTier(tierNumber, investor.account, investor.minCap, investor.maxCap);
 			return await assert.equal(result, true, 'Test FAILED.Owner is NOT able to add whitelisted address after start of crowdsale ');
 		});
+	////////////
 
 	test.it('Manage page: owner is not able to modify the end time after start of crowdsale',
 		async function () {
@@ -697,6 +741,23 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let result = (counter > 0);
 			return await assert.equal(result, true, "Test FAILED. Crowdsale has not finished in time");
 		});
+
+	test.it('Tier #2 started immideatelly after tier#1 is finished ',
+		async function () {
+		//Status should not contain CROWDSALE HAS ENDED
+			//Should contain TIER 2??
+
+			let investor = Investor1;
+			await investor.openInvestPage(e2eMinCap);
+			let counter = 40;
+			do {
+				driver.sleep(5000);
+			}
+			while ((!await investPage.isCrowdsaleTimeOver()) && (counter-- > 0));
+			let result = (counter > 0);
+			return await assert.equal(result, true, "Test FAILED. Tier #2 started immideatelly after tier#1 is finished");
+		});
+
 
 	test.it('Investor which whitelisted in tier#1 is not able to buy in tier#2',
 		async function () {

@@ -18,11 +18,11 @@
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
   "gasprice":1,
   "mincap": 5,
-  "whitelisting":false,
   "tiers":[
     {
       "name":"###1",
       "allowModify": false,
+      "isWhitelisted":false,
       "startDate": "80000",
       "startTime": "80000",
       "endDate":"200000",

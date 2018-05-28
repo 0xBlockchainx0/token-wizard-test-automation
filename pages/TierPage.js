@@ -12,6 +12,7 @@ const buttonClearAll = By.className("fa fa-trash");
 const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const fieldMinRate = By.id("tiers[0].minRate");
 const fieldMaxRate = By.id("tiers[0].maxRate");
+const contentContainer = By.className("steps-content container");
 
 let COUNT_TIERS = 0;
 const timeAdjust = 0;//relative value  for tier time
@@ -30,6 +31,8 @@ class TierPage extends Page {
 		this.fieldMaxTier;
 		this.checkboxModifyOn;
 		this.checkboxModifyOff;
+		this.checkboxWhitelistingYes;
+		this.checkboxWhitelistingNo;
 		this.itemsRemove = [];
 		this.warningName;
 		this.warningStartTime;
@@ -189,10 +192,13 @@ class TierPage extends Page {
 	async initCheckboxes() {
 		logger.info(this.name + "initCheckboxes ");
 		try {
-			const locator = By.className("radio-inline");
-			let array = await super.findWithWait(locator);
-			this.checkboxModifyOn = array[6 + 2 * this.number];
-			this.checkboxModifyOff = array[7 + 2 * this.number];
+			let containers = await super.findWithWait(contentContainer);
+			let array = await this.getChildFromElementByClassName("radio-inline", containers[this.number + 1]);
+			this.checkboxModifyOn = array[0];
+			this.checkboxModifyOff = array[1];
+			this.checkboxWhitelistingYes = array[2];
+			this.checkboxWhitelistingNo = array[3];
+			return true;
 		}
 		catch (err) {
 			logger.info("Error: " + err);
@@ -232,12 +238,18 @@ class TierPage extends Page {
 		else return await super.clickWithWait(array[this.number]);
 	}
 
+	async setWhitelisting() {
+		logger.info(this.name + "setWhitelisting ");
+		if (!this.tier.isWhitelisted) return true;
+		return (await this.initCheckboxes() !== null)
+			&& await super.clickWithWait(this.checkboxWhitelistingYes);
+	}
+
 	async setModify() {
 		logger.info(this.name + "setModify ");
-		await this.initCheckboxes();
-		if (this.tier.allowModify) {
-			return await super.clickWithWait(this.checkboxModifyOn);
-		} else return (await this.initCheckboxes() !== null);
+		if (!this.tier.allowModify) return true;
+		return (await this.initCheckboxes() !== null)
+			&& await super.clickWithWait(this.checkboxModifyOn);
 	}
 
 	async removeWhiteList(number) {
@@ -254,7 +266,7 @@ class TierPage extends Page {
 	async amountAddedWhitelist(Twaiting) {
 		logger.info(this.name + "amountAddedWhitelist ");
 		try {
-			let array = await super.findWithWait(whitelistContainerInner,Twaiting);
+			let array = await super.findWithWait(whitelistContainerInner, Twaiting);
 			let length = 0;
 			if (array !== null) length = array.length;
 			logger.info("Whitelisted addresses added=" + length);
@@ -272,7 +284,7 @@ class TierPage extends Page {
 			return true;
 		}
 		catch (err) {
-			logger.info("Error "+err);
+			logger.info("Error " + err);
 			return false;
 		}
 	}
@@ -385,15 +397,16 @@ class TierPage extends Page {
 
 	async fillTier() {
 		logger.info(this.name + "fillTier ");
-		return await this.fillMinRate() &&
-			await this.fillMaxRate() &&
-			await this.fillRate() &&
-			await this.fillSetupName() &&
-			await this.fillSupply() &&
-			await this.fillStartTime() &&
-			await this.fillEndTime() &&
-			await this.setModify() &&
-			await this.fillWhitelist();
+		return await this.setModify()
+			&& await this.setWhitelisting()
+			&& await this.fillMinRate()
+			&& await this.fillMaxRate()
+			&& await this.fillRate()
+			&& await this.fillSetupName()
+			&& await this.fillSupply()
+			&& await this.fillStartTime()
+			&& await this.fillEndTime()
+			&& await this.fillWhitelist();
 
 	}
 

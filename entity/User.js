@@ -173,7 +173,7 @@ class User {
 	async changeEndTime(tier, newDate, newTime) {
 		logger.info("change EndTime for tier#" + tier + ", new date=" + newDate + ", new time=" + newTime);
 		let formatTimeBrowser = await Utils.getDateFormat(this.driver);
-		if (formatTimeBrowser == "mdy") {
+		if (formatTimeBrowser === "mdy") {
 			newDate = Utils.convertDateToMdy(newDate);
 			newTime = Utils.convertTimeToMdy(newTime);
 		}
@@ -184,7 +184,8 @@ class User {
 			&& !await mngPage.isPresentWarningEndTimeTier1()
 			&& !await mngPage.isPresentWarningEndTimeTier2()
 			&& await mngPage.clickButtonSave()
-			&& await metaMask.signTransaction(5)
+			&& await metaMask.signTransaction(10)
+			&& await metaMask.signTransaction(10)
 			&& await mngPage.waitUntilLoaderGone()
 			&& await this.confirmPopup()
 			&& await mngPage.waitUntilLoaderGone();
@@ -326,7 +327,6 @@ class User {
 			await reservedTokens.fillReservedTokens(crowdsale) &&
 			await wizardStep2.clickButtonContinue() &&
 			await wizardStep3.fillPage(crowdsale);
-
 		counter = 200;
 		do {
 			await this.driver.sleep(300);
