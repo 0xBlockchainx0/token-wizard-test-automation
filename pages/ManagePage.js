@@ -1,66 +1,117 @@
-const logger=require('../entity/Logger.js').logger;
+const logger = require('../entity/Logger.js').logger;
 const key = require('selenium-webdriver').Key;
 const By = require('selenium-webdriver/lib/by').By;
-const Page=require('./Page.js').Page;
-const buttonOk=By.xpath("/html/body/div[2]/div/div[3]/button[1]");
-const modal=By.className("modal");
-const adj="";
+const Page = require('./Page.js').Page;
+const buttonOk = By.xpath("/html/body/div[2]/div/div[3]/button[1]");
+const modal = By.className("modal");
+const Utils = require('../utils/Utils.js').Utils;
+const adj = "";
 
-const buttonFinalize=By.xpath("//*[contains(text(),'Finalize Crowdsale')]");
-const buttonYesFinalize=By.className("swal2-confirm swal2-styled");
-const buttonSave=By.className("no-arrow button button_fill");
+const buttonFinalize = By.xpath("//*[contains(text(),'Finalize Crowdsale')]");
+const buttonYesFinalize = By.className("swal2-confirm swal2-styled");
+const buttonSave = By.className("no_arrow button button_fill");
 
-const warningEndTimeTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[3]/div/div[2]/div[2]/div[2]/p[2]");
-const warningEndTimeTier2=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[4]/div/div[1]/div[2]/div[2]/p[2]");
-const warningStartTimeTier2=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[4]/div/div[1]/div[2]/div[1]/p[2]");
-const warningStartTimeTier1=By.xpath("//*[@id=\"root\"]/div/"+adj+"section/div[4]/div/div[2]/div[2]/div[1]/p[2]");
+const warningEndTimeTier1 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[3]/div/div[2]/div[2]/div[2]/p[2]");
+const warningEndTimeTier2 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[1]/div[2]/div[2]/p[2]");
+const warningStartTimeTier2 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[1]/div[2]/div[1]/p[2]");
+const warningStartTimeTier1 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[2]/div[2]/div[1]/p[2]");
 
-class ManagePage extends Page  {
+const reservedTokensInnerContainer = By.className("reserved-tokens-item-container-inner monospace");
+const fieldsReservedTokensAddress = By.className("reserved-tokens-item reserved-tokens-item-left");
 
-    constructor(driver,crowdsale) {
-        super(driver);
-        this.URL;
-        this.name="Manage page: ";
-        this.crowdsale=crowdsale;
-	    this.fieldNameTier=[];
-	    this.fieldWalletAddressTier=[];
-	    this.fieldStartTimeTier=[];
-	    this.fieldEndTimeTier=[];
-	    this.fieldRateTier=[];
-	    this.fieldSupplyTier=[];
-	    this.fieldWhAddressTier=[];
-	    this.fieldMinTier=[];
-	    this.fieldMaxTier=[];
-	    this.buttonAddWh=[];
-	    this.buttonFinalize;
-    }
-async initButtonFinalize () {
-	logger.info(this.name + "initButtonFinalize ");
-	try {
-		let locator = By.className("button");
-		let array = await super.findWithWait(locator);
-		this.buttonFinalize = array [0];
-		return array;
+const whitelistContainer = By.className("white-list-container");
+const whitelistContainerInner = By.className("white-list-item-container-inner");
+const whitelistContainerNoStyle = By.className("white-list-item-container no-style");
+const fieldWhitelistAddressAdded = By.className("white-list-item white-list-item-left");
+
+class ManagePage extends Page {
+
+	constructor(driver, crowdsale) {
+		super(driver);
+		this.URL;
+		this.name = "Manage page: ";
+		this.crowdsale = crowdsale;
+		this.fieldNameTier = [];
+		this.fieldWalletAddressTier = [];
+		this.fieldStartTimeTier = [];
+		this.fieldEndTimeTier = [];
+		this.fieldRateTier = [];
+		this.fieldSupplyTier = [];
+		this.fieldWhAddressTier = [];
+		this.fieldMinTier = [];
+		this.fieldMaxTier = [];
+		this.buttonAddWh = [];
+		this.buttonFinalize;
+		this.buttonSave;
+		this.fieldWhAddress = [];
+		this.fieldWhMin = [];
+		this.fieldWhMax = [];
+
 	}
-	catch (err) {
-		logger.info("Error: " + err);
-		return null;
+
+	async initWhitelistFields() {
+		logger.info(this.name + "initWhitelistFields ");
+		try {
+			let arrayWh = await this.findWithWait(whitelistContainer);
+			if (arrayWh === null) return null;
+			let array;
+			for (let i = 0; i < arrayWh.length; i++) {
+				array = await this.getChildFromElementByClassName("input", arrayWh[i]);
+				if (array !== null) {
+					this.fieldWhAddress[i] = array[0];
+					this.fieldWhMin[i] = array[1];
+					this.fieldWhMax[i] = array[2];
+				}
+			}
+			return arrayWh;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
 	}
-}
 
+	async initButtonSave() {
+		logger.info(this.name + "initButtonSave ");
+		try {
+			let locator = By.className("no_arrow");
+			let array = await super.findWithWait(locator);
+			this.buttonSave = array [0];
+			return array;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
 
-    async initButtons() {
-	    logger.info(this.name + "initButtons ");
-    	try {
-		    let locator = By.className("button button_fill button_fill_plus");
-		    let array = await super.findWithWait(locator);
-		    for (let i = 0; i < array.length; i++)
-			    this.buttonAddWh[i] = array[i];
-		    return array;
-	    } catch(err) {
-		    logger.info("Error: " + err);
-		    return null;
-	    }
+	async initButtonFinalize() {
+		logger.info(this.name + "initButtonFinalize ");
+		try {
+			let locator = By.className("button");
+			let array = await super.findWithWait(locator);
+			this.buttonFinalize = array [0];
+			return array;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
+
+	async initButtons() {
+		logger.info(this.name + "initButtons ");
+		try {
+			let locator = By.className("button button_fill button_fill_plus");
+			let array = await super.findWithWait(locator);
+			for (let i = 0; i < array.length; i++)
+				this.buttonAddWh[i] = array[i];
+			return array;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
 	}
 
 	async initInputs() {
@@ -99,227 +150,246 @@ async initButtonFinalize () {
 				this.fieldMaxTier[1] = array[14];
 			}
 			return array;
-		} catch(err) {
+		}
+		catch (err) {
 			logger.info("Error: " + err);
 			return null;
 		}
-    }
+	}
 
 	async getNameTier(tier) {
 		logger.info(this.name + "getNameTier ");
-	    if (await this.initInputs() === null) return "";
-	    else
-	        return await super.getAttribute(this.fieldNameTier[tier-1],"value");
-    }
+		if (await this.initInputs() === null) return "";
+		else
+			return await super.getAttribute(this.fieldNameTier[tier - 1], "value");
+	}
 
-    async isDisabledNameTier(tier) {
-	    logger.info(this.name + "isDisabledNameTier ");
-	    return (await this.initInputs() !== null)
-	         && await this.isElementDisabled(this.fieldNameTier[tier - 1]);
+	async isDisabledNameTier(tier) {
+		logger.info(this.name + "isDisabledNameTier ");
+		return (await this.initInputs() !== null)
+			&& await this.isElementDisabled(this.fieldNameTier[tier - 1]);
 	}
 
 	async getWalletAddressTier(tier) {
 		logger.info(this.name + "getWalletAddressTier ");
 		if (await this.initInputs() === null) return null;
 		else
-			return await super.getAttribute(this.fieldWalletAddressTier[tier-1],"value");
+			return await super.getAttribute(this.fieldWalletAddressTier[tier - 1], "value");
 	}
 
 	async isDisabledWalletAddressTier(tier) {
 		logger.info(this.name + "isDisabledWalletAddressTier ");
 		if (await this.initInputs() === null) return null;
-	    else
-	    	return await this.isElementDisabled(this.fieldWalletAddressTier[tier - 1]);
+		else
+			return await this.isElementDisabled(this.fieldWalletAddressTier[tier - 1]);
+	}
+
+	async isDisabledEndTime(tier) {
+		logger.info(this.name + "isDisabledEndTime ");
+		if (await this.initInputs() === null) return null;
+		else
+			return await this.isElementDisabled(this.fieldEndTimeTier[tier - 1]);
 	}
 
 	async getRateTier(tier) {
 		logger.info(this.name + "getRateTier ");
 		if (await this.initInputs() === null) return null;
 		else
-			return await super.getAttribute(this.fieldRateTier[tier-1],"value");
+			return await super.getAttribute(this.fieldRateTier[tier - 1], "value");
 	}
 
 	async getSupplyTier(tier) {
 		logger.info(this.name + "getSupplyTier ");
 		if (await this.initInputs() === null) return null;
 		else
-			return await super.getAttribute(this.fieldSupplyTier[tier-1],"value");
+			return await super.getAttribute(this.fieldSupplyTier[tier - 1], "value");
 	}
 
-    async getStartTimeTier(tier) {
-	    logger.info(this.name + "getStartTimeTier ");
-	    if (await this.initInputs() === null) return null;
-	    else
-	    	return await super.getAttribute(this.fieldStartTimeTier[tier-1],"value");
+	async getStartTimeTier(tier) {
+		logger.info(this.name + "getStartTimeTier ");
+		let field = await this.getFieldStartTime(tier);
+		return await super.getAttribute(field, "value");
+	}
+
+	async getFieldStartTime(tier) {
+		logger.info(this.name + "getFieldStartTime ");
+		const locator = By.id("tiers[" + (tier - 1) + "].startTime");
+		return await super.getElement(locator);
 	}
 
 	async getEndTimeTier(tier) {
 		logger.info(this.name + "getEndTimeTier ");
 		if (await this.initInputs() === null) return null;
-		else return await super.getAttribute(this.fieldEndTimeTier[tier-1],"value");
+		else return await super.getAttribute(this.fieldEndTimeTier[tier - 1], "value");
 	}
 
-    async clickButtonSave() {
-	    logger.info(this.name+"clickButtonSave ");
-	    return await super.clickWithWait(buttonSave);
-    }
+	async clickButtonSave() {
+		logger.info(this.name + "clickButtonSave ");
+		return (await this.initButtonSave() !== null)
+			&& await super.clickWithWait(this.buttonSave);
+	}
+
+	async isDisabledButtonSave() {
+		logger.info(this.name + " isDisabledButtonSave ");
+		await this.initButtonSave();
+		if (await super.getAttribute(this.buttonSave, "class") === "no_arrow button button_fill button_disabled") {
+			logger.info("present and disabled");
+			return true;
+		}
+		else {
+			logger.info("Error " + err);
+			return false;
+		}
+	}
 
 	async isPresentWarningStartTimeTier1() {
-		logger.info(this.name+"isPresentWarningStartTimeTier1 ");
+		logger.info(this.name + "isPresentWarningStartTimeTier1 ");
 		try {
-		logger.info(this.name+"red warning if data wrong :");
-		let result=await super.getTextForElement(warningStartTimeTier1,1);
-		logger.info("Text="+result);
-			return (result!=="");
+			logger.info(this.name + "red warning if data wrong :");
+			let result = await super.getTextForElement(warningStartTimeTier1, 1);
+			logger.info("Text=" + result);
+			return (result !== "");
 		}
-		catch(err) {
+		catch (err) {
 			logger.info(err);
-			 return false;
+			return false;
 		}
 	}
 
 	async isPresentWarningStartTimeTier2() {
-		logger.info(this.name+"isPresentWarningStartTimeTier2 ");
-    	try {
-		    logger.info(this.name + "red warning if data wrong :");
-		    await this.driver.sleep(1000);
-		    let result = await super.getTextForElement(warningStartTimeTier2,1);
-		    logger.info("Text=" + result);
-		    return (result!=="");
-	    }
-	    catch(err) {
-    		logger.info (err);
-    		return false;
-    	}
+		logger.info(this.name + "isPresentWarningStartTimeTier2 ");
+		try {
+			logger.info(this.name + "red warning if data wrong :");
+			await this.driver.sleep(1000);
+			let result = await super.getTextForElement(warningStartTimeTier2, 1);
+			logger.info("Text=" + result);
+			return (result !== "");
+		}
+		catch (err) {
+			logger.info(err);
+			return false;
+		}
 	}
 
 	async isPresentWarningEndTimeTier2() {
 
-		logger.info(this.name+"isPresentWarningEndTimeTier2 ");
+		logger.info(this.name + "isPresentWarningEndTimeTier2 ");
+		return false;
 		await this.driver.sleep(1000);
-		let result=await super.getTextForElement(warningEndTimeTier2,1);
-		logger.info("Text="+result);
-		return (result!=="");
-	}
-    async isPresentWarningEndTimeTier1(){
-	    logger.info(this.name+"red warning if data wrong :");
-    	await this.driver.sleep(500);
-    	var result=await super.getTextForElement(warningEndTimeTier1,1);
-    	logger.info("Text="+result);
-    	return (result!=="");
-    }
-
-
-
-	async fillWhitelist(tier,address,min,max) {
-		logger.info(this.name+"fillWhitelist  ");
-	    await this.initInputs();
-	    try {
-	       if (this.fieldWhAddressTier[tier-1]==undefined) {
-	        throw ("WhiteList address field  not present");
-	       }
-
-		   logger.info(this.name + "add address in whitelist, tier #1 :");
-	       await super.fillWithWait(this.fieldMinTier[tier-1], min);
-	       await super.fillWithWait(this.fieldMaxTier[tier-1], max);
-	       await super.fillWithWait(this.fieldWhAddressTier[tier-1], address);
-	       await this.initButtons();
-	       await super.clickWithWait(this.buttonAddWh[tier-1]);
-		   return await this.clickButtonSave();
-
-	    }
-	       catch(err) {
-	    	logger.info("Can't fill out whitelist. Field DISABLED."+err);
-	        return false;
-	       }
+		let result = await super.getTextForElement(warningEndTimeTier2, 1);
+		logger.info("Text=" + result);
+		return (result !== "");
 	}
 
-    async fillEndTimeTier(tier,date,time) {
-	    await this.initInputs();
-	    logger.info(this.name+"fill end time, tier #"+tier+":");
-        if( await this.isElementDisabled(this.fieldEndTimeTier[tier-1]))
-        	return false;
-	    await super.fillWithWait(this.fieldEndTimeTier[tier-1],date);
-	    const action=this.driver.actions();
-	    await action.sendKeys(key.TAB).perform();
-        await super.fillWithWait(this.fieldEndTimeTier[tier-1],time);
-	    return true;
-    }
+	async isPresentWarningEndTimeTier1() {
+		logger.info(this.name + "red warning if data wrong :");
+		return false;
+		await this.driver.sleep(500);
+		let result = await super.getTextForElement(warningEndTimeTier1, 1);
+		logger.info("Text=" + result);
+		return (result !== "");
+	}
 
+	async fillWhitelist(tier, address, min, max) {
+		logger.info(this.name + "fillWhitelist  ");
+		return (await this.initWhitelistFields() !== null)
+			&& await super.fillWithWait(this.fieldWhAddress[tier - 1], address)
+			&& await super.fillWithWait(this.fieldWhMin[tier - 1], min)
+			&& await super.fillWithWait(this.fieldWhMax[tier - 1], max)
+			&& (await this.initButtons() !== null)
+			&& await super.clickWithWait(this.buttonAddWh[tier - 1])
+			&& await this.clickButtonSave();
+	}
 
-	async fillStartTimeTier(tier,date,time) {
-	    await this.initInputs();
-	 	logger.info(this.name+"fill start time,tier #"+tier+":");
-	    if( await this.isElementDisabled(this.fieldStartTimeTier[tier-1]))
-	    	return false;
-		await super.fillWithWait(this.fieldStartTimeTier[tier-1],date);
-		const action=this.driver.actions();
+	async fillEndTimeTier(tier, date, time) {
+		logger.info(this.name + " fill end time, tier #" + tier + ":");
+		const action = this.driver.actions();
+		if (date === "") return true;
+		let format = await Utils.getDateFormat(this.driver);
+		if (!date.includes("/")) {
+			time = Utils.getTimeWithAdjust(parseInt(time), format);
+			date = Utils.getDateWithAdjust(parseInt(date), format);
+		}
+		return (await this.initInputs() !== null)
+			&& !await this.isElementDisabled(this.fieldEndTimeTier[tier - 1])
+			&& await super.fillWithWait(this.fieldEndTimeTier[tier - 1], date)
+			&& (await action.sendKeys(key.TAB).perform() !== null)
+			&& await super.fillWithWait(this.fieldEndTimeTier[tier - 1], time);
+	}
+
+	async fillStartTimeTier(tier, date, time) {
+		await this.initInputs();
+		logger.info(this.name + "fill start time,tier #" + tier + ":");
+		if (await this.isElementDisabled(this.fieldStartTimeTier[tier - 1]))
+			return false;
+		await super.fillWithWait(this.fieldStartTimeTier[tier - 1], date);
+		const action = this.driver.actions();
 		await action.sendKeys(key.TAB).perform();
-		await super.fillWithWait(this.fieldStartTimeTier[tier-1],time);
+		await super.fillWithWait(this.fieldStartTimeTier[tier - 1], time);
 		return true;
 	}
 
-	async fillRateTier(tier,rate) {
+	async fillRateTier(tier, rate) {
 		await this.initInputs();
-		logger.info(this.name+"fill Rate,tier #"+tier+":");
-		await super.clearField(this.fieldRateTier[tier-1]);
-		await super.fillWithWait(this.fieldRateTier[tier-1],rate);
-    }
+		logger.info(this.name + "fill Rate,tier #" + tier + ":");
+		await super.clearField(this.fieldRateTier[tier - 1]);
+		await super.fillWithWait(this.fieldRateTier[tier - 1], rate);
+	}
 
-    async fillSupplyTier(tier,rate) {
+	async fillSupplyTier(tier, rate) {
 		await this.initInputs();
-		logger.info(this.name+"fill Supply,tier #"+tier+":");
-		await super.clearField(this.fieldSupplyTier[tier-1]);
-		await super.fillWithWait(this.fieldSupplyTier[tier-1],rate);
+		logger.info(this.name + "fill Supply,tier #" + tier + ":");
+		await super.clearField(this.fieldSupplyTier[tier - 1]);
+		await super.fillWithWait(this.fieldSupplyTier[tier - 1], rate);
 	}
 
 	async open() {
-	    logger.info(this.name+": open  " +this.URL);
-	    return await super.open(this.URL);
+		logger.info(this.name + ": open  " + this.URL);
+		return await super.open(this.URL);
 	}
 
-	async isEnabledButtonFinalize(){
-        logger.info(this.name+" isEnabledButtonFinalize ");
+	async isEnabledButtonFinalize() {
+		logger.info(this.name + " isEnabledButtonFinalize ");
 		await this.initButtonFinalize();
-        if (await super.getAttribute(this.buttonFinalize,"class") === "button button_fill") {
-            logger.info("present and enabled");
-            return true;
-        }
-            else {
-	            logger.info("present and disabled");
-                return false;
-            }
-    }
+		if (await super.getAttribute(this.buttonFinalize, "class") === "button button_fill") {
+			logger.info("present and enabled");
+			return true;
+		}
+		else {
+			logger.info("present and disabled");
+			return false;
+		}
+	}
 
-    async clickButtonFinalize() {
-        logger.info(this.name+" clickButtonFinalize ");
-        return (await this.initButtonFinalize() !== null)
-	        && super.clickWithWait(this.buttonFinalize);
-    }
+	async clickButtonFinalize() {
+		logger.info(this.name + " clickButtonFinalize ");
+		return (await this.initButtonFinalize() !== null)
+			&& super.clickWithWait(this.buttonFinalize);
+	}
 
-    async clickButtonYesFinalize() {
-        logger.info(this.name+"clickButtonYesFinalize ");
-        return await super.clickWithWait(buttonYesFinalize);
-    }
+	async clickButtonYesFinalize() {
+		logger.info(this.name + "clickButtonYesFinalize ");
+		return await super.clickWithWait(buttonYesFinalize);
+	}
 
-    async isPresentPopupYesFinalize() {
-    	logger.info(this.name+"confirm Finalize/Yes :");
-        return await super.isElementDisplayed(buttonYesFinalize);
-    }
+	async isPresentPopupYesFinalize() {
+		logger.info(this.name + "confirm Finalize/Yes :");
+		return await super.isElementDisplayed(buttonYesFinalize);
+	}
 
-	async waitUntilShowUpPopupFinalize (Twaiting) {
+	async waitUntilShowUpPopupFinalize(Twaiting) {
 		logger.info(this.name + "waitUntilShowUpPopupFinalize ");
-		return super.waitUntilDisplayed(buttonYesFinalize,Twaiting);
+		return super.waitUntilDisplayed(buttonYesFinalize, Twaiting);
 	}
 
-	async waitUntilShowUpPopupConfirm (Twaiting) {
+	async waitUntilShowUpPopupConfirm(Twaiting) {
 		logger.info(this.name + "waitUntilShowUpPopupConfirm ");
-		return super.waitUntilDisplayed(buttonOk,Twaiting);
+		return super.waitUntilDisplayed(buttonOk, Twaiting);
 	}
 
-	async isPresentButtonOK(){
-	    logger.info(this.name+"button OK :");
-	    return await super.isElementDisplayed(buttonOk);
+	async isPresentButtonOK() {
+		logger.info(this.name + "button OK :");
+		return await super.isElementDisplayed(buttonOk);
 	}
 
 	async clickButtonOK() {
@@ -327,9 +397,51 @@ async initButtonFinalize () {
 		return await super.clickWithWait(buttonOk);
 	}
 
+	async getReservedTokensAddresses() {
+		logger.info(this.name + "getReservedTokensAddresses ");
+		try {
+			let array = await this.findWithWait(fieldsReservedTokensAddress, 180)
+			if (array === null) return null;
+			let addresses = [];
+			for (let i = 0; i < array.length - 1; i++) {
+				addresses[i] = await super.getTextForElement(array[i + 1]);
+				logger.info("address: " + addresses[i]);
+			}
+			return addresses;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
 
+	async getWhitelistAddresses(tierNumber) {
+		logger.info(this.name + "getWhitelistAddresses ");
+		try {
+
+			let elements = await super.findWithWait(whitelistContainer);
+			let element = elements[tierNumber-1];
+			console.log("elements="+elements.length);
+			let array = await super.getChildFromElementByClassName(whitelistContainerInner, element);
+			//let array = await super.findWithWait(whitelistContainerInner);
+			console.log("AAAAAA="+array.length);
+			if (array === null) return null;
+			let addresses = [];
+			for (let i = 0; i < array.length - 1; i++) {
+				addresses[i] = await super.getTextForElement(array[i + 1]);
+				logger.info("address: " + addresses[i]);
+			}
+			return addresses;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
 
 }
-module.exports={
-    ManagePage:ManagePage
+
+module
+	.exports = {
+	ManagePage: ManagePage
 }

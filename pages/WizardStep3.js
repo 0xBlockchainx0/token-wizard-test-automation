@@ -9,9 +9,6 @@ const buttonAddTier = By.className("button button_fill_secondary");
 const fieldWalletAddress = By.id("walletAddress");
 const fieldMinCap = By.id("minCap");
 
-
-
-
 let flagCustom = false;
 let flagWHitelising = false;
 let COUNT_TIERS = 0;
@@ -208,11 +205,11 @@ class WizardStep3 extends Page {
 		let result = await this.waitUntilLoaderGone() &&
 			await this.fillWalletAddress(crowdsale.walletAddress) &&
 			await this.setGasPrice(crowdsale.gasPrice) &&
-			(crowdsale.whitelisting ? await this.clickCheckboxWhitelistYes() : await this.fillMinCap(crowdsale.minCap));
+			await this.fillMinCap(crowdsale.minCap);
 
 		for (let i = 0; i < crowdsale.tiers.length - 1; i++) {
-			result = await new TierPage(this.driver, crowdsale.tiers[i]).fillTier() &&
-				await this.clickButtonAddTier();
+			result = await new TierPage(this.driver, crowdsale.tiers[i]).fillTier()
+				&& await this.clickButtonAddTier();
 		}
 		return result &&
 			await new TierPage(this.driver, crowdsale.tiers[crowdsale.tiers.length - 1]).fillTier();
@@ -222,6 +219,13 @@ class WizardStep3 extends Page {
 		logger.info(this.name + "clickButtonAddTier: ");
 		return await super.clickWithWait(buttonAddTier);
 	}
+
+	async isDisabledMinCap() {
+		logger.info(this.name+"isDisabledMinCap ");
+		return await super.isElementDisabled(fieldMinCap);
+	}
+
+
 
 }
 

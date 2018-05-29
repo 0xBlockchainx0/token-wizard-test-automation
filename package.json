@@ -6,9 +6,10 @@
     "startGanache": "npm install -g ganache-cli && ganache-cli &",
     "e2e-deployRegistry": "node  ./contracts/DeployRegistry.js",
     "e2eMinted": "mocha  -b ./test/e2eMinted.js",
-    "e2eDutch": "mocha  -b ./test/e2eDutch.js",
+    "e2eDutch": "mocha   ./test/e2eDutch.js",
     "ra": "node ./test/testRA.js",
-    "test13": "mocha  -b ./test/test13.js"
+    "e2eMintedRopsten": "mocha   ./test/e2eMintedRopsten.js",
+    "e2eDutchRopsten": "mocha   ./test/e2eDutchRopsten.js"
   },
   "dependencies": {
     "chromedriver": "^2.35.0",
@@ -25,4 +26,3 @@
     "babel-preset-es2015": "^6.24.1"
   }
 }
-

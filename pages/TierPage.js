@@ -12,9 +12,10 @@ const buttonClearAll = By.className("fa fa-trash");
 const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const fieldMinRate = By.id("tiers[0].minRate");
 const fieldMaxRate = By.id("tiers[0].maxRate");
+const contentContainer = By.className("steps-content container");
 
 let COUNT_TIERS = 0;
-const timeAdjust = 80000;//relative value  for tier time
+const timeAdjust = 0;//relative value  for tier time
 
 class TierPage extends Page {
 
@@ -30,6 +31,8 @@ class TierPage extends Page {
 		this.fieldMaxTier;
 		this.checkboxModifyOn;
 		this.checkboxModifyOff;
+		this.checkboxWhitelistingYes;
+		this.checkboxWhitelistingNo;
 		this.itemsRemove = [];
 		this.warningName;
 		this.warningStartTime;
@@ -110,15 +113,14 @@ class TierPage extends Page {
 
 	async fillStartTime() {
 		logger.info(this.name + "fillStartTime ");
-		//if (this.tier.startDate === "") return true;
+		if (this.tier.startDate === "") return true;
 		let locator = await this.getFieldStartTime();
 		let format = await Utils.getDateFormat(this.driver);
-		if (this.tier.startDate === "") {
-			this.tier.startDate = Utils.getDateWithAdjust(timeAdjust, format);
-			this.tier.startTime = Utils.getTimeWithAdjust(timeAdjust, format);
-
+		if (!this.tier.startDate.includes("/")) {
+			this.tier.startTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(this.tier.startTime), "utc");
+			this.tier.startDate = Utils.getDateWithAdjust(timeAdjust + parseInt(this.tier.startDate), "utc");
 		}
-		else if (format === "mdy") {
+		if (format === "mdy") {
 			this.tier.startDate = Utils.convertDateToMdy(this.tier.startDate);
 			this.tier.startTime = Utils.convertTimeToMdy(this.tier.startTime);
 		}
@@ -170,24 +172,33 @@ class TierPage extends Page {
 
 	async initWhitelistFields() {
 		logger.info(this.name + "initWhitelistContainer ");
-		let element = (await this.findWithWait(whitelistContainer))[this.number];
-		let array = await this.getChildFromElementByClassName("input", element);
-		if (array === null) return null;
-		else {
-			this.fieldWhAddressTier = array[0];
-			this.fieldMinTier = array[1];
-			this.fieldMaxTier = array[2];
+		try {
+			let element = (await this.findWithWait(whitelistContainer))[this.number];
+			let array = await this.getChildFromElementByClassName("input", element);
+			if (array === null) return null;
+			else {
+				this.fieldWhAddressTier = array[0];
+				this.fieldMinTier = array[1];
+				this.fieldMaxTier = array[2];
+			}
+			return array;
 		}
-		return array;
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
 	}
 
 	async initCheckboxes() {
 		logger.info(this.name + "initCheckboxes ");
 		try {
-			const locator = By.className("radio-inline");
-			let array = await super.findWithWait(locator);
-			this.checkboxModifyOn = array[6 + 2 * this.number];
-			this.checkboxModifyOff = array[7 + 2 * this.number];
+			let containers = await super.findWithWait(contentContainer);
+			let array = await this.getChildFromElementByClassName("radio-inline", containers[this.number + 1]);
+			this.checkboxModifyOn = array[0];
+			this.checkboxModifyOff = array[1];
+			this.checkboxWhitelistingYes = array[2];
+			this.checkboxWhitelistingNo = array[3];
+			return true;
 		}
 		catch (err) {
 			logger.info("Error: " + err);
@@ -197,26 +208,26 @@ class TierPage extends Page {
 
 	async fillAddress(address) {
 		logger.info(this.name + "fillAddress ");
-		await this.initWhitelistFields();
-		return (this.fieldWhAddressTier !== undefined) &&
+		return (await this.initWhitelistFields() !== null)
+			&& (this.fieldWhAddressTier !== undefined) &&
 			await super.clearField(this.fieldWhAddressTier) &&
 			await super.fillWithWait(this.fieldWhAddressTier, address);
 	}
 
 	async fillMin(value) {
 		logger.info(this.name + "fillMin ");
-		await this.initWhitelistFields();
-		return (this.fieldMinTier !== undefined) &&
+		return (await this.initWhitelistFields() !== null)
+			&& (this.fieldMinTier !== undefined) &&
 			await super.clearField(this.fieldMinTier) &&
 			await super.fillWithWait(this.fieldMinTier, value);
 	}
 
 	async fillMax(value) {
 		logger.info(this.name + "fillMax  ");
-		await this.initWhitelistFields();
-		return (this.fieldMaxTier !== undefined) &&
-			await super.clearField(this.fieldMaxTier) &&
-			await super.fillWithWait(this.fieldMaxTier, value);
+		return (await this.initWhitelistFields() !== null)
+			&& (this.fieldMaxTier !== undefined)
+			&& await super.clearField(this.fieldMaxTier)
+			&& await super.fillWithWait(this.fieldMaxTier, value);
 	}
 
 	async clickButtonAdd() {
@@ -227,12 +238,18 @@ class TierPage extends Page {
 		else return await super.clickWithWait(array[this.number]);
 	}
 
+	async setWhitelisting() {
+		logger.info(this.name + "setWhitelisting ");
+		if (!this.tier.isWhitelisted) return true;
+		return (await this.initCheckboxes() !== null)
+			&& await super.clickWithWait(this.checkboxWhitelistingYes);
+	}
+
 	async setModify() {
 		logger.info(this.name + "setModify ");
-		await this.initCheckboxes();
-		if (this.tier.allowModify) {
-			return await super.clickWithWait(this.checkboxModifyOn);
-		} else return (await this.initCheckboxes() !== null);
+		if (!this.tier.allowModify) return true;
+		return (await this.initCheckboxes() !== null)
+			&& await super.clickWithWait(this.checkboxModifyOn);
 	}
 
 	async removeWhiteList(number) {
@@ -241,12 +258,19 @@ class TierPage extends Page {
 			await super.clickWithWait(this.itemsRemove[number]);
 	}
 
-	async amountAddedWhitelist() {
+	async isDisplayedWhitelistContainer() {
+		logger.info(this.name + "isDisplayedWhitelistContainer ");
+		return (await this.initWhitelistFields() !== null)
+	}
+
+	async amountAddedWhitelist(Twaiting) {
 		logger.info(this.name + "amountAddedWhitelist ");
 		try {
-			let array = await this.findWithWait(whitelistContainerInner);
-			logger.info("Whitelisted addresses added=" + array.length);
-			return array.length;
+			let array = await super.findWithWait(whitelistContainerInner, Twaiting);
+			let length = 0;
+			if (array !== null) length = array.length;
+			logger.info("Whitelisted addresses added=" + length);
+			return length;
 		}
 		catch (err) {
 			return 0;
@@ -254,11 +278,24 @@ class TierPage extends Page {
 	}
 
 	async clickButtonClearAll() {
-		return await super.clickWithWait(buttonClearAll);
+		logger.info(this.name + "clickButtonClearAll:");
+		try {
+			await this.driver.executeScript("document.getElementsByClassName('fa fa-trash')[0].click();");
+			return true;
+		}
+		catch (err) {
+			logger.info("Error " + err);
+			return false;
+		}
 	}
 
 	async clickButtonYesAlert() {
 		return await super.clickWithWait(buttonYesAlert);
+	}
+
+	async waitUntilShowUpPopupConfirm(Twaiting) {
+		logger.info("waitUntilShowUpPopupConfirm: ");
+		return await this.waitUntilDisplayed(buttonYesAlert, Twaiting);
 	}
 
 	async isPresentWarningName() {
@@ -360,15 +397,16 @@ class TierPage extends Page {
 
 	async fillTier() {
 		logger.info(this.name + "fillTier ");
-		return await this.fillMinRate() &&
-			await this.fillMaxRate() &&
-			await this.fillRate() &&
-			await this.fillSetupName() &&
-			await this.fillSupply() &&
-			await this.fillStartTime() &&
-			await this.fillEndTime() &&
-			await this.setModify() &&
-			await this.fillWhitelist();
+		return await this.setModify()
+			&& await this.setWhitelisting()
+			&& await this.fillMinRate()
+			&& await this.fillMaxRate()
+			&& await this.fillRate()
+			&& await this.fillSetupName()
+			&& await this.fillSupply()
+			&& await this.fillStartTime()
+			&& await this.fillEndTime()
+			&& await this.fillWhitelist();
 
 	}
 

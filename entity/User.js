@@ -13,7 +13,7 @@ const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const Utils = require('../utils/Utils.js').Utils;
 const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
 const Page = require('../pages/Page.js').Page;
-const testRA = require('../test/testRA.js');
+
 const fs = require('fs');
 
 class User {
@@ -26,6 +26,9 @@ class User {
 			this.networkID = obj.networkID;
 			this.accountOrderInMetamask = undefined;//for MetaMaskPage only
 			this.name = file;
+			this.minCap;
+			this.maxCap;
+			this.tokenBalance;
 		}
 		catch (err) {
 			logger.info("can not create User instance");
@@ -136,18 +139,16 @@ class User {
 		}
 	}
 
-	async fillWhitelistTier(tier, address, min, max) {
+	async addWhitelistTier(tier, address, min, max) {
 		logger.info("fill whitelist for tier " + tier);
 		logger.info("Wh address=" + address + " , min=" + min + ", max=" + max);
 		let mngPage = new ManagePage(this.driver);
-		await mngPage.fillWhitelist(tier, address, min, max);
 		let metaMask = new MetaMask(this.driver);
-		let result = await metaMask.signTransaction(5);
-		if (!result) return false;
-		await mngPage.waitUntilLoaderGone();
-		result = await this.confirmPopup();
-		await mngPage.waitUntilLoaderGone();
-		return result;
+		return await mngPage.fillWhitelist(tier, address, min, max)
+			&& await metaMask.signTransaction(10)
+			&& await mngPage.waitUntilLoaderGone()
+			&& await this.confirmPopup()
+			&& await mngPage.waitUntilLoaderGone();
 	}
 
 	async changeSupply(tier, value) {
@@ -173,32 +174,22 @@ class User {
 	async changeEndTime(tier, newDate, newTime) {
 		logger.info("change EndTime for tier#" + tier + ", new date=" + newDate + ", new time=" + newTime);
 		let formatTimeBrowser = await Utils.getDateFormat(this.driver);
-		if (formatTimeBrowser == "mdy") {
+		if (formatTimeBrowser === "mdy") {
 			newDate = Utils.convertDateToMdy(newDate);
 			newTime = Utils.convertTimeToMdy(newTime);
 		}
 		let mngPage = new ManagePage(this.driver);
-		await mngPage.waitUntilLoaderGone();
-		try {
-			let b = await mngPage.fillEndTimeTier(tier, newDate, newTime);
-			if (!b) return false;
-			if (await mngPage.isPresentWarningEndTimeTier1() ||
-				await mngPage.isPresentWarningEndTimeTier2()
-			) {
-				return false;
-			}
-			await mngPage.clickButtonSave();
-			let metaMask = new MetaMask(this.driver);
-			await metaMask.signTransaction(5);
-			await mngPage.waitUntilLoaderGone();
-			b = await this.confirmPopup();
-			await mngPage.waitUntilLoaderGone();
-			return b;
-		}
-		catch (err) {
-			logger.info("can not change Supply for tier #" + tier + " ,err:" + err);
-			return false;
-		}
+		let metaMask = new MetaMask(this.driver);
+		return await mngPage.waitUntilLoaderGone()
+			&& await mngPage.fillEndTimeTier(tier, newDate, newTime)
+			&& !await mngPage.isPresentWarningEndTimeTier1()
+			&& !await mngPage.isPresentWarningEndTimeTier2()
+			&& await mngPage.clickButtonSave()
+			&& await metaMask.signTransaction(10)
+			&& await metaMask.signTransaction(10)
+			&& await mngPage.waitUntilLoaderGone()
+			&& await this.confirmPopup()
+			&& await mngPage.waitUntilLoaderGone();
 	}
 
 	async changeStartTime(tier, newDate, newTime) {
@@ -267,7 +258,8 @@ class User {
 	async contribute(amount) {
 		logger.info("contribute  " + amount);
 		const investPage = new InvestPage(this.driver);
-		return await investPage.waitUntilLoaderGone()
+		return !await investPage.waitUntilShowUpWarning(15)
+			&& await investPage.waitUntilLoaderGone()
 			&& await investPage.fillInvest(amount)
 			&& await investPage.clickButtonContribute()
 			&& !await investPage.waitUntilShowUpErrorNotice(10)//3 sec
@@ -336,7 +328,6 @@ class User {
 			await reservedTokens.fillReservedTokens(crowdsale) &&
 			await wizardStep2.clickButtonContinue() &&
 			await wizardStep3.fillPage(crowdsale);
-
 		counter = 200;
 		do {
 			await this.driver.sleep(300);
