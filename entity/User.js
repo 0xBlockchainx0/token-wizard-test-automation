@@ -28,6 +28,7 @@ class User {
 			this.name = file;
 			this.minCap;
 			this.maxCap;
+			this.tokenBalance;
 		}
 		catch (err) {
 			logger.info("can not create User instance");

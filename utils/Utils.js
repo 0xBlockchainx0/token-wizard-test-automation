@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
 const webdriver = require('selenium-webdriver'),
-	  chrome = require('selenium-webdriver/chrome');
+	chrome = require('selenium-webdriver/chrome');
 const fs = require('fs');
 const Web3 = require('web3');
 const {spawn} = require('child_process');
@@ -99,7 +99,7 @@ class Utils {
 
 	static getTransactionCount(network, address) {
 		let web3 = Utils.setNetwork(network);
-		return  web3.eth.getTransactionCount(address.toString());
+		return web3.eth.getTransactionCount(address.toString());
 	}
 
 	static async getBalance(user) {
@@ -107,7 +107,7 @@ class Utils {
 		return await web3.eth.getBalance(user.account.toString());
 	}
 
-	static sendEmail (path) {
+	static sendEmail(path) {
 		let transport = nodemailer.createTransport({
 			service: 'gmail',
 			auth: {
@@ -310,6 +310,18 @@ class Utils {
 
 	static async getPathToFileInPWD(fileName) {
 		return process.env.PWD + "/" + fileName;
+	}
+
+	static async compareBalance(balanceEthOwnerBefore, balanceEthOwnerAfter, contribution, rate) {
+		let balanceShouldBe = balanceEthOwnerBefore/1e18 + (contribution / rate);
+		logger.info("contribution / rate= " + (contribution / rate) );
+		logger.info("rate= " + rate );
+		logger.info("balanceEthOwnerBefore= " + balanceEthOwnerBefore / 1e18);
+		logger.info("contribution= " + contribution );
+		logger.info("balanceShouldBe= " + balanceShouldBe );
+		logger.info("balanceEthOwnerAfter= " + balanceEthOwnerAfter / 1e18);
+		let delta = 0.01;
+		return ( Math.abs(balanceShouldBe - balanceEthOwnerAfter/1e18) < delta );
 	}
 
 }

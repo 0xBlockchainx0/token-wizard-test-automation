@@ -24,9 +24,9 @@ Test suite for MintedCappedCrowdsale , starts with command ```npm run e2eMinted`
  - Wizard step#2: button Continue is displayed 
  - Wizard step#2: user is able to open Step3 by clicking button Continue 
  - Wizard step#3: Whitelist container present if checkbox "Whitelist enabled" is selected
+ - Wizard step#3: field minCap disabled if whitelist enabled
  - Wizard step#3: User is able to download CSV file with whitelisted addresses
  - Wizard step#3: Number of added whitelisted addresses is correct,data is valid
- - Wizard step#3: User is able to bulk delete all whitelisted addresses
  - Wizard step#3: User is able to bulk delete all whitelisted addresses
  - Wizard step#3: All whitelisted addresses are removed after deletion
  - Wizard step#3: User is able to add several whitelisted addresses one by one
@@ -51,41 +51,63 @@ Test suite for MintedCappedCrowdsale , starts with command ```npm run e2eMinted`
 
 #### Functional tests
 ```
- - Owner  can create crowdsale:1 tier, modifiable, whitelist,2 reserved
- - Whitelisted investor is not able to buy before start of crowdsale
- - Manage page: owner is able to open the manage page
+ - Owner  can create crowdsale:2 tiers, modifiable, whitelist,2 reserved addresses
+ - Owner is able to open the manage page
+ - Manage page: correct number of reserved addresses is displayed
+ - Manage page: correct number of whitelisted addresses is displayed for tier#1
+ - Manage page: correct number of whitelisted addresses is displayed for tier#2
  - Manage page: button 'Save' is  disabled by default
  - Manage page: button 'Save' is not clickable when disabled
  - Manage page: owner is able to add whitelisted address before start of crowdsale
+ - Manage page: correct number of whitelisted addresses is displayed for tier#1
  - Manage page: owner is able to modify the end time before start of crowdsale
- - Manage page:  end time changed  accordingly after modifying
+ - Manage page:  end time properly changed after modifying
+ - Manage page:  start time of tier#2 changed  after end time of tier#1 was changed
+ - Manage page:  end time of tier#2 changed  accordingly after modifying
+ - Whitelisted investor not able to buy before start of crowdsale
  - Invest page: Countdown timer is displayed
  - Tier starts as scheduled
  - Manage page: owner is able to add whitelisted address if crowdsale has begun
  - Manage page: owner is able to modify the end time after start of crowdsale
  - Manage page:  end time changed  accordingly after modifying
- - Whitelisted investor is NOT able to buy less than min in first transaction
+ - Whitelisted investor is not able to buy less than min in first transaction
+ 
  - Whitelisted investor can buy amount equal mincap
- - Invest page: Investors balance is changed accordingly after purchase
+ - Owner's Eth balance properly changed
+ - Invest page: Investors balance is properly changed  after purchase
+ 
  - Whitelisted investor is able to buy less than mincap after first transaction
+ - Owner's Eth balance properly changed
+ 
  - Whitelisted investor is able to buy not more than maxCap
+ - Owner's Eth balance properly changed
  - Whitelisted investor (which was added from Manage page) is able to buy maxCap
  - Whitelisted investor is not able to buy more than remains even if individual maxCap is not reached
  - Whitelisted investor is not able to buy if all tokens were sold
+ - Owner is not able to finalize if tier#1 is done
+ - Tier#1 has finished as scheduled
+ - Tier #2 started immideatelly after tier#1 is finished
+ - Investor which whitelisted in tier#1 is not able to buy in tier#2
+ - Investor which was added in whitelist from manage page in tier#1 is not able to buy in tier#2
+ - Whitelisted investor  is able to buy maxCap in first transaction
+ - Owner's Eth balance properly changed
  - Not owner is not able to finalize
  - Owner is able to finalize (if crowdsale time expired but not all tokens were sold)
  - Whitelisted investor is not able to buy if crowdsale finalized
  - Reserved address has received correct quantity of tokens after distribution
  - Investor has received correct quantity of tokens after finalization
- - Owner  can create crowdsale with minCap,1 tier, not modifiable, no whitelist,2 reserved
+ 
+ - Owner  can create crowdsale with minCap,1 tier, not modifiable, no whitelist,2 reserved addresses
  - Investor not able to buy before start of crowdsale
  - Disabled to modify the end time if crowdsale is not modifiable 
  - Invest page: Countdown timer is displayed
  - Tier starts as scheduled
  - Investor is not able to buy less than mincap in first transaction
  - Investor can buy amount equal mincap
+ - Owner's Eth balance properly changed 
  - Invest page: Investor's balance is changed accordingly after purchase
  - Investor is able to buy less than mincap after first transaction
+ - Owner's Eth balance properly changed 
  - Owner is not able to finalize if all tokens were not sold and crowdsale is not finished
  - Crowdsale is finished as scheduled
  - Disabled to buy after crowdsale's time expired

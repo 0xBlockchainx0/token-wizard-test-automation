@@ -23,11 +23,11 @@
       "name":"###1",
       "allowModify": false,
       "isWhitelisted":false,
-      "startDate": "80000",
-      "startTime": "80000",
-      "endDate":"200000",
-      "endTime":"200000",
-      "rate":100,
+      "startDate": "120000",
+      "startTime": "120000",
+      "endDate":"300000",
+      "endTime":"300000",
+      "rate":10,
       "supply": 20,
       "whitelist":[]
     }]

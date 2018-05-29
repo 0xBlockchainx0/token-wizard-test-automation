@@ -27,7 +27,7 @@
       "startTime": "180000",
       "endDate":"23/02/2050",
       "endTime":"12:34",
-      "rate":20000,
+      "rate":200,
       "supply": 250,
       "whitelist":[
         {
@@ -50,7 +50,7 @@
       "startTime": "",
       "endDate":"",
       "endTime":"",
-      "rate":10000,
+      "rate":100,
       "supply": 200,
       "whitelist":[
         {
