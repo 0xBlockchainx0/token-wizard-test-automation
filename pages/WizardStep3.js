@@ -220,6 +220,13 @@ class WizardStep3 extends Page {
 		return await super.clickWithWait(buttonAddTier);
 	}
 
+	async isDisabledMinCap() {
+		logger.info(this.name+"isDisabledMinCap ");
+		return await super.isElementDisabled(fieldMinCap);
+	}
+
+
+
 }
 
 module.exports.WizardStep3 = WizardStep3;

@@ -15,9 +15,8 @@
     }
   ],
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
-  "gasprice": 1,
+  "gasprice": 100,
   "mincap": 1,
-
   "tiers":[
     {
       "name":"###1",
@@ -57,11 +56,4 @@
           "address": "0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7",
           "min": 25,
           "max": 250
-        }
-      ]
-    }
-
-
-
-  ]
-}
+        }]}]}

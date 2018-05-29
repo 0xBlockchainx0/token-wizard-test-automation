@@ -15,7 +15,14 @@ const warningEndTimeTier1 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/d
 const warningEndTimeTier2 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[1]/div[2]/div[2]/p[2]");
 const warningStartTimeTier2 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[1]/div[2]/div[1]/p[2]");
 const warningStartTimeTier1 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[2]/div[2]/div[1]/p[2]");
+
+const reservedTokensInnerContainer = By.className("reserved-tokens-item-container-inner monospace");
+const fieldsReservedTokensAddress = By.className("reserved-tokens-item reserved-tokens-item-left");
+
 const whitelistContainer = By.className("white-list-container");
+const whitelistContainerInner = By.className("white-list-item-container-inner");
+const whitelistContainerNoStyle = By.className("white-list-item-container no-style");
+const fieldWhitelistAddressAdded = By.className("white-list-item white-list-item-left");
 
 class ManagePage extends Page {
 
@@ -390,8 +397,51 @@ class ManagePage extends Page {
 		return await super.clickWithWait(buttonOk);
 	}
 
+	async getReservedTokensAddresses() {
+		logger.info(this.name + "getReservedTokensAddresses ");
+		try {
+			let array = await this.findWithWait(fieldsReservedTokensAddress, 180)
+			if (array === null) return null;
+			let addresses = [];
+			for (let i = 0; i < array.length - 1; i++) {
+				addresses[i] = await super.getTextForElement(array[i + 1]);
+				logger.info("address: " + addresses[i]);
+			}
+			return addresses;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
+
+	async getWhitelistAddresses(tierNumber) {
+		logger.info(this.name + "getWhitelistAddresses ");
+		try {
+
+			let elements = await super.findWithWait(whitelistContainer);
+			let element = elements[tierNumber-1];
+			console.log("elements="+elements.length);
+			let array = await super.getChildFromElementByClassName(whitelistContainerInner, element);
+			//let array = await super.findWithWait(whitelistContainerInner);
+			console.log("AAAAAA="+array.length);
+			if (array === null) return null;
+			let addresses = [];
+			for (let i = 0; i < array.length - 1; i++) {
+				addresses[i] = await super.getTextForElement(array[i + 1]);
+				logger.info("address: " + addresses[i]);
+			}
+			return addresses;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
+
 }
 
-module.exports = {
+module
+	.exports = {
 	ManagePage: ManagePage
 }

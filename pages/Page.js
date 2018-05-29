@@ -299,7 +299,7 @@ class Page {
 	async getChildFromElementByClassName(child, element) {
 		logger.info("getChildFromElementByClassName");
 		try {
-			return await element.findElements(By.className(child));
+			return await element.findElements(By.className(child.toString()));
 		}
 		catch (err) {
 			logger.info("Error: " + err);
