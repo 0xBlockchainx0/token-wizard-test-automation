@@ -53,7 +53,7 @@ class Utils {
 			let provider = await Utils.getProviderUrl(user.networkID);
 			let web3 = await new Web3(new Web3.providers.HttpProvider(provider));
 			let account0 = await web3.eth.getAccounts().then((accounts) => {
-				return accounts[1];
+				return accounts[2];
 			});
 
 			logger.info("Send " + amount + " Eth from " + account0 + " to " + user.account);
@@ -61,7 +61,7 @@ class Utils {
 				from: account0,
 				to: user.account,
 				value: amount * 1e18
-			}).then(console.log("Transaction done"));
+			}).then(logger.info("Transaction done"));
 			return true;
 		}
 		catch (err) {
@@ -312,7 +312,7 @@ class Utils {
 		return process.env.PWD + "/" + fileName;
 	}
 
-	static async compareBalance(balanceEthOwnerBefore, balanceEthOwnerAfter, contribution, rate) {
+	static async compareBalance(balanceEthOwnerBefore, balanceEthOwnerAfter, contribution, rate, delta) {
 		let balanceShouldBe = balanceEthOwnerBefore/1e18 + (contribution / rate);
 		logger.info("contribution / rate= " + (contribution / rate) );
 		logger.info("rate= " + rate );
@@ -320,7 +320,8 @@ class Utils {
 		logger.info("contribution= " + contribution );
 		logger.info("balanceShouldBe= " + balanceShouldBe );
 		logger.info("balanceEthOwnerAfter= " + balanceEthOwnerAfter / 1e18);
-		let delta = 0.01;
+		if (delta === undefined) delta = 0.01;
+		logger.info("delta= " + delta);
 		return ( Math.abs(balanceShouldBe - balanceEthOwnerAfter/1e18) < delta );
 	}
 

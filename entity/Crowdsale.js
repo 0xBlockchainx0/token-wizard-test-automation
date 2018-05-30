@@ -12,7 +12,7 @@ class Crowdsale {
 		this.reservedTokens = [];
 		this.gasPrice;
 		this.minCap;
-		this.whitelisting;
+
 		this.tiers = [];
 		this.tokenAddress;
 		this.contractAddress;

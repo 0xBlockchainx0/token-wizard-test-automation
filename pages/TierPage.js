@@ -194,10 +194,17 @@ class TierPage extends Page {
 		try {
 			let containers = await super.findWithWait(contentContainer);
 			let array = await this.getChildFromElementByClassName("radio-inline", containers[this.number + 1]);
-			this.checkboxModifyOn = array[0];
-			this.checkboxModifyOff = array[1];
-			this.checkboxWhitelistingYes = array[2];
-			this.checkboxWhitelistingNo = array[3];
+
+			if (array.length > 2) {
+				this.checkboxModifyOn = array[0];
+				this.checkboxModifyOff = array[1];
+				this.checkboxWhitelistingYes = array[2];
+				this.checkboxWhitelistingNo = array[3];
+			}
+			else { //if DUTCH
+				this.checkboxWhitelistingYes = array[0];
+				this.checkboxWhitelistingNo = array[1];
+			}
 			return true;
 		}
 		catch (err) {
@@ -232,7 +239,7 @@ class TierPage extends Page {
 
 	async clickButtonAdd() {
 		logger.info(this.name + "clickButtonAdd ");
-		if (this.tier.minRate !== undefined) return true;
+		//if (this.tier.minRate !== undefined) return true;
 		let array = await this.findWithWait(buttonAdd);
 		if (array === null) return false;
 		else return await super.clickWithWait(array[this.number]);
@@ -247,7 +254,7 @@ class TierPage extends Page {
 
 	async setModify() {
 		logger.info(this.name + "setModify ");
-		if (!this.tier.allowModify) return true;
+		if ((this.tier.allowModify === undefined) || (!this.tier.allowModify)) return true;
 		return (await this.initCheckboxes() !== null)
 			&& await super.clickWithWait(this.checkboxModifyOn);
 	}
