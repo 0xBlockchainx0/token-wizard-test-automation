@@ -3,6 +3,7 @@
   "name": "ReservedTokens",
   "ticker": "test",
   "decimals": 18,
+  "totalSupply":1000,
   "reservedTokens":[
     {
       "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",

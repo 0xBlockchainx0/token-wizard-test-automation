@@ -69,7 +69,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 		const scenarioE2eMintedMinCap = './scenarios/scenarioE2eMintedMinCap.json';
 		const scenarioE2eMintedWhitelist = './scenarios/scenarioE2eMintedWhitelist.json';
-		const scenarioForUItests = './scenarios/ReservedTokens.json';
+		const scenarioForUItests = './scenarios/scenarioUItests.json';
 		//const scenarioE2eMintedMultitier = './scenarios/scenarioE2eMintedMultitier.json'
 
 		crowdsaleForUItests = await Utils.getCrowdsaleInstance(scenarioForUItests);
