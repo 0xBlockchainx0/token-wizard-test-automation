@@ -110,7 +110,7 @@ class Page {
 	}
 
 	async getAttribute(element, attr) {
-		logger.info("get attribute = " + attr + "for element = " + element);
+		logger.info("get attribute = " + attr + " for element = " + element);
 		try {
 			let field = await this.getElement(element);
 			let result = await field.getAttribute(attr);

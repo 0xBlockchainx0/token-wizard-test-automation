@@ -9,10 +9,10 @@
   "whitelisting":false,
   "tiers":[
     {
-      "startDate": "",
-      "startTime": "",
-      "endDate":"80000",
-      "endTime":"80000",
+      "startDate": "80000",
+      "startTime": "80000",
+      "endDate":"300000",
+      "endTime":"300000",
       "minRate":1750,
       "maxRate":3500,
       "supply": 1000,

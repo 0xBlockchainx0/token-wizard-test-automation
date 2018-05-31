@@ -221,11 +221,21 @@ class WizardStep3 extends Page {
 	}
 
 	async isDisabledMinCap() {
-		logger.info(this.name+"isDisabledMinCap ");
+		logger.info(this.name + "isDisabledMinCap ");
 		return await super.isElementDisabled(fieldMinCap);
 	}
 
-
+	async isEnabledButtonContinue() {
+		logger.info(this.name + " isEnabledButtonContinue ");
+		if (await super.getAttribute(buttonContinue, "class") === "button button_fill") {
+			logger.info("present and enabled");
+			return true;
+		}
+		else {
+			logger.info("present and disabled");
+			return false;
+		}
+	}
 
 }
 

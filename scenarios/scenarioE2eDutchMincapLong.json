@@ -1,0 +1,22 @@
+{
+  "name": "scenarioE2eDutchMincapLongjson",
+  "ticker": "test",
+  "decimals": 18,
+  "totalSupply":1000,
+  "walletAddress":"0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7",
+  "gasprice":1,
+  "whitelisting":false,
+  "mincap": 100,
+  "tiers":[
+    {
+      "isWhitelisted":false,
+      "startDate": "120000",
+      "startTime": "120000",
+      "endDate":"23/02/2050",
+      "endTime":"12:34",
+      "minRate":100,
+      "maxRate":1000,
+      "supply": 500,
+      "whitelist":[]
+    }]
+}

@@ -4,14 +4,14 @@
   "ticker": "test",
   "decimals": 18,
 
-  "totalSupply":10000,
+  "totalSupply":12345,
   "walletAddress":"0x0e036E74F31aDDb9e0ADcB80dEA9Ed1E187DFe50",
   "gasprice":160,
 
   "tiers":[
     {
       "allowModify": true,
-      "isWhitelisted":true,
+      "isWhitelisted":false,
       "startDate": "",
       "startTime": "",
       "endDate":"360000",

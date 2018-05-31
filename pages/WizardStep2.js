@@ -30,7 +30,7 @@ class WizardStep2 extends Page {
 		    this.warningName = array[0];
 		    this.warningTicker = array[1];
 		    this.warningDecimals = array[2];
-		    this.warningSupply = array[3];
+		    if (array.length>2) this.warningSupply = array[3];
 		    return array;
 	    }
 	    catch(err) {
@@ -99,7 +99,6 @@ class WizardStep2 extends Page {
 
 	async isDisplayedWarningSupply() {
 		logger.info(this.name+"isDisplayedWarningSupply ");
-		return false;
 		return (await this.initWarnings() !== null) &&
 		       (await this.getTextForElement(this.warningSupply) !== "");
 	}
@@ -121,5 +120,11 @@ class WizardStep2 extends Page {
 		       await this.fillDecimals(crowdsale.decimals) &&
 			   ((crowdsale.totalSupply !== undefined) ? await this.fillSupply(crowdsale.totalSupply):true);
 	}
+
+	async isDisplayedFieldSupply() {
+		logger.info(this.name+"isDisplayedFieldSupply ");
+		return await super.isElementDisplayed(fieldSupply);
+	}
+
 }
 module.exports.WizardStep2=WizardStep2;

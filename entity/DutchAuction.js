@@ -18,8 +18,8 @@ class DutchAuction extends Crowdsale {
 		this.totalSupply = obj.totalSupply;
 		this.walletAddress = obj.walletAddress;
 		this.gasPrice = obj.gasprice;
-		this.whitelisting = obj.whitelisting;
 		this.tiers = obj.tiers;
+		this.minCap = obj.mincap;
 	}
 
 	print() {
@@ -30,8 +30,10 @@ class DutchAuction extends Crowdsale {
 		logger.info("totalSupply :" + this.totalSupply);
 		logger.info("walletAddress :" + this.walletAddress);
 		logger.info("gasPrice :" + this.gasPrice);
-		logger.info("whitelisting :" + this.whitelisting);
+
+		logger.info("mincap :" + this.minCap);
 		for (let i = 0; i < this.tiers.length; i++) {
+			logger.info("isWhitelisted #:" + i + this.tiers[i].isWhitelisted);
 			logger.info("startDate #" + i + ": " + this.tiers[i].startDate);
 			logger.info("startTime #" + i + ": " + this.tiers[i].startTime);
 			logger.info("endDate #" + i + ": " + this.tiers[i].endDate);

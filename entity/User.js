@@ -372,7 +372,7 @@ class User {
 
 	async createDutchAuctionCrowdsale(crowdsale) {
 
-		logger.info(" createDuthAuctionCrowdsale ");
+		logger.info(" createDutchAuctionCrowdsale ");
 		const startURL = Utils.getStartURL();
 		const welcomePage = new WizardWelcome(this.driver, startURL);
 		const wizardStep1 = new WizardStep1(this.driver);
@@ -382,12 +382,13 @@ class User {
 		const crowdsalePage = new CrowdsalePage(this.driver);
 		const investPage = new InvestPage(this.driver);
 		const reservedTokens = new ReservedTokensPage(this.driver);
+		await TierPage.setCountTiers(0);
 
 		let result = await  welcomePage.open() &&
 			await  welcomePage.clickButtonNewCrowdsale() &&
 			await wizardStep1.waitUntilDisplayedCheckboxDutchAuction() &&
 			await wizardStep1.clickCheckboxDutchAuction();
-
+		if (!result) return false;
 		let counter = 200;
 		do {
 			await this.driver.sleep(300);
@@ -403,7 +404,7 @@ class User {
 			await wizardStep2.fillPage(crowdsale) &&
 			await wizardStep2.clickButtonContinue() &&
 			await wizardStep3.fillPage(crowdsale);
-
+        if (!result) return false;
 		counter = 200;
 		do {
 			await this.driver.sleep(300);
@@ -423,7 +424,7 @@ class User {
 			await wizardStep4.waitUntilDisplayedButtonContinue() &&
 			await wizardStep4.clickButtonContinue() &&
 			await wizardStep4.waitUntilLoaderGone();
-
+		if (!result) return false;
 		counter = 200;
 		do {
 			await this.driver.sleep(300);
