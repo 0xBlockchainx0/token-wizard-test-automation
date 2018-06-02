@@ -249,6 +249,7 @@ class TierPage extends Page {
 		logger.info(this.name + "setWhitelisting ");
 		if (!this.tier.isWhitelisted) return true;
 		return (await this.initCheckboxes() !== null)
+			&& await super.waitUntilDisplayed(this.checkboxWhitelistingYes)
 			&& await super.clickWithWait(this.checkboxWhitelistingYes);
 	}
 
