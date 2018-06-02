@@ -99,7 +99,7 @@ class TierPage extends Page {
 	}
 
 	async fillMaxRate() {
-		logger.info(this.name + "fillMinRate ");
+		logger.info(this.name + "fillMaxRate ");
 		if (this.tier.maxRate === undefined) return true;
 		return await super.clearField(fieldMaxRate) &&
 			await super.fillWithWait(fieldMaxRate, this.tier.maxRate);
@@ -249,6 +249,7 @@ class TierPage extends Page {
 		logger.info(this.name + "setWhitelisting ");
 		if (!this.tier.isWhitelisted) return true;
 		return (await this.initCheckboxes() !== null)
+			&& await super.waitUntilDisplayed(this.checkboxWhitelistingYes)
 			&& await super.clickWithWait(this.checkboxWhitelistingYes);
 	}
 

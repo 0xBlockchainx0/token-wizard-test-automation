@@ -10,7 +10,7 @@ const WizardStep4 = require('../pages/WizardStep4.js').WizardStep4;
 const TierPage = require('../pages/TierPage.js').TierPage;
 const ReservedTokensPage = require('../pages/ReservedTokensPage.js').ReservedTokensPage;
 const CrowdsalePage = require('../pages/CrowdsalePage.js').CrowdsalePage;
-const InvestPage = require('../pages/InvestPage.js').InvestPage;
+const InvestPage = require('../pages/ContributionPage.js').InvestPage;
 const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
@@ -69,7 +69,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		const scenarioRopsten = './scenarios/scenarioMintedRopsten.json';
 
 
-		e2eRopsten = await  Utils.getCrowdsaleInstance(scenarioRopsten);
+		e2eRopsten = await  Utils.getMintedCrowdsaleInstance(scenarioRopsten);
 
 		startURL = await Utils.getStartURL();
 		driver = await Utils.startBrowserWithMetamask();

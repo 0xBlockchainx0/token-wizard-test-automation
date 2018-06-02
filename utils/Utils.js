@@ -1,15 +1,16 @@
 const nodemailer = require('nodemailer');
-
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
 const webdriver = require('selenium-webdriver'),
 	chrome = require('selenium-webdriver/chrome');
-const fs = require('fs');
+const fs = require('fs-extra');
 const Web3 = require('web3');
 const {spawn} = require('child_process');
 const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
 const DutchAuction = require("../entity/DutchAuction.js").DutchAuction;
 const configFile = 'config.json';
+const _minted = 'minted';
+const _dutch = 'dutch';
 
 class Utils {
 
@@ -70,7 +71,8 @@ class Utils {
 		}
 	}
 
-	static setNetwork(network) {
+	static getWeb3Instance(network) {
+		logger.info("Utils: getWeb3Instance")
 		let url;
 		switch (network) {
 			case 3: {
@@ -97,13 +99,8 @@ class Utils {
 		return new Web3(new Web3.providers.HttpProvider(url));
 	}
 
-	static getTransactionCount(network, address) {
-		let web3 = Utils.setNetwork(network);
-		return web3.eth.getTransactionCount(address.toString());
-	}
-
 	static async getBalance(user) {
-		let web3 = Utils.setNetwork(user.networkID);
+		let web3 = Utils.getWeb3Instance(user.networkID);
 		return await web3.eth.getBalance(user.account.toString());
 	}
 
@@ -282,10 +279,11 @@ class Utils {
 
 	}
 
-	static async getCrowdsaleInstance(fileName) {
+	static async getMintedCrowdsaleInstance(fileName) {
 		try {
 			let crowdsale = new Crowdsale();
 			await crowdsale.parser(fileName);
+			crowdsale.sort = _minted;
 			return crowdsale;
 		}
 		catch (err) {
@@ -299,6 +297,7 @@ class Utils {
 		try {
 			let crowdsale = new DutchAuction();
 			await crowdsale.parser(fileName);
+			crowdsale.sort = _dutch;
 			return crowdsale;
 		}
 		catch (err) {
@@ -313,16 +312,85 @@ class Utils {
 	}
 
 	static async compareBalance(balanceEthOwnerBefore, balanceEthOwnerAfter, contribution, rate, delta) {
-		let balanceShouldBe = balanceEthOwnerBefore/1e18 + (contribution / rate);
-		logger.info("contribution / rate= " + (contribution / rate) );
-		logger.info("rate= " + rate );
+		let balanceShouldBe = balanceEthOwnerBefore / 1e18 + (contribution / rate);
+		logger.info("contribution / rate= " + (contribution / rate));
+		logger.info("rate= " + rate);
 		logger.info("balanceEthOwnerBefore= " + balanceEthOwnerBefore / 1e18);
-		logger.info("contribution= " + contribution );
-		logger.info("balanceShouldBe= " + balanceShouldBe );
+		logger.info("contribution= " + contribution);
+		logger.info("balanceShouldBe= " + balanceShouldBe);
 		logger.info("balanceEthOwnerAfter= " + balanceEthOwnerAfter / 1e18);
 		if (delta === undefined) delta = 0.01;
 		logger.info("delta= " + delta);
-		return ( Math.abs(balanceShouldBe - balanceEthOwnerAfter/1e18) < delta );
+		return (Math.abs(balanceShouldBe - balanceEthOwnerAfter / 1e18) < delta);
+	}
+
+	static async getEnvAddressMintedInitCrowdsale() {
+		logger.info("Utils:getEnvAddressMintedInitCrowdsale");
+		require('dotenv').config();
+		return Object.values(JSON.parse(process.env.REACT_APP_MINTED_CAPPED_CROWDSALE_INIT_CROWDSALE_ADDRESS))[0];
+	}
+
+	static async getEnvAddressDutchInitCrowdsale() {
+		logger.info("Utils:getEnvAddressDutchInitCrowdsale");
+		require('dotenv').config();
+		return Object.values(JSON.parse(process.env.REACT_APP_DUTCH_CROWDSALE_INIT_CROWDSALE_ADDRESS))[0];
+	}
+
+	static async getEnvAddressRegistryStorage() {
+		logger.info("Utils:getEnvAddressRegistryStorage");
+		require('dotenv').config();
+		return Object.values(JSON.parse(process.env.REACT_APP_REGISTRY_STORAGE_ADDRESS))[0];
+	}
+
+	static async getEnvNetworkId() {
+		logger.info("Utils:getEnvNetworkId");
+		require('dotenv').config();
+		return Object.keys(JSON.parse(process.env.REACT_APP_REGISTRY_STORAGE_ADDRESS))[0];
+	}
+
+	static async getContractAddressInitCrowdsale(crowdsale) {
+		logger.info("Utils:getContractAddressInitCrowdsale");
+		switch (crowdsale.sort) {
+			case 'minted':
+				return Utils.getEnvAddressMintedInitCrowdsale();
+				break;
+			case 'dutch':
+				return Utils.getEnvAddressDutchInitCrowdsale();
+				break;
+			default:
+				return Utils.getEnvAddressMintedInitCrowdsale();
+		}
+
+	}
+
+	static async getContractABIInitCrowdsale(crowdsale) {
+		logger.info("Utils:getContractABIInitCrowdsale");
+		let path = './contracts/';
+		switch (crowdsale.sort) {
+			case 'minted':
+				path = path + 'MintedInitCrowdsale.abi';
+				break;
+			case 'dutch':
+				path = path + 'DutchInitCrowdsale.abi';
+				break;
+			default:
+				path = path + 'MintedInitCrowdsale.abi'
+		}
+
+		return await JSON.parse(fs.readFileSync(path).toString());
+	}
+
+	static async copyEnvFromWizard() {
+		try {
+			fs.copySync('../../.env', './.env', {overwrite: true});
+			return true;
+		}
+		catch(err){
+			logger.info("! Can't find .env file in wizard's directory !");
+			logger.info(err);
+			return false;
+		}
+
 	}
 
 }

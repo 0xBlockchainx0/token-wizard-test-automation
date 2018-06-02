@@ -11,7 +11,7 @@
   "tiers":[
     {
       "allowModify": true,
-      "isWhitelisted":false,
+      "isWhitelisted":true,
       "startDate": "",
       "startTime": "",
       "endDate":"360000",
@@ -27,8 +27,8 @@
         },
         {
           "address": "0x9E963042D581D262AdE4E31541360e7FDAeE70C6",
-          "min": 50,
-          "max": 150
+          "min": 0,
+          "max": 1000
         }
       ]
     }]

@@ -10,7 +10,7 @@ const WizardStep4 = require('../pages/WizardStep4.js').WizardStep4;
 const TierPage = require('../pages/TierPage.js').TierPage;
 const ReservedTokensPage = require('../pages/ReservedTokensPage.js').ReservedTokensPage;
 const CrowdsalePage = require('../pages/CrowdsalePage.js').CrowdsalePage;
-const InvestPage = require('../pages/InvestPage.js').InvestPage;
+const InvestPage = require('../pages/ContributionPage.js').InvestPage;
 const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
@@ -65,17 +65,15 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
-		logger.info("Version 2.6.0 - Wizard2.0 ");
-
+		logger.info("Version 2.6.2 - Wizard2.0 ");
+		await Utils.copyEnvFromWizard();
 		const scenarioE2eMintedMinCap = './scenarios/scenarioE2eMintedMinCap.json';
 		const scenarioE2eMintedWhitelist = './scenarios/scenarioE2eMintedWhitelist.json';
 		const scenarioForUItests = './scenarios/scenarioUItests.json';
-		//const scenarioE2eMintedMultitier = './scenarios/scenarioE2eMintedMultitier.json'
 
-		crowdsaleForUItests = await Utils.getCrowdsaleInstance(scenarioForUItests);
-		e2eMinCap = await  Utils.getCrowdsaleInstance(scenarioE2eMintedMinCap);
-		e2eWhitelist = await  Utils.getCrowdsaleInstance(scenarioE2eMintedWhitelist);
-		//e2eMultitier = await  Utils.getCrowdsaleInstance(scenarioE2eMintedMultitier);
+		crowdsaleForUItests = await Utils.getMintedCrowdsaleInstance(scenarioForUItests);
+		e2eMinCap = await  Utils.getMintedCrowdsaleInstance(scenarioE2eMintedMinCap);
+		e2eWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioE2eMintedWhitelist);
 
 		startURL = await Utils.getStartURL();
 		driver = await Utils.startBrowserWithMetamask();
@@ -478,6 +476,9 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let owner = Owner;
 			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let result = await owner.createMintedCappedCrowdsale(e2eWhitelist);
+			logger.info("e2eWhitelist.executionID  " + e2eWhitelist.executionID);
+			logger.info("e2eWhitelist.networkID  " + e2eWhitelist.networkID);
+			logger.info("e2eWhitelist.sort  " + e2eWhitelist.sort);
 			balanceEthOwnerBefore = await Utils.getBalance(Owner);
 			Owner.tokenBalance = 0;
 			Investor1.tokenBalance = 0;
@@ -580,11 +581,11 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(result, true, 'Test FAILED. End time doest match the given value');
 		});
 
-	test.it.skip('Manage page:  end time of tier#2 changed  accordingly after modifying ',
+	test.it.skip('Manage page:  end time of tier#2 properly changed  after modifying ',
 		async function () {
 			let owner = Owner;
 			await owner.openManagePage(e2eWhitelist);
-			let tierNumber = 1;
+			let tierNumber = 2;
 			let newTime = await  owner.getEndTime(tierNumber);
 			let result = await Utils.compareDates(newTime, endDate, endTime);
 			return await assert.equal(result, true, 'Test FAILED. End time doest match the given value');
@@ -645,7 +646,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 		});
 
-	test.it('Whitelisted investor is NOT able to buy less than min in first transaction',
+	test.it('Whitelisted investor is not able to buy less than min in first transaction',
 		async function () {
 			let investor = Investor1;
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
@@ -868,24 +869,57 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(await investor.contribute(contribution), false, 'Whitelisted investor is able to buy if crowdsale finalized');
 		});
 
-	test.it.skip('Reserved address has received correct quantity of tokens after distribution',
+	test.it.skip('Reserved address#1 has received correct percent of tokens after finalization',
 		async function () {
-			let newBalance = await ReservedAddress.getTokenBalance(e2eWhitelist) / 1e18;
-			let balance = e2eWhitelist.reservedTokens[0].value;
-			logger.info("Investor should receive  = " + balance);
-			logger.info("Investor has received balance = " + newBalance);
-			return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance);
+			let balance = await ReservedAddress.getTokenBalance(e2eWhitelist) / 1e18;
+			const totalSupply = e2eWhitelist.tiers[0].supply + e2eWhitelist.tiers[1].supply;
+			let shouldBe = e2eWhitelist.reservedTokens[0].value * totalSupply / 100
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe);
 		});
 
-	test.it.skip('Investor has received correct quantity of tokens after finalization',
+	test.it.skip('Reserved address#2 has received correct quantity of tokens after finalization',
+		async function () {
+			let balance = await Owner.getTokenBalance(e2eWhitelist) / 1e18;
+			let shouldBe = e2eWhitelist.reservedTokens[1].value;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe);
+		});
+
+	test.it.skip('Investor#1 has received correct quantity of tokens after finalization',
 		async function () {
 			let investor = Investor1;
-			let newBalance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
-			let balance = e2eWhitelist.minCap + smallAmount + 10;
-			logger.info("Investor should receive  = " + balance);
-			logger.info("Investor has received balance = " + newBalance);
-			logger.info("Difference = " + (newBalance - balance));
-			return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance)
+			let balance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
+			let shouldBe = investor.maxCap;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			logger.info("Difference = " + (balance - shouldBe));
+			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
+		});
+
+	test.it.skip('Investor#2 has received correct quantity of tokens after finalization',
+		async function () {
+			let investor = Investor2;
+			let balance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
+			let shouldBe = e2eWhitelist.tiers[0].supply - Investor1.maxCap;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			logger.info("Difference = " + (balance - shouldBe));
+			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
+		});
+
+	test.it.skip('Investor#3 has received correct quantity of tokens after finalization',
+		async function () {
+			let investor = Investor3;
+			let balance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
+			let shouldBe = e2eWhitelist.tiers[1].supply;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			logger.info("Difference = " + (balance - shouldBe));
+			throw("stop!!!");
+			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
 
 //////////////////////// Test SUITE #2 /////////////////////////////
@@ -963,7 +997,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			balanceEthOwnerBefore = await Utils.getBalance(Owner);
 			let investor = Investor1;
 			let contribution = e2eMinCap.minCap;
-			balance = contribution;
+			investor.tokenBalance += contribution
 			let result = await investor.openInvestPage(e2eMinCap)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy amount = min');
@@ -977,12 +1011,12 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(result, true, "Owner's balance incorrect");
 		});
 
-	test.it('Invest page: Investors balance is changed accordingly after purchase ',
+	test.it('Invest page: Investors balance is properly changed  after purchase ',
 		async function () {
 			let investor = Investor1;
 			await investor.openInvestPage(e2eMinCap);
 			let newBalance = await investor.getBalanceFromInvestPage(e2eMinCap);
-			let result = (newBalance.toString() === balance.toString());
+			let result = (newBalance.toString() === investor.tokenBalance.toString());
 			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
 		});
 
@@ -992,10 +1026,8 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let investor = Investor1;
 			await investor.openInvestPage(e2eMinCap);
 			let contribution = smallAmount + 10;
-			balance = balance + contribution;
-			await investor.contribute(contribution);
-			let newBalance = await investor.getBalanceFromInvestPage(e2eMinCap);
-			let result = (newBalance.toString() === balance.toString());
+			investor.tokenBalance += contribution;
+			let result = await investor.contribute(contribution);
 			return await assert.equal(result, true, "Test FAILED. Investor can not buy less than mincap after first transaction");
 		});
 
@@ -1054,25 +1086,32 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(result, false, "Test FAILED. Investor can buy if crowdsale is finalized");
 		});
 
-	test.it.skip('Reserved address has received correct quantity of tokens after distribution',
+	test.it('Reserved address#1 has received correct percent of tokens after finalization',
 		async function () {
-
-			let newBalance = await ReservedAddress.getTokenBalance(e2eMinCap) / 1e18;
-			let balance = e2eMinCap.reservedTokens[0].value;
-			logger.info("Investor should receive  = " + balance);
-			logger.info("Investor has received balance = " + newBalance);
-			return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance);
+			let balance = await ReservedAddress.getTokenBalance(e2eMinCap) / 1e18;
+			let shouldBe = e2eMinCap.reservedTokens[0].value * Investor1.tokenBalance / 100;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe);
 		});
 
-	test.it.skip('Investor has received correct quantity of tokens after finalization', async function () {
+	test.it('Reserved address#2 has received correct quantity of tokens after finalization',
+		async function () {
+			let balance = await Owner.getTokenBalance(e2eMinCap) / 1e18;
+			let shouldBe = e2eMinCap.reservedTokens[1].value;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe);
+		});
+	test.it('Investor#1 has received correct quantity of tokens after finalization', async function () {
 
 		let investor = Investor1;
-		let newBalance = await investor.getTokenBalance(e2eMinCap) / 1e18;
-		let balance = e2eMinCap.minCap + smallAmount + 10;
-		logger.info("Investor should receive  = " + balance);
-		logger.info("Investor has received balance = " + newBalance);
-		logger.info("Difference = " + (newBalance - balance));
-		return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance)
+		let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
+		let shouldBe = investor.tokenBalance;
+		logger.info("Investor should receive  = " + shouldBe);
+		logger.info("Investor has received balance = " + balance);
+		logger.info("Difference = " + (balance - shouldBe));
+		return await assert.equal(balance, shouldBe, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 	});
 
 });
