@@ -19,8 +19,8 @@ async function run()
 
 	fs.copySync('../../.env','./.env',{overwrite:true});
 	let crowdsale = new Crowdsale();
-	crowdsale.executionID = '0xf7cc57908a78e00776b804768aa3583eda0da18f06c691e9cb5927c4f68e8797';
-	crowdsale.sort = "dutch";
+	crowdsale.executionID = '0x4b9cf9f229c56a943d7deeee7de40d36e0bbd486d810e281297faeaefadaf4a3';
+	crowdsale.sort = "minted";
 	crowdsale.networkID=8545;
 	const account = '0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411';
 
