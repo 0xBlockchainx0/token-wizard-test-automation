@@ -8,12 +8,11 @@ const WizardStep4 = require('../pages/WizardStep4.js').WizardStep4;
 const TierPage = require('../pages/TierPage.js').TierPage;
 const ReservedTokensPage = require('../pages/ReservedTokensPage.js').ReservedTokensPage;
 const CrowdsalePage = require('../pages/CrowdsalePage.js').CrowdsalePage;
-const InvestPage = require('../pages/InvestPage.js').InvestPage;
+const InvestPage = require('../pages/ContributionPage.js').InvestPage;
 const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const Utils = require('../utils/Utils.js').Utils;
 const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
 const Page = require('../pages/Page.js').Page;
-
 const fs = require('fs');
 
 class User {
@@ -38,13 +37,18 @@ class User {
 	}
 
 	async getTokenBalance(crowdsale) {
-		logger.info("GetTokenBalance: account=" + this.account);
-		logger.info("Token address=" + crowdsale.tokenAddress);
+		logger.info("getTokenBalance");
 		try {
-			let web3 = Utils.setNetwork(this.networkID);
-			let tokenContract = crowdsale.tokenContractAbi;
-			let MyContract = new web3.eth.Contract(tokenContract, crowdsale.tokenAddress);
-			return await MyContract.methods.balanceOf(this.account).call();
+			const web3 = await Utils.getWeb3Instance(crowdsale.networkID);
+			let contractAddress = await Utils.getContractAddressInitCrowdsale(crowdsale);
+			logger.info("contractAddress"+ contractAddress);
+			let addressRegistryStorage = await Utils.getEnvAddressRegistryStorage();
+			logger.info("addressRegistryStorage"+ addressRegistryStorage);
+			let abi = await Utils.getContractABIInitCrowdsale(crowdsale);
+			let myContract = new web3.eth.Contract(abi, contractAddress);
+			let balance = await myContract.methods.balanceOf(addressRegistryStorage, crowdsale.executionID, this.account).call();
+			logger.info("Balance = " + balance );
+			return balance;
 		}
 		catch (err) {
 			logger.info("Can not get balance. " + err);
@@ -260,7 +264,7 @@ class User {
 		const investPage = new InvestPage(this.driver);
 		return !await investPage.waitUntilShowUpWarning(15)
 			&& await investPage.waitUntilLoaderGone()
-			&& await investPage.fillInvest(amount)
+			&& await investPage.fillContribute(amount)
 			&& await investPage.clickButtonContribute()
 			&& !await investPage.waitUntilShowUpErrorNotice(10)//3 sec
 			&& !await investPage.waitUntilShowUpWarning(10)//3 sec
@@ -298,6 +302,7 @@ class User {
 	async createMintedCappedCrowdsale(crowdsale) {
 
 		logger.info(" createMintedCappedCrowdsale ");
+
 		const startURL = Utils.getStartURL();
 		const welcomePage = new WizardWelcome(this.driver, startURL);
 		const wizardStep1 = new WizardStep1(this.driver);
@@ -366,13 +371,14 @@ class User {
 		crowdsale.executionID = await investPage.getExecutionID();
 		logger.info("Final invest page link: " + crowdsale.url);
 		logger.info("token address: " + crowdsale.executionID);
-
+        crowdsale.networkID = this.networkID;
 		return result && crowdsale.executionID !== "";
 	}
 
 	async createDutchAuctionCrowdsale(crowdsale) {
 
 		logger.info(" createDutchAuctionCrowdsale ");
+
 		const startURL = Utils.getStartURL();
 		const welcomePage = new WizardWelcome(this.driver, startURL);
 		const wizardStep1 = new WizardStep1(this.driver);
@@ -443,6 +449,8 @@ class User {
 		crowdsale.executionID = await investPage.getExecutionID();
 		logger.info("Final invest page link: " + crowdsale.url);
 		logger.info("token address: " + crowdsale.executionID);
+		crowdsale.networkID = this.networkID;
+		logger.info("crowdsale.networkID " + crowdsale.networkID);
 
 		return result && crowdsale.executionID !== "";
 	}

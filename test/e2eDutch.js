@@ -11,7 +11,7 @@ const WizardStep4 = require('../pages/WizardStep4.js').WizardStep4;
 const TierPage = require('../pages/TierPage.js').TierPage;
 const ReservedTokensPage = require('../pages/ReservedTokensPage.js').ReservedTokensPage;
 const CrowdsalePage = require('../pages/CrowdsalePage.js').CrowdsalePage;
-const InvestPage = require('../pages/InvestPage.js').InvestPage;
+const InvestPage = require('../pages/ContributionPage.js').InvestPage;
 const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
@@ -57,7 +57,8 @@ test.describe('POA token-wizard. Test DutchAuctionCrowdsale', async function () 
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
-		logger.info("Version 2.5.0 - Wizard2.0 - DutchAuction");
+		logger.info("Version 2.6.1 - Wizard2.0 - DutchAuction");
+		await Utils.copyEnvFromWizard();
 		e2eMinCap = await Utils.getDutchCrowdsaleInstance(scenarioE2eMinCap);
 		e2eWhitelist = await Utils.getDutchCrowdsaleInstance(scenarioE2eWhitelist);
 		crowdsaleForUItests = await Utils.getDutchCrowdsaleInstance(scenarioForUItests);
@@ -169,7 +170,13 @@ test.describe('POA token-wizard. Test DutchAuctionCrowdsale', async function () 
 			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
 			return assert.equal(await wizardStep2.isDisplayedFieldSupply(), true, "Persistant failed if account has changed");
 		});
+	test.it.skip('Wizard step#2:Check persistant if page refreshed ',
+		async function () {
+			let investor = Investor1;
+			let owner = Owner;
 
+			return assert.equal(false, true, "Persistant failed if account has changed");
+		});
 	test.it('Wizard step#2: user able to fill out Name field with valid data',
 		async function () {
 			await wizardStep2.fillName("name");
@@ -511,6 +518,7 @@ test.describe('POA token-wizard. Test DutchAuctionCrowdsale', async function () 
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[0].supply;
+			investor.tokenBalance = Investor1.maxCap;
 			let result = await investor.contribute(contribution);
 			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than assigned max");
 		});
@@ -522,7 +530,7 @@ test.describe('POA token-wizard. Test DutchAuctionCrowdsale', async function () 
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let newBalance = await investor.getBalanceFromInvestPage(e2eWhitelist);
 			investor.tokenBalance = e2eWhitelist.tiers[0].whitelist[0].max;
-			let result = (Math.abs(parseFloat(newBalance) - parseFloat(investor.tokenBalance)) < 300);
+			let result = (Math.abs(parseFloat(newBalance) - parseFloat(investor.tokenBalance)) < 500);
 			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than assigned max");
 
 		});
@@ -586,36 +594,47 @@ test.describe('POA token-wizard. Test DutchAuctionCrowdsale', async function () 
 			return await assert.equal(result, true, "Test FAILED.'Owner can NOT finalize ");
 		});
 
-	test.it.skip('Investor#1 has received correct quantity of tokens after finalization',
+	test.it('Investor#1 has received correct quantity of tokens after finalization',
 		async function () {
+
 			let investor = Investor1;
-			let newBalance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
-			let balance = e2eWhitelist.minCap + smallAmount + 10;
-			logger.info("Investor should receive  = " + balance);
-			logger.info("Investor has received balance = " + newBalance);
-			logger.info("Difference = " + (newBalance - balance));
-			return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance)
+			await investor.openInvestPage(e2eWhitelist);
+			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eWhitelist));
+			let balance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			logger.info("Difference = " + (balance - shouldBe));
+			let result = (Math.abs(shouldBe - balance) < 1e-6);
+			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
-	test.it.skip('Investor#2 has received correct quantity of tokens after finalization',
+
+	test.it('Investor#2 has received correct quantity of tokens after finalization',
 		async function () {
 			let investor = Investor2;
-			let newBalance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
-			let balance = e2eWhitelist.minCap + smallAmount + 10;
-			logger.info("Investor should receive  = " + balance);
-			logger.info("Investor has received balance = " + newBalance);
-			logger.info("Difference = " + (newBalance - balance));
-			return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance)
+			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			await investor.openInvestPage(e2eWhitelist);
+			let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eWhitelist));
+			let balance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			logger.info("Difference = " + (balance - shouldBe));
+			let result = (Math.abs(shouldBe - balance) < 1e-6);
+			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
-	test.it.skip('Owner has received correct quantity of tokens after finalization',
+
+	test.it('Owner has received correct quantity of tokens after finalization',
 		async function () {
-			let investor = Investor1;
-			let newBalance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
-			let balance = e2eWhitelist.minCap + smallAmount + 10;
-			logger.info("Investor should receive  = " + balance);
-			logger.info("Investor has received balance = " + newBalance);
-			logger.info("Difference = " + (newBalance - balance));
-			return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance)
+			let investor = Owner;
+			let balance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
+			let shouldBe = e2eWhitelist.totalSupply - e2eWhitelist.tiers[0].supply;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			logger.info("Difference = " + (balance - shouldBe));
+			let result = (Math.abs(shouldBe - balance) < 1e-6);
+			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
+
 	//////////////////////// Test SUITE #2 /////////////////////////////
 	test.it('Owner  can create DutchAuction crowdsale(scenario scenarioE2eDutchMincapLong.json), minCap,no whitelist',
 		async function () {
@@ -748,23 +767,28 @@ test.describe('POA token-wizard. Test DutchAuctionCrowdsale', async function () 
 		async function () {
 
 			let investor = Investor1;
-			let newBalance = await investor.getTokenBalance(e2eMinCap) / 1e18;
-			let balance = e2eMinCap.minCap + smallAmount + 10;
-			logger.info("Investor should receive  = " + balance);
-			logger.info("Investor has received balance = " + newBalance);
-			logger.info("Difference = " + (newBalance - balance));
-			return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance)
+			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			await investor.openInvestPage(e2eWhitelist);
+			let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eMinCap));
+			let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			logger.info("Difference = " + (balance - shouldBe));
+			let result = (Math.abs(shouldBe - balance) < 1e-6);
+			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
+
 		});
 	test.it.skip('Owner has received correct quantity of tokens after finalization',
 		async function () {
 
-			let investor = Investor1;
-			let newBalance = await investor.getTokenBalance(e2eMinCap) / 1e18;
-			let balance = e2eMinCap.minCap + smallAmount + 10;
-			logger.info("Investor should receive  = " + balance);
-			logger.info("Investor has received balance = " + newBalance);
-			logger.info("Difference = " + (newBalance - balance));
-			return await assert.equal(balance, newBalance, "Test FAILED.'Investor has received " + newBalance + " tokens instead " + balance)
+			let investor = Owner;
+			let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
+			let shouldBe = e2eMinCap.totalSupply - e2eMinCap.tiers[0].supply;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			logger.info("Difference = " + (balance - shouldBe));
+			let result = (Math.abs(shouldBe - balance) < 1e-6);
+			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
 
 });

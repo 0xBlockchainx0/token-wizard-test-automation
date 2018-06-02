@@ -93,7 +93,7 @@ class Page {
 		}
 		catch (err) {
 			logger.info("Error: " + err);
-			return false;
+			return null;
 		}
 	}
 
@@ -190,6 +190,7 @@ class Page {
 		logger.info("click with wait: " + element);
 		try {
 			let field = await this.getElement(element, Twaiting);
+
 			await field.click();
 			return true;
 		}
@@ -203,6 +204,7 @@ class Page {
 		logger.info("fill with wait : value = " + k);
 		try {
 			let field = await this.getElement(element, Twaiting);
+			if (field === null) return false;
 			await field.sendKeys(k);
 			return true;
 		}

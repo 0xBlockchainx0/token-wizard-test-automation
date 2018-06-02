@@ -7,12 +7,13 @@
     "e2e-deployRegistry": "node  ./contracts/DeployRegistry.js",
     "e2eMinted": "mocha  -b ./test/e2eMinted.js",
     "e2eDutch": "mocha  -b ./test/e2eDutch.js",
-    "ra": "node ./test/testRA.js",
+    "margo": "node ./test/margo.js",
     "e2eMintedRopsten": "mocha   ./test/e2eMintedRopsten.js",
     "e2eDutchRopsten": "mocha   ./test/e2eDutchRopsten.js"
   },
   "dependencies": {
     "chromedriver": "^2.35.0",
+    "dotenv": "^5.0.1",
     "ethereumjs-wallet": "^0.6.0",
     "fs-extra": "^5.0.0",
     "mocha": "^5.0.1",

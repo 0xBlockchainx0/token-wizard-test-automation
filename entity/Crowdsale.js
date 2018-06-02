@@ -19,6 +19,8 @@ class Crowdsale {
 		this.url;
 		this.tokenContractAbi;
 		this.executionID;
+		this.networkID;
+		this.sort;
 	}
 
 	async parser(fileName) {

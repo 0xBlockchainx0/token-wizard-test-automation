@@ -2,7 +2,7 @@ const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const buttonContribute = By.className("button button_fill");
-const fieldInvest = By.className("invest-form-input");
+const fieldContribute = By.id("contribute");
 const buttonOk = By.className( "swal2-confirm swal2-styled");
 const fieldBalance = By.className("balance-title");
 const fields = By.className("hashes-title");
@@ -13,7 +13,7 @@ const countdownTimerValue = By.className("timer-count");
 const countdownTimerStatus = By.className("timer-interval");
 const statusTimer = {start : "START", end : "END", finalized : "HAS BEEN"}
 
-class InvestPage extends Page {
+class ContributionPage extends Page {
 
 	constructor(driver) {
 		super(driver);
@@ -45,7 +45,7 @@ class InvestPage extends Page {
 	}
 
 	async initTimerFields() {
-		logger.info(this.name + "initTimer ");
+		logger.info(this.name + "initTimerFields ");
 		try {
 			let array = await super.findWithWait(countdownTimerStatus);
 			this.timer = array[0];
@@ -118,28 +118,28 @@ class InvestPage extends Page {
 		return await super.clickWithWait(buttonOk);
 	}
 
-	async fillInvest(amount) {
-		logger.info(this.name + "field Contribute :");
-		return await super.fillWithWait(fieldInvest, amount);
+	async fillContribute(amount) {
+		logger.info(this.name + "fillContribute");
+		return await super.fillWithWait(fieldContribute, amount);
 	}
 
 	async clickButtonContribute() {
-		logger.info(this.name + "button Contribute :");
+		logger.info(this.name + "clickButtonContribute");
 		return await super.clickWithWait(buttonContribute);
 	}
 
 	async getWarningText() {
-		logger.info(this.name + "Warning text :");
+		logger.info(this.name + "getWarningText");
 		return await super.getTextForElement(warningText);
 	}
 
 	async getErrorText() {
-		logger.info(this.name + "Error text :");
+		logger.info(this.name + "getErrorText");
 		return await super.getTextForElement(errorNotice);
 	}
 
 	async getExecutionID() {
-		logger.info(this.name + "field TokenAddress :");
+		logger.info(this.name + "getExecutionID");
 		return (await  this.initFields() !== null) &&
 			await super.getTextForElement(this.fieldExecutionID);
 	}
@@ -161,5 +161,5 @@ class InvestPage extends Page {
 	}
 }
 
-module.exports.InvestPage = InvestPage;
+module.exports.InvestPage = ContributionPage;
 
