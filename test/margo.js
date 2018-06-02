@@ -1,4 +1,4 @@
-require('dotenv').config()
+
 let test = require('selenium-webdriver/testing');
 let assert = require('assert');
 const fs = require('fs-extra');

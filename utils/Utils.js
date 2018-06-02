@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-require('dotenv').config();
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
 const webdriver = require('selenium-webdriver'),
@@ -327,21 +326,25 @@ class Utils {
 
 	static async getEnvAddressMintedInitCrowdsale() {
 		logger.info("Utils:getEnvAddressMintedInitCrowdsale");
+		require('dotenv').config();
 		return Object.values(JSON.parse(process.env.REACT_APP_MINTED_CAPPED_CROWDSALE_INIT_CROWDSALE_ADDRESS))[0];
 	}
 
 	static async getEnvAddressDutchInitCrowdsale() {
 		logger.info("Utils:getEnvAddressDutchInitCrowdsale");
+		require('dotenv').config();
 		return Object.values(JSON.parse(process.env.REACT_APP_DUTCH_CROWDSALE_INIT_CROWDSALE_ADDRESS))[0];
 	}
 
 	static async getEnvAddressRegistryStorage() {
 		logger.info("Utils:getEnvAddressRegistryStorage");
+		require('dotenv').config();
 		return Object.values(JSON.parse(process.env.REACT_APP_REGISTRY_STORAGE_ADDRESS))[0];
 	}
 
 	static async getEnvNetworkId() {
 		logger.info("Utils:getEnvNetworkId");
+		require('dotenv').config();
 		return Object.keys(JSON.parse(process.env.REACT_APP_REGISTRY_STORAGE_ADDRESS))[0];
 	}
 
