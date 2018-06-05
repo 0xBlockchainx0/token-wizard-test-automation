@@ -437,8 +437,8 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 	test.it('Wizard step#4: button SkipTransaction is  presented if user reject a transaction ',
 		async function () {
-			let result = await metaMask.rejectTransaction()
-				&& await metaMask.rejectTransaction()
+			let result = await metaMask.rejectTransaction(20)
+				&& await metaMask.rejectTransaction(20)
 				&& await wizardStep4.isDisplayedButtonSkipTransaction();
 			return await assert.equal(result, true, "Test FAILED. button'Skip transaction' does not present if user reject the transaction");
 		});

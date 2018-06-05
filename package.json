@@ -9,7 +9,8 @@
     "e2eDutch": "mocha  -b ./test/e2eDutch.js",
     "margo": "node ./test/margo.js",
     "e2eMintedRopsten": "mocha   ./test/e2eMintedRopsten.js",
-    "e2eDutchRopsten": "mocha   ./test/e2eDutchRopsten.js"
+    "e2eDutchRopsten": "mocha   ./test/e2eDutchRopsten.js",
+    "tr": "mocha  -b  ./test/funcDutchRateTime.js"
   },
   "dependencies": {
     "chromedriver": "^2.35.0",
