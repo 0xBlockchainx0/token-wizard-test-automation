@@ -1,4 +1,4 @@
-
+const logger = require('../entity/Logger.js').logger;
 let test = require('selenium-webdriver/testing');
 let assert = require('assert');
 const fs = require('fs-extra');
@@ -8,28 +8,63 @@ const addressRegistryStorage = '0xB1D914e7c55f16C2BAcAc11af6b3e011Aee38caF';
 const addressMintedInitCrowdsale = '0x4FEEC2b6944E510EEf031D96330cB70F9051c440';
 const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
 const User = require("../entity/User.js").User;
-//const execID = '0x39e0f8fc2049d5176112b8695b4f245ad4c5a2a8b8b4dfd04607cf4f95e74ebc';
-
-
 
 run();
 
-async function run()
-{
+async function run() {
 
-	fs.copySync('../../.env','./.env',{overwrite:true});
+	fs.copySync('../../.env', './.env', {overwrite: true});
 	let crowdsale = new Crowdsale();
-	crowdsale.executionID = '0x4b9cf9f229c56a943d7deeee7de40d36e0bbd486d810e281297faeaefadaf4a3';
-	crowdsale.sort = "minted";
-	crowdsale.networkID=8545;
-	const account = '0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411';
+	crowdsale.executionID = '0x8d96e757b5e5b2a533b7b1ad17493245ac729e6b78bf4e4e81bd8098b50a797a';
+	crowdsale.sort = "dutch";
+let file = await takeFunctionRateTime(crowdsale);
 
-	const user8545_F16AFile = './users/user8545_F16A.json';//Investor2 - whitelisted before deployment
+	//console.log("Status = " + JSON.stringify(status));
+	//console.log("Status.current_rate = " + status.current_rate);
+	//console.log("Status.time_remaining = " + status.time_remaining);
 
-	let user = new User(null, user8545_F16AFile);
-console.log("user.account "+user.account )
-	let balance = await user.getTokenBalance(crowdsale)
-	console.log("Balance = " + balance );
+}
+
+async function takeFunctionRateTime(crowdsale) {
+	const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
+	let status;
+	await fs.ensureDirSync("./time_rate_logs/");
+	let file = "./time_rate_logs/time_rate"+Date.now()+".json";
+	let object = {time: "", rate: ""};
+	let array=[];
+	let counter = 0;
+
+	do {
+		status = await getCrowdsaleStatusRopsten(crowdsale,abi);
+		await Utils.sleep(1000);
+		object.time = (counter++).toString();
+		object.rate = status.current_rate;
+		logger.info("time: " + object.time + " ,rate: " + object.rate);
+		array.push({time: object.time, rate: object.rate});
+	}
+	while ((parseInt(status.time_remaining) !== 0));
+
+	await fs.writeJsonSync(file,array);
+	return file;
+
+}
+
+async function getCrowdsaleStatusRopsten(crowdsale,abi) {
+	console.log("getCrowdsaleStatusRopsten");
+	try {
+		let networkIDRopsten = 3;
+		const web3 = await Utils.getWeb3Instance(networkIDRopsten);
+		let REACT_APP_REGISTRY_STORAGE_ADDRESS = "0xb1d914e7c55f16c2bacac11af6b3e011aee38caf";
+		let REACT_APP_DUTCH_CROWDSALE_INIT_CROWDSALE_ADDRESS = "0xbe9c4888a51761f6c5a7d3803106edab7c96196e";
+		let myContract = new web3.eth.Contract(abi, REACT_APP_DUTCH_CROWDSALE_INIT_CROWDSALE_ADDRESS);
+		let status = await myContract.methods.getCrowdsaleStatus(REACT_APP_REGISTRY_STORAGE_ADDRESS, crowdsale.executionID).call();
+		//console.log("status = " + status );
+		return status;
+	}
+	catch (err) {
+		console.log("Can not get status. " + err);
+		return 0;
+	}
 
 }
 

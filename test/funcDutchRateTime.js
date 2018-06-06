@@ -27,7 +27,8 @@ const endDateForTestLater = "420000";
 test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
-	const user3_56B2File ='./users/user3_56B2.json';
+	const user3_56B2File = './users/user3_56B2.json';
+	const user3_0e03File = './users/user3_0e03.json';
 	const user8545_56B2File = './users/user8545_56B2.json';//Owner
 	const user8545_F16AFile = './users/user8545_F16A.json';//Investor1 - whitelisted for Tier#1 before deployment
 	const user8545_f5aAFile = './users/user8545_f5aA.json';//Investor2 - added from manage page before start
@@ -63,20 +64,16 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
-		logger.info("Create Dutch crowdsale,  Ropsten only ");
+		logger.info("Take function rate-time for dutch,  Ropsten  ");
 
+		const scenarioDutchFuncRateTime = './scenarios/scenarioDutchFuncRateTime.json';
 
-		const scenarioDutchRopsten = './scenarios/scenarioDutchRopsten.json';
-
-
-		e2eRopsten = await  Utils.getDutchCrowdsaleInstance(scenarioDutchRopsten);
+		e2eRopsten = await  Utils.getDutchCrowdsaleInstance(scenarioDutchFuncRateTime);
 
 		startURL = await Utils.getStartURL();
 		driver = await Utils.startBrowserWithMetamask();
 
-		Owner = new User(driver, user3_56B2File);
-
-
+		Owner = new User(driver, user3_0e03File);
 
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
@@ -90,7 +87,6 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 		investPage = new InvestPage(driver);
 		reservedTokensPage = new ReservedTokensPage(driver);
 		mngPage = new ManagePage(driver);
-		//tierPage = new TierPage(driver, e2eRopsten.tiers[0]);
 
 	});
 
@@ -106,16 +102,33 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 	});
 ///////////////////////// UI TESTS /////////////////////////////////////
 
-
 //////////////////////// Test SUITE #1 /////////////////////////////
-	test.it('Owner  can create crowdsale(e2eWhitelist.json),2 tiers, modifiable, whitelist,2 reserved',
+	test.it('ceate crowdsale, duration 5 min',
 		async function () {
 			let owner = Owner;
 			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let result = await owner.createDutchAuctionCrowdsale(e2eRopsten);
 			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
 		});
+	test.it('Tier starts as scheduled',
+		async function () {
+			let investor = Owner;
+			assert.equal(await investor.openInvestPage(e2eRopsten), true, 'Investor can not open Invest page');
+			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+			let counter = 180;
+			do {
+				logger.info("wait " + Date.now());
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && !await investPage.isCrowdsaleStarted());
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
 
-
+	test.it('take function rate-time ',
+		async function () {
+			let file = await Utils.takeFunctionRateTime(e2eRopsten);
+			let result = (file !== null);
+			return await assert.equal(result, true, 'Test FAILED. ');
+		});
 
 });

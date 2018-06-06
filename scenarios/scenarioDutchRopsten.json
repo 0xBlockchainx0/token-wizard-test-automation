@@ -10,7 +10,7 @@
 
   "tiers":[
     {
-      "allowModify": true,
+      "allowModify": false,
       "isWhitelisted":true,
       "startDate": "",
       "startTime": "",

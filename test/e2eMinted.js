@@ -65,7 +65,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
-		logger.info("Version 2.6.2 - Wizard2.0 ");
+		logger.info("Version 2.6.3 - Wizard2.0 ");
 		await Utils.copyEnvFromWizard();
 		const scenarioE2eMintedMinCap = './scenarios/scenarioE2eMintedMinCap.json';
 		const scenarioE2eMintedWhitelist = './scenarios/scenarioE2eMintedWhitelist.json';
@@ -437,8 +437,8 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 	test.it('Wizard step#4: button SkipTransaction is  presented if user reject a transaction ',
 		async function () {
-			let result = await metaMask.rejectTransaction()
-				&& await metaMask.rejectTransaction()
+			let result = await metaMask.rejectTransaction(20)
+				&& await metaMask.rejectTransaction(20)
 				&& await wizardStep4.isDisplayedButtonSkipTransaction();
 			return await assert.equal(result, true, "Test FAILED. button'Skip transaction' does not present if user reject the transaction");
 		});
@@ -485,12 +485,14 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			Investor2.tokenBalance = 0;
 			Investor3.tokenBalance = 0;
 			ReservedAddress.tokenBalance = 0;
+
 			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
 		});
 
 	test.it('Owner is able to open the manage page',
 		async function () {
 			let owner = Owner;
+			//e2eWhitelist.executionID = "0xb402ce8ca9f82542e869301aecc3e9098e0a90cdc1421cda0a321da48bfedabf";
 			return await assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
 		});
 
@@ -501,26 +503,30 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			for (let i = 0; i < addresses.length; i++) {
 				result = result && (addresses[i] === e2eWhitelist.reservedTokens[i].address);
 			}
-			return await assert.equal(result, true, 'Test FAILED.Manage page: Manage page: correct number of reserved addresses is displayed');
+			result = result && (addresses.length === e2eWhitelist.reservedTokens.length);
+			return await assert.equal(result, true, 'Test FAILED.Manage page: correct number of reserved addresses is displayed');
 		});
 
-	test.it.skip('Manage page: correct number of whitelisted addresses is displayed for tier#1',
+	test.it('Manage page: correct list of whitelisted addresses is displayed for tier#1',
 		async function () {
 			let tierNumber = 1;
 			let addresses = await mngPage.getWhitelistAddresses(tierNumber);
 			let result = true;
-			for (let i = 0; i < addresses.length; i++) {
-				result = result && (addresses[i] === e2eWhitelist.tiers[tierNumber - 1].whitelist[i].address);
-				console.log("WHHHhH#" + i + "   " + e2eWhitelist.tiers[tierNumber - 1].whitelist[i].address)
+			for (let i = 0; i < e2eWhitelist.tiers[tierNumber - 1].whitelist.length; i++) {
+				result = result && (addresses.includes(e2eWhitelist.tiers[tierNumber - 1].whitelist[i].address));
 			}
 			return await assert.equal(result, true, 'Test FAILED.Manage page: incorrect number of whitelisted addresses is displayed for tier #1');
 		});
 
-	test.it.skip('Manage page: correct number of whitelisted addresses is displayed for tier#2',
+	test.it('Manage page: correct list of whitelisted addresses is displayed for tier#2',
 		async function () {
-			let owner = Owner;
-
-			return await assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Test FAILED.Manage page: incorrect number of whitelisted addresses is displayed for tier #2');
+			let tierNumber = 2;
+			let addresses = await mngPage.getWhitelistAddresses(tierNumber);
+			let result = true;
+			for (let i = 0; i < e2eWhitelist.tiers[tierNumber - 1].whitelist.length; i++) {
+				result = result && (addresses.includes(e2eWhitelist.tiers[tierNumber - 1].whitelist[i].address));
+			}
+			return await assert.equal(result, true, 'Test FAILED.Manage page: incorrect number of whitelisted addresses is displayed for tier #2');
 		});
 
 	test.it("Manage page: button 'Save' is  disabled by default",
@@ -543,11 +549,16 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(result, true, 'Test FAILED.Owner is NOT able to add whitelisted address before start of crowdsale ');
 		});
 
-	test.it.skip('Manage page: correct number of whitelisted addresses is displayed for tier#1',
+	test.it('Manage page: correct list of whitelisted addresses is displayed for tier#1',
 		async function () {
-			let owner = Owner;
+			let tierNumber = 1;
+			let addresses = await mngPage.getWhitelistAddresses(tierNumber);
+			let result = (addresses.length === 3)
+				&& addresses.includes(Investor2.account)
+				&& addresses.includes(e2eWhitelist.tiers[tierNumber - 1].whitelist[0].address)
+				&& addresses.includes(e2eWhitelist.tiers[tierNumber - 1].whitelist[1].address);
+			return await assert.equal(result, true, 'Test FAILED.Manage page: incorrect list of whitelisted addresses is displayed for tier #1');
 
-			return await assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Test FAILED.Manage page: incorrect number of whitelisted addresses is displayed for tier #1');
 		});
 
 	test.it.skip('Manage page: owner is able to modify the end time before start of crowdsale',
@@ -571,6 +582,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let result = await Utils.compareDates(newTime, endDate, endTime);
 			return await assert.equal(result, true, 'Test FAILED. End time doest match the given value');
 		});
+
 	test.it.skip('Manage page:  start time of tier#2 changed  after end time of tier#1 was changed',
 		async function () {
 			let owner = Owner;
@@ -636,13 +648,25 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(result, true, 'Test FAILED.Owner is NOT able to add whitelisted address after start of crowdsale ');
 		});
 
-	test.it('Manage page: owner is not able to modify the end time after start of crowdsale',
+	test.it('Manage page: correct list of whitelisted addresses is displayed for tier#1',
+		async function () {
+			let tierNumber = 1;
+			let addresses = await mngPage.getWhitelistAddresses(tierNumber);
+			let result = (addresses.length === 4)
+				&& addresses.includes(ReservedAddress.account)
+				&& addresses.includes(Investor2.account)
+				&& addresses.includes(e2eWhitelist.tiers[tierNumber - 1].whitelist[0].address)
+				&& addresses.includes(e2eWhitelist.tiers[tierNumber - 1].whitelist[1].address);
+			return await assert.equal(result, true, 'Test FAILED.Manage page: incorrect list of whitelisted addresses is displayed for tier #1');
+		});
+
+	test.it('Manage page: field end time disabled after start of crowdsale',
 		async function () {
 			let owner = Owner;
 			assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
 			let tierNumber = 1;
-			let result = await owner.changeEndTime(tierNumber, endDateForTestEarlier, endTimeForTestEarlier);
-			return await assert.equal(result, false, 'Test FAILED.Owner can  modify the end time of tier#1 after start ');
+			let result = await mngPage.isDisabledEndTime(tierNumber);
+			return await assert.equal(result, true, 'Test FAILED. Field  end time enabled after start of crowdsale ');
 
 		});
 
@@ -972,7 +996,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let investor = Owner;
 			await investor.openInvestPage(e2eMinCap);
 			await investPage.waitUntilLoaderGone();
-			let counter = 120;
+			let counter = 180;
 			do {
 				logger.info("wait " + Date.now());
 				await driver.sleep(1000);

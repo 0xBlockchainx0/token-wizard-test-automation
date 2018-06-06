@@ -420,17 +420,16 @@ class ManagePage extends Page {
 		try {
 
 			let elements = await super.findWithWait(whitelistContainer);
-			let element = elements[tierNumber-1];
-			console.log("elements="+elements.length);
-			let array = await super.getChildFromElementByClassName(whitelistContainerInner, element);
-			//let array = await super.findWithWait(whitelistContainerInner);
-			console.log("AAAAAA="+array.length);
+			let element = elements[tierNumber - 1];
+			const locator = "white-list-item-container-inner";
+			let array = await super.getChildFromElementByClassName(locator, element);
 			if (array === null) return null;
 			let addresses = [];
-			for (let i = 0; i < array.length - 1; i++) {
-				addresses[i] = await super.getTextForElement(array[i + 1]);
+			for (let i = 0; i < array.length; i++) {
+				addresses[i] = (await super.getTextForElement(array[array.length - 1 - i])).split(" ")[0];
 				logger.info("address: " + addresses[i]);
 			}
+			logger.info("addresses.length=" + addresses.length);
 			return addresses;
 		}
 		catch (err) {
