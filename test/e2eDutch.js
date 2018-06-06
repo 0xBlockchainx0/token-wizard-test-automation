@@ -57,7 +57,7 @@ test.describe('POA token-wizard. Test DutchAuctionCrowdsale', async function () 
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
-		logger.info("Version 2.6.2 - Wizard2.0 - DutchAuction");
+		logger.info("Version 2.6.3 - Wizard2.0 - DutchAuction");
 		await Utils.copyEnvFromWizard();
 		e2eMinCap = await Utils.getDutchCrowdsaleInstance(scenarioE2eMinCap);
 		e2eWhitelist = await Utils.getDutchCrowdsaleInstance(scenarioE2eWhitelist);

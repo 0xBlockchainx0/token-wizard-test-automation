@@ -65,7 +65,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
-		logger.info("Version 2.6.2 - Wizard2.0 ");
+		logger.info("Version 2.6.3 - Wizard2.0 ");
 		await Utils.copyEnvFromWizard();
 		const scenarioE2eMintedMinCap = './scenarios/scenarioE2eMintedMinCap.json';
 		const scenarioE2eMintedWhitelist = './scenarios/scenarioE2eMintedWhitelist.json';
