@@ -458,7 +458,7 @@ test.describe('POA token-wizard. Test DutchAuctionCrowdsale', async function () 
 			let investor = Owner;
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let counter = 120;
+			let counter = 180;
 			do {
 				logger.info("wait " + Date.now());
 				await driver.sleep(1000);

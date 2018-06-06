@@ -418,6 +418,12 @@ class TierPage extends Page {
 
 	}
 
+	async isDisabledFieldEndTime() {
+		logger.info(this.name + " isDisabledFieldEndTime ");
+		let element = await this.getFieldEndTime();
+		return await super.isElementDisabled(element);
+	}
+
 	async fillWhitelist() {
 		logger.info(this.name + "fillWhitelist ");
 		try {
