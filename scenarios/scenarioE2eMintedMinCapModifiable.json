@@ -1,0 +1,24 @@
+{
+
+  "name": "scenarioE2eMintedMinCapModif",
+  "ticker": "test",
+  "decimals": 18,
+  "reservedTokens":[],
+  "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+  "gasprice":1,
+  "mincap": 5,
+  "tiers":[
+    {
+      "name":"###1",
+      "allowModify": true,
+      "isWhitelisted":false,
+      "startDate": "180000",
+      "startTime": "180000",
+      "endDate":"360000",
+      "endTime":"360000",
+      "rate":10,
+      "supply": 20,
+      "whitelist":[]
+    }]
+}
+

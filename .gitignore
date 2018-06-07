@@ -4,6 +4,7 @@ tests
 token.txt
 NetworksCode.txt
 temp
+time_rate_logs
 results
 .env
 .DS_Store
