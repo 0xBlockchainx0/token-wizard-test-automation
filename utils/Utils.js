@@ -115,7 +115,7 @@ class Utils {
 
 		let mailOptions = {
 			from: 'testresults39@gmail.com',
-			to: 'dennistikhomirov@gmail.com',
+			to: 'monzano2@gmail.com',
 			subject: 'test results ' + Utils.getDateWithAdjust(0, 'utc') + "  " + Utils.getTimeWithAdjust(0, 'utc'),
 			text: 'test results ' + Utils.getDateWithAdjust(0, 'utc') + "  " + Utils.getTimeWithAdjust(0, 'utc'),
 			attachments: [
@@ -403,8 +403,16 @@ class Utils {
 			let status;
 			await fs.ensureDirSync("./time_rate_logs/");
 			let file = "./time_rate_logs/time_rate" + Date.now() + ".json";
+			let fileLog = "./time_rate_logs/time_rate" + Date.now() + ".log";
+			let duration = parseInt(crowdsale.tiers[0].endTime)-parseInt(crowdsale.tiers[0].startTime);
+			await fs.writeFileSync(fileLog, "duration = " +duration/60000 + "min  \n");
+			await fs.appendFileSync(fileLog,"execID = " +crowdsale.executionID);
+			await fs.appendFileSync(fileLog, "minRate = " + crowdsale.tiers[0].minRate + "\n");
+			await fs.appendFileSync(fileLog, "maxRate = " + crowdsale.tiers[0].maxRate + "\n");
+
 			let object = {time: "", rate: ""};
 			let array = [];
+			let arrayLog = [];
 			let counter = 0;
 
 			do {
@@ -417,10 +425,12 @@ class Utils {
 					time: object.time,
 					rate: object.rate
 				});
+				arrayLog.push(object.rate+"\n");
 			}
 			while ((parseInt(status.time_remaining) !== 0));
 
-			await fs.writeJsonSync(file, array);
+			await fs.appendJsonSync(file, array);
+			await fs.appendFileSync(fileLog, arrayLog);
 			return file;
 
 		}

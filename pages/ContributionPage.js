@@ -3,7 +3,7 @@ const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const buttonContribute = By.className("button button_fill");
 const fieldContribute = By.id("contribute");
-const buttonOk = By.className( "swal2-confirm swal2-styled");
+const buttonOk = By.className("swal2-confirm swal2-styled");
 const fieldBalance = By.className("balance-title");
 const fields = By.className("hashes-title");
 const warningText = By.id("swal2-content");
@@ -11,7 +11,13 @@ const errorNotice = By.className("css-6bx4c3");
 const countdownTimer = By.className("timer");
 const countdownTimerValue = By.className("timer-count");
 const countdownTimerStatus = By.className("timer-interval");
-const statusTimer = {start : "START", end : "END", finalized : "HAS BEEN"}
+const statusTimer = {
+	start: "START",
+	end: "END",
+	finalized: "HAS BEEN",
+	tier1: "TIER 1",
+	tier2: "TIER 2"
+}
 
 class ContributionPage extends Page {
 
@@ -28,9 +34,11 @@ class ContributionPage extends Page {
 		logger.info(this.name + "getTimerStatus ");
 		try {
 			let array = await this.initTimerFields();
-			let result = await super.getTextForElement(array[2]);
+			let result = await super.getTextForElement(array[array.length-1]);
+			logger.info("timer status: "+result);
 			if (result.includes(statusTimer.start)) return statusTimer.start;
-			else if (result.includes(statusTimer.end)) return statusTimer.end;
+			else if (result.includes(statusTimer.tier1)) return statusTimer.tier1;
+			else if (result.includes(statusTimer.tier2)) return statusTimer.tier2;
 			else if (result.includes(statusTimer.finalized)) return statusTimer.finalized;
 		}
 		catch (err) {
@@ -42,6 +50,16 @@ class ContributionPage extends Page {
 	async isCrowdsaleStarted() {
 		logger.info(this.name + "isCrowdsaleStarted ");
 		return (await this.getTimerStatus() !== statusTimer.start);
+	}
+
+	async isCurrentTier1() {
+		logger.info(this.name + "isCurrentTier1 ");
+		return (await this.getTimerStatus() === statusTimer.tier1);
+	}
+
+	async isCurrentTier2() {
+		logger.info(this.name + "isCurrentTier2 ");
+		return (await this.getTimerStatus() === statusTimer.tier2);
 	}
 
 	async initTimerFields() {
@@ -98,9 +116,9 @@ class ContributionPage extends Page {
 		return await super.isElementDisplayed(errorNotice);
 	}
 
-	async isPresentWarning() {
-		logger.info(this.name + "isPresentWarning ");
-		return await super.isElementDisplayed(buttonOk);
+	async waitUntilShowUpButtonOk(Twaiting) {
+		logger.info(this.name + "waitUntilShowUpButtonOk ");
+		return await super.waitUntilDisplayed(buttonOk, Twaiting)
 	}
 
 	async isDisplayedCountdownTimer() {
@@ -150,14 +168,14 @@ class ContributionPage extends Page {
 			await super.getTextForElement(this.fieldCurrentAccount);
 	}
 
-	async waitUntilShowUpErrorNotice (Twaiting) {
+	async waitUntilShowUpErrorNotice(Twaiting) {
 		logger.info(this.name + "waitUntilShowUpErrorNotice ");
-		return super.waitUntilDisplayed(errorNotice,Twaiting);
+		return super.waitUntilDisplayed(errorNotice, Twaiting);
 	}
 
-	async waitUntilShowUpWarning (Twaiting) {
+	async waitUntilShowUpWarning(Twaiting) {
 		logger.info(this.name + "waitUntilShowUpWarning ");
-		return super.waitUntilDisplayed(buttonOk,Twaiting);
+		return super.waitUntilDisplayed(buttonOk, Twaiting);
 	}
 }
 

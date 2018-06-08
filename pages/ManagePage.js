@@ -16,13 +16,9 @@ const warningEndTimeTier2 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/d
 const warningStartTimeTier2 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[1]/div[2]/div[1]/p[2]");
 const warningStartTimeTier1 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section/div[4]/div/div[2]/div[2]/div[1]/p[2]");
 
-const reservedTokensInnerContainer = By.className("reserved-tokens-item-container-inner monospace");
 const fieldsReservedTokensAddress = By.className("reserved-tokens-item reserved-tokens-item-left");
-
 const whitelistContainer = By.className("white-list-container");
-const whitelistContainerInner = By.className("white-list-item-container-inner");
-const whitelistContainerNoStyle = By.className("white-list-item-container no-style");
-const fieldWhitelistAddressAdded = By.className("white-list-item white-list-item-left");
+const fieldMinCap = By.id("minCap");
 
 class ManagePage extends Page {
 
@@ -219,8 +215,9 @@ class ManagePage extends Page {
 
 	async getEndTimeTier(tier) {
 		logger.info(this.name + "getEndTimeTier ");
-		if (await this.initInputs() === null) return null;
-		else return await super.getAttribute(this.fieldEndTimeTier[tier - 1], "value");
+		let element = await this.getFieldEndTime(tier);
+		if (element === null) return null;
+		else return await super.getAttribute(element, "value");
 	}
 
 	async clickButtonSave() {
@@ -240,6 +237,12 @@ class ManagePage extends Page {
 			logger.info("Error " + err);
 			return false;
 		}
+	}
+
+	async waitUntilShowUpButtonSave(Twaiting) {
+		logger.info(this.name + "waitUntilShowUpButtonSave ");
+		return (await this.initButtonSave() !== null)
+			&& super.waitUntilDisplayed(this.buttonSave, Twaiting);
 	}
 
 	async isPresentWarningStartTimeTier1() {
@@ -301,6 +304,12 @@ class ManagePage extends Page {
 			&& await this.clickButtonSave();
 	}
 
+	async getFieldEndTime(tier) {
+		logger.info(this.name + "getFieldEndTime ");
+		const locator = By.id("tiers[" + (tier - 1) + "].endTime");
+		return await super.getElement(locator);
+	}
+
 	async fillEndTimeTier(tier, date, time) {
 		logger.info(this.name + " fill end time, tier #" + tier + ":");
 		const action = this.driver.actions();
@@ -310,11 +319,12 @@ class ManagePage extends Page {
 			time = Utils.getTimeWithAdjust(parseInt(time), format);
 			date = Utils.getDateWithAdjust(parseInt(date), format);
 		}
-		return (await this.initInputs() !== null)
-			&& !await this.isElementDisabled(this.fieldEndTimeTier[tier - 1])
-			&& await super.fillWithWait(this.fieldEndTimeTier[tier - 1], date)
+		let element = await this.getFieldEndTime(tier);
+		return (element !== null)
+			&& !await this.isElementDisabled(element)
+			&& await super.fillWithWait(element, date)
 			&& (await action.sendKeys(key.TAB).perform() !== null)
-			&& await super.fillWithWait(this.fieldEndTimeTier[tier - 1], time);
+			&& await super.fillWithWait(element, time);
 	}
 
 	async fillStartTimeTier(tier, date, time) {
@@ -387,12 +397,12 @@ class ManagePage extends Page {
 		return super.waitUntilDisplayed(buttonOk, Twaiting);
 	}
 
-	async isPresentButtonOK() {
+	async isDisplayedButtonOK() {
 		logger.info(this.name + "button OK :");
 		return await super.isElementDisplayed(buttonOk);
 	}
 
-	async clickButtonOK() {
+	async clickButtonOk() {
 		logger.info(this.name + "button OK :");
 		return await super.clickWithWait(buttonOk);
 	}
@@ -418,7 +428,8 @@ class ManagePage extends Page {
 	async getWhitelistAddresses(tierNumber) {
 		logger.info(this.name + "getWhitelistAddresses ");
 		try {
-
+			await this.refresh();
+			await this.waitUntilLoaderGone();
 			let elements = await super.findWithWait(whitelistContainer);
 			let element = elements[tierNumber - 1];
 			const locator = "white-list-item-container-inner";
@@ -437,6 +448,46 @@ class ManagePage extends Page {
 			return null;
 		}
 	}
+
+	async isDisabledMinCap(ter) {
+		logger.info(this.name + "isDisabledMinCap ");
+		return await this.isElementDisabled(fieldMinCap);
+	}
+
+	async fillMinCap(value) {
+		logger.info(this.name + "fillMinCap ");
+		return await super.clearField(fieldMinCap)
+			&& await super.fillWithWait(fieldMinCap, value);
+	}
+
+	async isDisplayedWarningMinCap() {
+		logger.info(this.name + "isDisplayedWarningMinCap ");
+		const mincapBlock = By.className("left");
+		const elements = await super.findWithWait(mincapBlock);
+		const locator = "error";
+		let warnings = await super.getChildFromElementByClassName(locator, elements[0]);
+		if (warnings === null) return null;
+		return (await super.getTextForElement(warnings[0])!== "");
+	}
+
+	async uploadWhitelistCSVFile() {
+		logger.info(this.name + "uploadWhitelistCSVFile ");
+		try {
+			let path = await Utils.getPathToFileInPWD("bulkWhitelist.csv");
+			logger.info(this.name + ": uploadWhitelistCSVFile: from path: " + path);
+			const locator = By.xpath('//input[@type="file"]');
+			let element = await this.driver.findElements(locator);
+			console.log("wefwe " + element.length);
+			await element[0].sendKeys(path);
+			return true;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return false;
+		}
+	}
+
+
 
 }
 

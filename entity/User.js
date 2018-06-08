@@ -41,13 +41,13 @@ class User {
 		try {
 			const web3 = await Utils.getWeb3Instance(crowdsale.networkID);
 			let contractAddress = await Utils.getContractAddressInitCrowdsale(crowdsale);
-			logger.info("contractAddress"+ contractAddress);
+			logger.info("contractAddress" + contractAddress);
 			let addressRegistryStorage = await Utils.getEnvAddressRegistryStorage();
-			logger.info("addressRegistryStorage"+ addressRegistryStorage);
+			logger.info("addressRegistryStorage" + addressRegistryStorage);
 			let abi = await Utils.getContractABIInitCrowdsale(crowdsale);
 			let myContract = new web3.eth.Contract(abi, contractAddress);
 			let balance = await myContract.methods.balanceOf(addressRegistryStorage, crowdsale.executionID, this.account).call();
-			logger.info("Balance = " + balance );
+			logger.info("Balance = " + balance);
 			return balance;
 		}
 		catch (err) {
@@ -84,7 +84,7 @@ class User {
 		mngPage.URL = startURL + "manage/" + crowdsale.executionID;
 		return await mngPage.open()
 			&& await mngPage.waitUntilLoaderGone()
-			&& !await mngPage.isPresentButtonOK();
+			&& !await mngPage.isDisplayedButtonOK();
 	}
 
 	async getSupplyTier(tier) {
@@ -107,20 +107,33 @@ class User {
 
 	async getStartTime(tier) {
 		logger.info("get Start time of tier #" + tier);
-		let mngPage = new ManagePage(this.driver);
-		await mngPage.refresh();
-		let s = await mngPage.getStartTimeTier(tier);
-		logger.info("Received value=" + s);
-		return s;
+		try {
+			let mngPage = new ManagePage(this.driver);
+			await mngPage.refresh();
+			let result = await mngPage.getStartTimeTier(tier);
+			logger.info("Received value=" + result);
+			return result;
+		}
+		catch (err) {
+			logger.info(err);
+			return null;
+		}
 	}
 
 	async getEndTime(tier) {
-		logger.info("get End time of tier #" + tier);
-		let mngPage = new ManagePage(this.driver);
-		await mngPage.refresh();
-		let s = await mngPage.getEndTimeTier(tier);
-		logger.info("Received value=" + s);
-		return s;
+		logger.info("getEndTime of tier #" + tier);
+		try {
+			let mngPage = new ManagePage(this.driver);
+			await mngPage.refresh();
+			let result = await mngPage.getEndTimeTier(tier);
+			logger.info("Received value=" + result);
+			return result;
+		}
+		catch (err) {
+			logger.info(err);
+			return null;
+		}
+
 	}
 
 	async changeRate(tier, value) {
@@ -175,8 +188,8 @@ class User {
 		}
 	}
 
-	async changeEndTime(tier, newDate, newTime) {
-		logger.info("change EndTime for tier#" + tier + ", new date=" + newDate + ", new time=" + newTime);
+	async changeEndTimeFromManagePage(tier, newDate, newTime) {
+		logger.info("changeEndTime for tier#" + tier + ", new date=" + newDate + ", new time=" + newTime);
 		let formatTimeBrowser = await Utils.getDateFormat(this.driver);
 		if (formatTimeBrowser === "mdy") {
 			newDate = Utils.convertDateToMdy(newDate);
@@ -240,23 +253,14 @@ class User {
 			&& await metaMask.signTransaction(5)
 			&& await mngPage.waitUntilLoaderGone()
 			&& await mngPage.waitUntilShowUpPopupConfirm()
-			&& await mngPage.clickButtonOK();
+			&& await mngPage.clickButtonOk();
 	}
 
 	async confirmPopup() {
-		logger.info("confirm popup");
+		logger.info("confirmPopup ");
 		let investPage = new InvestPage(this.driver);
-		await this.driver.sleep(1000);
-		let counter = 10;
-		while (counter-- > 0) {
-			await this.driver.sleep(1000);
-			if (await investPage.isPresentWarning()) {
-				await this.driver.sleep(1000);
-				await investPage.clickButtonOK();
-				return true;
-			}
-			return false;
-		}
+		return await investPage.waitUntilShowUpButtonOk(60)
+			&& await investPage.clickButtonOK();
 	}
 
 	async contribute(amount) {
@@ -371,7 +375,7 @@ class User {
 		crowdsale.executionID = await investPage.getExecutionID();
 		logger.info("Final invest page link: " + crowdsale.url);
 		logger.info("token address: " + crowdsale.executionID);
-        crowdsale.networkID = this.networkID;
+		crowdsale.networkID = this.networkID;
 		return result && crowdsale.executionID !== "";
 	}
 
@@ -410,7 +414,7 @@ class User {
 			await wizardStep2.fillPage(crowdsale) &&
 			await wizardStep2.clickButtonContinue() &&
 			await wizardStep3.fillPage(crowdsale);
-        if (!result) return false;
+		if (!result) return false;
 		counter = 200;
 		do {
 			await this.driver.sleep(300);
@@ -453,6 +457,20 @@ class User {
 		logger.info("crowdsale.networkID " + crowdsale.networkID);
 
 		return result && crowdsale.executionID !== "";
+	}
+
+	async changeMinCapFromManagePage(value) {
+		logger.info("changeMinCapFromManagePage ");
+		let mngPage = new ManagePage(this.driver);
+		let metaMask = new MetaMask(this.driver);
+		return await mngPage.waitUntilLoaderGone()
+			&& await mngPage.fillMinCap(value)
+			&& !await mngPage.isDisplayedWarningMinCap()
+			&& await mngPage.clickButtonSave()
+			&& await metaMask.signTransaction(10)
+			&& await mngPage.waitUntilLoaderGone()
+			&& await this.confirmPopup()
+			&& await mngPage.waitUntilLoaderGone();
 	}
 
 }

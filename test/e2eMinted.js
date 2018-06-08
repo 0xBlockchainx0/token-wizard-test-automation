@@ -54,7 +54,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	let crowdsaleForUItests;
 	let e2eMinCap;
 	let e2eWhitelist;
-	let e2eMultitier;
+	let e2eMinCapModifiable;
 	let mngPage;
 	let balance;
 	let endTime;
@@ -65,16 +65,16 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
-		logger.info("Version 2.6.3 - Wizard2.0 ");
+		logger.info("Version 2.7.0 - Wizard2.0 ");
 		await Utils.copyEnvFromWizard();
 		const scenarioE2eMintedMinCap = './scenarios/scenarioE2eMintedMinCap.json';
 		const scenarioE2eMintedWhitelist = './scenarios/scenarioE2eMintedWhitelist.json';
 		const scenarioForUItests = './scenarios/scenarioUItests.json';
-
+		const scenarioE2eMintedMinCapModifiable = './scenarios/scenarioE2eMintedMinCapModifiable.json';
 		crowdsaleForUItests = await Utils.getMintedCrowdsaleInstance(scenarioForUItests);
 		e2eMinCap = await  Utils.getMintedCrowdsaleInstance(scenarioE2eMintedMinCap);
 		e2eWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioE2eMintedWhitelist);
-
+		e2eMinCapModifiable = await Utils.getMintedCrowdsaleInstance(scenarioE2eMintedMinCapModifiable);
 		startURL = await Utils.getStartURL();
 		driver = await Utils.startBrowserWithMetamask();
 
@@ -129,7 +129,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 	test.after(async function () {
 		// Utils.killProcess(ganache);
-		//await Utils.sendEmail(tempOutputFile);
+		await Utils.sendEmail(tempOutputFile);
 		let outputPath = Utils.getOutputPath();
 		outputPath = outputPath + "/result" + Utils.getDate();
 		await fs.ensureDirSync(outputPath);
@@ -255,9 +255,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 	test.it('Wizard step#2: field Decimals is disabled if reserved tokens are added ',
 		async function () {
-
 			let result = await wizardStep2.isDisabledDecimals();
-			console.log("result" + result);
 			return await assert.equal(result, true, "Wizard step#2: field Decimals enabled if reserved tokens added ");
 		});
 
@@ -485,15 +483,48 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			Investor2.tokenBalance = 0;
 			Investor3.tokenBalance = 0;
 			ReservedAddress.tokenBalance = 0;
-
 			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
 		});
 
 	test.it('Owner is able to open the manage page',
 		async function () {
 			let owner = Owner;
-			//e2eWhitelist.executionID = "0xb402ce8ca9f82542e869301aecc3e9098e0a90cdc1421cda0a321da48bfedabf";
 			return await assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
+		});
+	test.it.skip('Manage page: owner is able to add whitelisted addresses from CSV file',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
+			await driver.sleep(5000);
+			let result = await mngPage.waitUntilLoaderGone()
+				&& await mngPage.uploadWhitelistCSVFile()
+				&& await mngPage.waitUntilShowUpPopupConfirm()
+				&& await mngPage.clickButtonOk()
+				&& await mngPage.waitUntilShowUpButtonSave(60)
+				&& await mngPage.clickButtonSave()
+				&& await metaMask.signTransaction(10)
+				&& await mngPage.waitUntilLoaderGone()
+				&& await owner.confirmPopup()
+				&& await mngPage.waitUntilLoaderGone();
+			return await assert.equal(result, true, 'Test FAILED. Manage page: User is not able to download CVS file with whitelisted addresses');
+		});
+
+	test.it('Manage page: correct number of whitelisted addresses is displayed for tier#1',
+		async function () {
+			let tierNumber = 1;
+			let addresses = await mngPage.getWhitelistAddresses(tierNumber);
+			let result = (addresses.length === e2eWhitelist.tiers[tierNumber - 1].whitelist.length);
+			return await assert.equal(result, true, 'Test FAILED.Manage page: incorrect number of whitelisted addresses is displayed for tier #1');
+		});
+
+	test.it('Field minCap disabled if all tiers are whitelisted',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			await owner.openManagePage(e2eWhitelist);
+			let result = await mngPage.isDisabledMinCap();
+			return await assert.equal(result, true, 'Test FAILED.Field minCap enabled if crowdsale is not modifiable');
 		});
 
 	test.it('Manage page: correct number of reserved addresses is displayed ',
@@ -515,6 +546,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			for (let i = 0; i < e2eWhitelist.tiers[tierNumber - 1].whitelist.length; i++) {
 				result = result && (addresses.includes(e2eWhitelist.tiers[tierNumber - 1].whitelist[i].address));
 			}
+			result = result && (addresses.length === e2eWhitelist.tiers[tierNumber - 1].whitelist.length);
 			return await assert.equal(result, true, 'Test FAILED.Manage page: incorrect number of whitelisted addresses is displayed for tier #1');
 		});
 
@@ -552,6 +584,8 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Manage page: correct list of whitelisted addresses is displayed for tier#1',
 		async function () {
 			let tierNumber = 1;
+			await driver.sleep(5000);
+			await mngPage.refresh();
 			let addresses = await mngPage.getWhitelistAddresses(tierNumber);
 			let result = (addresses.length === 3)
 				&& addresses.includes(Investor2.account)
@@ -561,7 +595,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 		});
 
-	test.it.skip('Manage page: owner is able to modify the end time before start of crowdsale',
+	test.it('Manage page: owner is able to modify the end time of tier#1 before start of crowdsale',
 		async function () {
 			let owner = Owner;
 			assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
@@ -569,11 +603,11 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let format = await Utils.getDateFormat(driver);
 			endTime = Utils.getTimeWithAdjust(parseInt(endTimeForTestLater), format);
 			endDate = Utils.getDateWithAdjust(parseInt(endDateForTestLater), format);
-			let result = await owner.changeEndTime(tierNumber, endDate, endTime);
-			return await assert.equal(result, true, 'Test FAILED.Owner can NOT modify the end time of tier#1 after start ');
+			let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
+			return await assert.equal(result, true, 'Test FAILED.Owner can NOT modify the end time of tier#1 before start ');
 
 		});
-	test.it.skip('Manage page:  end time of tier#1  properly changed after modifying ',
+	test.it('Manage page:  end time of tier#1  properly changed after modifying ',
 		async function () {
 			let owner = Owner;
 			await owner.openManagePage(e2eWhitelist);
@@ -583,22 +617,12 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(result, true, 'Test FAILED. End time doest match the given value');
 		});
 
-	test.it.skip('Manage page:  start time of tier#2 changed  after end time of tier#1 was changed',
+	test.it('Manage page:  start time of tier#2 changed  after end time of tier#1 was changed',
 		async function () {
 			let owner = Owner;
 			await owner.openManagePage(e2eWhitelist);
 			let tierNumber = 2;
 			let newTime = await  owner.getStartTime(tierNumber);
-			let result = await Utils.compareDates(newTime, endDate, endTime);
-			return await assert.equal(result, true, 'Test FAILED. End time doest match the given value');
-		});
-
-	test.it.skip('Manage page:  end time of tier#2 properly changed  after modifying ',
-		async function () {
-			let owner = Owner;
-			await owner.openManagePage(e2eWhitelist);
-			let tierNumber = 2;
-			let newTime = await  owner.getEndTime(tierNumber);
 			let result = await Utils.compareDates(newTime, endDate, endTime);
 			return await assert.equal(result, true, 'Test FAILED. End time doest match the given value');
 		});
@@ -629,7 +653,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let investor = Owner;
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let counter = 120;
+			let counter = 300;
 			do {
 				logger.info("wait " + Date.now());
 				await driver.sleep(1000);
@@ -651,6 +675,8 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Manage page: correct list of whitelisted addresses is displayed for tier#1',
 		async function () {
 			let tierNumber = 1;
+			await driver.sleep(5000);
+			await mngPage.refresh();
 			let addresses = await mngPage.getWhitelistAddresses(tierNumber);
 			let result = (addresses.length === 4)
 				&& addresses.includes(ReservedAddress.account)
@@ -756,7 +782,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(result, true, "Owner's balance incorrect");
 		});
 
-	test.it.skip('Whitelisted investor (which was added from Manage page) is able to buy maxCap',
+	test.it('Whitelisted investor (which was added from Manage page) is able to buy maxCap',
 		async function () {
 			let investor = Investor2;
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
@@ -767,20 +793,18 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than assigned max");
 		});
 
-	test.it.skip('Whitelisted investor is not able to buy more than remains even if individual maxCap is not reached',
+	test.it('Whitelisted investor is not able to buy more than remains even if individual maxCap is not reached',
 		async function () {
 			let investor = Investor2;
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let shouldBe = e2eWhitelist.tiers[0].supply - Investor1.maxCap;
 			let balance = await investor.getBalanceFromInvestPage(e2eWhitelist);
-			console.log("shouldBe " + shouldBe);
-			console.log("balance " + balance);
 			let result = (balance.toString() === shouldBe.toString());
 			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than total supply");
 		});
 
-	test.it.skip('Whitelisted investor is not able to buy if all tokens were sold',
+	test.it('Whitelisted investor is not able to buy if all tokens were sold',
 		async function () {
 			let investor = Investor2;
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
@@ -798,7 +822,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			return await assert.equal(result, false, "Test FAILED.'Owner can finalize ");
 		});
 
-	test.it.skip('Tier#1 has finished as scheduled',
+	test.it('Tier#1 has finished as scheduled',
 		async function () {
 			let investor = Investor1;
 			await investor.openInvestPage(e2eWhitelist);
@@ -806,28 +830,26 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			do {
 				driver.sleep(5000);
 			}
-			while ((!await investPage.isCrowdsaleTimeOver()) && (counter-- > 0));
+			while ((await investPage.isCurrentTier1()) && (counter-- > 0));
 			let result = (counter > 0);
 			return await assert.equal(result, true, "Test FAILED. Crowdsale has not finished in time");
 		});
 
-	test.it.skip('Tier #2 started immideatelly after tier#1 is finished ',
+	test.it('Tier #2 started immideatelly after tier#1 is finished ',
 		async function () {
-			//Status should not contain CROWDSALE HAS ENDED
-			//Should contain TIER 2??
 
 			let investor = Investor1;
 			await investor.openInvestPage(e2eWhitelist);
-			let counter = 40;
+			let counter = 10;
 			do {
-				driver.sleep(5000);
+				driver.sleep(1000);
 			}
-			while ((!await investPage.isCrowdsaleTimeOver()) && (counter-- > 0));
+			while (!(await investPage.isCurrentTier2()) && (counter-- > 0));
 			let result = (counter > 0);
 			return await assert.equal(result, true, "Test FAILED. Tier #2 started immideatelly after tier#1 is finished");
 		});
 
-	test.it.skip('Investor which whitelisted in tier#1 is not able to buy in tier#2',
+	test.it('Investor which whitelisted in tier#1 is not able to buy in tier#2',
 		async function () {
 			let investor = Investor1;
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
@@ -835,9 +857,9 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[1].supply;
 			let result = await investor.contribute(contribution);
-			return await assert.equal(result, true, "Test FAILED.Whitelisting is inherited");
+			return await assert.equal(result, false, "Test FAILED.Whitelisting is inherited");
 		});
-	test.it.skip('Investor which was added in whitelist from manage page in tier#1 is not able to buy in tier#2',
+	test.it('Investor which was added in whitelist from manage page in tier#1 is not able to buy in tier#2',
 		async function () {
 			let investor = Investor2;
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
@@ -845,10 +867,10 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[1].supply;
 			let result = await investor.contribute(contribution);
-			return await assert.equal(result, true, "Test FAILED.Whitelisting is inherited");
+			return await assert.equal(result, false, "Test FAILED.Whitelisting is inherited");
 		});
 
-	test.it.skip('Whitelisted investor  is able to buy maxCap in first transaction',
+	test.it.skip('Whitelisted investor  is able to buy maxCap in first transaction (issue #943)',
 		async function () {
 			balanceEthOwnerBefore = await Utils.getBalance(Owner);
 			let investor = Investor3;
@@ -863,10 +885,42 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it.skip("Owner's Eth balance properly changed ",
 		async function () {
 			balanceEthOwnerAfter = await Utils.getBalance(Owner);
-			let contribution = investor.maxCap;
+			let contribution = Investor3.maxCap;
 			let result = await Utils.compareBalance(balanceEthOwnerBefore, balanceEthOwnerAfter, contribution, e2eWhitelist.tiers[1].rate);
 			return await assert.equal(result, true, "Owner's balance incorrect");
 		});
+
+	/////TEMPORARY
+	test.it.skip('Manage page: owner is able to add whitelisted address if crowdsale has begun',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let investor = ReservedAddress;
+			assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
+			let tierNumber = 1;
+			let result = await owner.addWhitelistTier(tierNumber, investor.account, investor.minCap, e2eWhitelist.tiers[1].supply);
+			return await assert.equal(result, true, 'Test FAILED.Owner is NOT able to add whitelisted address after start of crowdsale ');
+		});
+	test.it.skip('New added whitelisted investor  is able to buy maxCap in first transaction ',
+		async function () {
+			balanceEthOwnerBefore = await Utils.getBalance(Owner);
+			let investor = ReservedAddress;
+			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
+			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+			let contribution = e2eWhitelist.tiers[1].supply;
+			let result = await investor.contribute(contribution);
+			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than assigned max");
+		});
+	test.it.skip("Owner's Eth balance properly changed ",
+		async function () {
+			balanceEthOwnerAfter = await Utils.getBalance(Owner);
+			let contribution = e2eWhitelist.tiers[1].supply;
+			let result = await Utils.compareBalance(balanceEthOwnerBefore, balanceEthOwnerAfter, contribution, e2eWhitelist.tiers[1].rate);
+			return await assert.equal(result, true, "Owner's balance incorrect");
+		});
+
+////////////////////
 
 	test.it.skip('Not owner is not able to finalize',
 		async function () {
@@ -886,7 +940,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 	test.it.skip('Whitelisted investor is not able to buy if crowdsale finalized',
 		async function () {
-			let investor = Investor3;
+			let investor = ReservedAddress;
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[0].supply;
@@ -897,7 +951,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		async function () {
 			let balance = await ReservedAddress.getTokenBalance(e2eWhitelist) / 1e18;
 			const totalSupply = e2eWhitelist.tiers[0].supply + e2eWhitelist.tiers[1].supply;
-			let shouldBe = e2eWhitelist.reservedTokens[0].value * totalSupply / 100
+			let shouldBe = e2eWhitelist.reservedTokens[0].value * totalSupply / 100; //+ e2eWhitelist.tiers[1].supply;
 			logger.info("Investor should receive  = " + shouldBe);
 			logger.info("Investor has received balance = " + balance);
 			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe);
@@ -942,7 +996,6 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			logger.info("Investor should receive  = " + shouldBe);
 			logger.info("Investor has received balance = " + balance);
 			logger.info("Difference = " + (balance - shouldBe));
-			throw("stop!!!");
 			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
 
@@ -969,6 +1022,16 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let result = await investor.contribute(contribution);
 			return await assert.equal(result, false, "Test FAILED. Investor can buy before the crowdsale started");
 		});
+
+	test.it('Field minCap disabled if crowdsale is not modifiable',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			await owner.openManagePage(e2eMinCap);
+			let result = await mngPage.isDisabledMinCap();
+			return await assert.equal(result, true, 'Test FAILED.Field minCap enabled if crowdsale is not modifiable');
+		});
+
 	test.it('Disabled to modify the end time if crowdsale is not modifiable',
 		async function () {
 			let owner = Owner;
@@ -978,7 +1041,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let newTime = Utils.getTimeWithAdjust(adjust, "utc");
 			let newDate = Utils.getDateWithAdjust(adjust, "utc");
 			let tierNumber = 1;
-			let result = await owner.changeEndTime(tierNumber, newDate, newTime);
+			let result = await owner.changeEndTimeFromManagePage(tierNumber, newDate, newTime);
 			return await assert.equal(result, false, 'Test FAILED.Owner can modify the end time of tier#1 if crowdsale not modifiable ');
 		});
 
@@ -996,7 +1059,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let investor = Owner;
 			await investor.openInvestPage(e2eMinCap);
 			await investPage.waitUntilLoaderGone();
-			let counter = 180;
+			let counter = 240;
 			do {
 				logger.info("wait " + Date.now());
 				await driver.sleep(1000);
@@ -1137,5 +1200,87 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		logger.info("Difference = " + (balance - shouldBe));
 		return await assert.equal(balance, shouldBe, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 	});
+///////////////////// Modifiable with minCap ///////////
+	test.it('Owner  can create crowdsale(scenarioE2eMintedMinCap.json),minCap,1 tier,modifiable, no whitelist,no reserved addresses',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let result = await owner.createMintedCappedCrowdsale(e2eMinCapModifiable);
+			Owner.tokenBalance = 0;
+			Investor1.tokenBalance = 0;
+			Investor2.tokenBalance = 0;
+			Investor3.tokenBalance = 0;
+			ReservedAddress.tokenBalance = 0;
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+
+	test.it('Field minCap enabled if crowdsale is modifiable',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			await owner.openManagePage(e2eMinCapModifiable);
+			let result = await mngPage.isDisabledMinCap();
+			return await assert.equal(result, false, 'Test FAILED.Field minCap disabled if crowdsale is not modifiable');
+		});
+	test.it('Warning is displayed if minCap > totalSupply',
+		async function () {
+			let value = e2eMinCapModifiable.supply + 1;
+			let result = await mngPage.fillMinCap(value)
+			&& await mngPage.isDisplayedWarningMinCap()
+			return await assert.equal(result, true, 'Test FAILED.Warning is not present if minCap > totalSupply');
+		});
+
+	test.it.skip('Owner is able to change minCap from manage page (AUTH_OS ISSUE)',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			await owner.openManagePage(e2eMinCapModifiable);
+			let value = e2eMinCapModifiable.minCap - 1;
+			e2eMinCapModifiable.minCap = value;
+			let result = await owner.changeMinCapFromManagePage(value);
+			return await assert.equal(result, true, 'Test FAILED.Owner is not able to change minCap from manage page');
+		});
+
+	test.it('Contribution page: Countdown timer is displayed',
+		async function () {
+			let investor = Owner;
+			await investor.openInvestPage(e2eMinCapModifiable);
+			await investPage.waitUntilLoaderGone();
+			let result = await investPage.getTimerStatus();
+			return await assert.notEqual(result, false, 'Test FAILED. Countdown timer are not displayed ');
+		});
+
+	test.it('Tier starts as scheduled',
+		async function () {
+			let investor = Owner;
+			await investor.openInvestPage(e2eMinCapModifiable);
+			await investPage.waitUntilLoaderGone();
+			let counter = 60;
+			do {
+				logger.info("wait " + Date.now());
+				await driver.sleep(5000);
+			}
+			while (counter-- > 0 && !await investPage.isCrowdsaleStarted());
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Field minCap disabled after start of tier',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			await owner.openManagePage(e2eMinCapModifiable);
+			let result = await mngPage.isDisabledMinCap();
+			return await assert.equal(result, true, 'Test FAILED.Field minCap enabled after start of tier');
+		});
+	test.it('Investor is able to buy amount equal new mincap',
+		async function () {
+			balanceEthOwnerBefore = await Utils.getBalance(Owner);
+			let investor = Investor1;
+			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = e2eMinCapModifiable.minCap;
+			let result = await investor.openInvestPage(e2eMinCapModifiable)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy amount = min');
+		});
 
 });

@@ -98,7 +98,7 @@ class Page {
 	}
 
 	async isElementDisabled(element) {
-		logger.info("is element disabled :" + element);
+		logger.info("isElementDisabled  " + element);
 		try {
 			let field = await this.getElement(element);
 			return !await field.isEnabled()
