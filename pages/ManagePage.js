@@ -461,12 +461,13 @@ class ManagePage extends Page {
 	}
 
 	async isDisplayedWarningMinCap() {
-		logger.info(this.name + "isPresentWarningMinCap ");
-		return false;
-		await this.driver.sleep(500);
-		let result = await super.getTextForElement(warningMinCap);
-		logger.info("Text=" + result);
-		return (result !== "");
+		logger.info(this.name + "isDisplayedWarningMinCap ");
+		const mincapBlock = By.className("left");
+		const elements = await super.findWithWait(mincapBlock);
+		const locator = "error";
+		let warnings = await super.getChildFromElementByClassName(locator, elements[0]);
+		if (warnings === null) return null;
+		return (await super.getTextForElement(warnings[0])!== "");
 	}
 
 	async uploadWhitelistCSVFile() {
@@ -485,6 +486,8 @@ class ManagePage extends Page {
 			return false;
 		}
 	}
+
+
 
 }
 

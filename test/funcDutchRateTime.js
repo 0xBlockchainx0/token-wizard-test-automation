@@ -100,7 +100,6 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 		//await fs.remove(tempOutputPath);
 		//await driver.quit();
 	});
-///////////////////////// UI TESTS /////////////////////////////////////
 
 //////////////////////// Test SUITE #1 /////////////////////////////
 	test.it('ceate crowdsale, duration 5 min',

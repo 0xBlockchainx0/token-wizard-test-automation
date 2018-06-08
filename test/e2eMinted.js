@@ -1222,6 +1222,13 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let result = await mngPage.isDisabledMinCap();
 			return await assert.equal(result, false, 'Test FAILED.Field minCap disabled if crowdsale is not modifiable');
 		});
+	test.it('Warning is displayed if minCap > totalSupply',
+		async function () {
+			let value = e2eMinCapModifiable.supply + 1;
+			let result = await mngPage.fillMinCap(value)
+			&& await mngPage.isDisplayedWarningMinCap()
+			return await assert.equal(result, true, 'Test FAILED.Warning is not present if minCap > totalSupply');
+		});
 
 	test.it.skip('Owner is able to change minCap from manage page (AUTH_OS ISSUE)',
 		async function () {

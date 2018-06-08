@@ -406,6 +406,7 @@ class Utils {
 			let fileLog = "./time_rate_logs/time_rate" + Date.now() + ".log";
 			let duration = parseInt(crowdsale.tiers[0].endTime)-parseInt(crowdsale.tiers[0].startTime);
 			await fs.writeFileSync(fileLog, "duration = " +duration/60000 + "min  \n");
+			await fs.appendFileSync(fileLog,"execID = " +crowdsale.executionID);
 			await fs.appendFileSync(fileLog, "minRate = " + crowdsale.tiers[0].minRate + "\n");
 			await fs.appendFileSync(fileLog, "maxRate = " + crowdsale.tiers[0].maxRate + "\n");
 
