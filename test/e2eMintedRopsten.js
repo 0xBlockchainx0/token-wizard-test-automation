@@ -75,6 +75,10 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		await metaMask.activate();//return activated Metamask and empty page
 		await Owner.setMetaMaskAccount();
 
+		//await metaMask.testMetamask();
+
+
+
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
 		wizardStep2 = new WizardStep2(driver);

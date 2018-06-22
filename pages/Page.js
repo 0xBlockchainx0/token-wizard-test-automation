@@ -227,6 +227,8 @@ class Page {
 		}
 	}
 
+
+
 	async clearField(element) {
 		try {
 			logger.info("clear field :");
@@ -250,6 +252,35 @@ class Page {
 			return false;
 		}
 	}
+
+	async clearFieldFromStart(element) {
+		try {
+			logger.info("clearFieldFromStart");
+			let field = await this.getElement(element);
+			let counter = 1;
+			do {
+				await this.driver.sleep(200);
+				for (let i = 0; i < 10; i++) {
+					await field.sendKeys(key.ARROW_RIGHT);
+				}
+				await this.driver.sleep(200);
+				for (let i = 0; i < 10; i++) {
+					await field.sendKeys(key.BACK_SPACE);
+				}
+				await this.driver.sleep(200);
+
+			} while (counter-- > 0);
+			return true;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return false;
+		}
+	}
+
+
+
+
 
 	async switchToNextPage() {
 		logger.info("switch to next tab :");
