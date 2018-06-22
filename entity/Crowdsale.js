@@ -11,7 +11,7 @@ class Crowdsale {
 		this.walletAddress;
 		this.reservedTokens = [];
 		this.gasPrice;
-		this.minCap;
+
 
 		this.tiers = [];
 		this.tokenAddress;
@@ -31,7 +31,6 @@ class Crowdsale {
 		this.reservedTokens = obj.reservedTokens;
 		this.walletAddress = obj.walletAddress;
 		this.gasPrice = obj.gasprice;
-		this.minCap = obj.mincap;
 		this.tiers = obj.tiers;
 	}
 
@@ -51,7 +50,6 @@ class Crowdsale {
 
 		logger.info("walletAddress:" + this.walletAddress);
 		logger.info("gasprice:" + this.gasPrice);
-		logger.info("mincap:" + this.minCap);
 		logger.info("number of tiers:" + this.tiers.length);
 
 		for (let i = 0; i < this.tiers.length; i++) {
@@ -63,6 +61,7 @@ class Crowdsale {
 			logger.info("startTime:" + this.tiers[i].startTime);
 			logger.info("endDate:" + this.tiers[i].endDate);
 			logger.info("endTime:" + this.tiers[i].endTime);
+			logger.info("mincap:" + this.minCap);
 			logger.info("rate:" + this.tiers[i].rate);
 			logger.info("supply:" + this.tiers[i].supply);
 			logger.info("Whitelist length: " + this.tiers[i].whitelist.length);

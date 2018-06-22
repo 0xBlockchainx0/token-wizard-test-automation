@@ -78,6 +78,20 @@ class TierPage extends Page {
 			await super.fillWithWait(element, this.tier.rate);
 	}
 
+	async getFieldMinCap() {
+		logger.info(this.name + "getFieldMinCap ");
+		const locator = By.id("tiers[" + this.number + "].minCap");
+		return await super.getElement(locator);
+	}
+
+	async fillMinCap() {
+		logger.info(this.name + "fillMinCap ");
+		if (this.tier.minCap === undefined) return true;
+		let element = await this.getFieldMinCap();
+		return await super.clearField(element) &&
+			await super.fillWithWait(element, this.tier.minCap);
+	}
+
 	async getFieldSupply() {
 		logger.info(this.name + "getFieldSupply ");
 		const locator = By.id("tiers[" + this.number + "].supply");
@@ -171,7 +185,7 @@ class TierPage extends Page {
 	}
 
 	async initWhitelistFields() {
-		logger.info(this.name + "initWhitelistContainer ");
+		logger.info(this.name + "initWhitelistFields ");
 		try {
 			let element = (await this.findWithWait(whitelistContainer))[this.number];
 			let array = await this.getChildFromElementByClassName("input", element);
@@ -406,6 +420,7 @@ class TierPage extends Page {
 	async fillTier() {
 		logger.info(this.name + "fillTier ");
 		return await this.setModify()
+			&& await this.fillMinCap()
 			&& await this.setWhitelisting()
 			&& await this.fillMinRate()
 			&& await this.fillMaxRate()
@@ -426,7 +441,9 @@ class TierPage extends Page {
 
 	async fillWhitelist() {
 		logger.info(this.name + "fillWhitelist ");
+
 		try {
+
 			for (let i = 0; i < this.tier.whitelist.length; i++) {
 				logger.info(this.name + "fillWhitelist #" + i + ": ");
 				do {

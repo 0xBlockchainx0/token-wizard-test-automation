@@ -102,6 +102,7 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 	});
 
 //////////////////////// Test SUITE #1 /////////////////////////////
+
 	test.it('ceate crowdsale, duration 5 min',
 		async function () {
 			let owner = Owner;
@@ -114,7 +115,7 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 			let investor = Owner;
 			assert.equal(await investor.openInvestPage(e2eRopsten), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let counter = 180;
+			let counter = 1080;
 			do {
 				logger.info("wait " + Date.now());
 				await driver.sleep(1000);

@@ -5,7 +5,8 @@ const By = require('selenium-webdriver/lib/by').By;
 const IDMetaMask = "nkbihfbeogaeaoehlefnkodbefgpgknn";
 const URL = "chrome-extension://" + IDMetaMask + "//popup.html";
 const buttonSubmit = By.className("confirm btn-green");
-const buttonAccept = By.xpath('//*[@id="app-content"]/div/div[4]/div/button');
+const buttonAccept = By.xpath('//*[@id="app-content"]/div/div[4]/div/div[1]/button');
+//const buttonAccept = By.xpath("//*[contains(text(),'Accept')]");
 const agreement = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div/p[1]/strong");
 const fieldNewPass = By.xpath("//*[@id=\"password-box\"]");
 const fieldConfirmPass = By.xpath("//*[@id=\"password-box-confirm\"]");
@@ -15,7 +16,8 @@ const popupNetwork = By.className("network-name");
 const popupAccount = By.xpath("//*[@id=\"app-content\"]/div/div[1]/div/div[2]/span/div");
 const fieldPrivateKey = By.xpath("//*[@id=\"private-key-box\"]");
 const pass = "qwerty12345";
-const buttonImport = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/button");
+
+const buttonImport = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[4]/button");
 const fieldNewRPCURL = By.id("new_rpc");
 const buttonSave = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[3]/div/div[2]/button");
 const arrowBackRPCURL = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[1]/i");
@@ -43,9 +45,14 @@ class MetaMask extends Page {
 		logger.info(this.name + "activate ");
 		return await this.switchToNextPage() &&
 			await this.open(this.URL) &&
-			await this.clickWithWait(buttonAccept) &&
-			await this.clickWithWait(agreement) &&
+			//await this.clickWithWait(buttonAccept) &&
+			//await this.clickWithWait(agreement) &&
 			await this.pressKey(key.TAB, 15) &&
+			await this.clickWithWait(buttonAccept) &&
+			//await this.clickWithWait(agreement) &&
+			await this.pressKey(key.TAB, 3) &&
+			await this.clickWithWait(buttonAccept) &&
+			await this.pressKey(key.TAB, 3) &&
 			await this.clickWithWait(buttonAccept) &&
 			await this.waitUntilLocated(fieldNewPass) &&
 			await this.clickWithWait(fieldNewPass) &&

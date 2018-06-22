@@ -15,7 +15,8 @@ const _dutch = 'dutch';
 class Utils {
 
 	static async startBrowserWithMetamask() {
-		let source = './MetaMask.crx';
+		logger.info("Utils: startBrowserWithMetamask");
+		let source = './MetaMask_4_8_0_0.crx';//./MetaMask.crx';
 		let options = new chrome.Options();
 		await options.addExtensions(source);
 		await options.addArguments('disable-popup-blocking');
@@ -404,9 +405,11 @@ class Utils {
 			await fs.ensureDirSync("./time_rate_logs/");
 			let file = "./time_rate_logs/time_rate" + Date.now() + ".json";
 			let fileLog = "./time_rate_logs/time_rate" + Date.now() + ".log";
-			let duration = parseInt(crowdsale.tiers[0].endTime)-parseInt(crowdsale.tiers[0].startTime);
-			await fs.writeFileSync(fileLog, "duration = " +duration/60000 + "min  \n");
-			await fs.appendFileSync(fileLog,"execID = " +crowdsale.executionID);
+
+			await fs.writeFileSync(fileLog,"startTime "+crowdsale.tiers[0].startTime+"\n");
+			await fs.appendFileSync(fileLog, "endTime "+crowdsale.tiers[0].endTime+"\n");
+			await fs.appendFileSync(fileLog,"timestamp = " +Date.now() + "\n");
+			await fs.appendFileSync(fileLog,"execID = " +crowdsale.executionID + "\n");
 			await fs.appendFileSync(fileLog, "minRate = " + crowdsale.tiers[0].minRate + "\n");
 			await fs.appendFileSync(fileLog, "maxRate = " + crowdsale.tiers[0].maxRate + "\n");
 
@@ -429,7 +432,7 @@ class Utils {
 			}
 			while ((parseInt(status.time_remaining) !== 0));
 
-			await fs.appendJsonSync(file, array);
+			await fs.writeJsonSync(file, array);
 			await fs.appendFileSync(fileLog, arrayLog);
 			return file;
 
@@ -441,15 +444,15 @@ class Utils {
 	}
 
 	static async  getCrowdsaleStatusRopsten(crowdsale,abi) {
-		console.log("getCrowdsaleStatusRopsten");
+		//console.log("getCrowdsaleStatusRopsten");
 		try {
 			let networkIDRopsten = 3;
 			const web3 = await Utils.getWeb3Instance(networkIDRopsten);
-			let REACT_APP_REGISTRY_STORAGE_ADDRESS = "0xb1d914e7c55f16c2bacac11af6b3e011aee38caf";
-			let REACT_APP_DUTCH_CROWDSALE_INIT_CROWDSALE_ADDRESS = "0xbe9c4888a51761f6c5a7d3803106edab7c96196e";
+			let REACT_APP_REGISTRY_STORAGE_ADDRESS = "0x9996020c8864964688411b3d90ac27eb5b0937c7";
+			let REACT_APP_DUTCH_CROWDSALE_INIT_CROWDSALE_ADDRESS = "0xdcD30b8417062AbDFAd1db173D66bd6e0D31929E";
 			let myContract = new web3.eth.Contract(abi, REACT_APP_DUTCH_CROWDSALE_INIT_CROWDSALE_ADDRESS);
 			let status = await myContract.methods.getCrowdsaleStatus(REACT_APP_REGISTRY_STORAGE_ADDRESS, crowdsale.executionID).call();
-			//console.log("status = " + status );
+			console.log("status = " + status );
 			return status;
 		}
 		catch (err) {

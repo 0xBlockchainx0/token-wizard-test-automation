@@ -74,6 +74,7 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 		startURL = await Utils.getStartURL();
 		driver = await Utils.startBrowserWithMetamask();
 
+
 		Owner = new User(driver, user3_56B2File);
 
 

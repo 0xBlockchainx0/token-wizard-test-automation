@@ -17,7 +17,7 @@ async function run() {
 	let crowdsale = new Crowdsale();
 	crowdsale.executionID = '0x8d96e757b5e5b2a533b7b1ad17493245ac729e6b78bf4e4e81bd8098b50a797a';
 	crowdsale.sort = "dutch";
-let file = await takeFunctionRateTime(crowdsale);
+    let file = await Utils.takeFunctionRateTime(crowdsale);
 
 	//console.log("Status = " + JSON.stringify(status));
 	//console.log("Status.current_rate = " + status.current_rate);

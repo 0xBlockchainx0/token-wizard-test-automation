@@ -204,8 +204,7 @@ class WizardStep3 extends Page {
 		logger.info(this.name + "fillPage ");
 		let result = await this.waitUntilLoaderGone() &&
 			await this.fillWalletAddress(crowdsale.walletAddress) &&
-			await this.setGasPrice(crowdsale.gasPrice) &&
-			await this.fillMinCap(crowdsale.minCap);
+			await this.setGasPrice(crowdsale.gasPrice);
 
 		for (let i = 0; i < crowdsale.tiers.length - 1; i++) {
 			result = await new TierPage(this.driver, crowdsale.tiers[i]).fillTier()

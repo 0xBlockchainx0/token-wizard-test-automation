@@ -1,5 +1,5 @@
 class Tier {
-	constructor(name, isWhitelisted, allowModify, rate, supply, startTime, startDate, endTime, endDate, whitelist) {
+	constructor(name, isWhitelisted, allowModify, rate, supply, startTime, startDate, endTime, endDate, whitelist,minCap) {
 		this.name = name;
 		this.isWhitelisted = isWhitelisted;
 		this.allowModify = allowModify;
@@ -12,8 +12,8 @@ class Tier {
 		this.whitelist = whitelist;
 		this.minRate = undefined;
 		this.maxRate = undefined;
-
-
+		this.minCap = minCap;
 	}
 }
+
 module.exports.Tier = Tier;

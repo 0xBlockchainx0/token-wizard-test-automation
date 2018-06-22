@@ -67,17 +67,10 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 
 		const scenarioRopsten = './scenarios/scenarioMintedRopsten.json';
-
-
 		e2eRopsten = await  Utils.getMintedCrowdsaleInstance(scenarioRopsten);
-
 		startURL = await Utils.getStartURL();
 		driver = await Utils.startBrowserWithMetamask();
-
 		Owner = new User(driver, user3_56B2File);
-
-
-
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
 		await Owner.setMetaMaskAccount();
