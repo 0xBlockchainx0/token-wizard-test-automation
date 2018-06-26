@@ -461,12 +461,12 @@ class User {
 		return result && crowdsale.executionID !== "";
 	}
 
-	async changeMinCapFromManagePage(value) {
+	async changeMinCapFromManagePage(tier,value) {
 		logger.info("changeMinCapFromManagePage ");
 		let mngPage = new ManagePage(this.driver);
 		let metaMask = new MetaMask(this.driver);
 		return await mngPage.waitUntilLoaderGone()
-			&& await mngPage.fillMinCap(value)
+			&& await mngPage.fillMinCap(tier,value)
 			&& !await mngPage.isDisplayedWarningMinCap()
 			&& await mngPage.clickButtonSave()
 			&& await metaMask.signTransaction(10)
