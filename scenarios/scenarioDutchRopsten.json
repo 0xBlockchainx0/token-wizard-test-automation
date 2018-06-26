@@ -5,31 +5,22 @@
   "decimals": 10,
   "totalSupply":10000,
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
-  "gasprice":50,
+  "gasprice":100,
 
   "tiers":[
     {
 
-      "isWhitelisted":true,
+      "isWhitelisted":false,
       "startDate": "420000",
       "startTime": "420000",
-      "endDate":"",
-      "endTime":"",
+      "endDate":"700000",
+      "endTime":"700000",
       "minCap":31,
       "minRate":100,
       "maxRate":1000,
       "supply": 100,
       "whitelist":[
-        {
-          "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
-          "min": 50,
-          "max": 150
-        },
-        {
-          "address": "0x9E963042D581D262AdE4E31541360e7FDAeE70C6",
-          "min": 50,
-          "max": 150
-        }
+
       ]
     }]
 }
