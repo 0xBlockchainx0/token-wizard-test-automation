@@ -84,10 +84,10 @@ class TierPage extends Page {
 		return await super.getElement(locator);
 	}
 
-	async fillMinCap() {
+	async fillMinCap(tier) {
 		logger.info(this.name + "fillMinCap ");
 		if (this.tier.minCap === undefined) return true;
-		let element = await this.getFieldMinCap();
+		let element = await this.getFieldMinCap(tier);
 		return await super.clearField(element) &&
 			await super.fillWithWait(element, this.tier.minCap);
 	}
@@ -464,6 +464,13 @@ class TierPage extends Page {
 			return false;
 		}
 	}
+
+	async isDisabledMinCap(tier) {
+		logger.info(this.name + "isDisabledMinCap ");
+		let element = await this.getFieldMinCap(tier)
+		return await this.isElementDisabled(element);
+	}
+
 }
 
 module.exports.TierPage = TierPage;

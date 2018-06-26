@@ -449,17 +449,6 @@ class ManagePage extends Page {
 		}
 	}
 
-	async isDisabledMinCap(ter) {
-		logger.info(this.name + "isDisabledMinCap ");
-		return await this.isElementDisabled(fieldMinCap);
-	}
-
-	async fillMinCap(value) {
-		logger.info(this.name + "fillMinCap ");
-		return await super.clearField(fieldMinCap)
-			&& await super.fillWithWait(fieldMinCap, value);
-	}
-
 	async isDisplayedWarningMinCap() {
 		logger.info(this.name + "isDisplayedWarningMinCap ");
 		const mincapBlock = By.className("left");
@@ -467,7 +456,7 @@ class ManagePage extends Page {
 		const locator = "error";
 		let warnings = await super.getChildFromElementByClassName(locator, elements[0]);
 		if (warnings === null) return null;
-		return (await super.getTextForElement(warnings[0])!== "");
+		return (await super.getTextForElement(warnings[0]) !== "");
 	}
 
 	async uploadWhitelistCSVFile() {
@@ -487,7 +476,24 @@ class ManagePage extends Page {
 		}
 	}
 
+	async getFieldMinCap(tier) {
+		logger.info(this.name + "getFieldMinCap ");
+		const locator = By.id("tiers[" + (tier - 1) + "].minCap");
+		return await super.getElement(locator);
+	}
 
+	async isDisabledMinCap(tier) {
+		logger.info(this.name + "isDisabledMinCap ");
+		let element = await this.getFieldMinCap(tier)
+		return await this.isElementDisabled(element);
+	}
+
+	async fillMinCap(tier, value) {
+		logger.info(this.name + "fillMinCap , tier# " + tier + " ,value = " + value);
+		return await this.getFieldMinCap(tier)
+			&& await super.clearField(fieldMinCap)
+			&& await super.fillWithWait(fieldMinCap,value);
+	}
 
 }
 

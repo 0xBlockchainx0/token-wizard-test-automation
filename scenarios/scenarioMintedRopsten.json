@@ -3,33 +3,33 @@
   "ticker": "test",
   "decimals": 18,
   "reservedTokens": [
-
+    {
+      "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",
+      "dimension": "percentage",
+      "value": 250
+    },
+    {
+      "address" :  "0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+      "dimension": "tokens",
+      "value":100000000
+    }
   ],
   "walletAddress": "0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
   "gasprice": 100,
   "tiers": [
     {
       "name": "###1",
-      "allowModify": false,
-      "isWhitelisted": true,
+      "allowModify": true,
+      "isWhitelisted": false,
       "startDate": "600000",
       "startTime": "600000",
       "endDate": "720000",
       "endTime": "720000",
-      "minCap":1,
+      "minCap":11,
       "rate": 1000,
-      "supply": 201,
+      "supply": 200,
       "whitelist": [
-        {
-          "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
-          "min": 50,
-          "max": 150
-        },
-        {
-          "address": "0x9E963042D581D262AdE4E31541360e7FDAeE70C6",
-          "min": 50,
-          "max": 150
-        }
+
       ]
 
     },
@@ -39,229 +39,34 @@
       "isWhitelisted": true,
       "startDate": "",
       "startTime": "",
-      "endDate": "960000",
-      "endTime": "960000",
-      "minCap":2,
-      "rate": 1000,
-      "supply": 202,
+      "endDate": "",
+      "endTime": "",
+      "minCap":12,
+      "rate": 2000,
+      "supply": 400,
       "whitelist": [
         {
           "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
-          "min": 12,
-          "max": 123
-        },
-        {
-          "address": "0x9E963042D581D262AdE4E31541360e7FDAeE70C6",
           "min": 50,
           "max": 150
         }
-      ]
-
-    },
-    {
-      "name": "###3",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "1200000",
-      "endTime": "1200000",
-      "minCap":3,
-      "rate": 1000,
-      "supply": 203,
-      "whitelist": [
 
       ]
 
     },
     {
-      "name": "###4",
-      "allowModify": false,
+      "name": "###2",
+      "allowModify": true,
       "isWhitelisted": false,
       "startDate": "",
       "startTime": "",
-      "endDate": "1500000",
-      "endTime": "1500000",
-      "minCap":4,
-      "rate": 1000,
-      "supply": 204,
-      "whitelist": [
-
-      ]
-
-    },
-    {
-      "name": "###5",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "1700000",
-      "endTime": "1700000",
-      "minCap":5,
-      "rate": 1000,
-      "supply": 205,
-      "whitelist": [
-
-      ]
-
-    },
-    {
-      "name": "###6",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "2000000",
-      "endTime": "2000000",
-      "minCap":6,
-      "rate": 1000,
-      "supply": 206,
-      "whitelist": [
-
-      ]
-
-    },
-    {
-      "name": "###7",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "2300000",
-      "endTime": "2300000",
-      "minCap":7,
-      "rate": 1000,
-      "supply": 207,
-      "whitelist": [
-
-      ]
-
-    },
-    {
-      "name": "###8",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "2600000",
-      "endTime": "2600000",
-      "minCap":8,
-      "rate": 1000,
-      "supply": 208,
-      "whitelist": [
-
-      ]
-
-    },
-    {
-      "name": "###9",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "2900000",
-      "endTime": "2900000",
-      "minCap":9,
-      "rate": 1000,
-      "supply": 209,
-      "whitelist": [
-
-      ]
-
-    },
-    {
-      "name": "###10",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "3200000",
-      "endTime": "3200000",
-      "minCap":10,
-      "rate": 1000,
-      "supply": 210,
-      "whitelist": [
-
-      ]
-
-    },
-    {
-      "name": "###11",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "3500000",
-      "endTime": "3500000",
-      "minCap":11,
-      "rate": 1000,
-      "supply": 211,
-      "whitelist": [
-
-      ]
-
-    },
-    {
-      "name": "###12",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "3700000",
-      "endTime": "3700000",
-      "minCap":12,
-      "rate": 1000,
-      "supply": 212,
-      "whitelist": [
-
-      ]
-
-    },
-    {
-      "name": "###13",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "3800000",
-      "endTime": "3800000",
+      "endDate": "",
+      "endTime": "",
       "minCap":13,
-      "rate": 1000,
-      "supply": 213,
+      "rate": 6000,
+      "supply": 600,
       "whitelist": [
 
-      ]
-
-    },
-    {
-      "name": "###14",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "3800000",
-      "endTime": "3800000",
-      "minCap":14,
-      "rate": 1000,
-      "supply": 214,
-      "whitelist": [
-
-      ]
-
-    },
-    {
-      "name": "###15",
-      "allowModify": false,
-      "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "4200000",
-      "endTime": "4200000",
-      "minCap":15,
-      "rate": 1000,
-      "supply": 215,
-      "whitelist": [
 
       ]
 

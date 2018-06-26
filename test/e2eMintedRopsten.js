@@ -67,6 +67,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 
 		const scenarioRopsten = './scenarios/scenarioMintedRopsten.json';
+		//const scenarioRopsten = './scenarioMintedRopsten15Tiers.json';
 		e2eRopsten = await  Utils.getMintedCrowdsaleInstance(scenarioRopsten);
 		startURL = await Utils.getStartURL();
 		driver = await Utils.startBrowserWithMetamask();

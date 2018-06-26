@@ -16,7 +16,6 @@
   ],
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
   "gasprice": 1,
-  "mincap": 1,
 
   "tiers":[
     {
@@ -27,6 +26,7 @@
       "startTime": "240000",
       "endDate":"23/02/2050",
       "endTime":"12:34",
+      "minCap":11,
       "rate":200,
       "supply": 250,
       "whitelist":[
@@ -50,6 +50,7 @@
       "startTime": "",
       "endDate":"",
       "endTime":"",
+      "minCap":12,
       "rate":100,
       "supply": 200,
       "whitelist":[

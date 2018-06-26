@@ -1,0 +1,268 @@
+{
+  "name": "scenarioMintedRopsten15Tiers",
+  "ticker": "test",
+  "decimals": 18,
+  "reservedTokens": [
+    {
+      "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",
+      "dimension": "percentage",
+      "value": 250
+    },
+    {
+      "address" :  "0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+      "dimension": "tokens",
+      "value":100000000
+    }
+  ],
+  "walletAddress": "0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+  "gasprice": 100,
+  "tiers": [
+    {
+      "name": "###1",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "600000",
+      "startTime": "600000",
+      "endDate": "720000",
+      "endTime": "720000",
+      "minCap":1,
+      "rate": 1000,
+      "supply": 201,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###2",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "960000",
+      "endTime": "960000",
+      "minCap":2,
+      "rate": 1000,
+      "supply": 202,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###3",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "1200000",
+      "endTime": "1200000",
+      "minCap":3,
+      "rate": 1000,
+      "supply": 203,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###4",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "1500000",
+      "endTime": "1500000",
+      "minCap":4,
+      "rate": 1000,
+      "supply": 204,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###5",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "1700000",
+      "endTime": "1700000",
+      "minCap":5,
+      "rate": 1000,
+      "supply": 205,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###6",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "2000000",
+      "endTime": "2000000",
+      "minCap":6,
+      "rate": 1000,
+      "supply": 206,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###7",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "2300000",
+      "endTime": "2300000",
+      "minCap":7,
+      "rate": 1000,
+      "supply": 207,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###8",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "2600000",
+      "endTime": "2600000",
+      "minCap":8,
+      "rate": 1000,
+      "supply": 208,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###9",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "2900000",
+      "endTime": "2900000",
+      "minCap":9,
+      "rate": 1000,
+      "supply": 209,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###10",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "3200000",
+      "endTime": "3200000",
+      "minCap":10,
+      "rate": 1000,
+      "supply": 210,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###11",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "3500000",
+      "endTime": "3500000",
+      "minCap":11,
+      "rate": 1000,
+      "supply": 211,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###12",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "3700000",
+      "endTime": "3700000",
+      "minCap":12,
+      "rate": 1000,
+      "supply": 212,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###13",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "4100000",
+      "endTime": "4100000",
+      "minCap":13,
+      "rate": 1000,
+      "supply": 213,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###14",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "4400000",
+      "endTime": "4400000",
+      "minCap":14,
+      "rate": 1000,
+      "supply": 214,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###15",
+      "allowModify": true,
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "4700000",
+      "endTime": "4700000",
+      "minCap":15,
+      "rate": 1000,
+      "supply": 215,
+      "whitelist": [
+
+      ]
+
+    }
+
+
+
+
+
+
+
+  ]
+}
