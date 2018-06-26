@@ -337,6 +337,7 @@ class User {
 			await reservedTokens.fillReservedTokens(crowdsale) &&
 			await wizardStep2.clickButtonContinue() &&
 			await wizardStep3.fillPage(crowdsale);
+
 		counter = 200;
 		do {
 			await this.driver.sleep(300);
@@ -414,6 +415,7 @@ class User {
 			await wizardStep2.fillPage(crowdsale) &&
 			await wizardStep2.clickButtonContinue() &&
 			await wizardStep3.fillPage(crowdsale);
+
 		if (!result) return false;
 		counter = 200;
 		do {
@@ -459,12 +461,12 @@ class User {
 		return result && crowdsale.executionID !== "";
 	}
 
-	async changeMinCapFromManagePage(value) {
+	async changeMinCapFromManagePage(tier,value) {
 		logger.info("changeMinCapFromManagePage ");
 		let mngPage = new ManagePage(this.driver);
 		let metaMask = new MetaMask(this.driver);
 		return await mngPage.waitUntilLoaderGone()
-			&& await mngPage.fillMinCap(value)
+			&& await mngPage.fillMinCap(tier,value)
 			&& !await mngPage.isDisplayedWarningMinCap()
 			&& await mngPage.clickButtonSave()
 			&& await metaMask.signTransaction(10)

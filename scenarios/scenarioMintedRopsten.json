@@ -1,8 +1,8 @@
 {
-  "name": "scenarioE2eMintedWhitelist",
+  "name": "scenarioMintedRopsten",
   "ticker": "test",
   "decimals": 18,
-  "reservedTokens":[
+  "reservedTokens": [
     {
       "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",
       "dimension": "percentage",
@@ -14,46 +14,69 @@
       "value":100000000
     }
   ],
-  "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+  "walletAddress": "0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
   "gasprice": 100,
-  "mincap": 1,
-  "tiers":[
+  "tiers": [
     {
-      "name":"###1",
+      "name": "###1",
       "allowModify": true,
-      "isWhitelisted":true,
-      "startDate": "420000",
-      "startTime": "420000",
-      "endDate":"500000",
-      "endTime":"500000",
-      "rate":20000,
-      "supply": 250,
-      "whitelist":[
+      "isWhitelisted": false,
+      "startDate": "600000",
+      "startTime": "600000",
+      "endDate": "720000",
+      "endTime": "720000",
+      "minCap":11,
+      "rate": 1000,
+      "supply": 200,
+      "whitelist": [
+
+      ]
+
+    },
+    {
+      "name": "###2",
+      "allowModify": false,
+      "isWhitelisted": true,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "",
+      "endTime": "",
+      "minCap":12,
+      "rate": 2000,
+      "supply": 400,
+      "whitelist": [
         {
           "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
           "min": 50,
           "max": 150
-        },
-        {
-          "address": "0x9E963042D581D262AdE4E31541360e7FDAeE70C6",
-          "min": 50,
-          "max": 150
         }
+
       ]
+
     },
     {
-      "name":"###2",
+      "name": "###2",
       "allowModify": true,
-      "isWhitelisted":true,
+      "isWhitelisted": false,
       "startDate": "",
       "startTime": "",
-      "endDate":"",
-      "endTime":"",
-      "rate":10000,
-      "supply": 200,
-      "whitelist":[
-        {
-          "address": "0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7",
-          "min": 25,
-          "max": 250
-        }]}]}
+      "endDate": "",
+      "endTime": "",
+      "minCap":13,
+      "rate": 6000,
+      "supply": 600,
+      "whitelist": [
+
+
+      ]
+
+    }
+
+
+
+
+
+
+
+  ]
+}

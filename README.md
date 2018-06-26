@@ -196,12 +196,4 @@ Test suite for DutchAuctionCrowdsale , starts with command ```npm run e2eDutch``
  - Investor has received correct quantity of tokens after finalization
  - Owner has received correct quantity of tokens after finalization
 ```
-
-
-
-
-
- 
- 
- 
  
