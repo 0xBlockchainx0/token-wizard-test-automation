@@ -42,7 +42,7 @@ class User {
 			const web3 = await Utils.getWeb3Instance(crowdsale.networkID);
 			let contractAddress = await Utils.getContractAddressInitCrowdsale(crowdsale);
 			logger.info("contractAddress" + contractAddress);
-			let addressRegistryStorage = await Utils.getEnvAddressRegistryStorage();
+			let addressRegistryStorage = await Utils.getEnvAddressAbstractStorage();
 			logger.info("addressRegistryStorage" + addressRegistryStorage);
 			let abi = await Utils.getContractABIInitCrowdsale(crowdsale);
 			let myContract = new web3.eth.Contract(abi, contractAddress);

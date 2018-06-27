@@ -202,7 +202,7 @@ class MetaMask extends Page {
 	async fillGasLimit(value) {
 		logger.info(this.name + " fillGasLimit ");
 		return await this.clearFieldFromStart(fieldGasLimit)
-			&& await this.fillWithWait(fieldGasLimit, value)
+			&& await this.fillWithWait(fieldGasLimit, value);
 
 	}
 

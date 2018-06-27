@@ -490,9 +490,9 @@ class ManagePage extends Page {
 
 	async fillMinCap(tier, value) {
 		logger.info(this.name + "fillMinCap , tier# " + tier + " ,value = " + value);
-		return await this.getFieldMinCap(tier)
-			&& await super.clearField(fieldMinCap)
-			&& await super.fillWithWait(fieldMinCap,value);
+		let element = await this.getFieldMinCap(tier)
+		return await super.clearField(element)
+			&& await super.fillWithWait(element, value);
 	}
 
 }
