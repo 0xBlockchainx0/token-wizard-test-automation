@@ -325,22 +325,22 @@ class Utils {
 		return (Math.abs(balanceShouldBe - balanceEthOwnerAfter / 1e18) < delta);
 	}
 
-	static async getEnvAddressMintedInitCrowdsale() {
+	static async getEnvAddressMintedIDXAddress() {
 		logger.info("Utils:getEnvAddressMintedInitCrowdsale");
 		require('dotenv').config();
-		return Object.values(JSON.parse(process.env.REACT_APP_MINTED_CAPPED_CROWDSALE_INIT_CROWDSALE_ADDRESS))[0];
+		return Object.values(JSON.parse(process.env.REACT_APP_MINTED_CAPPED_IDX_ADDRESS))[0];
 	}
 
-	static async getEnvAddressDutchInitCrowdsale() {
+	static async getEnvAddressDutchIDXAddress() {
 		logger.info("Utils:getEnvAddressDutchInitCrowdsale");
 		require('dotenv').config();
-		return Object.values(JSON.parse(process.env.REACT_APP_DUTCH_CROWDSALE_INIT_CROWDSALE_ADDRESS))[0];
+		return Object.values(JSON.parse(process.env.REACT_APP_DUTCH_IDX_ADDRESS))[0];
 	}
 
-	static async getEnvAddressRegistryStorage() {
+	static async getEnvAddressAbstractStorage() {
 		logger.info("Utils:getEnvAddressRegistryStorage");
 		require('dotenv').config();
-		return Object.values(JSON.parse(process.env.REACT_APP_REGISTRY_STORAGE_ADDRESS))[0];
+		return Object.values(JSON.parse(process.env.REACT_APP_ABSTRACT_STORAGE_ADDRESS))[0];
 	}
 
 	static async getEnvNetworkId() {
@@ -353,13 +353,13 @@ class Utils {
 		logger.info("Utils:getContractAddressInitCrowdsale");
 		switch (crowdsale.sort) {
 			case 'minted':
-				return Utils.getEnvAddressMintedInitCrowdsale();
+				return Utils.getEnvAddressMintedIDXAddress();
 				break;
 			case 'dutch':
-				return Utils.getEnvAddressDutchInitCrowdsale();
+				return Utils.getEnvAddressDutchIDXAddress();
 				break;
 			default:
-				return Utils.getEnvAddressMintedInitCrowdsale();
+				return Utils.getEnvAddressMintedIDXAddress();
 		}
 
 	}

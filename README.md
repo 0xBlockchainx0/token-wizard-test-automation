@@ -160,19 +160,21 @@ Test suite for DutchAuctionCrowdsale , starts with command ```npm run e2eDutch``
 ```
 #### Functional tests for DutchAuctionCrowdsale
 ```
- - Owner can create DutchAuction crowdsale: 2 whitelisted addresses,duration 3 min
- - Invest page: Owner's balance has correct value (totalSupply-crowdsaleSupply)
+ - Owner can create DutchAuction crowdsale: 1 whitelisted addresses,duration 5 min
+ - Contribution page: Owner's balance has correct value (totalSupply-crowdsaleSupply)
  - Whitelisted investor not able to buy before start of crowdsale
- - Invest page: Countdown timer is displayed
+ - Manage page: owner is able to add whitelisted address before start of crowdsale
+ - Contribution page: Countdown timer is displayed
  - Tier starts as scheduled
- - Whitelisted investor#1 is not able to buy less than minCap in first transaction
- - Whitelisted investor#1 can buy amount equal minCap
- - Invest page: Investor's#1 balance is properly changed  after purchase
- - Whitelisted investor#1 is able to buy less than minCap after first transaction
- - Whitelisted investor#1 is able to buy maxCap
- - Whitelisted investor's#1 balance limited by maxCap
- - Whitelisted investor#2 with zero minCap is able to buy
- - Whitelisted investor#2 balance is properly changed
+ - Manage page: owner is able to add whitelisted address after start of crowdsale
+ - Whitelisted investor which was added before start can buy amount equal mincap
+ - Whitelisted investor which was added after start can buy amount equal mincap
+ - Whitelisted investor is not able to buy less than minCap in first transaction
+ - Whitelisted investor can buy amount equal minCap
+ - Contribution page: Investor's balance is properly changed  after purchase
+ - Whitelisted investor is able to buy less than minCap after first transaction
+ - Whitelisted investor is able to buy maxCap
+ - Whitelisted investor's balance limited by maxCap
  - Crowdsale has finished as schedule
  - Whitelisted investor is not able to buy if crowdsale finished
  - Not owner is not able to finalize
@@ -182,18 +184,24 @@ Test suite for DutchAuctionCrowdsale , starts with command ```npm run e2eDutch``
  - Owner has received correct quantity of tokens after finalization
 
  - Owner  can create DutchAuction crowdsale: minCap,no whitelist
- - Invest page: Owner's balance has correct value (totalSupply-supply)
+ - Contribution page: Owner's balance has correct value (totalSupply-supply)
+ - Manage page: owner is able to change minCap before start of crowdsale
  - Investor not able to buy before start of crowdsale
- - Invest page: countdown timer is displayed
- - Crowdsale starts as scheduled
+ - Contribution page: countdown timer is displayed
+ - Tier starts as scheduled
  - Investor is not able to buy less than minCap in first transaction
  - Investor is able to buy amount equal minCap
- - Invest page: Investors balance is properly changed after purchase
+ - Contribution page: Investors balance is properly changed after purchase
  - Whitelisted investor is able to buy less than minCap after first transaction
- - Whitelisted investor is able to buy maxCap
+ - Manage page: owner is able to update minCap after start of crowdsale
+ - minCap should be updated: new investor is not able to buy less than new minCap 
+ - minCap should be updated: new investor is  able to buy amount equals  new minCap
+ - Old investor still able to buy amount less than minCap
+ - Investor is able to buy maxCap
  - Owner's Eth balance properly changed
  - Owner is able to finalize (if all tokens have been sold)
- - Investor has received correct quantity of tokens after finalization
+ - Investor #1 has received correct quantity of tokens after finalization
+ - Investor #2 has received correct quantity of tokens after finalization
  - Owner has received correct quantity of tokens after finalization
 ```
  
