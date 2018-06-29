@@ -5,14 +5,14 @@
   "decimals": 10,
   "totalSupply":100,
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
-  "gasprice":100,
+  "gasprice":300,
 
   "tiers":[
     {
 
       "isWhitelisted":false,
-      "startDate": "240000",
-      "startTime": "240000",
+      "startDate": "600000",
+      "startTime": "600000",
       "endDate":"700000",
       "endTime":"700000",
       "minCap":11,
