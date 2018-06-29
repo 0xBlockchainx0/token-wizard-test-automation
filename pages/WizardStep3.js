@@ -202,6 +202,7 @@ class WizardStep3 extends Page {
 
 	async fillPage(crowdsale) {
 		logger.info(this.name + "fillPage ");
+
 		let result = await this.waitUntilLoaderGone() &&
 			await this.fillWalletAddress(crowdsale.walletAddress) &&
 			await this.setGasPrice(crowdsale.gasPrice);

@@ -16,7 +16,8 @@ const statusTimer = {
 	end: "END",
 	finalized: "HAS BEEN",
 	tier1: "TIER 1",
-	tier2: "TIER 2"
+	tier2: "TIER 2",
+	tier3:"TIER 3"
 }
 
 class ContributionPage extends Page {
@@ -39,6 +40,7 @@ class ContributionPage extends Page {
 			if (result.includes(statusTimer.start)) return statusTimer.start;
 			else if (result.includes(statusTimer.tier1)) return statusTimer.tier1;
 			else if (result.includes(statusTimer.tier2)) return statusTimer.tier2;
+			else if (result.includes(statusTimer.tier3)) return statusTimer.tier3;
 			else if (result.includes(statusTimer.finalized)) return statusTimer.finalized;
 		}
 		catch (err) {
@@ -46,6 +48,7 @@ class ContributionPage extends Page {
 			return false;
 		}
 	}
+
 
 	async isCrowdsaleStarted() {
 		logger.info(this.name + "isCrowdsaleStarted ");
@@ -60,6 +63,11 @@ class ContributionPage extends Page {
 	async isCurrentTier2() {
 		logger.info(this.name + "isCurrentTier2 ");
 		return (await this.getTimerStatus() === statusTimer.tier2);
+	}
+
+	async isCurrentTier3() {
+		logger.info(this.name + "isCurrentTier3 ");
+		return (await this.getTimerStatus() === statusTimer.tier3);
 	}
 
 	async initTimerFields() {

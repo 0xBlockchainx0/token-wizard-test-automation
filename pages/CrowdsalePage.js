@@ -2,6 +2,7 @@ const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const buttonInvest = By.className("button button_fill");
+const fieldExecID = By.className("hash");
 
 class CrowdsalePage extends Page {
 
@@ -20,6 +21,13 @@ class CrowdsalePage extends Page {
 		logger.info(this.name + "clickButtonInvest ");
 		return await super.clickWithWait(buttonInvest);
 	}
+
+	async getExecutionID() {
+		logger.info(this.name + "getExecutionID");
+		return await super.getTextForElement(fieldExecID);
+	}
+
+
 
 }
 

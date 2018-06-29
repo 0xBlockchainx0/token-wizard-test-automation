@@ -17,7 +17,7 @@
   ],
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
   "gasprice":1,
-  "mincap": 5,
+
   "tiers":[
     {
       "name":"###1",
@@ -25,11 +25,46 @@
       "isWhitelisted":false,
       "startDate": "180000",
       "startTime": "180000",
-      "endDate":"360000",
-      "endTime":"360000",
-      "rate":10,
-      "supply": 20,
+      "endDate":"480000",
+      "endTime":"480000",
+      "minCap":16,
+      "rate":1000,
+      "supply": 200,
       "whitelist":[]
-    }]
+    },
+    {
+      "name":"###2",
+      "allowModify": true,
+      "isWhitelisted":false,
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
+      "minCap":16,
+      "rate":1000,
+      "supply": 200,
+      "whitelist":[]
+    },
+    {
+      "name":"###3",
+      "allowModify": true,
+      "isWhitelisted":true,
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
+      "minCap":12,
+      "rate":1000,
+      "supply": 200,
+      "whitelist":[
+        {
+          "address": "0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7",
+          "min": 25,
+          "max": 250
+        }
+      ]
+    }
+
+  ]
 }
 

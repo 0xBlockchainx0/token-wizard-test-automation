@@ -75,6 +75,7 @@ class User {
 
 	async openInvestPage(crowdsale) {
 		return await new Page(this.driver).open(crowdsale.url);
+
 	}
 
 	async openManagePage(crowdsale) {
@@ -357,7 +358,7 @@ class User {
 			await wizardStep4.waitUntilDisplayedButtonContinue() &&
 			await wizardStep4.clickButtonContinue() &&
 			await wizardStep4.waitUntilLoaderGone();
-
+		crowdsale.executionID = await crowdsalePage.getExecutionID();
 		counter = 200;
 		do {
 			await this.driver.sleep(300);
@@ -373,7 +374,7 @@ class User {
 
 		result = result && await investPage.waitUntilLoaderGone();
 		crowdsale.url = await investPage.getURL();
-		crowdsale.executionID = await investPage.getExecutionID();
+
 		logger.info("Final invest page link: " + crowdsale.url);
 		logger.info("token address: " + crowdsale.executionID);
 		crowdsale.networkID = this.networkID;
@@ -437,6 +438,8 @@ class User {
 			await wizardStep4.clickButtonContinue() &&
 			await wizardStep4.waitUntilLoaderGone();
 		if (!result) return false;
+		crowdsale.executionID = await crowdsalePage.getExecutionID();
+
 		counter = 200;
 		do {
 			await this.driver.sleep(300);
@@ -452,7 +455,7 @@ class User {
 
 		result = result && await investPage.waitUntilLoaderGone();
 		crowdsale.url = await investPage.getURL();
-		crowdsale.executionID = await investPage.getExecutionID();
+
 		logger.info("Final invest page link: " + crowdsale.url);
 		logger.info("token address: " + crowdsale.executionID);
 		crowdsale.networkID = this.networkID;
@@ -467,7 +470,7 @@ class User {
 		let metaMask = new MetaMask(this.driver);
 		return await mngPage.waitUntilLoaderGone()
 			&& await mngPage.fillMinCap(tier,value)
-			&& !await mngPage.isDisplayedWarningMinCap()
+			//&& !await mngPage.isDisplayedWarningMinCap()
 			&& await mngPage.clickButtonSave()
 			&& await metaMask.signTransaction(10)
 			&& await mngPage.waitUntilLoaderGone()
