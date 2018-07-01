@@ -378,6 +378,7 @@ class User {
 		logger.info("Final invest page link: " + crowdsale.url);
 		logger.info("token address: " + crowdsale.executionID);
 		crowdsale.networkID = this.networkID;
+		crowdsale.sort = 'minted';
 		return result && crowdsale.executionID !== "";
 	}
 
@@ -460,16 +461,17 @@ class User {
 		logger.info("token address: " + crowdsale.executionID);
 		crowdsale.networkID = this.networkID;
 		logger.info("crowdsale.networkID " + crowdsale.networkID);
-
+		crowdsale.networkID = this.networkID;
+		crowdsale.sort = 'dutch';
 		return result && crowdsale.executionID !== "";
 	}
 
-	async changeMinCapFromManagePage(tier,value) {
+	async changeMinCapFromManagePage(tier, value) {
 		logger.info("changeMinCapFromManagePage ");
 		let mngPage = new ManagePage(this.driver);
 		let metaMask = new MetaMask(this.driver);
 		return await mngPage.waitUntilLoaderGone()
-			&& await mngPage.fillMinCap(tier,value)
+			&& await mngPage.fillMinCap(tier, value)
 			//&& !await mngPage.isDisplayedWarningMinCap()
 			&& await mngPage.clickButtonSave()
 			&& await metaMask.signTransaction(10)

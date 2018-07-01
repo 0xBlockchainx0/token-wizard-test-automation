@@ -55,7 +55,7 @@ class Utils {
 			let provider = await Utils.getProviderUrl(user.networkID);
 			let web3 = await new Web3(new Web3.providers.HttpProvider(provider));
 			let account0 = await web3.eth.getAccounts().then((accounts) => {
-				return accounts[2];
+				return accounts[3];
 			});
 
 			logger.info("Send " + amount + " Eth from " + account0 + " to " + user.account);
@@ -442,6 +442,30 @@ class Utils {
 			return null;
 		}
 	}
+
+
+	static async getDutchCrowdsaleStartTime(crowdsale) {
+		logger.info("getDutchCrowdsaleStartTime");
+		if(crowdsale.sort === _minted) return false;
+		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
+		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
+		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressDutchIDXAddress());
+		let result = await myContract.methods.getCrowdsaleStartAndEndTimes(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID).call();
+        return result.start_time;
+	}
+
+	static async getDutchCrowdsaleEndTime(crowdsale) {
+		logger.info("getDutchCrowdsaleEndTime");
+		if(crowdsale.sort === _minted) return false;
+		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
+		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
+		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressDutchIDXAddress());
+		let result = await myContract.methods.getCrowdsaleStartAndEndTimes(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID).call();
+		return result.end_time;
+	}
+
+
+
 
 	static async  getCrowdsaleStatusRopsten(crowdsale,abi) {
 		//console.log("getCrowdsaleStatusRopsten");
