@@ -19,6 +19,8 @@ const warningStartTimeTier1 = By.xpath("//*[@id=\"root\"]/div/" + adj + "section
 const fieldsReservedTokensAddress = By.className("reserved-tokens-item reserved-tokens-item-left");
 const whitelistContainer = By.className("white-list-container");
 const fieldMinCap = By.id("minCap");
+const contentContainer = By.className("steps-content container");
+
 
 class ManagePage extends Page {
 
@@ -292,9 +294,32 @@ class ManagePage extends Page {
 		logger.info("Text=" + result);
 		return (result !== "");
 	}
-
+	async getButtonAddWhitelist(tier) {
+		logger.info(this.name + "getButtonAddWhitelist ");
+		let containers = await super.findWithWait(contentContainer);
+		let element = await this.getChildFromElementByClassName("button button_fill button_fill_plus", containers[tier+1]);
+		return element[0];
+	}
+	async clickButtonAddWhitelist(tier) {
+		logger.info(this.name + "clickButtonAddWhitelist ");
+		//if (this.tier.minRate !== undefined) return true;
+		let element = await this.getButtonAddWhitelist(tier);
+		return await super.clickWithWait(element);
+	}
 	async fillWhitelist(tier, address, min, max) {
 		logger.info(this.name + "fillWhitelist  ");
+		/*let containers = await super.findWithWait(contentContainer);
+		console.log("containers.length= "+containers.length);
+
+		let element = await this.getChildFromElementByClassName("white-list-container", containers[tier + 2]);
+		console.log("element.length= "+element.length);
+		let array = await this.getChildFromElementByClassName("input", element[0]);
+		console.log("array.length= "+array.length);
+		return  await super.fillWithWait(array[0], address)
+			&& await super.fillWithWait(array[1], min)
+			&& await super.fillWithWait(array[2], max)
+			&& await this.clickButtonAddWhitelist(tier)
+			&& await this.clickButtonSave();*/
 		return (await this.initWhitelistFields() !== null)
 			&& await super.fillWithWait(this.fieldWhAddress[tier - 1], address)
 			&& await super.fillWithWait(this.fieldWhMin[tier - 1], min)

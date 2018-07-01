@@ -339,6 +339,7 @@ class User {
 			await wizardStep2.clickButtonContinue() &&
 			await wizardStep3.fillPage(crowdsale);
 
+
 		counter = 200;
 		do {
 			await this.driver.sleep(300);

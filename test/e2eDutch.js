@@ -20,7 +20,7 @@ const MetaMask = require('../pages/MetaMask.js').MetaMask;
 const User = require("../entity/User.js").User;
 const smallAmount = 0.1;
 
-test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.0 ', async function () {
+test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.1 ', async function () {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 
@@ -57,7 +57,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.0 ', asyn
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
-		logger.info("Version 2.6.3 - Wizard2.0 - DutchAuction");
+
 		await Utils.copyEnvFromWizard();
 		e2eMinCap = await Utils.getDutchCrowdsaleInstance(scenarioE2eMinCap);
 		e2eWhitelist = await Utils.getDutchCrowdsaleInstance(scenarioE2eWhitelist);

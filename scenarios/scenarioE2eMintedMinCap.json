@@ -10,7 +10,7 @@
       "value": 1000
     },
     {
-      "address" :"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+      "address" :"0xd3E49136aBdAda1EeD2df2ed7c7D530c1b54afcD",
       "dimension": "tokens",
       "value": 250
     }
@@ -25,8 +25,8 @@
       "isWhitelisted":false,
       "startDate": "180000",
       "startTime": "180000",
-      "endDate":"480000",
-      "endTime":"480000",
+      "endDate":"360000",
+      "endTime":"360000",
       "minCap":16,
       "rate":1000,
       "supply": 200,

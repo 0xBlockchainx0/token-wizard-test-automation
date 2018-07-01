@@ -120,7 +120,7 @@ class MetaMask extends Page {
 			await super.waitUntilLocated(iconChangeAccount);
 			if (await this.isElementDisplayed(buttonSubmit)) {
 
-				return await this.fillGasLimit( 4000000)
+				return await this.fillGasLimit( 6600000)
 				&&	 await this.clickButtonSubmitTransaction()
 					&& await  this.switchToNextPage();
 			}
