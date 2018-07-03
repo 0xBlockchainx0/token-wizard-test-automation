@@ -6,7 +6,7 @@
     "startGanache": "npm install -g ganache-cli && ganache-cli &",
     "e2e-deployRegistry": "node  ./contracts/DeployRegistry.js",
     "e2eMinted": "mocha   ./test/e2eMinted.js",
-    "e2eDutch": "mocha   ./test/e2eDutch.js",
+    "e2eDutch": "mocha  -b ./test/e2eDutch.js",
     "margo": "node ./test/margo.js",
     "e2eMintedRopsten": "mocha   ./test/e2eMintedRopsten.js",
     "e2eDutchRopsten": "mocha   ./test/e2eDutchRopsten.js",
