@@ -111,7 +111,7 @@ class MetaMask extends Page {
 		}
 	}
 
-	async signTransaction(refreshCount) {
+	async signTransaction(refreshCount,tier) {
 		logger.info(this.name + "signTransaction ");
 		await this.switchToNextPage();
 		let counter = 5;

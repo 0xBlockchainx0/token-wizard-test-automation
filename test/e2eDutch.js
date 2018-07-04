@@ -416,7 +416,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 		});
 */
 	//////////////////////// Test SUITE #1 /////////////////////////////
-/*	test.it('Owner can create crowdsale: 1 whitelisted address,duration 5 min',
+	test.it('Owner can create crowdsale: 1 whitelisted address,duration 5 min',
 		async function () {
 			let owner = Owner;
 			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
@@ -431,7 +431,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCrowdsaleNotStarted();
-			console.log(await investPage.getStatusTimer())
+			//console.log(await investPage.getStatusTimer())
 			return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
 		});
 
@@ -476,9 +476,9 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 				startTime = await Utils.getDutchCrowdsaleStartTime(e2eWhitelist);
 				logger.info("wait " + Date.now());
 				logger.info("wait " + startTime);
-				console.log("Date.now() = " + Date.now());
-				console.log("startTime =  " + startTime);
-				console.log("counter"+counter);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
 				await driver.sleep(1000);
 
 			}
@@ -627,9 +627,9 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 				endTime = await Utils.getDutchCrowdsaleEndTime(e2eWhitelist);
 				logger.info("wait " + Date.now());
 				logger.info("wait " + endTime);
-				console.log("Date.now() = " + Date.now());
-				console.log("endTime =  " + endTime);
-				console.log("counter"+counter);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("endTime =  " + endTime);
+				//console.log("counter"+counter);
 				await driver.sleep(1000);
 			}
 			while (counter-- > 0 && (Date.now() / 1000 <= endTime));
@@ -643,7 +643,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCrowdsaleEnded();
-			console.log("result = "+result);
+			//console.log("result = "+result);
 			return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
 		});
 
@@ -722,7 +722,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 			let result = (Math.abs(shouldBe - balance) < 1e-6);
 			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
-*/
+
 	//////////////////////// Test SUITE #2 /////////////////////////////
 	test.it('Owner  can create DutchAuction crowdsale(scenario scenarioE2eDutchMincapLong.json), minCap,no whitelist',
 		async function () {
@@ -794,9 +794,9 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 				startTime = await Utils.getDutchCrowdsaleStartTime(e2eMinCap);
 				logger.info("wait " + Date.now());
 				logger.info("wait " + startTime);
-				console.log("Date.now() = " + Date.now());
-				console.log("startTime =  " + startTime);
-				console.log("counter"+counter);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
 				await driver.sleep(1000);
 			}
 			while (counter-- > 0 && (Date.now() / 1000 <= startTime));

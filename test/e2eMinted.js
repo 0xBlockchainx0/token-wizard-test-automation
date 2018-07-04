@@ -24,7 +24,7 @@ const endDateForTestEarlier = "01/07/2049";
 const endTimeForTestLater = "420000";
 const endDateForTestLater = "420000";
 
-test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA token-wizard.', async function () {
+test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.2 ', async function () {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 
@@ -105,13 +105,15 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 		balanceEthOwnerBefore = await Utils.getBalance(Owner);
 		logger.info("Owner's balance = :" + balanceEthOwnerBefore / 1e18);
 		logger.info("Investor1  = " + Investor1.account);
-		logger.info("Investor1 balance = :" + await Utils.getBalance(Investor1) / 1e18);
+		logger.info("Investor1 balance = " + await Utils.getBalance(Investor1) / 1e18);
 		logger.info("Investor2  = :" + Investor2.account);
-		logger.info("Investor2 balance = :" + await Utils.getBalance(Investor2) / 1e18);
-		logger.info("Reserved address  = :" + ReservedAddress.account);
-		logger.info("ReservedAddress balance = :" + await Utils.getBalance(ReservedAddress) / 1e18);
+		logger.info("Investor2 balance = " + await Utils.getBalance(Investor2) / 1e18);
+		logger.info("Reserved address  = " + ReservedAddress.account);
+		logger.info("ReservedAddress balance = " + await Utils.getBalance(ReservedAddress) / 1e18);
 		logger.info("Investor3  = " + Investor3.account);
-		logger.info("Investor3 balance = :" + await Utils.getBalance(Investor3) / 1e18);
+		logger.info("Investor3 balance = " + await Utils.getBalance(Investor3) / 1e18);
+
+
 
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
@@ -900,7 +902,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 				logger.info("wait " + Date.now());
 				logger.info("wait " + startTime);
 				//console.log("Date.now() = " + Date.now());
-				//console.log("startTime =  " + startTime);
+				//console.log("startTime =  " + endTime);
 				await driver.sleep(1000);
 
 			}
@@ -981,7 +983,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 	test.it("Owner's Eth balance properly changed ",
 		async function () {
 			balanceEthOwnerAfter = await Utils.getBalance(Owner);
-			let contribution = Investor3.maxCap;
+			let contribution = e2eWhitelist.tiers[1].supply;;
 			let result = await Utils.compareBalance(balanceEthOwnerBefore, balanceEthOwnerAfter, contribution, e2eWhitelist.tiers[1].rate);
 			return await assert.equal(result, true, "Owner's balance incorrect");
 		});
@@ -1004,10 +1006,10 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 
 	test.it('Whitelisted investor is not able to buy if crowdsale finalized',
 		async function () {
-			let investor = ReservedAddress;
+			let investor = Owner;
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let contribution = e2eWhitelist.tiers[0].supply;
+			let contribution = Owner.minCap+1;
 			return await assert.equal(await investor.contribute(contribution), false, 'Whitelisted investor is able to buy if crowdsale finalized');
 		});
 
@@ -1027,10 +1029,11 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 			user.account = e2eWhitelist.reservedTokens[0].address;
 			let balance = await user.getTokenBalance(e2eWhitelist) / 1e18;
 			const totalSupply = e2eWhitelist.tiers[0].supply + e2eWhitelist.tiers[1].supply;
-			let shouldBe = e2eWhitelist.reservedTokens[0].value * totalSupply / 100; //+ e2eWhitelist.tiers[1].supply;
+			let shouldBe = e2eWhitelist.reservedTokens[0].value * totalSupply / 100 + ReservedAddress.minCap; //+ e2eWhitelist.tiers[1].supply;
+			let result  = Math.abs(totalSupply - shouldBe ) < 0.01;
 			logger.info("Investor should receive  = " + shouldBe);
 			logger.info("Investor has received balance = " + balance);
-			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe);
+			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe);
 		});
 
 	test.it('Reserved address#2 has received correct quantity of tokens after finalization',
@@ -1076,6 +1079,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 			logger.info("Difference = " + (balance - shouldBe));
 			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
+
 //////////////////////// Test SUITE #2 /////////////////////////////
 	test.it('Owner  can create crowdsale(scenarioE2eMintedMinCap.json),minCap,3 tiers ',
 		async function () {
@@ -1268,8 +1272,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			let tierNumber = 2;
 			let format = await Utils.getDateFormat(driver);
-			endTime = Utils.getTimeWithAdjust(360000, format);
-			endDate = Utils.getDateWithAdjust(360000, format);
+			endTime = Utils.getTimeWithAdjust(480000, format);
+			endDate = Utils.getDateWithAdjust(480000, format);
 			let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
 			return await assert.equal(result, true, 'Test FAILED.Owner can NOT modify the end time of tier#2 before start ');
 
@@ -1440,9 +1444,11 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eMinCap.tiers[1].supply;
-			investor.tokenBalance = e2eMinCap.tiers[1].supply - Investor3.minCap;
+			investor.tokenBalance = e2eMinCap.tiers[1].supply - Investor3.tokenBalance;
 			await investor.contribute(contribution);
 			let balance = await investor.getBalanceFromInvestPage(e2eMinCap);
+			//console.log("Real balance "+balance);
+			//console.log("ShouldBe investor.tokenBalance "+investor.tokenBalance);
 			let result = (Math.abs(parseFloat(balance) - parseFloat(investor.tokenBalance)) < 0.1);
 			return await assert.equal(result, true, "Test FAILED.Investor can not  buy  maxCap");
 		});
@@ -1454,10 +1460,10 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			let tierNumber = 3;
 			let format = await Utils.getDateFormat(driver);
-			endTime = Utils.getTimeWithAdjust(180000, format);
-			endDate = Utils.getDateWithAdjust(180000, format);
+			endTime = Utils.getTimeWithAdjust(240000, format);
+			endDate = Utils.getDateWithAdjust(240000, format);
 			let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
-			return await assert.equal(result, true, 'Test FAILED.Owner can NOT modify the end time of tier#2 before start ');
+			return await assert.equal(result, true, 'Test FAILED.Owner can NOT modify the end time of tier#3 before start ');
 
 		});
 
@@ -1479,7 +1485,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 			do {
 				endTime = await Utils.getTiersEndTimeMintedCrowdsale(e2eMinCap, tierNumber);
 				logger.info("wait " + Date.now());
-				logger.info("wait " + startTime);
+				logger.info("wait " + endTime);
 				//console.log("Date.now() = " + Date.now());
 				//console.log("startTime =  " + startTime);
 				await driver.sleep(1000);
@@ -1507,10 +1513,21 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 			let result = await investPage.getMinContribution();
 			return await assert.equal(result, -1, 'Test FAILED. MinContribution value is incorrect');
 		});
-	test.it('Whitelisted investor can buy amount equal mincap',
+	test.it('Whitelisted investor is not able to buy less than min in first transaction',
 		async function () {
 			let investor = Investor3;
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
+			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+			let contribution = investor.minCap/2;
+			let result = await investor.contribute(contribution);
+			return await assert.equal(result, false, "Test FAILED.Investor can buy less than minCap in first transaction");
+		});
+
+	test.it('Whitelisted investor can buy amount equal mincap',
+		async function () {
+			let investor = Investor3;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = investor.minCap;
@@ -1546,7 +1563,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 			do {
 				endTime = await Utils.getTiersEndTimeMintedCrowdsale(e2eMinCap, tierNumber);
 				logger.info("wait " + Date.now());
-				logger.info("wait " + startTime);
+				logger.info("wait " + endTime);
 				//console.log("Date.now() = " + Date.now());
 				//console.log("startTime =  " + startTime);
 				await driver.sleep(1000);
@@ -1589,7 +1606,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCrowdsaleFinalized();
-			return await assert.equal(result, true, 'Test FAILED. Countdown timer are not displayed ');
+			return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
 		});
 	test.it('Investor is not able to buy if crowdsale is finalized',
 		async function () {
@@ -1655,15 +1672,6 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.1POA toke
 		logger.info("Difference = " + (balance - shouldBe));
 		return await assert.equal(balance, shouldBe, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 	});
-	test.it('Investor#4 has received correct quantity of tokens after finalization', async function () {
 
-		let investor = ReservedAddress;
-		let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
-		let shouldBe = investor.tokenBalance;
-		logger.info("Investor should receive  = " + shouldBe);
-		logger.info("Investor has received balance = " + balance);
-		logger.info("Difference = " + (balance - shouldBe));
-		return await assert.equal(balance, shouldBe, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
-	});
 
 });

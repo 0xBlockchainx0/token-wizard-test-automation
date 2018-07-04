@@ -198,16 +198,28 @@ class User {
 		}
 		let mngPage = new ManagePage(this.driver);
 		let metaMask = new MetaMask(this.driver);
-		return await mngPage.waitUntilLoaderGone()
-			&& await mngPage.fillEndTimeTier(tier, newDate, newTime)
-			&& !await mngPage.isPresentWarningEndTimeTier1()
-			&& !await mngPage.isPresentWarningEndTimeTier2()
-			&& await mngPage.clickButtonSave()
-			&& await metaMask.signTransaction(10)
-			&& await metaMask.signTransaction(10)
-			&& await mngPage.waitUntilLoaderGone()
-			&& await this.confirmPopup()
-			&& await mngPage.waitUntilLoaderGone();
+		if (tier > 2) {
+			return await mngPage.waitUntilLoaderGone()
+				&& await mngPage.fillEndTimeTier(tier, newDate, newTime)
+				&& !await mngPage.isPresentWarningEndTimeTier1()
+				&& !await mngPage.isPresentWarningEndTimeTier2()
+				&& await mngPage.clickButtonSave()
+				&& await metaMask.signTransaction(10)
+				//&& await metaMask.signTransaction(10)
+				&& await mngPage.waitUntilLoaderGone()
+				&& await this.confirmPopup()
+				&& await mngPage.waitUntilLoaderGone();
+		} else
+			return await mngPage.waitUntilLoaderGone()
+				&& await mngPage.fillEndTimeTier(tier, newDate, newTime)
+				&& !await mngPage.isPresentWarningEndTimeTier1()
+				&& !await mngPage.isPresentWarningEndTimeTier2()
+				&& await mngPage.clickButtonSave()
+				&& await metaMask.signTransaction(10)
+				&& await metaMask.signTransaction(10)
+				&& await mngPage.waitUntilLoaderGone()
+				&& await this.confirmPopup()
+				&& await mngPage.waitUntilLoaderGone();
 	}
 
 	async changeStartTime(tier, newDate, newTime) {
@@ -338,7 +350,6 @@ class User {
 			await reservedTokens.fillReservedTokens(crowdsale) &&
 			await wizardStep2.clickButtonContinue() &&
 			await wizardStep3.fillPage(crowdsale);
-
 
 		counter = 200;
 		do {
