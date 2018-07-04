@@ -14,7 +14,8 @@ const buttonCreate = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/button");
 const buttonIveCopied = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/button[1]");
 const popupNetwork = By.className("network-name");
 const popupAccount = By.xpath("//*[@id=\"app-content\"]/div/div[1]/div/div[2]/span/div");
-const fieldPrivateKey = By.xpath("//*[@id=\"private-key-box\"]");
+//const fieldPrivateKey = By.xpath("//*[@id=\"private-key-box\"]");
+const fieldPrivateKey = By.id("private-key-box");
 const pass = "qwerty12345";
 
 const buttonImport = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div[4]/button");
@@ -110,7 +111,7 @@ class MetaMask extends Page {
 		}
 	}
 
-	async signTransaction(refreshCount) {
+	async signTransaction(refreshCount,tier) {
 		logger.info(this.name + "signTransaction ");
 		await this.switchToNextPage();
 		let counter = 5;

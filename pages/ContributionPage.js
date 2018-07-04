@@ -35,9 +35,15 @@ class ContributionPage extends Page {
 		this.fieldMinContribution;
 	}
 
-	async getTimerStatus() {
+	async getStatusTimer() {
 		logger.info(this.name + "getTimerStatus ");
 		try {
+			let counter = 10;
+			do {
+				await this.driver.sleep(1000);
+			}
+			while ((counter-- > 0) && (await this.isCrowdsaleTimeOver()))
+
 			let array = await this.initTimerFields();
 			let result = await super.getTextForElement(array[array.length - 1]);
 			logger.info("timer status: " + result);
@@ -45,6 +51,7 @@ class ContributionPage extends Page {
 			else if (result.includes(statusTimer.tier1)) return statusTimer.tier1;
 			else if (result.includes(statusTimer.tier2)) return statusTimer.tier2;
 			else if (result.includes(statusTimer.tier3)) return statusTimer.tier3;
+			else if (result.includes(statusTimer.end)) return statusTimer.end;
 			else if (result.includes(statusTimer.finalized)) return statusTimer.finalized;
 		}
 		catch (err) {
@@ -55,37 +62,37 @@ class ContributionPage extends Page {
 
 	async isCrowdsaleFinalized() {
 		logger.info(this.name + "isCrowdsaleFinalized ");
-		return (await this.getTimerStatus() === statusTimer.finalized);
+		return (await this.getStatusTimer() === statusTimer.finalized);
 	}
 
 	async isCrowdsaleNotStarted() {
 		logger.info(this.name + "isCrowdsaleNotStarted ");
-		return (await this.getTimerStatus() === statusTimer.start);
+		return (await this.getStatusTimer() === statusTimer.start);
 	}
 
 	async isCrowdsaleEnded() {
 		logger.info(this.name + "isCrowdsaleEnded ");
-		return (await this.getTimerStatus() === statusTimer.end);
+		return (await this.getStatusTimer() === statusTimer.end);
 	}
 
 	async isCrowdsaleStarted() {
 		logger.info(this.name + "isCrowdsaleStarted ");
-		return (await this.getTimerStatus() !== statusTimer.start);
+		return (await this.getStatusTimer() !== statusTimer.start);
 	}
 
 	async isCurrentTier1() {
 		logger.info(this.name + "isCurrentTier1 ");
-		return (await this.getTimerStatus() === statusTimer.tier1);
+		return (await this.getStatusTimer() === statusTimer.tier1);
 	}
 
 	async isCurrentTier2() {
 		logger.info(this.name + "isCurrentTier2 ");
-		return (await this.getTimerStatus() === statusTimer.tier2);
+		return (await this.getStatusTimer() === statusTimer.tier2);
 	}
 
 	async isCurrentTier3() {
 		logger.info(this.name + "isCurrentTier3 ");
-		return (await this.getTimerStatus() === statusTimer.tier3);
+		return (await this.getStatusTimer() === statusTimer.tier3);
 	}
 
 	async initTimerFields() {
@@ -119,7 +126,7 @@ class ContributionPage extends Page {
 	async isCrowdsaleTimeOver() {
 		logger.info(this.name + " :isCrowdsaleTimeOver ");
 		try {
-			let arr = await super.findWithWait(countdownTimerValue);
+			let arr = await super.findWithWait(countdownTimerValue,20);
 			let result = 0;
 			for (let i = 0; i < arr.length; i++) {
 				result = result + parseInt((await this.getTextForElement(arr[i])));
@@ -198,9 +205,17 @@ class ContributionPage extends Page {
 	async getMinContribution() {
 		logger.info(this.name + "getMinContribution ");
 		if (await  this.initFields() === null) return false;
-				let result = await super.getTextForElement(this.fieldMinContribution);
+		let result = await super.getTextForElement(this.fieldMinContribution);
 		if (result === 'You are not allowed') return -1;
-		else return (parseFloat(result.split(" ")[0].trim()));
+		let counter = 60;
+		do {
+			result = await super.getTextForElement(this.fieldMinContribution);
+			result = parseFloat(result.split(" ")[0].trim());
+			await this.driver.sleep(1000);
+		}
+		while ((result === 0) && (counter-- > 0))
+		if (counter > 0) return result;
+		else return false;
 
 	}
 
