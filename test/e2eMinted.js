@@ -635,12 +635,9 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.3 ', asyn
 			let owner = Owner;
 			assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
 			let tierNumber = 1;
-			let format = await Utils.getDateFormat(driver);
+			let format = "utc";
 			endTime = Utils.getTimeWithAdjust(parseInt(endTimeForTestLater), format);//"420000"
 			endDate = Utils.getDateWithAdjust(parseInt(endDateForTestLater), format);//"420000"
-			console.log("format= "+format);
-			console.log("endTime= "+ endTime);
-			console.log("endDate= "+ endDate);
 			let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
 			return await assert.equal(result, true, 'Test FAILED.Owner can NOT modify the end time of tier#1 before start ');
 
@@ -1274,7 +1271,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.3 ', asyn
 			let owner = Owner;
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			let tierNumber = 2;
-			let format = await Utils.getDateFormat(driver);
+			let format = "utc";
 			endTime = Utils.getTimeWithAdjust(480000, format);
 			endDate = Utils.getDateWithAdjust(480000, format);
 			let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
@@ -1462,7 +1459,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.3 ', asyn
 			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			let tierNumber = 3;
-			let format = await Utils.getDateFormat(driver);
+			let format = "utc";
 			endTime = Utils.getTimeWithAdjust(240000, format);
 			endDate = Utils.getDateWithAdjust(240000, format);
 			let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
