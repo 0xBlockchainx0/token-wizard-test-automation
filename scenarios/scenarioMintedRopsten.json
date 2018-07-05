@@ -4,16 +4,7 @@
   "ticker": "test",
   "decimals": 18,
   "reservedTokens":[
-    {
-      "address" :"0xecDFec71AbCD5a612eAf9169B19E907eAA2717d9",
-      "dimension": "percentage",
-      "value": 1000
-    },
-    {
-      "address" :"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
-      "dimension": "tokens",
-      "value": 250
-    }
+
   ],
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
   "gasprice":300,
@@ -22,7 +13,7 @@
     {
       "name":"###1",
       "allowModify": true,
-      "isWhitelisted":false,
+      "isWhitelisted":true,
       "startDate": "600000",
       "startTime": "600000",
       "endDate":"800000",
@@ -30,12 +21,16 @@
       "minCap":13,
       "rate":1000,
       "supply": 100,
-      "whitelist":[]
+      "whitelist":[{
+        "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+        "min": 10,
+        "max": 150
+      }]
     },
     {
       "name":"###2",
       "allowModify": true,
-      "isWhitelisted":false,
+      "isWhitelisted":true,
       "startDate": "",
       "startTime": "",
       "endDate":"",
@@ -43,7 +38,15 @@
       "minCap":16,
       "rate":1000,
       "supply": 200,
-      "whitelist":[]
+      "whitelist":[
+        {
+          "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
+          "min": 10,
+          "max": 150
+        }
+
+
+      ]
     }
   ]
 }

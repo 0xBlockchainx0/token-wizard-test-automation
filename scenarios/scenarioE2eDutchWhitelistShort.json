@@ -5,8 +5,10 @@
   "totalSupply":1000,
   "walletAddress":"0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7",
   "gasprice":1,
+  "burnExcess":false,
   "tiers":[
     {
+
       "isWhitelisted":true,
       "startDate": "180000",
       "startTime": "180000",
