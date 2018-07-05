@@ -236,7 +236,7 @@ class ManagePage extends Page {
 			return true;
 		}
 		else {
-			logger.info("Error " + err);
+			logger.info("Error ");
 			return false;
 		}
 	}

@@ -20,7 +20,7 @@ const MetaMask = require('../pages/MetaMask.js').MetaMask;
 const User = require("../entity/User.js").User;
 const smallAmount = 0.1;
 
-test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.4 ', async function () {
+test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.5 ', async function () {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 
@@ -737,7 +737,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.4 ', asyn
 			console.log("balanceEthOwnerAfter = " + balance);
 
 			let result = (Math.abs(balanceEthOwnerBefore - balance) < 1e-6);
-			return await assert.equal(result, true, "Test FAILED.'Owner has received " + balance + " tokens instead " + shouldBe)
+			return await assert.equal(result, true, "Test FAILED.'Owner has additionaly  received " + balance + " tokens instead " + unsoldAmount)
 		});
 
 	//////////////////////// Test SUITE #2 /////////////////////////////

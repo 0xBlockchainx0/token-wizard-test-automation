@@ -24,7 +24,7 @@ const endDateForTestEarlier = "01/07/2049";
 const endTimeForTestLater = "420000";
 const endDateForTestLater = "420000";
 
-test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', async function () {
+test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', async function () {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 
@@ -774,8 +774,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[0].whitelist[0].min;
-			investor.tokenBalance += contribution;
 			let result = await investor.contribute(contribution);
+			if (result) investor.tokenBalance += contribution;
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy amount = min');
 		});
 
@@ -803,8 +803,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[0].whitelist[0].min * 0.1;
-			investor.tokenBalance += contribution;
 			let result = await investor.contribute(contribution);
+			if (result) investor.tokenBalance += contribution;
 			return await assert.equal(result, true, "Test FAILED. Investor can NOT buy less than min after first transaction");
 
 		});
@@ -817,18 +817,24 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			return await assert.equal(result, true, "Owner's balance incorrect");
 		});
 
-	test.it('Whitelisted investor is able to buy not more than maxCap',
+	test.it('Whitelisted investor is not able to buy more than maxCap',
 		async function () {
 			balanceEthOwnerBefore = await Utils.getBalance(Owner);
 			let investor = Investor1;
+			let soldTokensBefore = await Utils.getTokensSold(e2eWhitelist);
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+
 			let contribution = e2eWhitelist.tiers[0].supply;
-			await investor.contribute(contribution);
+			let result = await investor.contribute(contribution);
+
+			let soldTokensAfter = await Utils.getTokensSold(e2eWhitelist);
+			if (result) investor.tokenBalance = (soldTokensAfter - soldTokensBefore)/1e18 + investor.tokenBalance;
+
 			let shouldBe = e2eWhitelist.tiers[0].whitelist[0].max;
-			investor.tokenBalance += shouldBe;
 			let balance = await investor.getBalanceFromInvestPage(e2eWhitelist);
-			let result = (balance.toString() === shouldBe.toString());
+
+			result = (balance.toString() === shouldBe.toString());
 			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than assigned max");
 		});
 
@@ -859,6 +865,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+
 			let contribution = e2eWhitelist.tiers[0].supply;
 
 			let result = await investor.contribute(contribution);
@@ -886,7 +893,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[0].supply;
-			return await assert.equal(await investor.contribute(contribution), false, 'Whitelisted investor is able to buy if all tokens were sold');
+			let result = await investor.contribute(contribution);
+			return await assert.equal(result, false, 'Whitelisted investor is able to buy if all tokens were sold');
 		});
 
 	test.it('Owner is not able to finalize if tier#1 is done',
@@ -945,7 +953,6 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			let contribution = investor.minCap / 2;
 			let result = await investor.contribute(contribution);
 			if (result) {
-				Investor3.tokenBalance = Investor3.tokenBalance - contribution;
 				investor.tokenBalance += contribution;
 			}
 			return await assert.equal(result, false, "Test FAILED.Whitelisting is inherited");
@@ -1002,13 +1009,15 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 
 			balanceEthOwnerBefore = await Utils.getBalance(Owner);
 			let investor = Investor3;
+			let soldTokensBefore = await Utils.getTokensSold(e2eWhitelist);
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = investor.maxCap;
-			investor.tokenBalance += contribution;
 			let result = await investor.contribute(contribution);
-			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than assigned max");
+			let soldTokensAfter = await Utils.getTokensSold(e2eWhitelist);
+			investor.tokenBalance = (soldTokensAfter - soldTokensBefore)/1e18 + investor.tokenBalance;
+			return await assert.equal(result, true, "Test FAILED.Investor can not buy maxCap in first transaction");
 		});
 
 	test.it("Owner's Eth balance properly changed ",
@@ -1064,8 +1073,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			let soldTokens = await Utils.getTokensSold(e2eWhitelist) / 1e18;
 			let shouldBe = e2eWhitelist.reservedTokens[0].value * soldTokens / 100 + ReservedAddress.minCap; //+ e2eWhitelist.tiers[1].supply;
 			let result = Math.abs(balance - shouldBe) < 0.01;
-			console.log("Investor should receive  = " + shouldBe);
-			console.log("Investor has received balance = " + balance);
+			//console.log("Investor should receive  = " + shouldBe);
+			//console.log("Investor has received balance = " + balance);
 			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe);
 		});
 
@@ -1088,8 +1097,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			logger.info("Investor should receive  = " + shouldBe);
 			logger.info("Investor has received balance = " + balance);
 			logger.info("Difference = " + (balance - shouldBe));
-			console.log("Investor should receive  = " + shouldBe);
-			console.log("Investor has received balance = " + balance);
+			//console.log("Investor should receive  = " + shouldBe);
+			//console.log("Investor has received balance = " + balance);
 			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
 
@@ -1101,8 +1110,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			logger.info("Investor should receive  = " + shouldBe);
 			logger.info("Investor has received balance = " + balance);
 			logger.info("Difference = " + (balance - shouldBe));
-			console.log("Investor should receive  = " + shouldBe);
-			console.log("Investor has received balance = " + balance);
+			//console.log("Investor should receive  = " + shouldBe);
+			//console.log("Investor has received balance = " + balance);
 			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
 
@@ -1113,8 +1122,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			let shouldBe = investor.tokenBalance;
 			logger.info("Investor should receive  = " + shouldBe);
 			logger.info("Investor has received balance = " + balance);
-			console.log("Investor should receive  = " + shouldBe);
-			console.log("Investor has received balance = " + balance);
+			//console.log("Investor should receive  = " + shouldBe);
+			//console.log("Investor has received balance = " + balance);
 			logger.info("Difference = " + (balance - shouldBe));
 			return await assert.equal(shouldBe, balance, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
@@ -1680,7 +1689,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.4 ', asyn
 			let user = new User();
 			user.account = e2eMinCap.reservedTokens[0].address;
 			let balance = await user.getTokenBalance(e2eMinCap) / 1e18;
-			let soldTokens = await Utils.getTokensSold(e2eWhitelist) / 1e18;
+			let soldTokens = await Utils.getTokensSold(e2eMinCap) / 1e18;
 			//let shouldBe = e2eMinCap.reservedTokens[0].value * (Investor1.tokenBalance+Investor2.tokenBalance+Investor3.tokenBalance)/ 100;
 			let shouldBe = e2eMinCap.reservedTokens[0].value * soldTokens / 100;
 			logger.info("Tokens are sold  = " + soldTokens);
