@@ -636,8 +636,11 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.2 ', asyn
 			assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
 			let tierNumber = 1;
 			let format = await Utils.getDateFormat(driver);
-			endTime = Utils.getTimeWithAdjust(parseInt(endTimeForTestLater), format);
-			endDate = Utils.getDateWithAdjust(parseInt(endDateForTestLater), format);
+			endTime = Utils.getTimeWithAdjust(parseInt(endTimeForTestLater), format);//"420000"
+			endDate = Utils.getDateWithAdjust(parseInt(endDateForTestLater), format);//"420000"
+			console.log("format= "+format);
+			console.log("endTime= "+ endTime);
+			console.log("endDate= "+ endDate);
 			let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
 			return await assert.equal(result, true, 'Test FAILED.Owner can NOT modify the end time of tier#1 before start ');
 
