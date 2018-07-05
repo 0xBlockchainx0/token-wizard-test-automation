@@ -280,8 +280,6 @@ class Utils {
 
 	}
 
-
-
 	static async getMintedCrowdsaleInstance(fileName) {
 		try {
 			let crowdsale = new Crowdsale();
@@ -395,12 +393,11 @@ class Utils {
 		}
 	}
 
-	static async sleep (ms) {
+	static async sleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 
-
-	static async  takeFunctionRateTime(crowdsale) {
+	static async takeFunctionRateTime(crowdsale) {
 		try {
 			const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
 			let status;
@@ -408,10 +405,10 @@ class Utils {
 			let file = "./time_rate_logs/time_rate" + Date.now() + ".json";
 			let fileLog = "./time_rate_logs/time_rate" + Date.now() + ".log";
 
-			await fs.writeFileSync(fileLog,"startTime "+crowdsale.tiers[0].startTime+"\n");
-			await fs.appendFileSync(fileLog, "endTime "+crowdsale.tiers[0].endTime+"\n");
-			await fs.appendFileSync(fileLog,"timestamp = " +Date.now() + "\n");
-			await fs.appendFileSync(fileLog,"execID = " +crowdsale.executionID + "\n");
+			await fs.writeFileSync(fileLog, "startTime " + crowdsale.tiers[0].startTime + "\n");
+			await fs.appendFileSync(fileLog, "endTime " + crowdsale.tiers[0].endTime + "\n");
+			await fs.appendFileSync(fileLog, "timestamp = " + Date.now() + "\n");
+			await fs.appendFileSync(fileLog, "execID = " + crowdsale.executionID + "\n");
 			await fs.appendFileSync(fileLog, "minRate = " + crowdsale.tiers[0].minRate + "\n");
 			await fs.appendFileSync(fileLog, "maxRate = " + crowdsale.tiers[0].maxRate + "\n");
 
@@ -430,7 +427,7 @@ class Utils {
 					time: object.time,
 					rate: object.rate
 				});
-				arrayLog.push(object.rate+"\n");
+				arrayLog.push(object.rate + "\n");
 			}
 			while ((parseInt(status.time_remaining) !== 0));
 
@@ -439,26 +436,25 @@ class Utils {
 			return file;
 
 		}
-		catch(err) {
+		catch (err) {
 			console.log("Can not takeFunctionRateTime " + err);
 			return null;
 		}
 	}
 
-
 	static async getDutchCrowdsaleStartTime(crowdsale) {
 		logger.info("getDutchCrowdsaleStartTime");
-		if(crowdsale.sort === _minted) return false;
+		if (crowdsale.sort === _minted) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
 		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressDutchIDXAddress());
 		let result = await myContract.methods.getCrowdsaleStartAndEndTimes(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID).call();
-        return result.start_time;
+		return result.start_time;
 	}
 
 	static async getDutchCrowdsaleEndTime(crowdsale) {
 		logger.info("getDutchCrowdsaleEndTime");
-		if(crowdsale.sort === _minted) return false;
+		if (crowdsale.sort === _minted) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
 		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressDutchIDXAddress());
@@ -468,17 +464,18 @@ class Utils {
 
 	static async getTokensSold(crowdsale) {
 		logger.info("getTokenSold");
-		if(crowdsale.sort === _minted) return false;
+
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
-		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressDutchIDXAddress());
+		let idx;
+		if (crowdsale.sort === _minted) idx = await Utils.getEnvAddressMintedIDXAddress();
+		else idx = await Utils.getEnvAddressDutchIDXAddress();
+		let myContract = new web3.eth.Contract(abi, idx);
 		let result = await myContract.methods.getTokensSold(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID).call();
 		return result;
 	}
 
-
-
-	static async  getCrowdsaleStatusRopsten(crowdsale,abi) {
+	static async getCrowdsaleStatusRopsten(crowdsale, abi) {
 		//console.log("getCrowdsaleStatusRopsten");
 		try {
 			let networkIDRopsten = 3;
@@ -487,7 +484,7 @@ class Utils {
 			let REACT_APP_DUTCH_CROWDSALE_INIT_CROWDSALE_ADDRESS = "0xdcD30b8417062AbDFAd1db173D66bd6e0D31929E";
 			let myContract = new web3.eth.Contract(abi, REACT_APP_DUTCH_CROWDSALE_INIT_CROWDSALE_ADDRESS);
 			let status = await myContract.methods.getCrowdsaleStatus(REACT_APP_REGISTRY_STORAGE_ADDRESS, crowdsale.executionID).call();
-			console.log("status = " + status );
+			console.log("status = " + status);
 			return status;
 		}
 		catch (err) {
@@ -499,7 +496,7 @@ class Utils {
 
 	static async getMintedCrowdsaleStartTime(crowdsale) {
 		logger.info("getMintedCrowdsaleStartTime");
-		if(crowdsale.sort === _dutch) return false;
+		if (crowdsale.sort === _dutch) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
 		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressMintedIDXAddress());
@@ -507,13 +504,13 @@ class Utils {
 		return result.start_time;
 	}
 
-	static async getTiersEndTimeMintedCrowdsale(crowdsale,tierNumber) {
+	static async getTiersEndTimeMintedCrowdsale(crowdsale, tierNumber) {
 		logger.info("getTiersEndTimeMintedCrowdsale");
-		if(crowdsale.sort === _dutch) return false;
+		if (crowdsale.sort === _dutch) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
 		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressMintedIDXAddress());
-		let result = await myContract.methods.getTierStartAndEndDates(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID,tierNumber-1).call();
+		let result = await myContract.methods.getTierStartAndEndDates(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID, tierNumber - 1).call();
 		return result.tier_end;
 	}
 

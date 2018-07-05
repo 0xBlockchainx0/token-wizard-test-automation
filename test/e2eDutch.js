@@ -20,7 +20,7 @@ const MetaMask = require('../pages/MetaMask.js').MetaMask;
 const User = require("../entity/User.js").User;
 const smallAmount = 0.1;
 
-test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', async function () {
+test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.4 ', async function () {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 
