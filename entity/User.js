@@ -190,7 +190,7 @@ class User {
 	}
 
 	async changeEndTimeFromManagePage(tier, newDate, newTime) {
-		logger.info("changeEndTime for tier#" + tier + ", new date=" + newDate + ", new time=" + newTime);
+		logger.info("changeEndTimeFromManagePage for tier#" + tier + ", new date=" + newDate + ", new time=" + newTime);
 		let formatTimeBrowser = await Utils.getDateFormat(this.driver);
 		if (formatTimeBrowser === "mdy") {
 			newDate = Utils.convertDateToMdy(newDate);
