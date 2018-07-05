@@ -26,9 +26,8 @@ class WizardStep3 extends Page {
 		this.boxGasPriceNormal;
 		this.boxGasPriceFast;
 		this.boxGasPriceCustom;
-
-		this.boxWhitelistingYes;
-		this.boxWhitelistingNo;
+		this.burnExcessYes;
+		this.burnExcessNo;
 
 		this.fieldGasPriceCustom;
 
@@ -72,12 +71,13 @@ class WizardStep3 extends Page {
 		try {
 			let locator = By.className("radio-inline");
 			let array = await super.findWithWait(locator);
-			this.boxGasPriceSafe = array[0];
-			this.boxGasPriceNormal = array[1];
-			this.boxGasPriceFast = array[2];
-			this.boxGasPriceCustom = array[3];
-			this.boxWhitelistingYes = array[4];
-			this.boxWhitelistingNo = array[5];
+			this.burnExcessYes = array[0];
+			this.burnExcessNo = array[1];
+			this.boxGasPriceSafe = array[2];
+			this.boxGasPriceNormal = array[3];
+			this.boxGasPriceFast = array[4];
+			this.boxGasPriceCustom = array[5];
+
 			return array;
 		}
 		catch (err) {
@@ -110,6 +110,18 @@ class WizardStep3 extends Page {
 			await super.clickWithWait(this.boxGasPriceNormal);
 	}
 
+	async clickCheckboxBurnExcessNo() {
+		logger.info(this.name + "clickCheckboxBurnExcessNo ");
+		return (await this.initCheckboxes() !== null) &&
+			await super.clickWithWait(this.burnExcessNo);
+	}
+
+	async clickCheckboxBurnExcessYes() {
+		logger.info(this.name + "clickCheckboxBurnExcessYes ");
+		return (await this.initCheckboxes() !== null) &&
+			await super.clickWithWait(this.burnExcessYes);
+	}
+
 	async clickCheckboxGasPriceFast() {
 		logger.info(this.name + "clickCheckboxGasPriceFast ");
 		return (await this.initCheckboxes() !== null) &&
@@ -129,16 +141,11 @@ class WizardStep3 extends Page {
 			await super.fillWithWait(this.fieldGasPriceCustom, value);
 	}
 
-	async clickCheckboxWhitelistYes() {
-		logger.info(this.name + "clickCheckboxWhitelistYes ");
-		return (await this.initCheckboxes() !== null) &&
-			await super.clickWithWait(this.boxWhitelistingYes);
-	}
+	async setBurnExcess(burnExcess) {
+		logger.info(this.name + "setBurnExcess");
+		if (burnExcess) return await this.clickCheckboxBurnExcessYes();
+		else return await this.clickCheckboxBurnExcessNo();
 
-	async clickCheckboxWhitelistNo() {
-		logger.info(this.name + "clickCheckboxWhitelistNo ");
-		return (await this.initCheckboxes() !== null) &&
-			await super.clickWithWait(this.boxWhitelistingNo);
 	}
 
 	async setGasPrice(value) {
@@ -203,9 +210,10 @@ class WizardStep3 extends Page {
 	async fillPage(crowdsale) {
 		logger.info(this.name + "fillPage ");
 
-		let result = await this.waitUntilLoaderGone() &&
-			await this.fillWalletAddress(crowdsale.walletAddress) &&
-			await this.setGasPrice(crowdsale.gasPrice);
+		let result = await this.waitUntilLoaderGone()
+			&& await this.fillWalletAddress(crowdsale.walletAddress)
+			&& await this.setGasPrice(crowdsale.gasPrice)
+			&& await this.setBurnExcess(crowdsale.burnExcess);
 
 		for (let i = 0; i < crowdsale.tiers.length - 1; i++) {
 			result = await new TierPage(this.driver, crowdsale.tiers[i]).fillTier()

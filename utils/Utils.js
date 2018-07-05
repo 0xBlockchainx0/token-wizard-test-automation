@@ -466,6 +466,15 @@ class Utils {
 		return result.end_time;
 	}
 
+	static async getTokensSold(crowdsale) {
+		logger.info("getTokenSold");
+		if(crowdsale.sort === _minted) return false;
+		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
+		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
+		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressDutchIDXAddress());
+		let result = await myContract.methods.getTokensSold(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID).call();
+		return result;
+	}
 
 
 

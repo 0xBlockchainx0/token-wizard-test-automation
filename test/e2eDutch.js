@@ -60,6 +60,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 
 		await Utils.copyEnvFromWizard();
 		e2eMinCap = await Utils.getDutchCrowdsaleInstance(scenarioE2eMinCap);
+
 		e2eWhitelist = await Utils.getDutchCrowdsaleInstance(scenarioE2eWhitelist);
 		crowdsaleForUItests = await Utils.getDutchCrowdsaleInstance(scenarioForUItests);
 
@@ -662,7 +663,20 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 			let result = await investor.finalize(e2eWhitelist);
 			return await assert.equal(result, false, "Test FAILED.'Not Owner can finalize ");
 		});
-
+	test.it('Owner has received correct quantity of tokens ',
+		async function () {
+			let investor = Owner;
+			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			await investor.openInvestPage(e2eWhitelist);
+			let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eWhitelist));
+			let balance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
+			balanceEthOwnerBefore = balance;
+			logger.info("Investor should receive  = " + shouldBe);
+			logger.info("Investor has received balance = " + balance);
+			logger.info("Difference = " + (balance - shouldBe));
+			let result = (Math.abs(shouldBe - balance) < 1e-6);
+			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
+		});
 	test.it('Owner is able to finalize (if crowdsale time is over but not all tokens have sold)',
 		async function () {
 			let owner = Owner;
@@ -709,303 +723,307 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
 
-	test.it('Owner has received correct quantity of tokens after finalization',
+	test.it('Check if flag  `burn_exceed` works: Owner has received unsold tokens after finalization',
 		async function () {
 			let investor = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			await investor.openInvestPage(e2eWhitelist);
-			let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eWhitelist));
+
+			let soldAmount = await Utils.getTokensSold(e2eWhitelist) / 1e18;
+			let unsoldAmount = e2eWhitelist.tiers[0].supply - soldAmount;
+			console.log("Owner should receive unsoldAmount = " + unsoldAmount);
+			console.log("soldAmount = " + soldAmount);
+
+			console.log("balanceEthOwnerBefore = " + balanceEthOwnerBefore);//Token balance before finalization
 			let balance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
-			logger.info("Investor should receive  = " + shouldBe);
-			logger.info("Investor has received balance = " + balance);
-			logger.info("Difference = " + (balance - shouldBe));
-			let result = (Math.abs(shouldBe - balance) < 1e-6);
-			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
+			console.log("balanceEthOwnerAfter = " + balance);
+
+			let result = (Math.abs(balanceEthOwnerBefore - balance) < 1e-6);
+			return await assert.equal(result, true, "Test FAILED.'Owner has received " + balance + " tokens instead " + shouldBe)
 		});
 
 	//////////////////////// Test SUITE #2 /////////////////////////////
-	test.it('Owner  can create DutchAuction crowdsale(scenario scenarioE2eDutchMincapLong.json), minCap,no whitelist',
-		async function () {
-			Investor1.tokenBalance = 0;
-			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
-			let result = await owner.createDutchAuctionCrowdsale(e2eMinCap);
-			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
-		});
+	/*
+		test.it('Owner  can create DutchAuction crowdsale(scenario scenarioE2eDutchMincapLong.json), minCap,no whitelist',
+			async function () {
+				Investor1.tokenBalance = 0;
+				let owner = Owner;
+				assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+				let result = await owner.createDutchAuctionCrowdsale(e2eMinCap);
+				return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+			});
 
-	test.it("Contribution page: Countdown timer has correct status: 'TO START OF TIER1 '",
-		async function () {
-			let investor = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let result = await investPage.isCrowdsaleNotStarted();
-			return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
-		});
+		test.it("Contribution page: Countdown timer has correct status: 'TO START OF TIER1 '",
+			async function () {
+				let investor = Owner;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let result = await investPage.isCrowdsaleNotStarted();
+				return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
+			});
 
-	test.it("Contribution page: Owner's balance has correct value (totalSupply-supply) ",
-		async function () {
-			balanceEthOwnerBefore = await Utils.getBalance(Owner);
-			let owner = Owner;
-			await owner.openInvestPage(e2eMinCap);
-			let balance = await owner.getBalanceFromInvestPage(e2eMinCap);
-			let shouldBe = e2eMinCap.totalSupply - e2eMinCap.tiers[0].supply;
-			let result = (balance.toString() === shouldBe.toString());
-			return await assert.equal(result, true, "Test FAILED. Owner's balance has incorrect value (totalSupply-supply)");
-		});
-	test.it("Contribution page: minContribution field contains correct minCap value ",
-		async function () {
-			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let result = await investPage.getMinContribution();
-			//console.log(result);
-			//console.log( e2eMinCap.tiers[0].minCap);
-			return await assert.equal(result, e2eMinCap.tiers[0].minCap, 'Test FAILED. MinContribution value is incorrect ');
-		});
-	test.it('Manage page: owner is able to change minCap before start of crowdsale',
-		async function () {
-			let owner = Owner;
-			let tierNumber = 1;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
-			e2eMinCap.tiers[0].minCap = e2eMinCap.tiers[0].minCap / 2;
-			let result = await owner.changeMinCapFromManagePage(tierNumber, e2eMinCap.tiers[0].minCap);
-			return await assert.equal(result, true, 'Test FAILED.Owner is NOT able to add whitelisted address before start of crowdsale ');
-		});
+		test.it("Contribution page: Owner's balance has correct value (totalSupply-supply) ",
+			async function () {
+				balanceEthOwnerBefore = await Utils.getBalance(Owner);
+				let owner = Owner;
+				await owner.openInvestPage(e2eMinCap);
+				let balance = await owner.getBalanceFromInvestPage(e2eMinCap);
+				let shouldBe = e2eMinCap.totalSupply - e2eMinCap.tiers[0].supply;
+				let result = (balance.toString() === shouldBe.toString());
+				return await assert.equal(result, true, "Test FAILED. Owner's balance has incorrect value (totalSupply-supply)");
+			});
+		test.it("Contribution page: minContribution field contains correct minCap value ",
+			async function () {
+				let investor = Investor1;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let result = await investPage.getMinContribution();
+				console.log(result);
+				console.log(e2eMinCap.tiers[0].minCap);
+				return await assert.equal(result, e2eMinCap.tiers[0].minCap, 'Test FAILED. MinContribution value is incorrect ');
+			});
+		test.it('Manage page: owner is able to change minCap before start of crowdsale',
+			async function () {
+				let owner = Owner;
+				let tierNumber = 1;
+				assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
+				e2eMinCap.tiers[0].minCap = e2eMinCap.tiers[0].minCap / 2;
+				let result = await owner.changeMinCapFromManagePage(tierNumber, e2eMinCap.tiers[0].minCap);
+				return await assert.equal(result, true, 'Test FAILED.Owner is NOT able to add whitelisted address before start of crowdsale ');
+			});
 
-	test.it('Investor not able to buy before start of crowdsale ',
-		async function () {
-			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let contribution = e2eMinCap.tiers[0].minCap;
-			let result = await investor.contribute(contribution);
-			return await assert.equal(result, false, "Test FAILED. Whitelisted investor can buy before the crowdsale started");
-		});
+		test.it('Investor not able to buy before start of crowdsale ',
+			async function () {
+				let investor = Investor1;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let contribution = e2eMinCap.tiers[0].minCap;
+				let result = await investor.contribute(contribution);
+				return await assert.equal(result, false, "Test FAILED. Whitelisted investor can buy before the crowdsale started");
+			});
 
-	test.it('Crowdsale starts as scheduled',
-		async function () {
+		test.it('Crowdsale starts as scheduled',
+			async function () {
 
-			let counter = 180;
-			do {
-				startTime = await Utils.getDutchCrowdsaleStartTime(e2eMinCap);
-				logger.info("wait " + Date.now());
-				logger.info("wait " + startTime);
-				//console.log("Date.now() = " + Date.now());
-				//console.log("startTime =  " + startTime);
-				//console.log("counter"+counter);
-				await driver.sleep(1000);
-			}
-			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
-			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
-		});
+				let counter = 180;
+				do {
+					startTime = await Utils.getDutchCrowdsaleStartTime(e2eMinCap);
+					logger.info("wait " + Date.now());
+					logger.info("wait " + startTime);
+					//console.log("Date.now() = " + Date.now());
+					//console.log("startTime =  " + startTime);
+					//console.log("counter"+counter);
+					await driver.sleep(1000);
+				}
+				while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+				return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+			});
 
-	test.it("Contribution page: Countdown timer has correct status: 'TO END OF TIER1 '",
-		async function () {
-			let investor = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let result = await investPage.isCurrentTier1();
-			return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
-		});
-	test.it("Contribution page: minContribution field contains correct minCap value (after modifying)",
-		async function () {
-			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let result = await investPage.getMinContribution();
-		//	console.log("minContr= "+ result );
-		//	console.log("minCap= "+ e2eMinCap.tiers[0].minCap );
-		//	console.log("equals= "+ result === e2eMinCap.tiers[0].minCap);
-		//	await driver.sleep(30000);
-			return await assert.equal(result, e2eMinCap.tiers[0].minCap, 'Test FAILED. MinContribution value is incorrect ');
-		});
-	test.it('Investor is not able to buy less than minCap in first transaction',
-		async function () {
-			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let contribution = e2eMinCap.tiers[0].minCap * 0.5;
-			let result = await investor.contribute(contribution);
-			return await assert.equal(result, false, "Test FAILED.Investor can buy less than minCap in first transaction");
-		});
+		test.it("Contribution page: Countdown timer has correct status: 'TO END OF TIER1 '",
+			async function () {
+				let investor = Owner;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let result = await investPage.isCurrentTier1();
+				return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
+			});
+		test.it("Contribution page: minContribution field contains correct minCap value (after modifying)",
+			async function () {
+				let investor = Investor1;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let result = await investPage.getMinContribution();
+				//	console.log("minContr= "+ result );
+				//	console.log("minCap= "+ e2eMinCap.tiers[0].minCap );
+				//	console.log("equals= "+ result === e2eMinCap.tiers[0].minCap);
+				//	await driver.sleep(30000);
+				return await assert.equal(result, e2eMinCap.tiers[0].minCap, 'Test FAILED. MinContribution value is incorrect ');
+			});
+		test.it('Investor is not able to buy less than minCap in first transaction',
+			async function () {
+				let investor = Investor1;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let contribution = e2eMinCap.tiers[0].minCap * 0.5;
+				let result = await investor.contribute(contribution);
+				return await assert.equal(result, false, "Test FAILED.Investor can buy less than minCap in first transaction");
+			});
 
-	test.it('Investor is able to buy amount equal minCap',
-		async function () {
-			let investor = Investor1;
-			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			let contribution = e2eMinCap.tiers[0].minCap;
-			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(e2eMinCap)
-				&& await investor.contribute(contribution);
-			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
-		});
+		test.it('Investor is able to buy amount equal minCap',
+			async function () {
+				let investor = Investor1;
+				//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				let contribution = e2eMinCap.tiers[0].minCap;
+				investor.tokenBalance += contribution;
+				let result = await investor.openInvestPage(e2eMinCap)
+					&& await investor.contribute(contribution);
+				return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+			});
 
-	test.it('Contribution page: Investors balance is properly changed after purchase ',
-		async function () {
-			let investor = Investor1;
-			await investor.openInvestPage(e2eMinCap);
-			let newBalance = await investor.getBalanceFromInvestPage(e2eMinCap);
-			let result = (Math.abs(parseFloat(newBalance) - parseFloat(investor.tokenBalance)) < 10);
-			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
-		});
+		test.it('Contribution page: Investors balance is properly changed after purchase ',
+			async function () {
+				let investor = Investor1;
+				await investor.openInvestPage(e2eMinCap);
+				let newBalance = await investor.getBalanceFromInvestPage(e2eMinCap);
+				let result = (Math.abs(parseFloat(newBalance) - parseFloat(investor.tokenBalance)) < 10);
+				return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+			});
 
-	test.it('Investor is able to buy less than minCap after first transaction',
-		async function () {
-			let investor = Investor1;
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let contribution = e2eMinCap.tiers[0].minCap * 0.5;
-			investor.tokenBalance += contribution;
-			let result = await investor.contribute(contribution);
-			return await assert.equal(result, true, "Test FAILED. Investor can NOT buy less than min after first transaction");
+		test.it('Investor is able to buy less than minCap after first transaction',
+			async function () {
+				let investor = Investor1;
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let contribution = e2eMinCap.tiers[0].minCap * 0.5;
+				investor.tokenBalance += contribution;
+				let result = await investor.contribute(contribution);
+				return await assert.equal(result, true, "Test FAILED. Investor can NOT buy less than min after first transaction");
 
-		});
+			});
 
-	test.it('Manage page: owner is able to update minCap after start of crowdsale',
-		async function () {
-			let owner = Owner;
-			let tierNumber = 1;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
-			e2eMinCap.tiers[0].minCap = e2eMinCap.tiers[0].minCap * 2;
-			let result = await owner.changeMinCapFromManagePage(tierNumber, e2eMinCap.tiers[0].minCap);
-			return await assert.equal(result, true, 'Test FAILED.Manage page: owner is not able to update minCap after start of crowdsale ');
-		});
-	test.it("Contribution page: minContribution field contains correct minCap value (after modifying) ",
-		async function () {
-			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let result = await investPage.getMinContribution();
-			return await assert.equal(result, e2eMinCap.tiers[0].minCap, 'Test FAILED. MinContribution value is incorrect ');
-		});
-	test.it('minCap should be updated: new investor is not able to buy less than new minCap ',
-		async function () {
-			let investor = Investor2;
-			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let contribution = e2eMinCap.tiers[0].minCap - 1;
-			let result = await investor.contribute(contribution);
-			return await assert.equal(result, false, "Test FAILED. minCap wasn't updated");
+		test.it('Manage page: owner is able to update minCap after start of crowdsale',
+			async function () {
+				let owner = Owner;
+				let tierNumber = 1;
+				assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
+				e2eMinCap.tiers[0].minCap = e2eMinCap.tiers[0].minCap * 2;
+				let result = await owner.changeMinCapFromManagePage(tierNumber, e2eMinCap.tiers[0].minCap);
+				return await assert.equal(result, true, 'Test FAILED.Manage page: owner is not able to update minCap after start of crowdsale ');
+			});
+		test.it("Contribution page: minContribution field contains correct minCap value (after modifying) ",
+			async function () {
+				let investor = Investor2;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let result = await investPage.getMinContribution();
+				return await assert.equal(result, e2eMinCap.tiers[0].minCap, 'Test FAILED. MinContribution value is incorrect ');
+			});
+		test.it('minCap should be updated: new investor is not able to buy less than new minCap ',
+			async function () {
+				let investor = Investor2;
+				//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let contribution = e2eMinCap.tiers[0].minCap - 1;
+				let result = await investor.contribute(contribution);
+				return await assert.equal(result, false, "Test FAILED. minCap wasn't updated");
 
-		});
-	test.it('minCap should be updated:  New investor is  able to buy amount equals  new minCap ',
-		async function () {
-			let investor = Investor2;
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let contribution = e2eMinCap.tiers[0].minCap;
-			investor.tokenBalance = contribution;
-			let result = await investor.contribute(contribution);
-			return await assert.equal(result, true, "Test FAILED. Updated minCap in action: New investor is not able to buy amount equals  new minCap");
-		});
+			});
+		test.it('minCap should be updated:  New investor is  able to buy amount equals  new minCap ',
+			async function () {
+				let investor = Investor2;
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let contribution = e2eMinCap.tiers[0].minCap;
+				investor.tokenBalance = contribution;
+				let result = await investor.contribute(contribution);
+				return await assert.equal(result, true, "Test FAILED. Updated minCap in action: New investor is not able to buy amount equals  new minCap");
+			});
 
-	test.it('Old investor still able to buy amount less than minCap',
-		async function () {
-			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let contribution = e2eMinCap.tiers[0].minCap / 10;
-			investor.tokenBalance += contribution;
+		test.it('Old investor still able to buy amount less than minCap',
+			async function () {
+				let investor = Investor1;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let contribution = e2eMinCap.tiers[0].minCap / 10;
+				investor.tokenBalance += contribution;
 
-			await investor.contribute(contribution);
-			let balance = await investor.getBalanceFromInvestPage(e2eMinCap);
-			let result = (Math.abs(parseFloat(balance) - parseFloat(investor.tokenBalance)) < 1);
-			return await assert.equal(result, true, "Test FAILED.Investor can not  buy  maxCap");
-		});
+				await investor.contribute(contribution);
+				let balance = await investor.getBalanceFromInvestPage(e2eMinCap);
+				let result = (Math.abs(parseFloat(balance) - parseFloat(investor.tokenBalance)) < 1);
+				return await assert.equal(result, true, "Test FAILED.Investor can not  buy  maxCap");
+			});
 
-	test.it('Investor is able to buy maxCap',
-		async function () {
-			let investor = Investor1;
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let contribution = e2eMinCap.tiers[0].supply;
-			investor.tokenBalance = contribution - Investor2.tokenBalance;
-			await investor.contribute(contribution);
-			let balance = await investor.getBalanceFromInvestPage(e2eMinCap);
-			let result = (Math.abs(parseFloat(balance) - parseFloat(investor.tokenBalance)) < 0.1);
-			return await assert.equal(result, true, "Test FAILED.Investor can not  buy  maxCap");
-		});
+		test.it('Investor is able to buy maxCap',
+			async function () {
+				let investor = Investor1;
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let contribution = e2eMinCap.tiers[0].supply;
+				investor.tokenBalance = contribution - Investor2.tokenBalance;
+				await investor.contribute(contribution);
+				let balance = await investor.getBalanceFromInvestPage(e2eMinCap);
+				let result = (Math.abs(parseFloat(balance) - parseFloat(investor.tokenBalance)) < 0.1);
+				return await assert.equal(result, true, "Test FAILED.Investor can not  buy  maxCap");
+			});
 
-	test.it("Owner's Eth balance properly changed ",
-		async function () {
-			balanceEthOwnerAfter = await Utils.getBalance(Owner);
-			let contribution = e2eMinCap.tiers[0].supply;
-			let delta = 0.1;
-			let result = await Utils.compareBalance(balanceEthOwnerBefore, balanceEthOwnerAfter, contribution, e2eMinCap.tiers[0].minRate, delta);
-			return await assert.equal(result, true, "Owner's balance incorrect");
-		});
+		test.it("Owner's Eth balance properly changed ",
+			async function () {
+				balanceEthOwnerAfter = await Utils.getBalance(Owner);
+				let contribution = e2eMinCap.tiers[0].supply;
+				let delta = 0.1;
+				let result = await Utils.compareBalance(balanceEthOwnerBefore, balanceEthOwnerAfter, contribution, e2eMinCap.tiers[0].minRate, delta);
+				return await assert.equal(result, true, "Owner's balance incorrect");
+			});
 
-	test.it('Owner is able to finalize (if all tokens have been sold)',
-		async function () {
-			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
-			let result = await owner.finalize(e2eMinCap);
-			return await assert.equal(result, true, "Test FAILED.'Owner can NOT finalize ");
-		});
+		test.it('Owner is able to finalize (if all tokens have been sold)',
+			async function () {
+				let owner = Owner;
+				assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+				let result = await owner.finalize(e2eMinCap);
+				return await assert.equal(result, true, "Test FAILED.'Owner can NOT finalize ");
+			});
 
-	test.it("Contribution page: Countdown timer has correct status: 'HAS BEEN FINALIZED '",
-		async function () {
-			let investor = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let result = await investPage.isCrowdsaleFinalized();
-			return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
-		});
+		test.it("Contribution page: Countdown timer has correct status: 'HAS BEEN FINALIZED '",
+			async function () {
+				let investor = Owner;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
+				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+				let result = await investPage.isCrowdsaleFinalized();
+				return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
+			});
 
-	test.it('Investor #1 has received correct quantity of tokens after finalization',
-		async function () {
+		test.it('Investor #1 has received correct quantity of tokens after finalization',
+			async function () {
 
-			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			await investor.openInvestPage(e2eMinCap);
-			let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eMinCap));
-			let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
-			logger.info("Investor should receive  = " + shouldBe);
-			logger.info("Investor has received balance = " + balance);
-			logger.info("Difference = " + (balance - shouldBe));
-			let result = (Math.abs(shouldBe - balance) < 1e-6);
-			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
+				let investor = Investor1;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				await investor.openInvestPage(e2eMinCap);
+				let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eMinCap));
+				let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
+				logger.info("Investor should receive  = " + shouldBe);
+				logger.info("Investor has received balance = " + balance);
+				logger.info("Difference = " + (balance - shouldBe));
+				let result = (Math.abs(shouldBe - balance) < 1e-6);
+				return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 
-		});
-	test.it('Investor #2 has received correct quantity of tokens after finalization',
-		async function () {
+			});
+		test.it('Investor #2 has received correct quantity of tokens after finalization',
+			async function () {
 
-			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			await investor.openInvestPage(e2eMinCap);
-			let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eMinCap));
-			let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
-			logger.info("Investor should receive  = " + shouldBe);
-			logger.info("Investor has received balance = " + balance);
-			logger.info("Difference = " + (balance - shouldBe));
-			let result = (Math.abs(shouldBe - balance) < 1e-6);
-			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
+				let investor = Investor2;
+				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				await investor.openInvestPage(e2eMinCap);
+				let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eMinCap));
+				let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
+				logger.info("Investor should receive  = " + shouldBe);
+				logger.info("Investor has received balance = " + balance);
+				logger.info("Difference = " + (balance - shouldBe));
+				let result = (Math.abs(shouldBe - balance) < 1e-6);
+				return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 
-		});
+			});
 
-	test.it('Owner has received correct quantity of tokens after finalization',
-		async function () {
+		test.it('Owner has received correct quantity of tokens after finalization',
+			async function () {
 
-			let investor = Owner;
-			let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
-			let shouldBe = e2eMinCap.totalSupply - e2eMinCap.tiers[0].supply;
-			logger.info("Investor should receive  = " + shouldBe);
-			logger.info("Investor has received balance = " + balance);
-			logger.info("Difference = " + (balance - shouldBe));
-			let result = (Math.abs(shouldBe - balance) < 1e-6);
-			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
-		});
-
+				let investor = Owner;
+				let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
+				let shouldBe = e2eMinCap.totalSupply - e2eMinCap.tiers[0].supply;
+				logger.info("Investor should receive  = " + shouldBe);
+				logger.info("Investor has received balance = " + balance);
+				logger.info("Difference = " + (balance - shouldBe));
+				let result = (Math.abs(shouldBe - balance) < 1e-6);
+				return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
+			});
+	*/
 });
