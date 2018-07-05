@@ -741,7 +741,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 		});
 
 	//////////////////////// Test SUITE #2 /////////////////////////////
-	/*
+
 		test.it('Owner  can create DutchAuction crowdsale(scenario scenarioE2eDutchMincapLong.json), minCap,no whitelist',
 			async function () {
 				Investor1.tokenBalance = 0;
@@ -1025,5 +1025,5 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.2 ', asyn
 				let result = (Math.abs(shouldBe - balance) < 1e-6);
 				return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 			});
-	*/
+
 });
