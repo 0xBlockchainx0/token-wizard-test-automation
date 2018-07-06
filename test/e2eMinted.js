@@ -593,11 +593,6 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 			return await assert.equal(result, true, 'Test FAILED.Manage page: incorrect number of whitelisted addresses is displayed for tier #2');
 		});
 
-	test.it("Manage page: button 'Save' is  disabled by default",
-		async function () {
-			return await assert.equal(await mngPage.isDisabledButtonSave(), true, "Test FAILED. Button 'Save' is enabled by default");
-		});
-
 	test.it("Manage page: button 'Save' is not clickable when disabled",
 		async function () {
 			await mngPage.clickButtonSave();
@@ -955,6 +950,9 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 			if (result) {
 				investor.tokenBalance += contribution;
 			}
+			console.log(result);
+			console.log(contribution);
+		//	await driver.sleep(20000000000);
 			return await assert.equal(result, false, "Test FAILED.Whitelisting is inherited");
 		});
 
@@ -1400,7 +1398,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 		async function () {
 			let investor = Investor1;
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
+			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = investor.minCap / 2;
 			let result = await investor.contribute(contribution);
@@ -1581,7 +1579,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 		async function () {
 			let investor = Investor3;
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
+			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = investor.minCap / 2;
 			let result = await investor.contribute(contribution);
