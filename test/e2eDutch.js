@@ -732,11 +732,11 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.5 ', asyn
 			console.log("Owner should receive unsoldAmount = " + unsoldAmount);
 			console.log("soldAmount = " + soldAmount);
 
-			console.log("balanceEthOwnerBefore = " + balanceEthOwnerBefore);//Token balance before finalization
+			console.log("balanceOwnerBefore = " + balanceEthOwnerBefore);//Token balance before finalization
 			let balance = await investor.getTokenBalance(e2eWhitelist) / 1e18;
-			console.log("balanceEthOwnerAfter = " + balance);
-
-			let result = (Math.abs(balanceEthOwnerBefore - balance) < 1e-6);
+			console.log("balanceOwnerAfter = " + balance);
+			let delta  = Math.abs(balanceEthOwnerBefore - balance)
+			let result = (Math.abs(delta - unsoldAmount) < 1e-6);
 			return await assert.equal(result, true, "Test FAILED.'Owner has additionaly  received " + balance + " tokens instead " + unsoldAmount)
 		});
 
@@ -778,8 +778,6 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.5 ', asyn
 				assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 				assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 				let result = await investPage.getMinContribution();
-				console.log(result);
-				console.log(e2eMinCap.tiers[0].minCap);
 				return await assert.equal(result, e2eMinCap.tiers[0].minCap, 'Test FAILED. MinContribution value is incorrect ');
 			});
 		test.it('Manage page: owner is able to change minCap before start of crowdsale',

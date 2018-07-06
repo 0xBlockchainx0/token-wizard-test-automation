@@ -231,12 +231,13 @@ class ManagePage extends Page {
 	async isDisabledButtonSave() {
 		logger.info(this.name + " isDisabledButtonSave ");
 		await this.initButtonSave();
-		if (await super.getAttribute(this.buttonSave, "class") === "no_arrow button button_fill button_disabled") {
+		if (await super.getAttribute(this.buttonSave, "class") === "no_arrow button button_fill button_no_border") {
+			//no_arrow button button_fill button_disabled
 			logger.info("present and disabled");
 			return true;
 		}
 		else {
-			logger.info("Error ");
+			logger.info("not present ");
 			return false;
 		}
 	}
