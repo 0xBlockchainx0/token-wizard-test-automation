@@ -325,41 +325,41 @@ class Utils {
 		return (Math.abs(balanceShouldBe - balanceEthOwnerAfter / 1e18) < delta);
 	}
 
-	static async getEnvAddressMintedIDXAddress() {
+	static async getFromEnvMintedIDXAddress() {
 		logger.info("Utils:getEnvAddressMintedInitCrowdsale");
 		require('dotenv').config();
 		return Object.values(JSON.parse(process.env.REACT_APP_MINTED_CAPPED_IDX_ADDRESS))[0];
 	}
 
-	static async getEnvAddressDutchIDXAddress() {
+	static async getFromEnvDutchIDXAddress() {
 		logger.info("Utils:getEnvAddressDutchInitCrowdsale");
 		require('dotenv').config();
 		return Object.values(JSON.parse(process.env.REACT_APP_DUTCH_IDX_ADDRESS))[0];
 	}
 
-	static async getEnvAddressAbstractStorage() {
+	static async getFromEnvAbstractStorageAddress() {
 		logger.info("Utils:getEnvAddressRegistryStorage");
 		require('dotenv').config();
 		return Object.values(JSON.parse(process.env.REACT_APP_ABSTRACT_STORAGE_ADDRESS))[0];
 	}
 
-	static async getEnvNetworkId() {
+	static async getFromEnvNetworkId() {
 		logger.info("Utils:getEnvNetworkId");
 		require('dotenv').config();
 		return Object.keys(JSON.parse(process.env.REACT_APP_REGISTRY_STORAGE_ADDRESS))[0];
 	}
 
-	static async getContractAddressInitCrowdsale(crowdsale) {
-		logger.info("Utils:getContractAddressInitCrowdsale");
+	static async getContractAddressIdx(crowdsale) {
+		logger.info("Utils:getContractAddressIdx");
 		switch (crowdsale.sort) {
 			case 'minted':
-				return Utils.getEnvAddressMintedIDXAddress();
+				return Utils.getFromEnvMintedIDXAddress();
 				break;
 			case 'dutch':
-				return Utils.getEnvAddressDutchIDXAddress();
+				return Utils.getFromEnvDutchIDXAddress();
 				break;
 			default:
-				return Utils.getEnvAddressMintedIDXAddress();
+				return Utils.getFromEnvMintedIDXAddress();
 		}
 
 	}
@@ -382,12 +382,25 @@ class Utils {
 	}
 
 	static async copyEnvFromWizard() {
+		logger.info("Utils:copyEnvFromWizard")
 		try {
 			fs.copySync('../../.env', './.env', {overwrite: true});
 			return true;
 		}
 		catch (err) {
 			logger.info("! Can't find .env file in wizard's directory !");
+			logger.info(err);
+			return false;
+		}
+	}
+
+	static async copyEnvToWizard() {
+		try {
+			fs.copySync('./.env', '../../.env', {overwrite: true});
+			return true;
+		}
+		catch (err) {
+			logger.info("! Can't find .env file in e2e directory !");
 			logger.info(err);
 			return false;
 		}
@@ -447,8 +460,8 @@ class Utils {
 		if (crowdsale.sort === _minted) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
-		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressDutchIDXAddress());
-		let result = await myContract.methods.getCrowdsaleStartAndEndTimes(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID).call();
+		let myContract = new web3.eth.Contract(abi, await Utils.getFromEnvDutchIDXAddress());
+		let result = await myContract.methods.getCrowdsaleStartAndEndTimes(await Utils.getFromEnvAbstractStorageAddress(), crowdsale.executionID).call();
 		return result.start_time;
 	}
 
@@ -457,8 +470,8 @@ class Utils {
 		if (crowdsale.sort === _minted) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
-		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressDutchIDXAddress());
-		let result = await myContract.methods.getCrowdsaleStartAndEndTimes(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID).call();
+		let myContract = new web3.eth.Contract(abi, await Utils.getFromEnvDutchIDXAddress());
+		let result = await myContract.methods.getCrowdsaleStartAndEndTimes(await Utils.getFromEnvAbstractStorageAddress(), crowdsale.executionID).call();
 		return result.end_time;
 	}
 
@@ -468,10 +481,10 @@ class Utils {
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
 		let idx;
-		if (crowdsale.sort === _minted) idx = await Utils.getEnvAddressMintedIDXAddress();
-		else idx = await Utils.getEnvAddressDutchIDXAddress();
+		if (crowdsale.sort === _minted) idx = await Utils.getFromEnvMintedIDXAddress();
+		else idx = await Utils.getFromEnvDutchIDXAddress();
 		let myContract = new web3.eth.Contract(abi, idx);
-		let result = await myContract.methods.getTokensSold(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID).call();
+		let result = await myContract.methods.getTokensSold(await Utils.getFromEnvAbstractStorageAddress(), crowdsale.executionID).call();
 		return result;
 	}
 
@@ -499,8 +512,8 @@ class Utils {
 		if (crowdsale.sort === _dutch) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
-		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressMintedIDXAddress());
-		let result = await myContract.methods.getCrowdsaleStartAndEndTimes(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID).call();
+		let myContract = new web3.eth.Contract(abi, await Utils.getFromEnvMintedIDXAddress());
+		let result = await myContract.methods.getCrowdsaleStartAndEndTimes(await Utils.getFromEnvAbstractStorageAddress(), crowdsale.executionID).call();
 		return result.start_time;
 	}
 
@@ -509,9 +522,127 @@ class Utils {
 		if (crowdsale.sort === _dutch) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
-		let myContract = new web3.eth.Contract(abi, await Utils.getEnvAddressMintedIDXAddress());
-		let result = await myContract.methods.getTierStartAndEndDates(await Utils.getEnvAddressAbstractStorage(), crowdsale.executionID, tierNumber - 1).call();
+		let myContract = new web3.eth.Contract(abi, await Utils.getFromEnvMintedIDXAddress());
+		let result = await myContract.methods.getTierStartAndEndDates(await Utils.getFromEnvAbstractStorageAddress(), crowdsale.executionID, tierNumber - 1).call();
 		return result.tier_end;
+	}
+
+	static async deployContract(web3, abi, bin, from, parameters) {
+		console.log("Utils: deployContract")
+		console.log("from address= " + from)
+		const contract = new web3.eth.Contract(abi, {from});
+		const gas = 8900000;
+		const gasPrice = '10000000000';
+		console.log("parametersabstractStorage: " + parameters[0]);
+		console.log("parametersmintedIdx: " + parameters[1]);
+		console.log("parametersdutchIdx: " + parameters[2]);
+		return contract
+			.deploy(
+				{
+					data: bin,
+					arguments: parameters
+				}
+			)
+			.send({
+				from,
+				gas,
+				gasPrice
+			})
+	}
+
+	static async deployTWProxiesRegistry(network, registryPath) {
+		logger.info("Utils:deployTWProxiesRegistry  ");
+
+		//const web3 = await new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+		const web3 = await Utils.getWeb3Instance(network);
+		const registryAbi = await JSON.parse(fs.readFileSync(`${registryPath}.abi`).toString());
+		let registryBin = await fs.readFileSync(`${registryPath}.bin`).toString();
+		if (registryBin.slice(0, 2) !== '0x' && registryBin.slice(0, 2) !== '0X') {
+			registryBin = '0x' + registryBin;
+		}
+
+		let abstractStorage = await Utils.getFromEnvAbstractStorageAddress();
+		let mintedIdx = await Utils.getFromEnvMintedIDXAddress();
+		let dutchIdx = await Utils.getFromEnvDutchIDXAddress();
+
+		let account = await web3.eth.getAccounts().then((accounts) => {
+			return accounts[0]
+		});
+		let contract = await Utils.deployContract(web3, registryAbi, registryBin, account, [abstractStorage, mintedIdx, dutchIdx]);
+
+		const networkID = await web3.eth.net.getId();
+		const registryAddress = contract._address;
+		let envContent = `REACT_APP_TW_PROXIES_REGISTRY_ADDRESS='{"${networkID}":"${registryAddress}"}'`;
+		console.log(envContent);
+		console.log("abstractStorage: " + abstractStorage);
+		console.log("mintedIdx: " + mintedIdx);
+		console.log("dutchIdx: " + dutchIdx);
+
+		if (await !fs.existsSync("./.env")) await fs.writeFileSync("./.env");
+		await fs.appendFileSync("./.env", envContent);
+	}
+
+	static async deployTWProxiesRegistryToRopsten(network, registryPath) {
+		logger.info("Utils:deployTWProxiesRegistry  ");
+
+		//const web3 = await new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+		const web3 = await Utils.getWeb3Instance(3);
+		const registryAbi = await JSON.parse(fs.readFileSync(`${registryPath}.abi`).toString());
+		let registryBin = await fs.readFileSync(`${registryPath}.bin`).toString();
+		if (registryBin.slice(0, 2) !== '0x' && registryBin.slice(0, 2) !== '0X') {
+			registryBin = '0x' + registryBin;
+		}
+
+		let abstractStorage = await Utils.getFromEnvAbstractStorageAddress();
+		let mintedIdx = await Utils.getFromEnvMintedIDXAddress();
+		let dutchIdx = await Utils.getFromEnvDutchIDXAddress();
+
+		let privateKey = "0xba98116a7d4b98f22f113c59448b9cc69f916d75f35d51f088b64b483fd0b8ca";
+		let account = web3.eth.accounts.privateKeyToAccount(privateKey);
+		console.log(account.address);
+		let bal = await web3.eth.getBalance(account.address.toString())
+		console.log("bal= " + bal / 1e18);
+		console.log("abstractStorage: " + abstractStorage);
+		console.log("mintedIdx: " + mintedIdx);
+		console.log("dutchIdx: " + dutchIdx);
+		const networkID = await web3.eth.net.getId();
+		console.log("networkID: " + networkID);
+		/*
+				let account = await web3.eth.getAccounts().then((accounts) => {
+					return accounts[0]
+				});*/
+		let contract = await Utils.deployContract(web3, registryAbi, registryBin, account.address, [abstractStorage, mintedIdx, dutchIdx]);
+
+		const registryAddress = contract._address;
+		let envContent = `REACT_APP_TW_PROXIES_REGISTRY_ADDRESS='{"${networkID}":"${registryAddress}"}'`;
+		console.log(envContent);
+
+		if (await !fs.existsSync("./.env")) await fs.writeFileSync("./.env");
+		await fs.appendFileSync("./.env", envContent);
+	}
+
+//////////// PROXY /////////////////////////////////////
+
+	static async getContractABIProxy(crowdsale) {
+		logger.info("Utils:getContractABIProxy");
+		let path = './contracts/Proxies.abi';
+		return await JSON.parse(fs.readFileSync(path).toString());
+	}
+
+	static async getProxyExecID(crowdsale) {
+		logger.info("getProxyExecID");
+		try {
+			let web3 = Utils.getWeb3Instance(crowdsale.networkID);
+			const abi = await Utils.getContractABIProxy(crowdsale);
+			let myContract = new web3.eth.Contract(abi, crowdsale.proxyAddress.toString());
+			let result = await myContract.methods.app_exec_id().call();
+			logger.info("app_exec_id " + result);
+			return result;
+		}
+		catch (err) {
+			logger.info("Can't read contract. Error: " + err);
+			return false;
+		}
 	}
 
 }

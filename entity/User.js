@@ -40,9 +40,9 @@ class User {
 		logger.info("getTokenBalance");
 		try {
 			const web3 = await Utils.getWeb3Instance(crowdsale.networkID);
-			let contractAddress = await Utils.getContractAddressInitCrowdsale(crowdsale);
+			let contractAddress = await Utils.getContractAddressIdx(crowdsale);
 			logger.info("contractAddress" + contractAddress);
-			let addressRegistryStorage = await Utils.getEnvAddressAbstractStorage();
+			let addressRegistryStorage = await Utils.getFromEnvAbstractStorageAddress();
 			logger.info("addressRegistryStorage" + addressRegistryStorage);
 			let abi = await Utils.getContractABIInitCrowdsale(crowdsale);
 			let myContract = new web3.eth.Contract(abi, contractAddress);
@@ -82,7 +82,7 @@ class User {
 		logger.info("Open manage page")
 		const startURL = Utils.getStartURL();
 		let mngPage = new ManagePage(this.driver);
-		mngPage.URL = startURL + "manage/" + crowdsale.executionID;
+		mngPage.URL = startURL + "manage/" + crowdsale.proxyAddress;
 		return await mngPage.open()
 			&& await mngPage.waitUntilLoaderGone()
 			&& !await mngPage.isDisplayedButtonOK();
@@ -370,7 +370,8 @@ class User {
 			await wizardStep4.waitUntilDisplayedButtonContinue() &&
 			await wizardStep4.clickButtonContinue() &&
 			await wizardStep4.waitUntilLoaderGone();
-		crowdsale.executionID = await crowdsalePage.getExecutionID();
+		crowdsale.proxyAddress = await crowdsalePage.getProxyAddress();
+
 		counter = 200;
 		do {
 			await this.driver.sleep(300);
@@ -388,10 +389,14 @@ class User {
 		crowdsale.url = await investPage.getURL();
 
 		logger.info("Final invest page link: " + crowdsale.url);
-		logger.info("token address: " + crowdsale.executionID);
+		logger.info("proxyAddress " + crowdsale.proxyAddress);
 		crowdsale.networkID = this.networkID;
 		crowdsale.sort = 'minted';
-		return result && crowdsale.executionID !== "";
+		crowdsale.executionID = await Utils.getProxyExecID(crowdsale);
+		logger.info("executionID " + crowdsale.executionID);
+
+
+		return result && crowdsale.proxyAddress !== "";
 	}
 
 	async createDutchAuctionCrowdsale(crowdsale) {
@@ -451,7 +456,7 @@ class User {
 			await wizardStep4.clickButtonContinue() &&
 			await wizardStep4.waitUntilLoaderGone();
 		if (!result) return false;
-		crowdsale.executionID = await crowdsalePage.getExecutionID();
+		crowdsale.proxyAddress = await crowdsalePage.getProxyAddress();
 
 		counter = 200;
 		do {
@@ -470,12 +475,14 @@ class User {
 		crowdsale.url = await investPage.getURL();
 
 		logger.info("Final invest page link: " + crowdsale.url);
-		logger.info("token address: " + crowdsale.executionID);
+		logger.info("proxyAddress: " + crowdsale.proxyAddress);
 		crowdsale.networkID = this.networkID;
 		logger.info("crowdsale.networkID " + crowdsale.networkID);
 		crowdsale.networkID = this.networkID;
 		crowdsale.sort = 'dutch';
-		return result && crowdsale.executionID !== "";
+		crowdsale.executionID = await Utils.getProxyExecID(crowdsale);
+		logger.info("executionID " + crowdsale.executionID);
+		return result && crowdsale.proxyAddress !== "";
 	}
 
 	async changeMinCapFromManagePage(tier, value) {

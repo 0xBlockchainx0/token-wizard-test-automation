@@ -471,7 +471,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.5 ', asyn
 
 	test.it('Crowdsale starts as scheduled',
 		async function () {
-
+			let startTime;
 			let counter = 180;
 			do {
 				startTime = await Utils.getDutchCrowdsaleStartTime(e2eWhitelist);
@@ -622,18 +622,18 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.5 ', asyn
 
 	test.it('Crowdsale has finished as scheduled',
 		async function () {
-			let endTime;
+			let endT;
 			let counter = 180;
 			do {
-				endTime = await Utils.getDutchCrowdsaleEndTime(e2eWhitelist);
+				endT = await Utils.getDutchCrowdsaleEndTime(e2eWhitelist);
 				logger.info("wait " + Date.now());
-				logger.info("wait " + endTime);
+				logger.info("wait " + endT);
 				//console.log("Date.now() = " + Date.now());
-				//console.log("endTime =  " + endTime);
+				//console.log("endTime =  " + endT);
 				//console.log("counter"+counter);
 				await driver.sleep(1000);
 			}
-			while (counter-- > 0 && (Date.now() / 1000 <= endTime));
+			while (counter-- > 0 && (Date.now() / 1000 <= endT));
 			return await assert.equal(counter > 0, true, 'Test FAILED. Crowdsale has not finished in time ');
 		});
 
@@ -806,6 +806,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.7.5 ', asyn
 			async function () {
 
 				let counter = 180;
+				let startTime;
 				do {
 					startTime = await Utils.getDutchCrowdsaleStartTime(e2eMinCap);
 					logger.info("wait " + Date.now());

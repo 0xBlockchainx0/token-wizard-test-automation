@@ -111,7 +111,7 @@ class MetaMask extends Page {
 		}
 	}
 
-	async signTransaction(refreshCount,tier) {
+	async signTransaction(refreshCount, tier) {
 		logger.info(this.name + "signTransaction ");
 		await this.switchToNextPage();
 		let counter = 5;
@@ -121,8 +121,9 @@ class MetaMask extends Page {
 			await super.waitUntilLocated(iconChangeAccount);
 			if (await this.isElementDisplayed(buttonSubmit)) {
 
-				return await this.fillGasLimit( 6600000)
-				&&	 await this.clickButtonSubmitTransaction()
+				return await this.fillGasLimit(4600000)
+					&& await this.waitUntilDisplayed(buttonSubmit)
+					&& await this.clickButtonSubmitTransaction()
 					&& await  this.switchToNextPage();
 			}
 			await this.driver.sleep(3000);
