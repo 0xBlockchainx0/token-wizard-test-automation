@@ -2,49 +2,41 @@
 
   "name": "scenarioE2eMintedRopsten.json",
   "ticker": "test",
-  "decimals": 18,
+  "decimals": 10,
   "reservedTokens":[
 
   ],
   "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
-  "gasprice":300,
+  "gasprice":150,
 
   "tiers":[
     {
       "name":"###1",
       "allowModify": true,
-      "isWhitelisted":true,
+      "isWhitelisted":false,
       "startDate": "600000",
       "startTime": "600000",
-      "endDate":"800000",
-      "endTime":"800000",
-      "minCap":13,
-      "rate":1000,
+      "endDate":"720000",
+      "endTime":"720000",
+      "minCap":11,
+      "rate":2000,
       "supply": 100,
-      "whitelist":[{
-        "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
-        "min": 10,
-        "max": 150
-      }]
+      "whitelist":[
+
+      ]
     },
     {
       "name":"###2",
       "allowModify": true,
-      "isWhitelisted":true,
+      "isWhitelisted":false,
       "startDate": "",
       "startTime": "",
       "endDate":"",
       "endTime":"",
-      "minCap":16,
-      "rate":1000,
-      "supply": 200,
+      "minCap":12,
+      "rate":2000,
+      "supply": 100,
       "whitelist":[
-        {
-          "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",
-          "min": 10,
-          "max": 150
-        }
-
 
       ]
     }

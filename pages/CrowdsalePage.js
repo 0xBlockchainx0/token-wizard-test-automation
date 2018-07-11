@@ -22,8 +22,8 @@ class CrowdsalePage extends Page {
 		return await super.clickWithWait(buttonInvest);
 	}
 
-	async getExecutionID() {
-		logger.info(this.name + "getExecutionID");
+	async getProxyAddress() {
+		logger.info(this.name + "getProxyAddress");
 		return await super.getTextForElement(fieldExecID);
 	}
 

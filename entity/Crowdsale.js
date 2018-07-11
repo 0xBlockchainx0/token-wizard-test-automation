@@ -12,7 +12,6 @@ class Crowdsale {
 		this.reservedTokens = [];
 		this.gasPrice;
 
-
 		this.tiers = [];
 		this.tokenAddress;
 		this.contractAddress;
@@ -21,6 +20,7 @@ class Crowdsale {
 		this.executionID;
 		this.networkID;
 		this.sort;
+		this.proxyAddress;
 	}
 
 	async parser(fileName) {

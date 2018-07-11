@@ -24,7 +24,7 @@ const endDateForTestEarlier = "01/07/2049";
 const endTimeForTestLater = "420000";
 const endDateForTestLater = "420000";
 
-test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', async function () {
+test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.0 ', async function () {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 
@@ -66,8 +66,13 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
-
 		await Utils.copyEnvFromWizard();
+		//await Utils.deployTWProxiesRegistry(8545,'./contracts/ProxiesRegistry');
+		//await Utils.deployTWProxiesRegistryToRopsten(3,'./contracts/ProxiesRegistry');
+
+		//await Utils.copyEnvToWizard();
+		//throw ("Stop");
+
 		const scenarioE2eMintedMinCap = './scenarios/scenarioE2eMintedMinCap.json';
 		const scenarioE2eMintedWhitelist = './scenarios/scenarioE2eMintedWhitelist.json';
 		const scenarioForUItests = './scenarios/scenarioUItests.json';
@@ -137,7 +142,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 
 	test.after(async function () {
 		// Utils.killProcess(ganache);
-		await Utils.sendEmail(tempOutputFile);
+		//await Utils.sendEmail(tempOutputFile);
 		let outputPath = Utils.getOutputPath();
 		outputPath = outputPath + "/result" + Utils.getDate();
 		await fs.ensureDirSync(outputPath);
@@ -494,6 +499,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 			let owner = Owner;
 			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let result = await owner.createMintedCappedCrowdsale(e2eWhitelist);
+			logger.info("e2eWhitelist.proxyAddress  " + e2eWhitelist.proxyAddress);
 			logger.info("e2eWhitelist.executionID  " + e2eWhitelist.executionID);
 			logger.info("e2eWhitelist.networkID  " + e2eWhitelist.networkID);
 			logger.info("e2eWhitelist.sort  " + e2eWhitelist.sort);
@@ -824,7 +830,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 			let result = await investor.contribute(contribution);
 
 			let soldTokensAfter = await Utils.getTokensSold(e2eWhitelist);
-			if (result) investor.tokenBalance = (soldTokensAfter - soldTokensBefore)/1e18 + investor.tokenBalance;
+			if (result) investor.tokenBalance = (soldTokensAfter - soldTokensBefore) / 1e18 + investor.tokenBalance;
 
 			let shouldBe = e2eWhitelist.tiers[0].whitelist[0].max;
 			let balance = await investor.getBalanceFromInvestPage(e2eWhitelist);
@@ -904,16 +910,17 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 		async function () {
 			let tierNumber = 1;
 			let counter = 180;
+			let endT;
 			do {
-				endTime = await Utils.getTiersEndTimeMintedCrowdsale(e2eWhitelist, tierNumber);
-				logger.info("wait " + Date.now());
-				logger.info("wait " + startTime);
+				endT = await Utils.getTiersEndTimeMintedCrowdsale(e2eWhitelist, tierNumber);
+				//logger.info("wait " + Date.now());
+				//logger.info("wait " + endT);
 				//console.log("Date.now() = " + Date.now());
 				//console.log("startTime =  " + endTime);
 				await driver.sleep(1000);
 
 			}
-			while (counter-- > 0 && (Date.now() / 1000 <= endTime));
+			while (counter-- > 0 && (Date.now() / 1000 <= endT));
 			return await assert.equal(counter > 0, true, 'Test FAILED. Tier #1 has not finished as scheduled');
 		});
 ///// TIER #2 Whitelist
@@ -952,14 +959,14 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 			}
 			console.log(result);
 			console.log(contribution);
-		//	await driver.sleep(20000000000);
+			//	await driver.sleep(20000000000);
 			return await assert.equal(result, false, "Test FAILED.Whitelisting is inherited");
 		});
 
 	test.it("Contribution page: minContribution field contains correct minCap value for whitelisted investor",
 		async function () {
 			let investor = Investor1;
-			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			//assert.equal(await inve stor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -1014,7 +1021,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 			let contribution = investor.maxCap;
 			let result = await investor.contribute(contribution);
 			let soldTokensAfter = await Utils.getTokensSold(e2eWhitelist);
-			investor.tokenBalance = (soldTokensAfter - soldTokensBefore)/1e18 + investor.tokenBalance;
+			investor.tokenBalance = (soldTokensAfter - soldTokensBefore) / 1e18 + investor.tokenBalance;
 			return await assert.equal(result, true, "Test FAILED.Investor can not buy maxCap in first transaction");
 		});
 
@@ -1360,16 +1367,17 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 		async function () {
 			let tierNumber = 1;
 			let counter = 180;
+			let endT;
 			do {
-				endTime = await Utils.getTiersEndTimeMintedCrowdsale(e2eMinCap, tierNumber);
-				logger.info("wait " + Date.now());
-				logger.info("wait " + startTime);
+				endT = await Utils.getTiersEndTimeMintedCrowdsale(e2eMinCap, tierNumber);
+				//logger.info("wait " + Date.now());
+				//logger.info("wait " + endT);
 				//console.log("Date.now() = " + Date.now());
 				//console.log("startTime =  " + startTime);
 				await driver.sleep(1000);
 
 			}
-			while (counter-- > 0 && (Date.now() / 1000 <= endTime));
+			while (counter-- > 0 && (Date.now() / 1000 <= endT));
 			return await assert.equal(counter > 0, true, 'Test FAILED. Tier #1 has not finished as scheduled');
 		});
 
@@ -1394,7 +1402,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 			return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
 		});
 
-	test.it('Should be individual minCap for each tier: if investor has bought in tier# then he is not able to buy less than minCap in first transaction in tier#2',
+	test.it.skip('Should be individual minCap for each tier: if investor has bought in tier# then he is not able to buy less than minCap in first transaction in tier#2',
 		async function () {
 			let investor = Investor1;
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
@@ -1544,16 +1552,17 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 		async function () {
 			let tierNumber = 2;
 			let counter = 180;
+			let endT;
 			do {
-				endTime = await Utils.getTiersEndTimeMintedCrowdsale(e2eMinCap, tierNumber);
+				endT = await Utils.getTiersEndTimeMintedCrowdsale(e2eMinCap, tierNumber);
 				logger.info("wait " + Date.now());
-				logger.info("wait " + endTime);
+				logger.info("wait " + endT);
 				//console.log("Date.now() = " + Date.now());
 				//console.log("startTime =  " + startTime);
 				await driver.sleep(1000);
 
 			}
-			while (counter-- > 0 && (Date.now() / 1000 <= endTime));
+			while (counter-- > 0 && (Date.now() / 1000 <= endT));
 			return await assert.equal(counter > 0, true, 'Test FAILED. Tier #2 has not finished as scheduled');
 		});
 //////// TIER#3 ///////////
@@ -1622,16 +1631,17 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.7.5 ', asyn
 		async function () {
 			let tierNumber = 3;
 			let counter = 180;
+			let endT;
 			do {
-				endTime = await Utils.getTiersEndTimeMintedCrowdsale(e2eMinCap, tierNumber);
+				endT = await Utils.getTiersEndTimeMintedCrowdsale(e2eMinCap, tierNumber);
 				logger.info("wait " + Date.now());
-				logger.info("wait " + endTime);
+				logger.info("wait " + endT);
 				//console.log("Date.now() = " + Date.now());
 				//console.log("startTime =  " + startTime);
 				await driver.sleep(1000);
 
 			}
-			while (counter-- > 0 && (Date.now() / 1000 <= endTime));
+			while (counter-- > 0 && (Date.now() / 1000 <= endT));
 			return await assert.equal(counter > 0, true, 'Test FAILED. Tier #3 has not finished as scheduled');
 		});
 	///// AFTER END //////
