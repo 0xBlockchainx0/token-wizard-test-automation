@@ -9,122 +9,124 @@ const fieldSupply = By.id("supply");
 
 class WizardStep2 extends Page {
 
-    constructor(driver) {
-        super(driver);
-        this.URL;
-        this.name="WizardStep2 page: ";
-        this.warningName;
-	    this.warningTicker;
-	    this.warningDecimals;
-	    this.warningAddress;
-	    this.warningValue;
-	    this.warningSupply;
-	    this.title="TOKEN SETUP";
-    }
-
-    async initWarnings() {
-	    logger.info(this.name + " :init warnings");
-    	try {
-		    const locator = By.className("error");
-		    let array = await super.findWithWait(locator);
-		    this.warningName = array[0];
-		    this.warningTicker = array[1];
-		    this.warningDecimals = array[2];
-		    if (array.length>2) this.warningSupply = array[3];
-		    return array;
-	    }
-	    catch(err) {
-    		logger.info("Error: " + err);
-    		return null;
-	    }
+	constructor(driver) {
+		super(driver);
+		this.URL;
+		this.name = "WizardStep2 page: ";
+		this.warningName;
+		this.warningTicker;
+		this.warningDecimals;
+		this.warningAddress;
+		this.warningValue;
+		this.warningSupply;
+		this.title = "TOKEN SETUP";
 	}
 
-    async isDisplayedFieldName() {
-        logger.info(this.name+"isDisplayedFieldName ");
-        return await this.isElementDisplayed(fieldName);
-    }
+	async initWarnings() {
+		logger.info(this.name + " :init warnings");
+		try {
+			const locator = By.className("error");
+			let array = await super.findWithWait(locator);
+			this.warningName = array[0];
+			this.warningTicker = array[1];
+			this.warningDecimals = array[2];
+			if (array.length > 2) this.warningSupply = array[3];
+			return array;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return null;
+		}
+	}
 
-    async fillName(value) {
-       	logger.info(this.name+"fillName with value=" + value);
-	    return await this.clearField(fieldName) &&
-               await super.fillWithWait(fieldName,value);
-    }
+	async isDisplayedFieldName() {
+		logger.info(this.name + "isDisplayedFieldName ");
+		return await this.isElementDisplayed(fieldName);
+	}
+
+	async fillName(value) {
+		logger.info(this.name + "fillName with value=" + value);
+		return await this.clearField(fieldName) &&
+			await super.fillWithWait(fieldName, value);
+	}
 
 	async fillTicker(value) {
-	    logger.info(this.name + "fillTicker with value=" + value);
-	    return await super.clearField(fieldTicker) &&
-	           await super.fillWithWait(fieldTicker, value);
+		logger.info(this.name + "fillTicker with value=" + value);
+		return await super.clearField(fieldTicker) &&
+			await super.fillWithWait(fieldTicker, value);
 	}
 
 	async fillDecimals(value) {
-    	logger.info(this.name + "fillDecimals with value=" + value);
-		return await super.fillWithWait(fieldDecimals, value);
+		logger.info(this.name + "fillDecimals with value=" + value);
+		return await super.clearField(fieldDecimals)
+			&& await super.fillWithWait(fieldDecimals, value);
 	}
 
 	async fillSupply(value) {
 		logger.info(this.name + "fillSupply with value=" + value);
-		return await super.clearField(fieldSupply) &&
-			   await super.fillWithWait(fieldSupply, value);
+		return await super.clearField(fieldSupply)
+			&& await super.fillWithWait(fieldSupply, value);
 	}
 
 	async clickButtonContinue() {
-	    logger.info(this.name+"clickButtonContinue ");
-	    return await super.clickWithWait(buttonContinue);
+		logger.info(this.name + "clickButtonContinue ");
+		return await super.clickWithWait(buttonContinue);
 	}
 
 	async isDisplayedButtonContinue() {
-		logger.info(this.name+"isDisplayedButtonContinue ");
+		logger.info(this.name + "isDisplayedButtonContinue ");
 		return await super.isElementDisplayed(buttonContinue);
 	}
 
-    async isDisplayedWarningName() {
-	    logger.info(this.name+"isDisplayedWarningName ");
+	async isDisplayedWarningName() {
+		logger.info(this.name + "isDisplayedWarningName ");
 
-    	return (await this.initWarnings() !== null) &&
-		       (await this.getTextForElement(this.warningName) !== "");
-    }
+		return (await this.initWarnings() !== null) &&
+			(await this.getTextForElement(this.warningName) !== "");
+	}
 
 	async isDisplayedWarningTicker() {
-		logger.info(this.name+"isDisplayedWarningTicker ");
-    	return false;
+		logger.info(this.name + "isDisplayedWarningTicker ");
+		return false;
 		return (await this.initWarnings() !== null) &&
-			   (await this.getTextForElement(this.warningTicker) !== "");
+			(await this.getTextForElement(this.warningTicker) !== "");
 	}
 
 	async isDisplayedWarningDecimals() {
 		logger.info(this.name + "isDisplayedWarningDecimals ");
 		return (await this.initWarnings() !== null) &&
-			   (await this.getTextForElement(this.warningDecimals) !== "");
+			(await this.getTextForElement(this.warningDecimals) !== "");
 	}
 
 	async isDisplayedWarningSupply() {
-		logger.info(this.name+"isDisplayedWarningSupply ");
+		logger.info(this.name + "isDisplayedWarningSupply ");
 		return (await this.initWarnings() !== null) &&
-		       (await this.getTextForElement(this.warningSupply) !== "");
+			(await this.getTextForElement(this.warningSupply) !== "");
 	}
 
 	async getFieldDecimals() {
-		logger.info(this.name+"getFieldDecimals ");
+		logger.info(this.name + "getFieldDecimals ");
 		return super.getAttribute(fieldDecimals, "value");
 	}
 
 	async isDisabledDecimals() {
-		logger.info(this.name+"isDisabledDecimals ");
+		logger.info(this.name + "isDisabledDecimals ");
 		return await super.isElementDisabled(fieldDecimals);
 	}
 
-	async fillPage (crowdsale) {
-		logger.info(this.name+"fillPage ");
+	async fillPage(crowdsale) {
+		logger.info(this.name + "fillPage ");
 		return await this.fillName(crowdsale.name) &&
-			   await this.fillTicker(crowdsale.ticker) &&
-		       await this.fillDecimals(crowdsale.decimals) &&
-			   ((crowdsale.totalSupply !== undefined) ? await this.fillSupply(crowdsale.totalSupply):true);
+			await this.fillTicker(crowdsale.ticker) &&
+			await this.fillDecimals(crowdsale.decimals) &&
+			((crowdsale.totalSupply !== undefined) ? await this.fillSupply(crowdsale.totalSupply) : true);
 	}
 
 	async isDisplayedFieldSupply() {
-		logger.info(this.name+"isDisplayedFieldSupply ");
+		logger.info(this.name + "isDisplayedFieldSupply ");
 		return await super.isElementDisplayed(fieldSupply);
 	}
 
 }
-module.exports.WizardStep2=WizardStep2;
+
+module.exports.WizardStep2 = WizardStep2;
