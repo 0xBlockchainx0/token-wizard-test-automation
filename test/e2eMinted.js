@@ -1411,7 +1411,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.0 ', asyn
 			let contribution = investor.minCap / 2;
 			let result = await investor.contribute(contribution);
 			if (result) {
-				Investor2.tokenBalance = Investor2.tokenBalance - contribution;
+				//Investor2.tokenBalance = Investor2.tokenBalance - contribution;
 				investor.tokenBalance += contribution;
 			}
 			return await assert.equal(result, false, "Test FAILED.Whitelisting is inherited");
@@ -1514,11 +1514,11 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.0 ', asyn
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eMinCap.tiers[1].supply;
-			investor.tokenBalance = e2eMinCap.tiers[1].supply - Investor3.tokenBalance;
+			investor.tokenBalance = e2eMinCap.tiers[1].supply - e2eMinCap.tiers[1].minCap;
 			await investor.contribute(contribution);
 			let balance = await investor.getBalanceFromInvestPage(e2eMinCap);
-			//console.log("Real balance "+balance);
-			//console.log("ShouldBe investor.tokenBalance "+investor.tokenBalance);
+			console.log("Real balance "+balance);
+			console.log("ShouldBe investor.tokenBalance "+investor.tokenBalance);
 			let result = (Math.abs(parseFloat(balance) - parseFloat(investor.tokenBalance)) < 0.1);
 			return await assert.equal(result, true, "Test FAILED.Investor can not  buy  maxCap");
 		});

@@ -62,18 +62,19 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 	let MintedDecimalsWhitelist;
 	let DutchDecimalsWhitelist;
+	const scenarioDutchDecimalsWhitelist = './scenarios/scenarioDutchDecimalsWhitelist.json';
+	const scenarioMintedDecimalsWhitelist = './scenarios/scenarioMintedDecimalsWhitelist.json';
+
 /////////////////////////////////////////////////////////////////////////
 
 	test.before(async function () {
 		logger.info("test decimals ");
 		await Utils.copyEnvFromWizard();
 
-		const scenarioDutchDecimalsWhitelist = './scenarios/scenarioDutchDecimalsWhitelist.json';
-		const scenarioMintedDecimalsWhitelist = './scenarios/scenarioMintedDecimalsWhitelist.json'
 
 
 		//DutchDecimalsWhitelist = await  Utils.getDutchCrowdsaleInstance(scenarioDutchDecimalsWhitelist);
-		MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+
 		startURL = await Utils.getStartURL();
 		driver = await Utils.startBrowserWithMetamask();
 		Owner = new User(driver, user8545_56B2File);
@@ -112,6 +113,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist.decimals = 0;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -159,6 +161,922 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		});
 
 //////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 1;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
 
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
 
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 2;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 3;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 4;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 5;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 6;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 7;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 8;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 9;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 10;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 11;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 12;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 13;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 14;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 15;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 16;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 17;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
+	test.it('Owner  can create crowdsale:Minted,whitelist',
+		async function () {
+			let owner = Owner;
+			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
+			MintedDecimalsWhitelist.decimals = 18;
+			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
+			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
+			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+		});
+	test.it('Crowdsale starts as scheduled',
+		async function () {
+			let startTime;
+			let counter = 180;
+			do {
+				startTime = await Utils.getMintedCrowdsaleStartTime(MintedDecimalsWhitelist);
+				logger.info("wait " + Date.now());
+				logger.info("wait " + startTime);
+				//console.log("Date.now() = " + Date.now());
+				//console.log("startTime =  " + startTime);
+				//console.log("counter"+counter);
+				await driver.sleep(1000);
+			}
+			while (counter-- > 0 && (Date.now() / 1000 <= startTime));
+			return await assert.equal(counter > 0, true, 'Test FAILED. Tier has not start in time ');
+		});
+
+	test.it('Investor is able to buy amount equal minCap',
+		async function () {
+			let investor = Owner;
+			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
+			investor.tokenBalance += contribution;
+			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+				&& await investor.contribute(contribution);
+			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
+		});
+
+	test.it('Investors balance is properly changed after purchase ',
+		async function () {
+			let investor = Owner;
+			let balance= await investor.getTokenBalance(MintedDecimalsWhitelist);
+			console.log("Balance in wei = "+balance);
+			let balanceTokens = balance/Math.pow(10,MintedDecimalsWhitelist.decimals);
+			console.log("Balance in tokens = "+balanceTokens);
+			console.log("ShouldBe = " + MintedDecimalsWhitelist.tiers[0].whitelist[0].min);
+			let result  = (balanceTokens === MintedDecimalsWhitelist.tiers[0].whitelist[0].min)
+			return await assert.equal(result, true, "Test FAILED. Investor can  buy but balance did not changed");
+		});
+
+//////////////////////////////////////
 });
