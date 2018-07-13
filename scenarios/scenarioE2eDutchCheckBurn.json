@@ -1,8 +1,8 @@
 {
-  "name": "scenarioE2eDutchMincapLongjson",
+  "name": "scenarioE2eDutchCheckBurn",
   "ticker": "test",
   "decimals": 18,
-  "totalSupply":1000,
+  "totalSupply":100,
   "walletAddress":"0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7",
   "gasprice":1,
   "burnExcess":true,
@@ -10,14 +10,14 @@
     {
 
       "isWhitelisted":false,
-      "startDate": "180000",
-      "startTime": "180000",
-      "endDate":"23/02/2050",
-      "endTime":"12:34",
+      "startDate": "120000",
+      "startTime": "120000",
+      "endDate":"180000",
+      "endTime":"180000",
       "minCap":100,
       "minRate":100,
       "maxRate":1000,
-      "supply": 500,
+      "supply": 100,
       "whitelist":[]
     }]
 }
