@@ -488,7 +488,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 
 //////////////////////// Test SUITE #1 /////////////////////////////
 
-	test.it('Owner  can create crowdsale(e2eWhitelist.json),2 tiers, modifiable, whitelist,2 reserved addresses',
+	test.it('Owner  can create crowdsale,2 tiers, modifiable, whitelist,2 reserved addresses',
 		async function () {
 			let owner = Owner;
 			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
