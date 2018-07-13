@@ -67,12 +67,6 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 
 	test.before(async function () {
 		await Utils.copyEnvFromWizard();
-		//await Utils.deployTWProxiesRegistry(8545,'./contracts/ProxiesRegistry');
-		//await Utils.deployTWProxiesRegistryToRopsten(3,'./contracts/ProxiesRegistry');
-
-		//await Utils.copyEnvToWizard();
-		//throw ("Stop");
-
 		const scenarioE2eMintedMinCap = './scenarios/scenarioE2eMintedMinCap.json';
 		const scenarioE2eMintedWhitelist = './scenarios/scenarioE2eMintedWhitelist.json';
 		const scenarioForUItests = './scenarios/scenarioUItests.json';
@@ -518,7 +512,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 			let owner = Owner;
 			return await assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
 		});
-	test.it.skip('Manage page: owner is able to add whitelisted addresses from CSV file',
+	/*
+	test.it('Manage page: owner is able to add whitelisted addresses from CSV file',
 		async function () {
 			let owner = Owner;
 			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
@@ -535,7 +530,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 				&& await owner.confirmPopup()
 				&& await mngPage.waitUntilLoaderGone();
 			return await assert.equal(result, true, 'Test FAILED. Manage page: User is not able to download CVS file with whitelisted addresses');
-		});
+		});*/
 
 	test.it('Manage page,tier #1: field minCap disabled if whitelist enabled',
 		async function () {
