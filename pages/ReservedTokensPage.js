@@ -229,15 +229,22 @@ class ReservedTokensPage extends Page {
 		}
 		return result;
 	}
+	async fillBulkReservedTokens(path) {
+		logger.info(this.name + "fillBulkReservedTokens ");
 
-	async uploadReservedCSVFile() {
-
+		let result = await this.uploadReservedCSVFile(path)
+		  && await this.clickButtonOk();
+		return result;
+	}
+	async uploadReservedCSVFile(path) {
+		logger.info(this.name + "uploadReservedCSVFile ");
+        if (path === undefined) path = "bulkReservedAddresses.csv";
 		try {
 			const locator = By.xpath('//input[@type="file"]');
 			let element = await this.driver.findElement(locator);
-			let path = await Utils.getPathToFileInPWD("bulkReservedAddresses.csv");
-			logger.info(this.name + ": uploadReservedAddressesCSVFile: from path: " + path);
-			await element.sendKeys(path);
+			let pathPWD = await Utils.getPathToFileInPWD(path);
+			logger.info("path =  "+pathPWD);
+			await element.sendKeys(pathPWD);
 			return true;
 		}
 		catch (err) {
@@ -248,7 +255,7 @@ class ReservedTokensPage extends Page {
 
 	async clickButtonOk() {
 		logger.info("clickButtonOk");
-		await super.clickWithWait(buttonOK);
+		return await super.clickWithWait(buttonOK);
 
 	}
 

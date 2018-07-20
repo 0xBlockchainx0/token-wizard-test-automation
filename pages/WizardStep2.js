@@ -1,3 +1,4 @@
+const key = require('selenium-webdriver').Key;
 const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
@@ -71,6 +72,19 @@ class WizardStep2 extends Page {
 	async clickButtonContinue() {
 		logger.info(this.name + "clickButtonContinue ");
 		return await super.clickWithWait(buttonContinue);
+	}
+
+	async scrollDownUntilButtonContinueDislayed() {
+		logger.info(this.name + "scrollDownUntilButtonContinueDislayed ");
+		try {
+			await this.pressKey(key.TAB, 5);
+			return true;
+		}
+		catch (err) {
+			console.log("Error:  " + err);
+			return false;
+		}
+
 	}
 
 	async isDisplayedButtonContinue() {

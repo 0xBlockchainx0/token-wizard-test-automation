@@ -860,36 +860,10 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-
-			let contribution = e2eWhitelist.tiers[0].supply;
-
+			let contribution = e2eWhitelist.tiers[0].supply/10;
 			let result = await investor.contribute(contribution);
+			if (result) investor.tokenBalance += contribution;
 			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than assigned max");
-		});
-
-	test.it('Whitelisted investor is not able to buy more than remains even if individual maxCap is not reached',
-		async function () {
-			let investor = Investor2;
-			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let shouldBe = e2eWhitelist.tiers[0].supply - Investor1.maxCap - ReservedAddress.minCap;
-			let balance = await investor.getBalanceFromInvestPage(e2eWhitelist);
-			investor.tokenBalance += shouldBe;
-			//console.log("shouldBe"+shouldBe)
-			//console.log("balance"+balance)
-			let result = (balance.toString() === shouldBe.toString());
-			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than total supply");
-		});
-
-	test.it('Whitelisted investor is not able to buy if all tokens were sold',
-		async function () {
-			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
-			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
-			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let contribution = e2eWhitelist.tiers[0].supply;
-			let result = await investor.contribute(contribution);
-			return await assert.equal(result, false, 'Whitelisted investor is able to buy if all tokens were sold');
 		});
 
 	test.it('Owner is not able to finalize if tier#1 is done',
@@ -1018,11 +992,37 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 			return await assert.equal(result, true, "Test FAILED.Investor can not buy maxCap in first transaction");
 		});
 
+	test.it('Whitelisted investor is not able to buy more than remains even if individual maxCap is not reached',
+		async function () {
+			let investor = Investor3;
+			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
+			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+			let shouldBe = e2eWhitelist.tiers[1].supply;
+			let balance = await investor.getBalanceFromInvestPage(e2eWhitelist);
+			investor.tokenBalance = shouldBe;
+			//console.log("shouldBe"+shouldBe)
+			//console.log("balance"+balance)
+			let result = (balance.toString() === shouldBe.toString());
+			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than total supply");
+		});
+
+	test.it('Whitelisted investor is not able to buy if all tokens were sold',
+		async function () {
+			let investor = Investor4;
+			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
+			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
+			let contribution = investor.minCap;
+			let result = await investor.contribute(contribution);
+			return await assert.equal(result, false, 'Whitelisted investor is able to buy if all tokens were sold');
+		});
+
+
 	test.it("Owner's Eth balance properly changed ",
 		async function () {
 			balanceEthOwnerAfter = await Utils.getBalance(Owner);
 			let contribution = e2eWhitelist.tiers[1].supply;
-			;
+
 			let result = await Utils.compareBalance(balanceEthOwnerBefore, balanceEthOwnerAfter, contribution, e2eWhitelist.tiers[1].rate);
 			return await assert.equal(result, true, "Owner's balance incorrect");
 		});

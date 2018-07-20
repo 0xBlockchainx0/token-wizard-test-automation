@@ -11,7 +11,12 @@
     "e2eMintedRopsten": "mocha   ./test/e2eMintedRopsten.js",
     "e2eDutchRopsten": "mocha   ./test/e2eDutchRopsten.js",
     "tr": "mocha  -b  ./test/funcDutchRateTime.js",
-    "testDecimals":"mocha -b ./test/testDecimals.js"
+    "testDecimalsMintedWhitelist":"mocha -b ./test/testDecimalsMintedWhitelist.js",
+    "testDecimalsMintedCap":"mocha -b ./test/testDecimalsMintedCap.js",
+    "testDecimalsDutchCap":"mocha -b ./test/testDecimalsDutchCap.js",
+    "testReservedMinted":" mocha -b ./test/testReservedHowManyMinted.js",
+    "testWhitelistMinted":"mocha -b ./test/testWhitelistMinted.js",
+    "testWhitelistDutch":"mocha -b ./test/testWhitelistDutch.js"
   },
   "dependencies": {
     "chromedriver": "^2.35.0",

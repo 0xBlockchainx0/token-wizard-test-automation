@@ -1,0 +1,22 @@
+{
+  "name": "DutchDecimalsWhitelist.json",
+  "ticker": "test",
+  "decimals": 0,
+  "totalSupply":100,
+  "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+  "gasprice":50,
+  "burnExcess":false,
+  "tiers":[
+    {
+      "isWhitelisted":false,
+      "startDate": "120000",
+      "startTime": "120000",
+      "endDate":"72000000",
+      "endTime":"72000000",
+      "minCap":11,
+      "minRate":1000,
+      "maxRate":10000,
+      "supply": 100,
+      "whitelist":[ ]
+    }]
+}

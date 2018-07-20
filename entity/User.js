@@ -316,7 +316,8 @@ class User {
 		}
 	}
 
-	async createMintedCappedCrowdsale(crowdsale) {
+	async createMintedCappedCrowdsale(crowdsale,isFillBulkReservedAddresses, pathCSV,isFillBulkWhitelistAddresses, pathCSVWhitelist) {
+
 
 		logger.info(" createMintedCappedCrowdsale ");
 
@@ -346,10 +347,11 @@ class User {
 		} while (counter-- >= 0);
 
 		result = result &&
-			await wizardStep2.fillPage(crowdsale) &&
-			await reservedTokens.fillReservedTokens(crowdsale) &&
-			await wizardStep2.clickButtonContinue() &&
-			await wizardStep3.fillPage(crowdsale);
+		await wizardStep2.fillPage(crowdsale)
+		   && ((isFillBulkReservedAddresses) ? await reservedTokens.fillBulkReservedTokens(pathCSV) : await reservedTokens.fillReservedTokens(crowdsale))
+			&& await wizardStep2.scrollDownUntilButtonContinueDislayed()
+			&& await wizardStep2.clickButtonContinue()
+			&& await wizardStep3.fillPage(crowdsale,isFillBulkWhitelistAddresses, pathCSVWhitelist);
 
 		counter = 200;
 		do {
@@ -395,11 +397,10 @@ class User {
 		crowdsale.executionID = await Utils.getProxyExecID(crowdsale);
 		logger.info("executionID " + crowdsale.executionID);
 
-
 		return result && crowdsale.proxyAddress !== "";
 	}
 
-	async createDutchAuctionCrowdsale(crowdsale) {
+	async createDutchAuctionCrowdsale(crowdsale,isFillBulkWhitelistAddresses, pathCSVWhitelist) {
 
 		logger.info(" createDutchAuctionCrowdsale ");
 
@@ -430,10 +431,10 @@ class User {
 			if (counter === 0) return false;
 		} while (counter-- >= 0);
 
-		result = result &&
-			await wizardStep2.fillPage(crowdsale) &&
-			await wizardStep2.clickButtonContinue() &&
-			await wizardStep3.fillPage(crowdsale);
+		result = result
+			&& await wizardStep2.fillPage(crowdsale)
+			&& await wizardStep2.clickButtonContinue()
+			&& await await wizardStep3.fillPage(crowdsale,isFillBulkWhitelistAddresses, pathCSVWhitelist);
 
 		if (!result) return false;
 		counter = 200;
@@ -498,6 +499,8 @@ class User {
 			&& await this.confirmPopup()
 			&& await mngPage.waitUntilLoaderGone();
 	}
+
+
 
 }
 

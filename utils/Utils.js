@@ -55,7 +55,7 @@ class Utils {
 			let provider = await Utils.getProviderUrl(user.networkID);
 			let web3 = await new Web3(new Web3.providers.HttpProvider(provider));
 			let account0 = await web3.eth.getAccounts().then((accounts) => {
-				return accounts[4];
+				return accounts[6];
 			});
 
 			logger.info("Send " + amount + " Eth from " + account0 + " to " + user.account);
@@ -64,6 +64,8 @@ class Utils {
 				to: user.account,
 				value: amount * 1e18
 			}).then(logger.info("Transaction done"));
+
+
 			return true;
 		}
 		catch (err) {
@@ -518,13 +520,33 @@ class Utils {
 	}
 
 	static async getTiersEndTimeMintedCrowdsale(crowdsale, tierNumber) {
-		logger.info("getTiersEndTimeMintedCrowdsale");
+		logger.info("Utils: getTiersEndTimeMintedCrowdsale");
 		if (crowdsale.sort === _dutch) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
 		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
 		let myContract = new web3.eth.Contract(abi, await Utils.getFromEnvMintedIDXAddress());
 		let result = await myContract.methods.getTierStartAndEndDates(await Utils.getFromEnvAbstractStorageAddress(), crowdsale.executionID, tierNumber - 1).call();
 		return result.tier_end;
+	}
+
+	static async getTierWhitelistMintedCrowdsale (crowdsale, tierNumber) {
+		logger.info("Utils: getTierWhitelistMinted");
+		if (crowdsale.sort === _dutch) return false;
+		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
+		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
+		let myContract = new web3.eth.Contract(abi, await Utils.getFromEnvMintedIDXAddress());
+		let result = await myContract.methods.getTierWhitelist(await Utils.getFromEnvAbstractStorageAddress(), crowdsale.executionID, tierNumber - 1).call();
+		return result.num_whitelisted;
+	}
+
+	static async getCrowdsaleWhitelistDutchCrowdsale (crowdsale) {
+		logger.info("Utils: getTierWhitelistMinted");
+		if (crowdsale.sort === _minted) return false;
+		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
+		const abi = await Utils.getContractABIInitCrowdsale(crowdsale);
+		let myContract = new web3.eth.Contract(abi, await Utils.getFromEnvDutchIDXAddress());
+		let result = await myContract.methods.getCrowdsaleWhitelist(await Utils.getFromEnvAbstractStorageAddress(), crowdsale.executionID).call();
+		return result.num_whitelisted;
 	}
 
 	static async deployContract(web3, abi, bin, from, parameters) {
@@ -644,6 +666,77 @@ class Utils {
 			return false;
 		}
 	}
+
+	static async generateCSVReservedAddresses(amountReserved) {
+		logger.info("generateCSVReservedAddresses");
+		try {
+			console.log(amountReserved);
+			let path = "./reservedAddressesCSV";
+			await fs.ensureDirSync(path);
+			let dateNow = Date.now();
+			let fileName = path+ "/reservedAddresses" + amountReserved + "_"+ dateNow;
+			let fileCSV = fileName +".csv";
+			let fileJSON = fileName +".json";
+			let array = [];
+			let dimension;
+			let value;
+			let web3 = Utils.getWeb3Instance(8545);
+			let account;
+			for (let i = 0; i < amountReserved; i++) {
+				account = web3.eth.accounts.create();
+				dimension = (Math.random()>0.5) ? "percentage":"tokens";
+				value = Math.random()*1e10;
+				array.push({account : account, dimension : dimension, value : value});
+				//console.log(i+"    "+account.address + "," + dimension + "," + value + "\n")
+				await fs.appendFileSync(fileCSV, "" + account.address + "," + dimension + "," + value + "\n");
+			}
+
+			await fs.writeJsonSync(fileJSON, {reservedAddresses:array});
+			return fileName;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return false;
+		}
+	}
+
+	static async generateCSVWhitelistedAddresses(amount) {
+		logger.info("generateCSVWhitelistedAddresses");
+		try {
+			console.log(amount);
+			let path = "./whitelistedAddressesCSV";
+			await fs.ensureDirSync(path);
+			let dateNow = Date.now();
+			let fileName = path+ "/whitelistedAddresses" + amount + "_"+ dateNow;
+			let fileCSV = fileName +".csv";
+			let fileJSON = fileName +".json";
+			let array = [];
+			let max;
+			let min;
+			let web3 = Utils.getWeb3Instance(8545);
+			let account;
+			for (let i = 0; i < amount; i++) {
+				account = web3.eth.accounts.create();
+
+				min = Math.round(Math.random()*1e3);
+				max = min + Math.round(Math.random()*1e3);
+				array.push({account : account, min : min, max : max});
+				//console.log(i+"    "+account.address + "," + dimension + "," + value + "\n")
+				await fs.appendFileSync(fileCSV, "" + account.address + "," + min + "," + max + "\n");
+			}
+
+			await fs.writeJsonSync(fileJSON, {whitelistedAddresses:array});
+			return fileName;
+		}
+		catch (err) {
+			logger.info("Error: " + err);
+			return false;
+		}
+	}
+
+
+
+
 
 }
 
