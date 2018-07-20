@@ -41,7 +41,7 @@
       "endDate":"",
       "endTime":"",
       "minCap":16,
-      "rate":1000,
+      "rate":2000,
       "supply": 200,
       "whitelist":[]
     },
@@ -54,7 +54,7 @@
       "endDate":"",
       "endTime":"",
       "minCap":12,
-      "rate":1000,
+      "rate":3000,
       "supply": 200,
       "whitelist":[
         {
