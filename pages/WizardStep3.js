@@ -207,7 +207,7 @@ class WizardStep3 extends Page {
 		return await super.isElementDisplayed(this.fieldGasPriceCustom);
 	}
 
-	async fillPage(crowdsale) {
+	async fillPage(crowdsale,isFillBulkWhitelistAddresses, pathCSVWhitelist) {
 		logger.info(this.name + "fillPage ");
 
 		let result = await this.waitUntilLoaderGone()
@@ -216,11 +216,11 @@ class WizardStep3 extends Page {
 			&& await this.setBurnExcess(crowdsale.burnExcess);
 
 		for (let i = 0; i < crowdsale.tiers.length - 1; i++) {
-			result = await new TierPage(this.driver, crowdsale.tiers[i]).fillTier()
+			result = await new TierPage(this.driver, crowdsale.tiers[i]).fillTier(isFillBulkWhitelistAddresses, pathCSVWhitelist)
 				&& await this.clickButtonAddTier();
 		}
 		return result &&
-			await new TierPage(this.driver, crowdsale.tiers[crowdsale.tiers.length - 1]).fillTier();
+			await new TierPage(this.driver, crowdsale.tiers[crowdsale.tiers.length - 1]).fillTier(isFillBulkWhitelistAddresses, pathCSVWhitelist);
 	}
 
 	async clickButtonAddTier() {

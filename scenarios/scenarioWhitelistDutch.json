@@ -1,0 +1,29 @@
+{
+  "name": "WhitelistDutch",
+  "ticker": "test",
+  "decimals": 18,
+  "totalSupply":1000000,
+  "walletAddress":"0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7",
+  "gasprice":1,
+  "burnExcess":false,
+  "tiers":[
+    {
+
+      "isWhitelisted":true,
+      "startDate": "120000",
+      "startTime": "120000",
+      "endDate":"4800000000000",
+      "endTime":"4800000000000",
+      "minCap":100,
+      "minRate":1000000,
+      "maxRate":1000001,
+      "supply": 1000000,
+      "whitelist":[
+        {
+          "address": "0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+          "min": 50,
+          "max": 150
+        }
+      ]
+    }]
+}

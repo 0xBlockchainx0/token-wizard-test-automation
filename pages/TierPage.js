@@ -256,7 +256,7 @@ class TierPage extends Page {
 	async getButtonAddWhitelist() {
 		logger.info(this.name + "getButtonAddWhitelist ");
 		let containers = await super.findWithWait(contentContainer);
-		let element = await this.getChildFromElementByClassName("button button_fill button_fill_plus", containers[this.number+1]);
+		let element = await this.getChildFromElementByClassName("button button_fill button_fill_plus", containers[this.number + 1]);
 		return element[0];
 	}
 
@@ -384,10 +384,11 @@ class TierPage extends Page {
 			(await super.getTextForElement(this.warningWhMax) !== "");
 	}
 
-	async uploadWhitelistCSVFile() {
+	async uploadWhitelistCSVFile(path) {
 		logger.info(this.name + "uploadWhitelistCSVFile ");
+		if (path === undefined) path = "bulkWhitelist.csv";
 		try {
-			let path = await Utils.getPathToFileInPWD("bulkWhitelist.csv");
+			path = await Utils.getPathToFileInPWD(path);
 			logger.info(this.name + ": uploadWhitelistCSVFile: from path: " + path);
 			const locator = By.xpath('//input[@type="file"]');
 			let element = await this.driver.findElement(locator);
@@ -425,20 +426,26 @@ class TierPage extends Page {
 		}
 	}
 
-	async fillTier() {
+	async fillTier(isFillBulkWhitelistAddresses, pathCSVWhitelist) {
 		logger.info(this.name + "fillTier ");
 		return await this.setModify()
-			&& await this.fillMinCap()
-			&& await this.setWhitelisting()
-			&& await this.fillMinRate()
-			&& await this.fillMaxRate()
-			&& await this.fillRate()
-			&& await this.fillSetupName()
-			&& await this.fillSupply()
-			&& await this.fillStartTime()
-			&& await this.fillEndTime()
-			&& await this.fillWhitelist();
+		&& await this.fillMinCap()
+		&& await this.setWhitelisting()
+		&& await this.fillMinRate()
+		&& await this.fillMaxRate()
+		&& await this.fillRate()
+		&& await this.fillSetupName()
+		&& await this.fillSupply()
+		&& await this.fillStartTime()
+		&& await this.fillEndTime()
+		&& (isFillBulkWhitelistAddresses) ? await this.fillBulkWhitelist(pathCSVWhitelist) : await this.fillWhitelist();
 
+	}
+
+	async fillBulkWhitelist(pathCSVWhitelist) {
+		logger.info(this.name + " fillBulkWhitelist ");
+		return await this.uploadWhitelistCSVFile(pathCSVWhitelist)
+			&& await this.clickButtonYesAlert();
 	}
 
 	async isDisabledFieldEndTime() {
