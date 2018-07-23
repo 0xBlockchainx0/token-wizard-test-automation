@@ -1,4 +1,4 @@
-webdriver = require('selenium-webdriver');
+
 let test = require('selenium-webdriver/testing');
 let assert = require('assert');
 const fs = require('fs-extra');

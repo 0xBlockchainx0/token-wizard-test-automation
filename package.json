@@ -4,25 +4,34 @@
   "private": false,
   "scripts": {
     "startGanache": "npm install -g ganache-cli && ganache-cli &",
-    "e2e-deployRegistry": "node  ./contracts/DeployRegistry.js",
+
     "e2eMinted": "mocha   ./test/e2eMinted.js",
+    "e2eMintedUI": "mocha   ./test/e2eMintedUI.js",
+    "e2eMintedWhitelist": "mocha   ./test/e2eMintedWhitelist.js",
+    "e2eMintedMincap": "mocha   ./test/e2eMintedMincap.js",
+
     "e2eDutch": "mocha   ./test/e2eDutch.js",
-    "margo": "node ./test/margo.js",
+    "e2eDutchUI": "mocha   ./test/e2eDutchUI.js",
+    "e2eDutchWhitelist": "mocha   ./test/e2eDutchWhitelist.js",
+    "e2eDutchMincap": "mocha   ./test/e2eDutchMincap.js",
+
+
     "e2eMintedRopsten": "mocha   ./test/e2eMintedRopsten.js",
     "e2eDutchRopsten": "mocha   ./test/e2eDutchRopsten.js",
-    "tr": "mocha  -b  ./test/funcDutchRateTime.js",
-    "testDecimalsMintedWhitelist":"mocha -b ./test/testDecimalsMintedWhitelist.js",
-    "testDecimalsMintedCap":"mocha -b ./test/testDecimalsMintedCap.js",
-    "testDecimalsDutchCap":"mocha -b ./test/testDecimalsDutchCap.js",
-    "testReservedMinted":" mocha -b ./test/testReservedHowManyMinted.js",
-    "testWhitelistMinted":"mocha -b ./test/testWhitelistMinted.js",
-    "testWhitelistDutch":"mocha -b ./test/testWhitelistDutch.js"
+    "funcDutchRateTime": "mocha  -b  ./test/funcDutchRateTime.js",
+    "testDecimalsMintedWhitelist": "mocha -b ./test/testDecimalsMintedWhitelist.js",
+    "testDecimalsMintedCap": "mocha -b ./test/testDecimalsMintedCap.js",
+    "testDecimalsDutchCap": "mocha -b ./test/testDecimalsDutchCap.js",
+    "testReservedMinted": " mocha -b ./test/testReservedHowManyMinted.js",
+    "testWhitelistMinted": "mocha -b ./test/testWhitelistMinted.js",
+    "testWhitelistDutch": "mocha -b ./test/testWhitelistDutch.js"
   },
   "dependencies": {
     "chromedriver": "^2.35.0",
     "dotenv": "^5.0.1",
     "ethereumjs-wallet": "^0.6.0",
     "fs-extra": "^5.0.0",
+    "ganache-cli": "^6.1.6",
     "mocha": "^5.0.1",
     "nodemailer": "^4.6.0",
     "selenium-webdriver": "^3.6.0",
