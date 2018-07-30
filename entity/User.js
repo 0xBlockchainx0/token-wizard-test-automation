@@ -23,7 +23,7 @@ class User {
 			this.account = obj.account;
 			this.privateKey = obj.privateKey;
 			this.networkID = obj.networkID;
-			this.accountOrderInMetamask = undefined;//for MetaMaskPage only
+			this.accountOrderInWallet = undefined;//for Wallet usage only
 			this.name = file;
 			this.minCap;
 			this.maxCap;
@@ -56,14 +56,14 @@ class User {
 		}
 	}
 
-	async setMetaMaskAccount() {
-		logger.info("Set Metamask account")
-		let metaMask = new MetaMask(this.driver);
-		if (this.accountOrderInMetamask === undefined) {
-			return await metaMask.importAccount(this);
+	async setWalletAccount() {
+		logger.info("User: setWalletAccount")
+		let wallet = await Utils.getWalletInstance(this.driver);
+		if (this.accountOrderInWallet === undefined) {
+			return await wallet.importAccount(this);
 		}
 		else {
-			return await metaMask.selectAccount(this);
+			return await wallet.selectAccount(this);
 		}
 	}
 

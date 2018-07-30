@@ -76,7 +76,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		//DutchDecimalsWhitelist = await  Utils.getDutchCrowdsaleInstance(scenarioDutchDecimalsWhitelist);
 
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
 		Owner = new User(driver, user8545_56B2File);
 		await Utils.receiveEth(Owner, 20);
 		logger.info("Owner = " + Owner.account);
@@ -84,7 +84,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		await Owner.setWalletAccount();
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -114,7 +114,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		async function () {
 			let owner = Owner;
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist.decimals = 0;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
 			let result = await owner.createMintedCappedCrowdsale(MintedDecimalsWhitelist);
@@ -164,7 +164,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 1;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -215,7 +215,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 2;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -266,7 +266,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 3;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -317,7 +317,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 4;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -368,7 +368,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 5;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -419,7 +419,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 6;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -470,7 +470,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 7;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -521,7 +521,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 8;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -572,7 +572,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 9;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -623,7 +623,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 10;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -674,7 +674,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 11;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -725,7 +725,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 12;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -776,7 +776,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 13;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -827,7 +827,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 14;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -878,7 +878,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 15;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -929,7 +929,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 16;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -980,7 +980,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 17;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);
@@ -1031,7 +1031,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner  can create crowdsale:Minted,whitelist',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			MintedDecimalsWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioMintedDecimalsWhitelist);
 			MintedDecimalsWhitelist.decimals = 18;
 			console.log("Decimals = "+ MintedDecimalsWhitelist.decimals);

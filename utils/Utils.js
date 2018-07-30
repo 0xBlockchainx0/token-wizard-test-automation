@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
+const Key = require('selenium-webdriver').Key;
 const webdriver = require('selenium-webdriver'),
 	chrome = require('selenium-webdriver/chrome');
 const fs = require('fs-extra');
@@ -12,21 +13,85 @@ const configFile = 'config.json';
 const _minted = 'minted';
 const _dutch = 'dutch';
 
+const WALLET = require('./constants.js').WALLET;
+const METAMASK = WALLET.METAMASK;
+const NIFTY = WALLET.NIFTY;
+
+const MetaMask = require('../pages/MetaMask.js').MetaMask;
+const Nifty = require('../pages/Nifty.js').Nifty;
+
 class Utils {
 
-	static async startBrowserWithMetamask() {
-		logger.info("Utils: startBrowserWithMetamask");
-		let source = './MetaMask_4_8_0_0.crx';//./MetaMask.crx';
-		let options = new chrome.Options();
-		await options.addExtensions(source);
-		await options.addArguments('disable-popup-blocking');
-		let driver = await new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
-		await driver.sleep(5000);
-		return driver;
+	static async getWalletInstance(driver) {
+		logger.info("Utils: getWallet");
+		try {
+			switch (await Utils.getWalletType()) {
+				case METAMASK: {
+					return new MetaMask(driver);
+					break;
+				}
+				case NIFTY: {
+					return new Nifty(driver);
+					break;
+				}
+				default: {
+					return new Nifty(driver);
+					break;
+				}
+			}
+		}
+		catch (err) {
+			logger.info(err);
+			return false;
+		}
+	}
+
+	static async startBrowserWithWallet() {
+		logger.info("Utils: startBrowserWithWallet");
+		try {
+			let source;
+			switch (await Utils.getWalletType()) {
+				case METAMASK: {
+					source = './public/MetaMask_4_8_0_0.crx';
+					break;
+				}
+				case NIFTY: {
+					source = './public/Nifty-Wallet_v4.8.2.crx';
+					break;
+				}
+				default: {
+					source = './public/Nifty-Wallet_v4.8.2.crx';
+					break;
+				}
+			}
+			let options = new chrome.Options();
+			await options.addExtensions(source);
+			await options.addArguments('disable-popup-blocking');
+			let driver = await new webdriver.Builder().withCapabilities(options.toCapabilities()).build();
+			await driver.sleep(5000);
+			if (await Utils.getWalletType()) await Utils.openNewTab(driver);
+			return driver;
+		}
+		catch (err) {
+			logger.info(err);
+			return false;
+		}
+	}
+
+	static async openNewTab(driver) {
+		logger.info("Utils: openNewTab");
+		try {
+			driver.executeScript('window.open("newURL");');
+			return true;
+		}
+		catch (err) {
+			logger.info(err);
+			return false;
+		}
 	}
 
 	static runGanache() {
-		logger.info("Run ganache-cli");
+		logger.info("Utils: Run ganache-cli");
 		return spawn('ganache-cli');
 	}
 
@@ -55,7 +120,7 @@ class Utils {
 			let provider = await Utils.getProviderUrl(user.networkID);
 			let web3 = await new Web3(new Web3.providers.HttpProvider(provider));
 			let account0 = await web3.eth.getAccounts().then((accounts) => {
-				return accounts[6];
+				return accounts[7];
 			});
 
 			logger.info("Send " + amount + " Eth from " + account0 + " to " + user.account);
@@ -64,7 +129,6 @@ class Utils {
 				to: user.account,
 				value: amount * 1e18
 			}).then(logger.info("Transaction done"));
-
 
 			return true;
 		}
@@ -239,6 +303,11 @@ class Utils {
 	static getOutputPath() {
 		var obj = JSON.parse(fs.readFileSync(configFile, "utf8"));
 		return obj.outputPath;
+	}
+
+	static getWalletType() {
+		var obj = JSON.parse(fs.readFileSync(configFile, "utf8"));
+		return obj.wallet;
 
 	}
 
@@ -529,7 +598,7 @@ class Utils {
 		return result.tier_end;
 	}
 
-	static async getTierWhitelistMintedCrowdsale (crowdsale, tierNumber) {
+	static async getTierWhitelistMintedCrowdsale(crowdsale, tierNumber) {
 		logger.info("Utils: getTierWhitelistMinted");
 		if (crowdsale.sort === _dutch) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
@@ -539,7 +608,7 @@ class Utils {
 		return result.num_whitelisted;
 	}
 
-	static async getCrowdsaleWhitelistDutchCrowdsale (crowdsale) {
+	static async getCrowdsaleWhitelistDutchCrowdsale(crowdsale) {
 		logger.info("Utils: getTierWhitelistMinted");
 		if (crowdsale.sort === _minted) return false;
 		let web3 = Utils.getWeb3Instance(crowdsale.networkID);
@@ -674,9 +743,9 @@ class Utils {
 			let path = "./reservedAddressesCSV";
 			await fs.ensureDirSync(path);
 			let dateNow = Date.now();
-			let fileName = path+ "/reservedAddresses" + amountReserved + "_"+ dateNow;
-			let fileCSV = fileName +".csv";
-			let fileJSON = fileName +".json";
+			let fileName = path + "/reservedAddresses" + amountReserved + "_" + dateNow;
+			let fileCSV = fileName + ".csv";
+			let fileJSON = fileName + ".json";
 			let array = [];
 			let dimension;
 			let value;
@@ -684,14 +753,18 @@ class Utils {
 			let account;
 			for (let i = 0; i < amountReserved; i++) {
 				account = web3.eth.accounts.create();
-				dimension = (Math.random()>0.5) ? "percentage":"tokens";
-				value = Math.random()*1e10;
-				array.push({account : account, dimension : dimension, value : value});
+				dimension = (Math.random() > 0.5) ? "percentage" : "tokens";
+				value = Math.random() * 1e10;
+				array.push({
+					account: account,
+					dimension: dimension,
+					value: value
+				});
 				//console.log(i+"    "+account.address + "," + dimension + "," + value + "\n")
 				await fs.appendFileSync(fileCSV, "" + account.address + "," + dimension + "," + value + "\n");
 			}
 
-			await fs.writeJsonSync(fileJSON, {reservedAddresses:array});
+			await fs.writeJsonSync(fileJSON, {reservedAddresses: array});
 			return fileName;
 		}
 		catch (err) {
@@ -707,9 +780,9 @@ class Utils {
 			let path = "./whitelistedAddressesCSV";
 			await fs.ensureDirSync(path);
 			let dateNow = Date.now();
-			let fileName = path+ "/whitelistedAddresses" + amount + "_"+ dateNow;
-			let fileCSV = fileName +".csv";
-			let fileJSON = fileName +".json";
+			let fileName = path + "/whitelistedAddresses" + amount + "_" + dateNow;
+			let fileCSV = fileName + ".csv";
+			let fileJSON = fileName + ".json";
 			let array = [];
 			let max;
 			let min;
@@ -718,14 +791,18 @@ class Utils {
 			for (let i = 0; i < amount; i++) {
 				account = web3.eth.accounts.create();
 
-				min = Math.round(Math.random()*1e3);
-				max = min + Math.round(Math.random()*1e3);
-				array.push({account : account, min : min, max : max});
+				min = Math.round(Math.random() * 1e3);
+				max = min + Math.round(Math.random() * 1e3);
+				array.push({
+					account: account,
+					min: min,
+					max: max
+				});
 				//console.log(i+"    "+account.address + "," + dimension + "," + value + "\n")
 				await fs.appendFileSync(fileCSV, "" + account.address + "," + min + "," + max + "\n");
 			}
 
-			await fs.writeJsonSync(fileJSON, {whitelistedAddresses:array});
+			await fs.writeJsonSync(fileJSON, {whitelistedAddresses: array});
 			return fileName;
 		}
 		catch (err) {
@@ -733,10 +810,6 @@ class Utils {
 			return false;
 		}
 	}
-
-
-
-
 
 }
 

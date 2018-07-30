@@ -2,11 +2,9 @@ const logger = require('../entity/Logger.js').logger;
 const key = require('selenium-webdriver').Key;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
-const IDMetaMask = "nkbihfbeogaeaoehlefnkodbefgpgknn";
-const URL = "chrome-extension://" + IDMetaMask + "//popup.html";
+const MetamaskId = "nkbihfbeogaeaoehlefnkodbefgpgknn";
 const buttonSubmit = By.className("confirm btn-green");
 const buttonAccept = By.xpath('//*[@id="app-content"]/div/div[4]/div/div[1]/button');
-//const buttonAccept = By.xpath("//*[contains(text(),'Accept')]");
 const agreement = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div/p[1]/strong");
 const fieldNewPass = By.xpath("//*[@id=\"password-box\"]");
 const fieldConfirmPass = By.xpath("//*[@id=\"password-box-confirm\"]");
@@ -14,7 +12,6 @@ const buttonCreate = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/button");
 const buttonIveCopied = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/button[1]");
 const popupNetwork = By.className("network-name");
 const popupAccount = By.xpath("//*[@id=\"app-content\"]/div/div[1]/div/div[2]/span/div");
-//const fieldPrivateKey = By.xpath("//*[@id=\"private-key-box\"]");
 const fieldPrivateKey = By.id("private-key-box");
 const pass = "qwerty12345";
 
@@ -30,16 +27,16 @@ const buttonSend = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/div/div[2]/
 const fieldRecipientAddress = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/section[1]/div/input");
 const fieldAmount = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/section[2]/input");
 const buttonNext = By.xpath("//*[@id=\"app-content\"]/div/div[4]/div/section[2]/button");
-var accountOrderNumber = 1;
-var networks = [0, 3, 42, 4, 8545];
+let accountOrderNumber = 1;
 
 class MetaMask extends Page {
 
 	constructor(driver) {
 		super(driver);
 		this.driver = driver;
-		this.URL = URL;
+		this.URL = `chrome-extension://${MetamaskId}//popup.html`;
 		this.name = "Metamask  "
+		this.networks=[0, 3, 42, 4, 8545];
 	}
 
 	async clickButtonSubmitTransaction() {
@@ -50,11 +47,8 @@ class MetaMask extends Page {
 		logger.info(this.name + "activate ");
 		return await this.switchToNextPage() &&
 			await this.open(this.URL) &&
-			//await this.clickWithWait(buttonAccept) &&
-			//await this.clickWithWait(agreement) &&
 			await this.pressKey(key.TAB, 15) &&
 			await this.clickWithWait(buttonAccept) &&
-			//await this.clickWithWait(agreement) &&
 			await this.pressKey(key.TAB, 3) &&
 			await this.clickWithWait(buttonAccept) &&
 			await this.pressKey(key.TAB, 3) &&
@@ -71,7 +65,7 @@ class MetaMask extends Page {
 
 	async importAccount(user) {
 		logger.info(this.name + "importAccount ");
-		user.accountOrderInMetamask = accountOrderNumber;
+		user.accountOrderInWallet = accountOrderNumber;
 		return await  this.switchToNextPage() &&
 			await  this.setNetwork(user.networkID) &&
 			await  this.clickImportAccount() &&
@@ -88,7 +82,7 @@ class MetaMask extends Page {
 			await this.setNetwork(user.networkID);
 			await super.clickWithWait(popupAccount);
 			await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" +
-				user.accountOrderInMetamask + "].click();");
+				user.accountOrderInWallet + "].click();");
 			await this.switchToNextPage();
 			return true;
 		}
@@ -137,7 +131,7 @@ class MetaMask extends Page {
 		logger.info(this.name + "setNetwork ");
 		try {
 			await super.clickWithWait(popupNetwork);
-			let orderNumber = networks.indexOf(provider);
+			let orderNumber = this.networks.indexOf(provider);
 			let script = "document.getElementsByClassName('dropdown-menu-item')[" + orderNumber + "].click();"
 			if (orderNumber < 0) await this.addNetwork(provider);
 			else await this.driver.executeScript(script);
@@ -154,12 +148,12 @@ class MetaMask extends Page {
 		switch (provider) {
 			case 77: {
 				url = "https://sokol.poa.network";
-				networks.push(77);
+				this.networks.push(77);
 				break;
 			}
 			case 99: {
 				url = "https://core.poa.network";
-				networks.push(99);
+				this.networks.push(99);
 				break;
 			}
 			default: {
@@ -167,7 +161,7 @@ class MetaMask extends Page {
 			}
 		}
 		await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" +
-			(networks.length - 1) + "].click();");
+			(this.networks.length - 1) + "].click();");
 		return await super.fillWithWait(fieldNewRPCURL, url) &&
 			await super.clickWithWait(buttonSave) &&
 			await super.clickWithWait(arrowBackRPCURL);
@@ -240,5 +234,11 @@ class MetaMask extends Page {
 }
 
 module.exports = {
-	MetaMask: MetaMask
+	MetaMask: MetaMask,
+	buttonAccept:buttonAccept,
+	fieldNewPass:fieldNewPass,
+	fieldConfirmPass:fieldConfirmPass,
+	buttonCreate:buttonCreate,
+	buttonIveCopied:buttonIveCopied,
+	pass:pass
 };

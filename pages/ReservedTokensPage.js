@@ -238,7 +238,7 @@ class ReservedTokensPage extends Page {
 	}
 	async uploadReservedCSVFile(path) {
 		logger.info(this.name + "uploadReservedCSVFile ");
-        if (path === undefined) path = "bulkReservedAddresses.csv";
+        if (path === undefined) path = "./public/reservedAddressesTestValidation.csv";
 		try {
 			const locator = By.xpath('//input[@type="file"]');
 			let element = await this.driver.findElement(locator);

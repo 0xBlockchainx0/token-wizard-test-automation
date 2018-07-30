@@ -60,7 +60,7 @@ test.describe('POA token-wizard. Test How many Whitelisted addresses for Dutch',
 		await Utils.copyEnvFromWizard();
 
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
 		Owner = new User(driver, user8545_56B2File);
 		await Utils.receiveEth(Owner, 2);
 		logger.info("Owner = " + Owner.account);
@@ -68,7 +68,7 @@ test.describe('POA token-wizard. Test How many Whitelisted addresses for Dutch',
 
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		await Owner.setWalletAccount();
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -101,7 +101,7 @@ test.describe('POA token-wizard. Test How many Whitelisted addresses for Dutch',
 			crowdsale = await  Utils.getDutchCrowdsaleInstance(scenario);
 			whitelistedAddresses = await Utils.generateCSVWhitelistedAddresses(amountWhitelisted);
 
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 
 			let result = await owner.createDutchAuctionCrowdsale(crowdsale, true, whitelistedAddresses + ".csv");
 			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
@@ -149,7 +149,7 @@ test.describe('POA token-wizard. Test How many Whitelisted addresses for Dutch',
 				console.log("Eth balance= " + await Utils.getBalance(user) / 1e18);
 
 				let investor = user;
-				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 				let contribution = user.minCap;
 
 				let result = await investor.openInvestPage(crowdsale)

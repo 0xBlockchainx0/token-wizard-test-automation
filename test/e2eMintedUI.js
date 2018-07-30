@@ -15,7 +15,6 @@ const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
 const Utils = require('../utils/Utils.js').Utils;
-const MetaMask = require('../pages/MetaMask.js').MetaMask;
 const User = require("../entity/User.js").User;
 const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
 const smallAmount = 0.1;
@@ -42,7 +41,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	let Investor4;
 	let ReservedAddress;
 
-	let metaMask;
+	let wallet;
 	let welcomePage;
 	let wizardStep1;
 	let wizardStep2;
@@ -76,7 +75,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		e2eWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioE2eMintedWhitelist);
 		e2eMinCapModifiable = await Utils.getMintedCrowdsaleInstance(scenarioE2eMintedMinCapModifiable);
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
 
 		Owner = new User(driver, user8545_56B2File);
 		Owner.minCap = 0;
@@ -118,9 +117,9 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		logger.info("Investor3  = " + Investor3.account);
 		logger.info("Investor3 balance = " + await Utils.getBalance(Investor3) / 1e18);
 
-		metaMask = new MetaMask(driver);
-		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		wallet = await Utils.getWalletInstance(driver);
+		await wallet.activate();//return activated Wallet and empty page
+		await Owner.setWalletAccount();
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -145,7 +144,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		//await driver.quit();
 	});
 ///////////////////////// UI TESTS /////////////////////////////////////
-	/*
+
 		test.it('User is able to open wizard welcome page',
 			async function () {
 				await  welcomePage.open();
@@ -421,7 +420,6 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 			async function () {
 				tierPage.tier.minCap = 2;
 				let tierNumber = 2;
-				console.log("tierPage.tier.minCap = "+tierPage.tier.minCap)
 				let result = await tierPage.fillMinCap(tierNumber,);
 				return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
 			});
@@ -452,8 +450,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 
 		test.it('Wizard step#4: button SkipTransaction is  presented if user reject a transaction ',
 			async function () {
-				let result = await metaMask.rejectTransaction(20)
-					&& await metaMask.rejectTransaction(20)
+				let result = await wallet.rejectTransaction(20)
+					&& await wallet.rejectTransaction(20)
 					&& await wizardStep4.isDisplayedButtonSkipTransaction();
 				return await assert.equal(result, true, "Test FAILED. button'Skip transaction' does not present if user reject the transaction");
 			});
@@ -484,5 +482,5 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 
 				return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
 			});
-	*/
+
 });

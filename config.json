@@ -1,6 +1,6 @@
 {
   "startURL" : "localhost:3000/",
   "outputPath":"./results",
-  "installMetaMask":true
+  "wallet":"NIFTY"
 
 }

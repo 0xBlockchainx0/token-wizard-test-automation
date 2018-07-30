@@ -61,7 +61,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		await Utils.copyEnvFromWizard();
 
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
 		Owner = new User(driver, user8545_56B2File);
 		await Utils.receiveEth(Owner, 20);
 		logger.info("Owner = " + Owner.account);
@@ -69,7 +69,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		await Owner.setWalletAccount();
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -102,7 +102,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			crowdsale = await  Utils.getMintedCrowdsaleInstance(scenario);
 			reservedAddresses = await Utils.generateCSVReservedAddresses(amountReserved);
 
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 
 			let result = await owner.createMintedCappedCrowdsale(crowdsale, true, reservedAddresses + ".csv");
 			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
@@ -135,7 +135,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	test.it('Owner is able to finalize (if all tokens are sold but crowdsale time is not expired)',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await owner.finalize(crowdsale);
 			return await assert.equal(result, true, "Test FAILED.'Owner can NOT finalize ");
 		});

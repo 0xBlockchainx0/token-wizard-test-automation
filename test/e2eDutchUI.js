@@ -21,6 +21,7 @@ const User = require("../entity/User.js").User;
 const smallAmount = 0.1;
 
 test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', async function () {
+
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 
@@ -36,7 +37,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	let Investor1;
 	let Investor2;
 
-	let metaMask;
+	let wallet;
 	let welcomePage;
 	let wizardStep1;
 	let wizardStep2;
@@ -67,7 +68,8 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		e2eCheckBurn = await Utils.getDutchCrowdsaleInstance(scenarioE2eDutchCheckBurn);
 
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
+
 
 		Owner = new User(driver, user8545_dDdCFile);
 		Owner.tokenBalance = 0;
@@ -89,9 +91,9 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		logger.info("Investor2  = " + Investor2.account);
 		logger.info("Investor2 balance = :" + await Utils.getBalance(Investor2) / 1e18);
 
-		metaMask = new MetaMask(driver);
-		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		wallet = await Utils.getWalletInstance(driver);
+		await wallet.activate();//return activated Wallet and empty page
+		await Owner.setWalletAccount();
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -117,8 +119,14 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	});
 
 	//////// UI TESTS ////////////////////////////////////////////////
-	/*
-	test.it('User is able to open wizard welcome page',
+	test.it('Mock',
+		async function () {
+
+
+			return await assert.equal(true, true, "Test FAILED. Wizard's page is not available ");
+		});
+
+	/*test.it('User is able to open wizard welcome page',
 		async function () {
 			await  welcomePage.open();
 			let result = await welcomePage.waitUntilDisplayedButtonNewCrowdsale(180);
