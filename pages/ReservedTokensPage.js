@@ -258,6 +258,11 @@ class ReservedTokensPage extends Page {
 		return await super.clickWithWait(buttonOK);
 
 	}
+	async isDisplayedButtonOk() {
+		logger.info(this.name + "isDisplayedButtonOk ");
+		return await super.isElementDisplayed(buttonOK);
+
+	}
 
 	async waitUntilShowUpPopupConfirm(Twaiting) {
 		logger.info("waitUntilShowUpPopupConfirm: ");

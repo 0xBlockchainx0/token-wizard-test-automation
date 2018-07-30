@@ -386,7 +386,7 @@ class TierPage extends Page {
 
 	async uploadWhitelistCSVFile(path) {
 		logger.info(this.name + "uploadWhitelistCSVFile ");
-		if (path === undefined) path = "bulkWhitelist.csv";
+		if (path === undefined) path = "./public/whitelistAddressesTestValidation.csv";
 		try {
 			path = await Utils.getPathToFileInPWD(path);
 			logger.info(this.name + ": uploadWhitelistCSVFile: from path: " + path);

@@ -28,7 +28,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	let driver;
 	let Owner;
 
-	let metaMask;
+	let wallet;
 	let welcomePage;
 	let wizardStep1;
 	let wizardStep2;
@@ -51,7 +51,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	let whitelistedAddresses;
 	const scenario = './scenarios/scenarioWhitelistMinted.json';
 
-	const amountWhitelisted = 60;
+	const amountWhitelisted = 61;
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -66,9 +66,10 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		logger.info("Owner = " + Owner.account);
 		logger.info("Owner's balance = " + await Utils.getBalance(Owner) / 1e18 + " Eth");
 
-		metaMask = new MetaMask(driver);
-		await metaMask.activate();//return activated Metamask and empty page
+		wallet = await Utils.getWalletInstance(driver);
+		await wallet.activate();//return activated Wallet and empty page
 		await Owner.setWalletAccount();
+
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
