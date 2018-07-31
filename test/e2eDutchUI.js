@@ -279,15 +279,15 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 			return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
 		});
 
-	test.it('Wizard step#3: User is able to download CSV file with more than 60 whitelisted addresses',
+	test.it('Wizard step#3: User is able to download CSV file with more than 50 whitelisted addresses',
 		async function () {
 			let fileName = "./public/whitelistedAddresses61.csv";
-			let result = await tierPage.uploadWhitelistCSVFile(fileName)
-				&& await wizardStep3.clickButtonOk();
+			let result = await tierPage.uploadWhitelistCSVFile(fileName);
+
 			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
 		});
 
-	test.it('Wizard step#3: Alert present if number of whitelisted addresses greater 60 ',
+	test.it('Wizard step#3: Alert present if number of whitelisted addresses greater 50 ',
 		async function () {
 			let result = await reservedTokensPage.waitUntilShowUpPopupConfirm(100)
 				&& await reservedTokensPage.clickButtonOk();
@@ -296,7 +296,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 
 	test.it('Wizard step#3: Number of added whitelisted addresses is correct, data is valid',
 		async function () {
-			let shouldBe = 60;
+			let shouldBe = 50;
 			let inReality = await tierPage.amountAddedWhitelist();
 			return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
 
