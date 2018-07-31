@@ -16,12 +16,6 @@ const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
 const Utils = require('../utils/Utils.js').Utils;
 const User = require("../entity/User.js").User;
-const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
-const smallAmount = 0.1;
-const endTimeForTestEarlier = "01:23";
-const endDateForTestEarlier = "01/07/2049";
-const endTimeForTestLater = "420000";
-const endDateForTestLater = "420000";
 
 test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', async function () {
 	this.timeout(2400000);//40 min
@@ -141,7 +135,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		await fs.ensureDirSync(outputPath);
 		await fs.copySync(tempOutputPath, outputPath);
 		//await fs.remove(tempOutputPath);
-		//await driver.quit();
+		await driver.quit();
 	});
 ///////////////////////// UI TESTS /////////////////////////////////////
 
@@ -482,6 +476,14 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 			return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
 		});
 	/////////////// STEP4 //////////////
+	test.it('Wizard step#4: modal is displayed ',
+		async function () {
+
+			let result = await wizardStep4.waitUntilDisplayedModal()
+			&&  await wizardStep4.isDisplayedModal();
+			return await assert.equal(result, true, "Test FAILED. Modal is not displayed");
+		});
+
 	test.it('Wizard step#4: alert present if user reload the page ',
 		async function () {
 			await wizardStep4.refresh();
