@@ -36,7 +36,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	let Investor1;
 	let Investor2;
 
-	let metaMask;
+	let wallet;
 	let welcomePage;
 	let wizardStep1;
 	let wizardStep2;
@@ -67,7 +67,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		e2eCheckBurn = await Utils.getDutchCrowdsaleInstance(scenarioE2eDutchCheckBurn);
 
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
 
 		Owner = new User(driver, user8545_dDdCFile);
 		Owner.tokenBalance = 0;
@@ -89,9 +89,9 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		logger.info("Investor2  = " + Investor2.account);
 		logger.info("Investor2 balance = :" + await Utils.getBalance(Investor2) / 1e18);
 
-		metaMask = new MetaMask(driver);
-		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		wallet = await Utils.getWalletInstance(driver);
+		await wallet.activate();//return activated Wallet and empty page
+		await Owner.setWalletAccount();
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -122,7 +122,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		async function () {
 			Investor1.tokenBalance = 0;
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await owner.createDutchAuctionCrowdsale(e2eMinCap);
 			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
 		});
@@ -130,7 +130,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: Countdown timer has correct status: 'TO START OF TIER1 '",
 		async function () {
 			let investor = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCrowdsaleNotStarted();
@@ -150,7 +150,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field contains correct minCap value ",
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -160,7 +160,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let owner = Owner;
 			let tierNumber = 1;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			e2eMinCap.tiers[0].minCap = e2eMinCap.tiers[0].minCap / 2;
 			let result = await owner.changeMinCapFromManagePage(tierNumber, e2eMinCap.tiers[0].minCap);
@@ -170,7 +170,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	test.it('Investor not able to buy before start of crowdsale ',
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eMinCap.tiers[0].minCap;
@@ -199,7 +199,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: Countdown timer has correct status: 'TO END OF TIER1 '",
 		async function () {
 			let investor = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCurrentTier1();
@@ -208,7 +208,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field contains correct minCap value (after modifying)",
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -221,7 +221,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	test.it('Investor is not able to buy less than minCap in first transaction',
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eMinCap.tiers[0].minCap * 0.5;
@@ -265,7 +265,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let owner = Owner;
 			let tierNumber = 1;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			e2eMinCap.tiers[0].minCap = e2eMinCap.tiers[0].minCap * 2;
 			let result = await owner.changeMinCapFromManagePage(tierNumber, e2eMinCap.tiers[0].minCap);
@@ -274,7 +274,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field contains correct minCap value (after modifying) ",
 		async function () {
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -305,7 +305,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	test.it('Old investor still able to buy amount less than minCap',
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eMinCap.tiers[0].minCap / 10;
@@ -342,7 +342,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	test.it('Owner is able to finalize (if all tokens have been sold)',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await owner.finalize(e2eMinCap);
 			return await assert.equal(result, true, "Test FAILED.'Owner can NOT finalize ");
 		});
@@ -350,7 +350,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: Countdown timer has correct status: 'HAS BEEN FINALIZED '",
 		async function () {
 			let investor = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCrowdsaleFinalized();
@@ -361,7 +361,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		async function () {
 
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			await investor.openInvestPage(e2eMinCap);
 			let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eMinCap));
 			let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;
@@ -376,7 +376,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		async function () {
 
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			await investor.openInvestPage(e2eMinCap);
 			let shouldBe = parseFloat(await investor.getBalanceFromInvestPage(e2eMinCap));
 			let balance = await investor.getTokenBalance(e2eMinCap) / 1e18;

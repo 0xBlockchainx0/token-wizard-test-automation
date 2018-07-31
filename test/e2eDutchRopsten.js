@@ -41,7 +41,7 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 	let Investor3;
 	let ReservedAddress;
 
-	let metaMask;
+	let wallet;
 	let welcomePage;
 	let wizardStep1;
 	let wizardStep2;
@@ -72,16 +72,16 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 		e2eRopsten = await  Utils.getDutchCrowdsaleInstance(scenarioDutchRopsten);
 
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
 
 
 		Owner = new User(driver, user3_56B2File);
 
 
 
-		metaMask = new MetaMask(driver);
-		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		wallet = await Utils.getWalletInstance(driver);
+		await wallet.activate();//return activated Wallet and empty page
+		await Owner.setWalletAccount();
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -112,7 +112,7 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 	test.it('Owner  can create crowdsale(e2eWhitelist.json),2 tiers, modifiable, whitelist,2 reserved',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await owner.createDutchAuctionCrowdsale(e2eRopsten);
 			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
 		});

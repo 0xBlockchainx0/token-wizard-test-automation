@@ -1,4 +1,3 @@
-
 let test = require('selenium-webdriver/testing');
 let assert = require('assert');
 const fs = require('fs-extra');
@@ -21,6 +20,7 @@ const User = require("../entity/User.js").User;
 const smallAmount = 0.1;
 
 test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', async function () {
+
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 
@@ -36,7 +36,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	let Investor1;
 	let Investor2;
 
-	let metaMask;
+	let wallet;
 	let welcomePage;
 	let wizardStep1;
 	let wizardStep2;
@@ -67,7 +67,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		e2eCheckBurn = await Utils.getDutchCrowdsaleInstance(scenarioE2eDutchCheckBurn);
 
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
 
 		Owner = new User(driver, user8545_dDdCFile);
 		Owner.tokenBalance = 0;
@@ -89,9 +89,9 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		logger.info("Investor2  = " + Investor2.account);
 		logger.info("Investor2 balance = :" + await Utils.getBalance(Investor2) / 1e18);
 
-		metaMask = new MetaMask(driver);
-		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		wallet = await Utils.getWalletInstance(driver);
+		await wallet.activate();//return activated Wallet and empty page
+		await Owner.setWalletAccount();
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -117,7 +117,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 	});
 
 	//////// UI TESTS ////////////////////////////////////////////////
-	/*
+
 	test.it('User is able to open wizard welcome page',
 		async function () {
 			await  welcomePage.open();
@@ -171,18 +171,19 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let investor = Investor1;
 			let owner = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await wizardStep2.isDisplayedFieldSupply(), true, "Field 'Supply' is not displayed");
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			return assert.equal(await wizardStep2.isDisplayedFieldSupply(), true, "Persistant failed if account has changed");
 		});
 	test.it.skip('Wizard step#2:Check persistant if page refreshed ',
 		async function () {
-			let investor = Investor1;
-			let owner = Owner;
-
-			return assert.equal(false, true, "Persistant failed if account has changed");
+			await wizardStep2.refresh();
+			await driver.sleep(2000);
+			assert.equal(await wizardStep2.isDisplayedFieldSupply(), true, "Field 'Supply' is not displayed");
+			return assert.equal(false, true, "Persistant failed if page refreshed");
 		});
+
 	test.it('Wizard step#2: user able to fill out Name field with valid data',
 		async function () {
 			await wizardStep2.fillName("name");
@@ -243,15 +244,16 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 
 	test.it('Wizard step#3: field minCap disabled if whitelist enabled ',
 		async function () {
-			let result = await wizardStep3.isDisabledMinCap();
+			let tierNumber = 1;
+			let result = await tierPage.isDisabledMinCap(tierNumber);
 			return await assert.equal(result, true, "Test FAILED. Field minCap enabled if whitelist enabled");
 		});
 
 	test.it('Wizard step#3: User is able to download CSV file with whitelisted addresses',
 		async function () {
-
-			let result = await tierPage.uploadWhitelistCSVFile();
-			await wizardStep3.clickButtonOk();
+			let fileName = "./public/whitelistAddressesTestValidation.csv";
+			let result = await tierPage.uploadWhitelistCSVFile(fileName)
+				&& await wizardStep3.clickButtonOk();
 			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
 		});
 
@@ -259,7 +261,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let shouldBe = 6;
 			let inReality = await tierPage.amountAddedWhitelist();
-			return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is not correct");
+			return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
 
 		});
 
@@ -268,7 +270,7 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 			let result = await tierPage.clickButtonClearAll()
 				&& await tierPage.waitUntilShowUpPopupConfirm(180)
 				&& await tierPage.clickButtonYesAlert();
-			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is not able to bulk delete all whitelisted addresses");
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
 		});
 
 	test.it('Wizard step#3: All whitelisted addresses are removed after deletion ',
@@ -277,6 +279,36 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 			return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
 		});
 
+	test.it('Wizard step#3: User is able to download CSV file with more than 60 whitelisted addresses',
+		async function () {
+			let fileName = "./public/whitelistedAddresses61.csv";
+			let result = await tierPage.uploadWhitelistCSVFile(fileName)
+				&& await wizardStep3.clickButtonOk();
+			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
+		});
+
+	test.it('Wizard step#3: Alert present if number of whitelisted addresses greater 60 ',
+		async function () {
+			let result = await reservedTokensPage.waitUntilShowUpPopupConfirm(100)
+				&& await reservedTokensPage.clickButtonOk();
+			return await  assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
+		});
+
+	test.it('Wizard step#3: Number of added whitelisted addresses is correct, data is valid',
+		async function () {
+			let shouldBe = 60;
+			let inReality = await tierPage.amountAddedWhitelist();
+			return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
+
+		});
+
+	test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
+		async function () {
+			let result = await tierPage.clickButtonClearAll()
+				&& await tierPage.waitUntilShowUpPopupConfirm(180)
+				&& await tierPage.clickButtonYesAlert();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+		});
 	test.it('Wizard step#3: User is able to add several whitelisted addresses one by one ',
 		async function () {
 			let result = await tierPage.fillWhitelist();
@@ -385,8 +417,8 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 
 	test.it('Wizard step#4: button SkipTransaction is  presented if user reject a transaction ',
 		async function () {
-			let result = await metaMask.rejectTransaction()
-				&& await metaMask.rejectTransaction()
+			let result = await wallet.rejectTransaction()
+				&& await wallet.rejectTransaction()
 				&& await wizardStep4.isDisplayedButtonSkipTransaction();
 			return await assert.equal(result, true, "Test FAILED. Wizard step#4: button'Skip transaction' does not present if user reject the transaction");
 		});
@@ -417,7 +449,5 @@ test.describe('e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v2.8.1 ', asyn
 
 			return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
 		});
-*/
-
 
 });

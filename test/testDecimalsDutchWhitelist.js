@@ -68,7 +68,7 @@ test.describe('POA token-wizard. Test purchase with all possible values of DECIM
 		crowdsale = await  Utils.getDutchCrowdsaleInstance(scenario);
 
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
 		Owner = new User(driver, user8545_56B2File);
 		await Utils.receiveEth(Owner, 20);
 		logger.info("Owner = " + Owner.account);
@@ -76,7 +76,7 @@ test.describe('POA token-wizard. Test purchase with all possible values of DECIM
 
 		metaMask = new MetaMask(driver);
 		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		await Owner.setWalletAccount();
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -109,7 +109,7 @@ test.describe('POA token-wizard. Test purchase with all possible values of DECIM
 			async function () {
 				let owner = Owner;
 				crowdsale = await  Utils.getDutchCrowdsaleInstance(scenario);
-				assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 				crowdsale.decimals = i;
 				console.log("Decimals = " + crowdsale.decimals);
 				let result = await owner.createDutchAuctionCrowdsale(crowdsale);

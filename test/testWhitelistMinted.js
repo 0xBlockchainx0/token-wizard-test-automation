@@ -28,7 +28,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	let driver;
 	let Owner;
 
-	let metaMask;
+	let wallet;
 	let welcomePage;
 	let wizardStep1;
 	let wizardStep2;
@@ -51,7 +51,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	let whitelistedAddresses;
 	const scenario = './scenarios/scenarioWhitelistMinted.json';
 
-	const amountWhitelisted = 60;
+	const amountWhitelisted = 61;
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -60,15 +60,16 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		await Utils.copyEnvFromWizard();
 
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
 		Owner = new User(driver, user8545_56B2File);
 		await Utils.receiveEth(Owner, 2);
 		logger.info("Owner = " + Owner.account);
 		logger.info("Owner's balance = " + await Utils.getBalance(Owner) / 1e18 + " Eth");
 
-		metaMask = new MetaMask(driver);
-		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		wallet = await Utils.getWalletInstance(driver);
+		await wallet.activate();//return activated Wallet and empty page
+		await Owner.setWalletAccount();
+
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -101,7 +102,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			crowdsale = await  Utils.getMintedCrowdsaleInstance(scenario);
 			whitelistedAddresses = await Utils.generateCSVWhitelistedAddresses(amountWhitelisted);
 
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 
 			let result = await owner.createMintedCappedCrowdsale(crowdsale, false, "", true, whitelistedAddresses + ".csv");
 			return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
@@ -149,7 +150,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 				console.log("Eth balance= " + await Utils.getBalance(user) / 1e18);
 
 				let investor = user;
-				assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+				assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 				let contribution = user.minCap;
 
 				let result = await investor.openInvestPage(crowdsale)

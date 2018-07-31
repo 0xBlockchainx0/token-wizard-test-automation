@@ -15,7 +15,6 @@ const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
 const Utils = require('../utils/Utils.js').Utils;
-const MetaMask = require('../pages/MetaMask.js').MetaMask;
 const User = require("../entity/User.js").User;
 const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
 const smallAmount = 0.1;
@@ -42,7 +41,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	let Investor4;
 	let ReservedAddress;
 
-	let metaMask;
+	let wallet;
 	let welcomePage;
 	let wizardStep1;
 	let wizardStep2;
@@ -76,7 +75,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		e2eWhitelist = await  Utils.getMintedCrowdsaleInstance(scenarioE2eMintedWhitelist);
 		e2eMinCapModifiable = await Utils.getMintedCrowdsaleInstance(scenarioE2eMintedMinCapModifiable);
 		startURL = await Utils.getStartURL();
-		driver = await Utils.startBrowserWithMetamask();
+		driver = await Utils.startBrowserWithWallet();
 
 		Owner = new User(driver, user8545_56B2File);
 		Owner.minCap = 0;
@@ -118,9 +117,9 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		logger.info("Investor3  = " + Investor3.account);
 		logger.info("Investor3 balance = " + await Utils.getBalance(Investor3) / 1e18);
 
-		metaMask = new MetaMask(driver);
-		await metaMask.activate();//return activated Metamask and empty page
-		await Owner.setMetaMaskAccount();
+		wallet = await Utils.getWalletInstance(driver);
+		await wallet.activate();//return activated Wallet and empty page
+		await Owner.setWalletAccount();
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -145,353 +144,14 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		//await driver.quit();
 	});
 ///////////////////////// UI TESTS /////////////////////////////////////
-	/*
-		test.it('User is able to open wizard welcome page',
-			async function () {
-				await  welcomePage.open();
-				let result = await welcomePage.waitUntilDisplayedButtonNewCrowdsale(180);
-				return await assert.equal(result, true, "Test FAILED. Wizard's page is not available ");
-			});
 
-		test.it('Welcome page: button NewCrowdsale present ',
-			async function () {
-				let result = await welcomePage.isDisplayedButtonNewCrowdsale();
-				return await assert.equal(result, true, "Test FAILED. Button NewCrowdsale not present ");
-
-			});
-
-		test.it('Welcome page: button ChooseContract present ',
-			async function () {
-				let result = await welcomePage.isDisplayedButtonChooseContract();
-				return await assert.equal(result, true, "Test FAILED. button ChooseContract not present ");
-
-			});
-
-		test.it('Welcome page: user is able to open Step1 by clicking button NewCrowdsale ',
-			async function () {
-				await welcomePage.clickButtonNewCrowdsale();
-				let result = await wizardStep1.isDisplayedButtonContinue();
-				return await assert.equal(result, true, "Test FAILED. User is not able to activate Step1 by clicking button NewCrowdsale");
-
-			});
-
-		test.it('Wizard step#1: user is able to open Step2 by clicking button Continue ',
-			async function () {
-				let count = 10;
-				do {
-					await driver.sleep(1000);
-					if ((await wizardStep1.isDisplayedButtonContinue()) &&
-						!(await wizardStep2.isDisplayedFieldName())) {
-						await wizardStep1.clickButtonContinue();
-					}
-					else break;
-				}
-				while (count-- > 0);
-				let result = await wizardStep2.isDisplayedFieldName();
-				return await assert.equal(result, true, "Test FAILED. User is not able to open Step2 by clicking button Continue");
-
-			});
-
-		test.it('Wizard step#2: user able to fill out Name field with valid data',
-			async function () {
-				await wizardStep2.fillName("name");
-				let result = await wizardStep2.isDisplayedWarningName();
-				return await assert.equal(result, false, "Test FAILED. Wizard step#2: user able to fill Name field with valid data ");
-
-			});
-
-		test.it('Wizard step#2: user able to fill out field Ticker with valid data',
-			async function () {
-				await wizardStep2.fillTicker("test");
-				let result = await wizardStep2.isDisplayedWarningTicker();
-				return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not  able to fill out field Ticker with valid data ");
-
-			});
-
-		test.it('Wizard step#2: user able to fill out  Decimals field with valid data',
-			async function () {
-				await wizardStep2.fillDecimals("18");
-				let result = await wizardStep2.isDisplayedWarningDecimals();
-				return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not able to fill Decimals  field with valid data ");
-
-			});
-
-		test.it('Wizard step#2: User is able to download CSV file with reserved addresses',
-			async function () {
-
-				let result = await reservedTokensPage.uploadReservedCSVFile();
-				await reservedTokensPage.clickButtonOk();
-				return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
-			});
-
-		test.it('Wizard step#2: added only valid data from CSV file',
-			async function () {
-				let correctNumberReservedTokens = 20;
-				let result = await reservedTokensPage.amountAddedReservedTokens();
-				return await assert.equal(result, correctNumberReservedTokens, "Test FAILED. Wizard step#2: number of added reserved tokens is correct");
-			});
-
-		test.it('Wizard step#2: button ClearAll is displayed ',
-			async function () {
-
-				let result = await reservedTokensPage.isLocatedButtonClearAll();
-				return await  assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
-			});
-
-		test.it('Wizard step#2: alert present after clicking ClearAll',
-			async function () {
-				await reservedTokensPage.clickButtonClearAll();
-				let result = await reservedTokensPage.isDisplayedButtonNoAlert();
-				return await assert.equal(result, true, "Test FAILED.Alert does NOT present after select ClearAll or button No does NOT present");
-			});
-
-		test.it('Wizard step#2: user is able to bulk delete of reserved tokens ',
-			async function () {
-				let result = await reservedTokensPage.waitUntilShowUpPopupConfirm(20)
-					&& await reservedTokensPage.clickButtonYesAlert()
-					&& await reservedTokensPage.amountAddedReservedTokens();
-				return await assert.equal(result, 0, "Wizard step#2: user is NOT able bulk delete of reserved tokens");
-			});
-
-		test.it('Wizard step#2: user is able to add reserved tokens one by one ',
-			async function () {
-				await reservedTokensPage.fillReservedTokens(crowdsaleForUItests);
-				let result = await reservedTokensPage.amountAddedReservedTokens();
-				return await assert.equal(result, crowdsaleForUItests.reservedTokens.length, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
-			});
-
-		test.it('Wizard step#2: field Decimals is disabled if reserved tokens are added ',
-			async function () {
-				let result = await wizardStep2.isDisabledDecimals();
-				return await assert.equal(result, true, "Wizard step#2: field Decimals enabled if reserved tokens added ");
-			});
-
-		test.it('Wizard step#2: user is able to remove one of reserved tokens ',
-			async function () {
-
-				let amountBefore = await reservedTokensPage.amountAddedReservedTokens();
-				await reservedTokensPage.removeReservedTokens(1);
-				let amountAfter = await reservedTokensPage.amountAddedReservedTokens();
-				return await  assert.equal(amountBefore, amountAfter + 1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
-			});
-
-		test.it('Wizard step#2: button Continue is displayed ',
-			async function () {
-				let result = await wizardStep2.isDisplayedButtonContinue();
-				return await assert.equal(result, true, "Test FAILED. Wizard step#2: button Continue  not present ");
-
-			});
-
-		test.it('Wizard step#2: user is able to open Step3 by clicking button Continue ',
-			async function () {
-				await wizardStep2.clickButtonContinue();
-				await wizardStep3.waitUntilDisplayedTitle(180);
-				let result = await wizardStep3.getPageTitleText();
-				result = (result === wizardStep3.title);
-				return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
-			});
-		//////////////// STEP 3 /////////////////////
-
-		test.it('Wizard step#3: field Wallet address contains current metamask account address  ',
-			async function () {
-
-				let result = await wizardStep3.getValueFromFieldWalletAddress();
-				result = (result === Owner.account.toString());
-				return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
-			});
-
-		test.it('Tier#1: Whitelist container present if checkbox "Whitelist enabled" is selected',
-			async function () {
-				let result = await tierPage.setWhitelisting()
-					&& await tierPage.isDisplayedWhitelistContainer();
-				return await  assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to set checkbox  "Whitelist enabled"');
-			});
-
-		test.it('Wizard step#3: field minCap disabled if whitelist enabled ',
-			async function () {
-				let tierNumber = 1;
-				let result = await tierPage.isDisabledMinCap(tierNumber);
-				return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
-			});
-
-		test.it('Wizard step#3: User is able to download CSV file with whitelisted addresses',
-			async function () {
-
-				let result = await tierPage.uploadWhitelistCSVFile();
-				await wizardStep3.clickButtonOk();
-				return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
-			});
-
-		test.it('Wizard step#3: Number of added whitelisted addresses is correct, data is valid',
-			async function () {
-				let shouldBe = 6;
-				let inReality = await tierPage.amountAddedWhitelist();
-				return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
-
-			});
-
-		test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
-			async function () {
-				let result = await tierPage.clickButtonClearAll()
-					&& await tierPage.waitUntilShowUpPopupConfirm(180)
-					&& await tierPage.clickButtonYesAlert();
-				return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-			});
-
-		test.it('Wizard step#3: All whitelisted addresses are removed after deletion ',
-			async function () {
-				let result = await tierPage.amountAddedWhitelist(10);
-				return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-			});
-
-		test.it('Wizard step#3: User is able to add several whitelisted addresses one by one ',
-			async function () {
-				let result = await tierPage.fillWhitelist();
-				return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
-			});
-
-		test.it('Wizard step#3: User is able to remove one whitelisted address',
-			async function () {
-				let beforeRemoving = await tierPage.amountAddedWhitelist();
-				let numberAddressForRemove = 1;
-				await tierPage.removeWhiteList(numberAddressForRemove - 1);
-				let afterRemoving = await tierPage.amountAddedWhitelist();
-				return await assert.equal(beforeRemoving, afterRemoving + 1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
-			});
-
-		test.it('Wizard step#3: User is able to set "Custom Gasprice" checkbox',
-			async function () {
-
-				let result = await wizardStep3.clickCheckboxGasPriceCustom();
-				return await assert.equal(result, true, 'Test FAILED. User is not able to set "Custom Gasprice" checkbox');
-
-			});
-
-		test.it(' Wizard step#3: User is able to fill out the  CustomGasprice field with valid value',
-			async function () {
-				let customValue = 100;
-				let result = await wizardStep3.fillGasPriceCustom(customValue);
-				return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
-
-			});
-
-		test.it('Wizard step#3: User is able to set SafeAndCheapGasprice checkbox ',
-			async function () {
-				let result = await wizardStep3.clickCheckboxGasPriceSafe();
-				return await assert.equal(result, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
-
-			});
-
-		test.it('Wizard step#3:Tier#1: User is able to fill out field "Rate" with valid data',
-			async function () {
-				tierPage.number = 0;
-				tierPage.tier.rate = 5678;
-				let result = await tierPage.fillRate();
-				return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
-			});
-
-		test.it('Wizard step#3:Tier#1: User is able to fill out field "Supply" with valid data',
-			async function () {
-				tierPage.tier.supply = 1e18;
-				let result = await tierPage.fillSupply();
-				return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
-			});
-
-		test.it('Wizard step#3: User is able to add tier',
-			async function () {
-				let result = await wizardStep3.clickButtonAddTier();
-				return await assert.equal(result, true, "Test FAILED. Wizard step#3: Wizard step#3: User is able to add tier");
-			});
-
-		test.it('Wizard step#3:Tier#2: User is able to fill out field "Rate" with valid data',
-			async function () {
-				tierPage.number = 1;
-				tierPage.tier.rate = 5678;
-				let result = await tierPage.fillRate();
-				return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
-			});
-
-		test.it('Wizard step#3:Tier#2: User is able to fill out field "Supply" with valid data',
-			async function () {
-				tierPage.tier.supply = 1e18;
-				let result = await tierPage.fillSupply();
-				return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
-			});
-		test.it('Wizard step#3:Tier#2: User is able to fill out field "minCap" with valid data',
-			async function () {
-				tierPage.tier.minCap = 2;
-				let tierNumber = 2;
-				console.log("tierPage.tier.minCap = "+tierPage.tier.minCap)
-				let result = await tierPage.fillMinCap(tierNumber,);
-				return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
-			});
-
-
-		test.it('Wizard step#3: user is able to proceed to Step4 by clicking button Continue ',
-			async function () {
-				await wizardStep3.clickButtonContinue();
-				let result = await wizardStep4.waitUntilDisplayedModal(60);
-				return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
-			});
-		/////////////// STEP4 //////////////
-		test.it('Wizard step#4: alert present if user reload the page ',
-			async function () {
-				await wizardStep4.refresh();
-				await driver.sleep(2000);
-				let result = await wizardStep4.isPresentAlert();
-				return await assert.equal(result, true, "Test FAILED.  Alert does not present if user refresh the page");
-			});
-
-		test.it('Wizard step#4: user is able to accept alert after reloading the page ',
-			async function () {
-
-				let result = await wizardStep4.acceptAlert()
-					&& await wizardStep4.waitUntilDisplayedModal(80);
-				return await assert.equal(result, true, "Test FAILED. Modal does not present after user has accepted alert");
-			});
-
-		test.it('Wizard step#4: button SkipTransaction is  presented if user reject a transaction ',
-			async function () {
-				let result = await metaMask.rejectTransaction(20)
-					&& await metaMask.rejectTransaction(20)
-					&& await wizardStep4.isDisplayedButtonSkipTransaction();
-				return await assert.equal(result, true, "Test FAILED. button'Skip transaction' does not present if user reject the transaction");
-			});
-
-		test.it('Wizard step#4: user is able to skip transaction ',
-			async function () {
-
-				let result = await wizardStep4.clickButtonSkipTransaction()
-					&& await wizardStep4.waitUntilShowUpPopupConfirm(80)
-					&& await wizardStep4.clickButtonYes();
-				return await assert.equal(result, true, "Test FAILED. user is not able to skip transaction");
-			});
-
-		test.it('Wizard step#4: alert is presented if user wants to leave the wizard ',
-			async function () {
-
-				let result = await  welcomePage.openWithAlertConfirmation();
-				return await assert.equal(result, false, "Test FAILED. Alert does not present if user wants to leave the site");
-			});
-
-		test.it('Wizard step#4: User is able to stop deployment ',
-			async function () {
-
-				let result = await wizardStep4.waitUntilShowUpButtonCancelDeployment(80)
-					&& await wizardStep4.clickButtonCancelDeployment()
-					&& await wizardStep4.waitUntilShowUpPopupConfirm(80)
-					&& await wizardStep4.clickButtonYes();
-
-				return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
-			});
-	*/
 
 //////////////////////// Test SUITE #1 /////////////////////////////
 
 	test.it('Owner  can create crowdsale,2 tiers, modifiable, whitelist,2 reserved addresses',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await owner.createMintedCappedCrowdsale(e2eWhitelist);
 			logger.info("e2eWhitelist.proxyAddress  " + e2eWhitelist.proxyAddress);
 			logger.info("e2eWhitelist.executionID  " + e2eWhitelist.executionID);
@@ -536,7 +196,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let owner = Owner;
 			let tierNumber = 1;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			await owner.openManagePage(e2eWhitelist);
 			let result = await mngPage.isDisabledMinCap(tierNumber);
 			return await assert.equal(result, true, 'Test FAILED.Manage page,tier #1: field minCap disabled if whitelist enabled');
@@ -546,7 +206,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let owner = Owner;
 			let tierNumber = 2;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			await owner.openManagePage(e2eWhitelist);
 			let result = await mngPage.isDisabledMinCap(tierNumber);
 			return await assert.equal(result, true, 'Test FAILED.Manage page,tier #2: field minCap disabled if whitelist enabled');
@@ -665,7 +325,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Whitelisted investor in tier#1 not able to buy before start of crowdsale ',
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[0].whitelist[0].min;
@@ -676,7 +336,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: Countdown timer has correct status: 'TO START OF TIER1 '",
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCrowdsaleNotStarted();
@@ -686,7 +346,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Tier #1 starts as scheduled',
 		async function () {
 			let investor = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let counter = 180;
@@ -744,7 +404,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field contains correct minCap value ",
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -846,7 +506,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Whitelisted investor (which was added from Manage page after tier's start) is able to buy ",
 		async function () {
 			let investor = ReservedAddress;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = investor.minCap;
@@ -857,7 +517,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Whitelisted investor (which was added from Manage page before tier's start) is able to buy ",
 		async function () {
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[0].supply/10;
@@ -869,7 +529,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Owner is not able to finalize if tier#1 is done',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await owner.finalize(e2eWhitelist);
 			return await assert.equal(result, false, "Test FAILED.'Owner can finalize ");
 		});
@@ -896,7 +556,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution  page: Countdown timer has correct status: 'TO END OF TIER2 '",
 		async function () {
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCurrentTier2();
@@ -906,7 +566,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Investor which whitelisted only in tier#1  is not able to buy in tier#2',
 		async function () {
 			let investor = Investor4;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[1].supply;
@@ -933,7 +593,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field contains correct minCap value for whitelisted investor",
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -943,7 +603,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Investor which was added in whitelist from manage page in tier#1 is not able to buy in tier#2',
 		async function () {
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eWhitelist.tiers[1].supply;
@@ -955,7 +615,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let owner = Owner;
 			let investor = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
 			let tierNumber = 1;
 			let result = await owner.addWhitelistTier(tierNumber, investor.account, investor.minCap, investor.maxCap);
@@ -982,7 +642,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 			balanceEthOwnerBefore = await Utils.getBalance(Owner);
 			let investor = Investor3;
 			let soldTokensBefore = await Utils.getTokensSold(e2eWhitelist);
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = investor.maxCap;
@@ -1009,7 +669,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Whitelisted investor is not able to buy if all tokens were sold',
 		async function () {
 			let investor = Investor4;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = investor.minCap;
@@ -1030,7 +690,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Not owner is not able to finalize',
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await investor.finalize(e2eWhitelist);
 			return await assert.equal(result, false, "Test FAILED.'Not Owner can finalize ");
 		});
@@ -1038,7 +698,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Owner is able to finalize (if all tokens are sold but crowdsale time is not expired)',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await owner.finalize(e2eWhitelist);
 			return await assert.equal(result, true, "Test FAILED.'Owner can NOT finalize ");
 		});
@@ -1130,7 +790,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Owner  can create crowdsale(scenarioE2eMintedMinCap.json),minCap,3 tiers ',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await owner.createMintedCappedCrowdsale(e2eMinCap);
 			Owner.tokenBalance = 0;
 			Investor1.tokenBalance = 0;
@@ -1142,7 +802,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Investor not able to buy before start of crowdsale ',
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eMinCap.tiers[0].minCap * 1.1;
@@ -1154,7 +814,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let owner = Owner;
 			let tierNumber = 1;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			await owner.openManagePage(e2eMinCap);
 			let result = await mngPage.isDisabledMinCap(tierNumber);
@@ -1164,7 +824,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Disabled to modify the end time if crowdsale is not modifiable',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			let adjust = 80000000;
 			let newTime = Utils.getTimeWithAdjust(adjust, "utc");
@@ -1177,7 +837,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: Countdown timer has correct status: 'TO START OF TIER1 '",
 		async function () {
 			let investor = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCrowdsaleNotStarted();
@@ -1187,7 +847,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Tier #1 starts as scheduled',
 		async function () {
 			let investor = Owner;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let counter = 180;
@@ -1217,7 +877,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field contains correct minCap value ",
 		async function () {
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -1227,7 +887,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Investor is not able to buy less than mincap in first transaction',
 		async function () {
 			let investor = Investor1;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eMinCap.tiers[0].minCap * 0.5;
@@ -1307,7 +967,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Owner is not able to finalize if all tokens were sold in tier#1 ',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await owner.finalize(e2eMinCap);
 			return await assert.equal(result, false, "Test FAILED. Owner can  finalize before  all tokens re sold & if crowdsale NOT ended ");
 		});
@@ -1380,7 +1040,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let owner = Owner;
 			let tierNumber = 2;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			let result = await mngPage.isDisabledMinCap(tierNumber);
 			return await assert.equal(result, false, 'Test FAILED.Manage page,tier #2: field minCap disabled if whitelist enabled');
@@ -1388,7 +1048,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution  page: Countdown timer has correct status: 'TO END OF TIER2 '",
 		async function () {
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCurrentTier2();
@@ -1413,7 +1073,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field contains correct minCap value",
 		async function () {
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -1424,7 +1084,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Investor is not able to buy less than minCap in first transaction',
 		async function () {
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eMinCap.tiers[1].minCap * 0.5;
@@ -1434,7 +1094,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Investor is able to buy amount equal minCap',
 		async function () {
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eMinCap.tiers[1].minCap;
@@ -1448,7 +1108,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let owner = Owner;
 			let tierNumber = 2;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			e2eMinCap.tiers[1].minCap = e2eMinCap.tiers[1].minCap * 2;
 			let result = await owner.changeMinCapFromManagePage(tierNumber, e2eMinCap.tiers[1].minCap);
@@ -1457,7 +1117,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field contains correct minCap value (after modifying) ",
 		async function () {
 			let investor = Investor3;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -1489,7 +1149,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Old investor still able to buy amount less than minCap',
 		async function () {
 			let investor = Investor2;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let contribution = e2eMinCap.tiers[1].minCap / 10;
@@ -1519,7 +1179,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Manage page: owner is able to modify the end time of tier#3 before start',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			let tierNumber = 3;
 			let format = "utc";
@@ -1565,7 +1225,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let owner = Owner;
 			let tierNumber = 3;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			let result = await mngPage.isDisabledMinCap(tierNumber);
 			return await assert.equal(result, true, 'Test FAILED.Manage page,tier #2: field minCap disabled if whitelist enabled');
@@ -1582,7 +1242,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field contains correct minCap value for whitelisted investor",
 		async function () {
 			let investor = Investor3;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -1614,7 +1274,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution  page: Countdown timer has correct status: 'TO END OF TIER 3'",
 		async function () {
 			let investor = Investor3;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.isCurrentTier3();
@@ -1644,7 +1304,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field is 'You are not allowed' after end of crowdsale",
 		async function () {
 			let investor = Investor3;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
@@ -1673,7 +1333,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Owner is able to finalize (if crowdsale time expired but not all tokens were sold)',
 		async function () {
 			let owner = Owner;
-			assert.equal(await owner.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			let result = await owner.finalize(e2eMinCap);
 			return await assert.equal(result, true, "Test FAILED.'Owner can NOT finalize ");
 		});
@@ -1689,7 +1349,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it('Investor is not able to buy if crowdsale is finalized',
 		async function () {
 			let investor = Investor3;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			await investor.openInvestPage(e2eMinCap);
@@ -1700,7 +1360,7 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 	test.it("Contribution page: minContribution field is 'You are not allowed' after finalization of crowdsale",
 		async function () {
 			let investor = Investor3;
-			assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
+			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let result = await investPage.getMinContribution();
