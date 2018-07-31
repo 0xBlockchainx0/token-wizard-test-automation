@@ -51,7 +51,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 	let whitelistedAddresses;
 	const scenario = './scenarios/scenarioWhitelistMinted.json';
 
-	const amountWhitelisted = 61;
+	const amountWhitelisted = 50;
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -101,7 +101,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			let owner = Owner;
 			crowdsale = await  Utils.getMintedCrowdsaleInstance(scenario);
 			whitelistedAddresses = await Utils.generateCSVWhitelistedAddresses(amountWhitelisted);
-
+			//whitelistedAddresses = './whitelistedAddressesCSV/whitelistedAddresses50_1533061944525'
 			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 
 			let result = await owner.createMintedCappedCrowdsale(crowdsale, false, "", true, whitelistedAddresses + ".csv");

@@ -28,7 +28,7 @@ test.describe('POA token-wizard. Test How many Whitelisted addresses for Dutch',
 	let driver;
 	let Owner;
 
-	let metaMask;
+	let wallet;
 	let welcomePage;
 	let wizardStep1;
 	let wizardStep2;
@@ -51,7 +51,7 @@ test.describe('POA token-wizard. Test How many Whitelisted addresses for Dutch',
 	let whitelistedAddresses;
 	const scenario = './scenarios/scenarioWhitelistDutch.json';
 
-	const amountWhitelisted = 60;
+	const amountWhitelisted = 50;
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -66,9 +66,10 @@ test.describe('POA token-wizard. Test How many Whitelisted addresses for Dutch',
 		logger.info("Owner = " + Owner.account);
 		logger.info("Owner's balance = " + await Utils.getBalance(Owner) / 1e18 + " Eth");
 
-		metaMask = new MetaMask(driver);
-		await metaMask.activate();//return activated Metamask and empty page
+		wallet = await Utils.getWalletInstance(driver);
+		await wallet.activate();//return activated Wallet and empty page
 		await Owner.setWalletAccount();
+
 
 		welcomePage = new WizardWelcome(driver, startURL);
 		wizardStep1 = new WizardStep1(driver);
@@ -151,6 +152,7 @@ test.describe('POA token-wizard. Test How many Whitelisted addresses for Dutch',
 				let investor = user;
 				assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 				let contribution = user.minCap;
+				if (contribution === 0) contribution = user.maxCap/2;
 
 				let result = await investor.openInvestPage(crowdsale)
 					&& await investor.contribute(contribution);

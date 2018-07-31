@@ -360,20 +360,19 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 		async function () {
 			let fileName = "./public/whitelistedAddresses61.csv";
 			let result = await tierPage.uploadWhitelistCSVFile(fileName);
-			await wizardStep3.clickButtonOk();
 			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
 		});
 
-	test.it('Wizard step#3: Alert present if number of whitelisted addresses greater 60 ',
+	test.it('Wizard step#3: Alert present if number of whitelisted addresses greater 50 ',
 		async function () {
-			let result = await reservedTokensPage.waitUntilShowUpPopupConfirm(100)
-				&& await reservedTokensPage.clickButtonOk();
+			let result = await tierPage.waitUntilShowUpPopupConfirm(100)
+				&& await wizardStep3.clickButtonOk();
 			return await  assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
 		});
 
 	test.it('Wizard step#3: Number of added whitelisted addresses is correct, data is valid',
 		async function () {
-			let shouldBe = 60;
+			let shouldBe = 50;
 			let inReality = await tierPage.amountAddedWhitelist();
 			return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
 
