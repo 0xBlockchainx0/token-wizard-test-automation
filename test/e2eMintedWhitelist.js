@@ -24,7 +24,7 @@ const endDateForTestEarlier = "01/07/2049";
 const endTimeForTestLater = "480000";
 const endDateForTestLater = "480000";
 
-test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', async function () {
+test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersion} `, async function () {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 
