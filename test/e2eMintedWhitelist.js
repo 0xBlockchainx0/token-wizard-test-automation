@@ -21,10 +21,10 @@ const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
 const smallAmount = 0.1;
 const endTimeForTestEarlier = "01:23";
 const endDateForTestEarlier = "01/07/2049";
-const endTimeForTestLater = "420000";
-const endDateForTestLater = "420000";
+const endTimeForTestLater = "480000";
+const endDateForTestLater = "480000";
 
-test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', async function () {
+test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersion} `, async function () {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
 
@@ -294,8 +294,8 @@ test.describe('e2e test for TokenWizard2.0/MintedCappedCrowdsale. v2.8.1 ', asyn
 			assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
 			let tierNumber = 1;
 			let format = "utc";
-			endTime = Utils.getTimeWithAdjust(parseInt(endTimeForTestLater), format);//"420000"
-			endDate = Utils.getDateWithAdjust(parseInt(endDateForTestLater), format);//"420000"
+			endTime = Utils.getTimeWithAdjust(parseInt(endTimeForTestLater), format);
+			endDate = Utils.getDateWithAdjust(parseInt(endDateForTestLater), format);
 			let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
 			return await assert.equal(result, true, 'Test FAILED.Owner can NOT modify the end time of tier#1 before start ');
 
