@@ -14,8 +14,8 @@
       "isWhitelisted":false,
       "startDate": "120000",
       "startTime": "120000",
-      "endDate":"360000",
-      "endTime":"360000",
+      "endDate":"420000",
+      "endTime":"420000",
       "rate":10,
       "supply": 20,
       "whitelist":[]
