@@ -329,8 +329,9 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 	test.it('Wizard step#3: User is able to download CSV file with whitelisted addresses',
 		async function () {
 			let fileName = "./public/whitelistAddressesTestValidation.csv";
-			let result = await tierPage.uploadWhitelistCSVFile(fileName);
-			await wizardStep3.clickButtonOk();
+			let result = await tierPage.uploadWhitelistCSVFile(fileName)
+				&& await tierPage.waitUntilShowUpPopupConfirm(180)
+				&& await wizardStep3.clickButtonOk();
 			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
 		});
 
@@ -338,6 +339,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 		async function () {
 			let shouldBe = 6;
 			let inReality = await tierPage.amountAddedWhitelist();
+
 			return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
 
 		});
@@ -356,7 +358,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
 		});
 
-	test.it('Wizard step#3: User is able to download CSV file with more than 60 whitelisted addresses',
+	test.it('Wizard step#3: User is able to download CSV file with more than 50 whitelisted addresses',
 		async function () {
 			let fileName = "./public/whitelistedAddresses61.csv";
 			let result = await tierPage.uploadWhitelistCSVFile(fileName);
@@ -385,7 +387,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 				&& await tierPage.clickButtonYesAlert();
 			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
 		});
-
 
 	test.it('Wizard step#3: User is able to add several whitelisted addresses one by one ',
 		async function () {
@@ -479,7 +480,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 		async function () {
 
 			let result = await wizardStep4.waitUntilDisplayedModal()
-			&&  await wizardStep4.isDisplayedModal();
+				&& await wizardStep4.isDisplayedModal();
 			return await assert.equal(result, true, "Test FAILED. Modal is not displayed");
 		});
 
