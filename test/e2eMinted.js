@@ -350,6 +350,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let counter = 180;
+			let startTime;
 			do {
 				startTime = await Utils.getMintedCrowdsaleStartTime(e2eWhitelist);
 				logger.info("wait " + Date.now());
@@ -1212,8 +1213,8 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 				endT = await Utils.getTiersEndTimeMintedCrowdsale(e2eMinCap, tierNumber);
 				logger.info("wait " + Date.now());
 				logger.info("wait " + endT);
-				//console.log("Date.now() = " + Date.now());
-				//console.log("startTime =  " + startTime);
+				console.log("Date.now() = " + Date.now());
+				//console.log("endT =  " + endT);
 				await driver.sleep(1000);
 
 			}

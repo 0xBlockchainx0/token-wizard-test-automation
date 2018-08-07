@@ -23,6 +23,7 @@ const endTimeForTestEarlier = "01:23";
 const endDateForTestEarlier = "01/07/2049";
 const endTimeForTestLater = "420000";
 const endDateForTestLater = "420000";
+const adjEndTimeTier2 = 540000;
 
 test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersion} `, async function () {
 	this.timeout(2400000);//40 min
@@ -210,6 +211,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			assert.equal(await investor.openInvestPage(e2eMinCap), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let counter = 180;
+			let startTime;
 			do {
 				startTime = await Utils.getMintedCrowdsaleStartTime(e2eMinCap);
 				logger.info("wait " + Date.now());
@@ -337,8 +339,8 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			let tierNumber = 2;
 			let format = "utc";
-			endTime = Utils.getTimeWithAdjust(480000, format);
-			endDate = Utils.getDateWithAdjust(480000, format);
+			endTime = Utils.getTimeWithAdjust(adjEndTimeTier2, format);
+			endDate = Utils.getDateWithAdjust(adjEndTimeTier2, format);
 			let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
 			return await assert.equal(result, true, 'Test FAILED.Owner can NOT modify the end time of tier#2 before start ');
 
