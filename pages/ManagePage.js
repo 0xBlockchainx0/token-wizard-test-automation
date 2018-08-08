@@ -309,18 +309,6 @@ class ManagePage extends Page {
 	}
 	async fillWhitelist(tier, address, min, max) {
 		logger.info(this.name + "fillWhitelist  ");
-		/*let containers = await super.findWithWait(contentContainer);
-		console.log("containers.length= "+containers.length);
-
-		let element = await this.getChildFromElementByClassName("white-list-container", containers[tier + 2]);
-		console.log("element.length= "+element.length);
-		let array = await this.getChildFromElementByClassName("input", element[0]);
-		console.log("array.length= "+array.length);
-		return  await super.fillWithWait(array[0], address)
-			&& await super.fillWithWait(array[1], min)
-			&& await super.fillWithWait(array[2], max)
-			&& await this.clickButtonAddWhitelist(tier)
-			&& await this.clickButtonSave();*/
 		return (await this.initWhitelistFields() !== null)
 			&& await super.fillWithWait(this.fieldWhAddress[tier - 1], address)
 			&& await super.fillWithWait(this.fieldWhMin[tier - 1], min)
@@ -508,8 +496,8 @@ class ManagePage extends Page {
 		return await super.getElement(locator);
 	}
 
-	async isDisabledMinCap(tier) {
-		logger.info(this.name + "isDisabledMinCap ");
+	async isDisabledFieldMinCap(tier) {
+		logger.info(this.name + "isDisabledFieldMinCap ");
 		let element = await this.getFieldMinCap(tier)
 		return await this.isElementDisabled(element);
 	}

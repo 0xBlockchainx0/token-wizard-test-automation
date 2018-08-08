@@ -481,7 +481,7 @@ class TierPage extends Page {
 	}
 
 	async isDisabledFieldMinCap(tier) {
-		logger.info(this.name + "isDisabledMinCap ");
+		logger.info(this.name + "isDisabledFieldMinCap ");
 		let element = await this.getFieldMinCap(tier)
 		return await this.isElementDisabled(element);
 	}
