@@ -245,7 +245,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 	test.it('Wizard step#3: field minCap disabled if whitelist enabled ',
 		async function () {
 			let tierNumber = 1;
-			let result = await tierPage.isDisabledMinCap(tierNumber);
+			let result = await tierPage.isDisabledFieldMinCap(tierNumber);
 			return await assert.equal(result, true, "Test FAILED. Field minCap enabled if whitelist enabled");
 		});
 

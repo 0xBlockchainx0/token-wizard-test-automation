@@ -322,8 +322,15 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 	test.it('Wizard step#3: field minCap disabled if whitelist enabled ',
 		async function () {
 			let tierNumber = 1;
-			let result = await tierPage.isDisabledMinCap(tierNumber);
+			let result = await tierPage.isDisabledFieldMinCap(tierNumber);
 			return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
+		});
+
+	test.it('Wizard step#3:Tier#1: User is able to fill out field "Supply" with valid data',
+		async function () {
+			tierPage.tier.supply = 69;
+			let result = await tierPage.fillSupply();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
 		});
 
 	test.it('Wizard step#3: User is able to download CSV file with whitelisted addresses',
@@ -335,13 +342,17 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
 		});
 
+	test.it('Wizard step#3: field Supply disabled if whitelist added ',
+		async function () {
+			let result = await tierPage.isDisabledFieldSupply();
+			return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
+		});
+
 	test.it('Wizard step#3: Number of added whitelisted addresses is correct, data is valid',
 		async function () {
-			let shouldBe = 6;
+			let shouldBe = 5;
 			let inReality = await tierPage.amountAddedWhitelist();
-
 			return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
-
 		});
 
 	test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
@@ -356,6 +367,19 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 		async function () {
 			let result = await tierPage.amountAddedWhitelist(10);
 			return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+		});
+
+	test.it('Wizard step#3: field Supply enabled if whitelist was deleted ',
+		async function () {
+			let result = await tierPage.isDisabledFieldSupply();
+			return await assert.equal(result, false, "Test FAILED. Field minCap disabled if whitelist enabled");
+		});
+
+	test.it('Wizard step#3:Tier#1: User is able to fill out field "Supply" with valid data',
+		async function () {
+			tierPage.tier.supply = 1e18;
+			let result = await tierPage.fillSupply();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
 		});
 
 	test.it('Wizard step#3: User is able to download CSV file with more than 50 whitelisted addresses',
@@ -432,13 +456,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			tierPage.tier.rate = 5678;
 			let result = await tierPage.fillRate();
 			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
-		});
-
-	test.it('Wizard step#3:Tier#1: User is able to fill out field "Supply" with valid data',
-		async function () {
-			tierPage.tier.supply = 1e18;
-			let result = await tierPage.fillSupply();
-			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
 		});
 
 	test.it('Wizard step#3: User is able to add tier',

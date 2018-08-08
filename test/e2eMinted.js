@@ -198,7 +198,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			let tierNumber = 1;
 			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			await owner.openManagePage(e2eWhitelist);
-			let result = await mngPage.isDisabledMinCap(tierNumber);
+			let result = await mngPage.isDisabledFieldMinCap(tierNumber);
 			return await assert.equal(result, true, 'Test FAILED.Manage page,tier #1: field minCap disabled if whitelist enabled');
 		});
 
@@ -208,7 +208,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			let tierNumber = 2;
 			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			await owner.openManagePage(e2eWhitelist);
-			let result = await mngPage.isDisabledMinCap(tierNumber);
+			let result = await mngPage.isDisabledFieldMinCap(tierNumber);
 			return await assert.equal(result, true, 'Test FAILED.Manage page,tier #2: field minCap disabled if whitelist enabled');
 		});
 
@@ -818,7 +818,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
 			await owner.openManagePage(e2eMinCap);
-			let result = await mngPage.isDisabledMinCap(tierNumber);
+			let result = await mngPage.isDisabledFieldMinCap(tierNumber);
 			return await assert.equal(result, true, 'Test FAILED.Field minCap enabled if crowdsale is not modifiable');
 		});
 
@@ -1043,7 +1043,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			let tierNumber = 2;
 			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
-			let result = await mngPage.isDisabledMinCap(tierNumber);
+			let result = await mngPage.isDisabledFieldMinCap(tierNumber);
 			return await assert.equal(result, false, 'Test FAILED.Manage page,tier #2: field minCap disabled if whitelist enabled');
 		});
 	test.it("Contribution  page: Countdown timer has correct status: 'TO END OF TIER2 '",
@@ -1228,7 +1228,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			let tierNumber = 3;
 			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
-			let result = await mngPage.isDisabledMinCap(tierNumber);
+			let result = await mngPage.isDisabledFieldMinCap(tierNumber);
 			return await assert.equal(result, true, 'Test FAILED.Manage page,tier #2: field minCap disabled if whitelist enabled');
 		});
 	test.it("Contribution page: minContribution field is 'You are not allowed' for non-whitelisted investors",
