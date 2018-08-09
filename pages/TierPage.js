@@ -480,12 +480,17 @@ class TierPage extends Page {
 		}
 	}
 
-	async isDisabledMinCap(tier) {
-		logger.info(this.name + "isDisabledMinCap ");
+	async isDisabledFieldMinCap(tier) {
+		logger.info(this.name + "isDisabledFieldMinCap ");
 		let element = await this.getFieldMinCap(tier)
 		return await this.isElementDisabled(element);
 	}
 
+	async isDisabledFieldSupply() {
+		logger.info(this.name + "isDisabledFieldSupply ");
+		let element = await this.getFieldSupply()
+		return await this.isElementDisabled(element);
+	}
 }
 
 module.exports.TierPage = TierPage;

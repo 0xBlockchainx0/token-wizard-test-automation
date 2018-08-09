@@ -22,8 +22,8 @@
       "name":"###1",
       "allowModify": true,
       "isWhitelisted":true,
-      "startDate": "300000",
-      "startTime": "300000",
+      "startDate": "360000",
+      "startTime": "360000",
       "endDate":"23/02/2050",
       "endTime":"12:34",
       "minCap":11,
@@ -57,7 +57,7 @@
         {
           "address": "0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7",
           "min": 25,
-          "max": 250
+          "max": 200
         },
         {
           "address": "0xF16AB2EA0a7F7B28C267cbA3Ed211Ea5c6e27411",

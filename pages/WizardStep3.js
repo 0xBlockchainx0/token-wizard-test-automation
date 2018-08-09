@@ -228,11 +228,6 @@ class WizardStep3 extends Page {
 		return await super.clickWithWait(buttonAddTier);
 	}
 
-	async isDisabledMinCap() {
-		logger.info(this.name + "isDisabledMinCap ");
-		return await super.isElementDisabled(fieldMinCap);
-	}
-
 	async isEnabledButtonContinue() {
 		logger.info(this.name + " isEnabledButtonContinue ");
 		if (await super.getAttribute(buttonContinue, "class") === "button button_fill") {

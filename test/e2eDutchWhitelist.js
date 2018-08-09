@@ -1,4 +1,3 @@
-
 let test = require('selenium-webdriver/testing');
 let assert = require('assert');
 const fs = require('fs-extra');
@@ -116,7 +115,6 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 		//await driver.quit();
 	});
 
-
 	//////////////////////// Test SUITE #0 /////////////////////////////
 
 	test.it('Owner can create crowdsale: 1 whitelisted address,duration 1 min',
@@ -175,7 +173,6 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 			console.log("Investor has received balance = " + balance);
 			console.log("Difference = " + (balance - shouldBe));
 
-
 			let result = (Math.abs(shouldBe - balance) < 1e-6);
 			return await assert.equal(result, true, "Test FAILED.'Investor has received " + balance + " tokens instead " + shouldBe)
 		});
@@ -221,14 +218,25 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 			return await assert.equal(result, false, "Test FAILED. Whitelisted investor can buy before the crowdsale started");
 		});
 
-	test.it('Manage page: owner is able to add whitelisted address before start of crowdsale',
+	test.it('Manage page: owner is not able to add whitelisted address with maxCap greater than supply',
 		async function () {
 			let owner = Owner;
 			let investor = Investor2;
 			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await owner.openManagePage(e2eWhitelist), true, 'Owner can not open manage page');
 			let tierNumber = 1;
-			let result = await owner.addWhitelistTier(tierNumber, investor.account, investor.minCap, investor.maxCap);
+			let result = await owner.addWhitelistTier(tierNumber, investor.account, investor.minCap, e2eWhitelist.tiers[tierNumber - 1].supply * 2);
+			return await assert.equal(result, false, 'Test FAILED.Owner is NOT able to add whitelisted address before start of crowdsale ');
+		});
+
+	test.it('Manage page: owner is able to add whitelisted address before start of crowdsale',
+		async function () {
+			let owner = Owner;
+			let investor = Investor2;
+			let tierNumber = 1;
+			await mngPage.refresh()
+			let result = await mngPage.waitUntilLoaderGone()
+				&& await owner.addWhitelistTier(tierNumber, investor.account, investor.minCap, investor.maxCap);
 			return await assert.equal(result, true, 'Test FAILED.Owner is NOT able to add whitelisted address before start of crowdsale ');
 		});
 
@@ -502,6 +510,5 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 			let result = (Math.abs(delta - unsoldAmount) < 1e-6);
 			return await assert.equal(result, true, "Test FAILED.'Owner has additionaly  received " + balance + " tokens instead " + unsoldAmount)
 		});
-
 
 });

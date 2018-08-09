@@ -63,7 +63,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 
 		e2eWhitelist = await Utils.getDutchCrowdsaleInstance(scenarioE2eWhitelist);
 		crowdsaleForUItests = await Utils.getDutchCrowdsaleInstance(scenarioForUItests);
-
+		crowdsaleForUItests.totalSupply = 1e10
 		e2eCheckBurn = await Utils.getDutchCrowdsaleInstance(scenarioE2eDutchCheckBurn);
 
 		startURL = await Utils.getStartURL();
@@ -245,10 +245,15 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 	test.it('Wizard step#3: field minCap disabled if whitelist enabled ',
 		async function () {
 			let tierNumber = 1;
-			let result = await tierPage.isDisabledMinCap(tierNumber);
+			let result = await tierPage.isDisabledFieldMinCap(tierNumber);
 			return await assert.equal(result, true, "Test FAILED. Field minCap enabled if whitelist enabled");
 		});
-
+	test.it('Wizard step#3:Tier#1: User is able to fill out field "Supply" with valid data',
+		async function () {
+			tierPage.tier.supply = 69;
+			let result = await tierPage.fillSupply();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+		});
 	test.it('Wizard step#3: User is able to download CSV file with whitelisted addresses',
 		async function () {
 			let fileName = "./public/whitelistAddressesTestValidation.csv";
@@ -257,9 +262,15 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 			return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
 		});
 
+	test.it('Wizard step#3: field Supply disabled if whitelist added ',
+		async function () {
+			let result = await tierPage.isDisabledFieldSupply();
+			return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
+		});
+
 	test.it('Wizard step#3: Number of added whitelisted addresses is correct, data is valid',
 		async function () {
-			let shouldBe = 6;
+			let shouldBe = 5;
 			let inReality = await tierPage.amountAddedWhitelist();
 			return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
 
@@ -277,6 +288,19 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 		async function () {
 			let result = await tierPage.amountAddedWhitelist(10);
 			return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+		});
+
+	test.it('Wizard step#3: field Supply enabled if whitelist was deleted ',
+		async function () {
+			let result = await tierPage.isDisabledFieldSupply();
+			return await assert.equal(result, false, "Test FAILED. Field minCap disabled if whitelist enabled");
+		});
+
+	test.it('Wizard step#3:Tier#1: User is able to fill out field "Supply" with valid data',
+		async function () {
+			tierPage.tier.supply = crowdsaleForUItests.totalSupply;
+			let result = await tierPage.fillSupply();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
 		});
 
 	test.it('Wizard step#3: User is able to download CSV file with more than 50 whitelisted addresses',
@@ -324,6 +348,15 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 			return await assert.equal(beforeRemoving, afterRemoving + 1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
 		});
 
+	test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
+		async function () {
+			let result = await tierPage.clickButtonClearAll()
+				&& await tierPage.waitUntilShowUpPopupConfirm(180)
+				&& await tierPage.clickButtonYesAlert()
+				&& await tierPage.waitUntilLoaderGone();
+			return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+		});
+
 	test.it("Wizard step#3: User is able to set 'Custom Gasprice' checkbox",
 		async function () {
 
@@ -344,13 +377,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 			let result = await wizardStep3.clickCheckboxGasPriceSafe();
 			return await assert.equal(result, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
 		});
-	test.it('Wizard step#3:Tier#1: User is able to fill out field Supply with valid data ',
-		async function () {
-			tierPage.tier.supply = crowdsaleForUItests.totalSupply - 1;
-			let result = await tierPage.fillSupply();
-			return await assert.equal(result, true, "Test FAILED. Wizard step#3:Tier#1: User is notable to fill out field Supply with valid data");
 
-		});
 	test.it("Wizard step#3:Tier#1: User is able to fill out field 'minRate' with valid data",
 		async function () {
 			tierPage.tier.minRate = 100;

@@ -86,7 +86,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 		Investor1.maxCap = e2eWhitelist.tiers[0].whitelist[0].max;
 		Investor2 = new User(driver, user8545_f5aAFile);
 		Investor2.minCap = 0;
-		Investor2.maxCap = e2eWhitelist.tiers[0].supply * 2;
+		Investor2.maxCap = e2eWhitelist.tiers[0].supply;
 		ReservedAddress = new User(driver, user8545_ecDFFile);
 		ReservedAddress.minCap = e2eWhitelist.tiers[0].supply / 4;
 		ReservedAddress.maxCap = e2eWhitelist.tiers[0].supply / 2;
@@ -197,7 +197,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			let tierNumber = 1;
 			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			await owner.openManagePage(e2eWhitelist);
-			let result = await mngPage.isDisabledMinCap(tierNumber);
+			let result = await mngPage.isDisabledFieldMinCap(tierNumber);
 			return await assert.equal(result, true, 'Test FAILED.Manage page,tier #1: field minCap disabled if whitelist enabled');
 		});
 
@@ -207,7 +207,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			let tierNumber = 2;
 			assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
 			await owner.openManagePage(e2eWhitelist);
-			let result = await mngPage.isDisabledMinCap(tierNumber);
+			let result = await mngPage.isDisabledFieldMinCap(tierNumber);
 			return await assert.equal(result, true, 'Test FAILED.Manage page,tier #2: field minCap disabled if whitelist enabled');
 		});
 
@@ -258,13 +258,22 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			await mngPage.clickButtonSave();
 			return await assert.equal(await mngPage.waitUntilShowUpPopupConfirm(20), false, "Test FAILED. Button 'Save' is clickable by default");
 		});
-
+	test.it('Manage page: owner is not able to add whitelisted address with maxCap greater than supply',
+		async function () {
+			let owner = Owner;
+			let investor = Investor2;
+			let tierNumber = 1;
+			let result = await owner.addWhitelistTier(tierNumber, investor.account, investor.minCap, e2eWhitelist.tiers[tierNumber - 1].supply * 2);
+			return await assert.equal(result, false, 'Test FAILED.Owner is NOT able to add whitelisted address before start of crowdsale ');
+		});
 	test.it('Manage page: owner is able to add whitelisted address before start of crowdsale',
 		async function () {
 			let owner = Owner;
 			let investor = Investor2;
 			let tierNumber = 1;
-			let result = await owner.addWhitelistTier(tierNumber, investor.account, investor.minCap, investor.maxCap);
+			await mngPage.refresh()
+			let result = await mngPage.waitUntilLoaderGone()
+				&& await owner.addWhitelistTier(tierNumber, investor.account, investor.minCap, investor.maxCap);
 			return await assert.equal(result, true, 'Test FAILED.Owner is NOT able to add whitelisted address before start of crowdsale ');
 		});
 
@@ -519,7 +528,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
-			let contribution = e2eWhitelist.tiers[0].supply/10;
+			let contribution = e2eWhitelist.tiers[0].supply / 10;
 			let result = await investor.contribute(contribution);
 			if (result) investor.tokenBalance += contribution;
 			return await assert.equal(result, true, "Test FAILED.Investor can  buy more than assigned max");
@@ -651,7 +660,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			return await assert.equal(result, true, "Test FAILED.Investor can not buy maxCap in first transaction");
 		});
 
-	test.it('Whitelisted investor is not able to buy more than remains even if individual maxCap is not reached',
+	test.it("Whitelisted investor is not able to buy more than tier's supply",
 		async function () {
 			let investor = Investor3;
 			assert.equal(await investor.openInvestPage(e2eWhitelist), true, 'Investor can not open Invest page');
@@ -675,7 +684,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 			let result = await investor.contribute(contribution);
 			return await assert.equal(result, false, 'Whitelisted investor is able to buy if all tokens were sold');
 		});
-
 
 	test.it("Owner's Eth balance properly changed ",
 		async function () {
