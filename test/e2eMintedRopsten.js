@@ -27,7 +27,7 @@ const endDateForTestLater = "420000";
 test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () {
 	this.timeout(2400000);//40 min
 	this.slow(1800000);
-	const user3_56B2File ='./users/user3_56B2.json';
+	const ownerFile ='./users/user4_56B2.json';
 	const user8545_56B2File = './users/user8545_56B2.json';//Owner
 	const user8545_F16AFile = './users/user8545_F16A.json';//Investor1 - whitelisted for Tier#1 before deployment
 	const user8545_f5aAFile = './users/user8545_f5aA.json';//Investor2 - added from manage page before start
@@ -71,7 +71,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 		e2eRopsten = await  Utils.getMintedCrowdsaleInstance(scenarioRopsten);
 		startURL = await Utils.getStartURL();
 		driver = await Utils.startBrowserWithWallet();
-		Owner = new User(driver, user3_56B2File);
+		Owner = new User(driver, ownerFile);
 		wallet = await Utils.getWalletInstance(driver);
 		await wallet.activate();//return activated Wallet and empty page
 		await Owner.setWalletAccount();

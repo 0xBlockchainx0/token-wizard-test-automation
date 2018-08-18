@@ -113,7 +113,7 @@ test.describe('POA token-wizard. Test DutchAuction Ropsten', async function () {
 	test.it('Tier starts as scheduled',
 		async function () {
 			let investor = Owner;
-			assert.equal(await investor.openInvestPage(e2eRopsten), true, 'Investor can not open Invest page');
+			assert.equal(await investor.openContributionPage(e2eRopsten), true, 'Investor can not open Invest page');
 			assert.equal(await investPage.waitUntilLoaderGone(), true, 'Loader displayed too long time');
 			let counter = 1080;
 			do {
