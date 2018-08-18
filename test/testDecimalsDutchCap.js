@@ -136,7 +136,7 @@ test.describe('POA token-wizard. Test purchase with all possible values of DECIM
 				//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 				let contribution = crowdsale.tiers[0].minCap;
 				investor.tokenBalance += contribution;
-				let result = await investor.openInvestPage(crowdsale)
+				let result = await investor.openContributionPage(crowdsale)
 					&& await investor.contribute(contribution);
 				return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 			});

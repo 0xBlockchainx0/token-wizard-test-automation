@@ -160,9 +160,9 @@ class ContributionPage extends Page {
 		return await super.isElementDisplayed(countdownTimer);
 	}
 
-	async waitUntilDisplayedCountdownTimer() {
-		logger.info(this.name + "waitUntilDisplayedCountdownTimer ");
-		return (await super.isElementDisplayed(countdownTimer));
+	async waitUntilShowUpCountdownTimer(Twaiting) {
+		logger.info(this.name + "waitUntilShowUpCountdownTimer ");
+		return (await super.waitUntilDisplayed(countdownTimer,Twaiting));
 	}
 
 	async clickButtonOK() {

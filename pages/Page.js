@@ -171,7 +171,7 @@ class Page {
 		logger.info("wait until loader gone :");
 		if (!await this.isLocatedLoader()) return true;
 		else
-			return await this.waitUntilLocated(loaderNotDisplayed,60);
+			return await this.waitUntilLocated(loaderNotDisplayed,180);
 	}
 
 	async refresh() {

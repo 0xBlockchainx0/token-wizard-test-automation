@@ -143,7 +143,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -194,7 +194,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -245,7 +245,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -296,7 +296,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -347,7 +347,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -398,7 +398,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -449,7 +449,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -500,7 +500,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -551,7 +551,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -602,7 +602,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -653,7 +653,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -704,7 +704,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -755,7 +755,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -806,7 +806,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -857,7 +857,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -908,7 +908,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -959,7 +959,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -1010,7 +1010,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});
@@ -1061,7 +1061,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 			//assert.equal(await investor.setMetaMaskAccount(), true, "Can not set Metamask account");
 			let contribution = MintedDecimalsWhitelist.tiers[0].whitelist[0].min;
 			investor.tokenBalance += contribution;
-			let result = await investor.openInvestPage(MintedDecimalsWhitelist)
+			let result = await investor.openContributionPage(MintedDecimalsWhitelist)
 				&& await investor.contribute(contribution);
 			return await assert.equal(result, true, 'Test FAILED. Investor can not buy ');
 		});

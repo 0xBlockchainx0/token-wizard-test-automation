@@ -153,7 +153,7 @@ test.describe('POA token-wizard. Test MintedCappedCrowdsale', async function () 
 				assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
 				let contribution = user.minCap;
 
-				let result = await investor.openInvestPage(crowdsale)
+				let result = await investor.openContributionPage(crowdsale)
 					&& await investor.contribute(contribution);
 
 				let balance = await user.getTokenBalance(crowdsale) / pow;

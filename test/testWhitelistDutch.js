@@ -154,7 +154,7 @@ test.describe('POA token-wizard. Test How many Whitelisted addresses for Dutch',
 				let contribution = user.minCap;
 				if (contribution === 0) contribution = user.maxCap/2;
 
-				let result = await investor.openInvestPage(crowdsale)
+				let result = await investor.openContributionPage(crowdsale)
 					&& await investor.contribute(contribution);
 
 				let balance = await user.getTokenBalance(crowdsale) / pow;

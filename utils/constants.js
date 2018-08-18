@@ -5,4 +5,4 @@ const WALLET = {
 module.exports = {
 	WALLET: WALLET
 }
-global.testVersion='2.10.0'
+global.testVersion='2.10.2'
