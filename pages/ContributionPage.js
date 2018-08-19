@@ -1,6 +1,8 @@
 const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
+const statusTimer = require('../utils/constants.js').statusTimer;
+
 const buttonContribute = By.className("button button_fill");
 const fieldContribute = By.id("contribute");
 const buttonOk = By.className("swal2-confirm swal2-styled");
@@ -12,16 +14,6 @@ const countdownTimer = By.className("timer");
 const countdownTimerValue = By.className("timer-count");
 const countdownTimerStatus = By.className("timer-interval");
 const fieldsHashTitles = By.className("hashes-title");
-
-const statusTimer = {
-	start: "START",
-	end: "CROWDSALE HAS ENDED",
-	finalized: "HAS BEEN FINALIZED",
-	tier1: "END OF TIER 1",
-	tier2: "END OF TIER 2",
-	tier3: "END OF TIER 3",
-
-}
 
 class ContributionPage extends Page {
 
@@ -38,15 +30,10 @@ class ContributionPage extends Page {
 	async getStatusTimer() {
 		logger.info(this.name + "getTimerStatus ");
 		try {
-			let counter = 10;
-			do {
-				await this.driver.sleep(1000);
-			}
-			while ((counter-- > 0) && (await this.isCrowdsaleTimeOver()))
-
-			let array = await this.initTimerFields();
-			let result = await super.getTextForElement(array[array.length - 1]);
-			logger.info("timer status: " + result);
+			if (! await this.waitUntilShowUpTimerStatus(120)) return false;
+			const array = await this.initTimerFields();
+			const result = await super.getTextForElement(array[array.length - 1]);
+			console.log("timer status: " + result);
 			if (result.includes(statusTimer.start)) return statusTimer.start;
 			else if (result.includes(statusTimer.tier1)) return statusTimer.tier1;
 			else if (result.includes(statusTimer.tier2)) return statusTimer.tier2;
@@ -164,6 +151,11 @@ class ContributionPage extends Page {
 		logger.info(this.name + "waitUntilShowUpCountdownTimer ");
 		return (await super.waitUntilDisplayed(countdownTimer,Twaiting));
 	}
+
+    async waitUntilShowUpTimerStatus(Twaiting) {
+        logger.info(this.name + "waitUntilShowUpTimerStatus ");
+        return (await super.waitUntilDisplayed(countdownTimerStatus,Twaiting));
+    }
 
 	async clickButtonOK() {
 		logger.info(this.name + "clickButtonOK ");

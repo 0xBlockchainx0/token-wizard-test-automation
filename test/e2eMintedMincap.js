@@ -18,6 +18,7 @@ const Utils = require('../utils/Utils.js').Utils;
 const User = require("../entity/User.js").User;
 const adjEndTimeTier2 = 540000;
 const adjEndTimeTier3 = 240000;
+const TIME_FORMAT = require('../utils/constants.js').TIME_FORMAT;
 
 test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersion} `, async function () {
     this.timeout(2400000);//40 min
@@ -57,6 +58,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 /////////////////////////////////////////////////////////////////////////
 
     test.before(async function () {
+
         await Utils.copyEnvFromWizard();
         const scenarioE2eMintedMinCap = './scenarios/scenarioE2eMintedMinCap.json';
         e2eMinCap = await Utils.getMintedCrowdsaleInstance(scenarioE2eMintedMinCap);
@@ -158,8 +160,9 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
             assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
             let adjust = 80000000;
-            let newTime = Utils.getTimeWithAdjust(adjust, "utc");
-            let newDate = Utils.getDateWithAdjust(adjust, "utc");
+            let format = TIME_FORMAT.UTC;
+            let newTime = Utils.getTimeWithAdjust(adjust, format);
+            let newDate = Utils.getDateWithAdjust(adjust, format);
             let tierNumber = 1;
             let result = await owner.changeEndTimeFromManagePage(tierNumber, newDate, newTime);
             return await assert.equal(result, false, 'Test FAILED.Owner can modify the end time of tier#1 if crowdsale not modifiable ');
@@ -303,7 +306,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             let owner = Owner;
             assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
             let tierNumber = 2;
-            let format = "utc";
+            let format = TIME_FORMAT.UTC;
             endTime = Utils.getTimeWithAdjust(adjEndTimeTier2, format);
             endDate = Utils.getDateWithAdjust(adjEndTimeTier2, format);
             let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
@@ -482,7 +485,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
             assert.equal(await owner.openManagePage(e2eMinCap), true, 'Owner can not open manage page');
             let tierNumber = 3;
-            let format = "utc";
+            let format = TIME_FORMAT.UTC;
             endTime = Utils.getTimeWithAdjust(adjEndTimeTier3, format);
             endDate = Utils.getDateWithAdjust(adjEndTimeTier3, format);
             let result = await owner.changeEndTimeFromManagePage(tierNumber, endDate, endTime);
