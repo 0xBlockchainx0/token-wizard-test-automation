@@ -206,6 +206,7 @@ class Page {
 			let field = await this.getElement(element, Twaiting);
 			if (field === null) return false;
 			await field.sendKeys(k);
+			console.log(k)
 			return true;
 		}
 		catch (err) {

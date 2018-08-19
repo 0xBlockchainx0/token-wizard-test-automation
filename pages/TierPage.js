@@ -13,7 +13,7 @@ const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const fieldMinRate = By.id("tiers[0].minRate");
 const fieldMaxRate = By.id("tiers[0].maxRate");
 const contentContainer = By.className("steps-content container");
-
+const TIME_FORMAT = require('../utils/constants.js').TIME_FORMAT;
 let COUNT_TIERS = 0;
 const timeAdjust = 0;//relative value  for tier time
 
@@ -131,17 +131,22 @@ class TierPage extends Page {
 		let locator = await this.getFieldStartTime();
 		let format = await Utils.getDateFormat(this.driver);
 		if (!this.tier.startDate.includes("/")) {
-			this.tier.startTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(this.tier.startTime), "utc");
-			this.tier.startDate = Utils.getDateWithAdjust(timeAdjust + parseInt(this.tier.startDate), "utc");
+			this.tier.startTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(this.tier.startTime), format);
+			this.tier.startDate = Utils.getDateWithAdjust(timeAdjust + parseInt(this.tier.startDate), format);
 		}
-		if (format === "mdy") {
-			this.tier.startDate = Utils.convertDateToMdy(this.tier.startDate);
-			this.tier.startTime = Utils.convertTimeToMdy(this.tier.startTime);
-		}
-		return await super.clickWithWait(locator) &&
-			await super.fillWithWait(locator, this.tier.startDate) &&
-			await super.pressKey(key.TAB, 1) &&
-			await super.fillWithWait(locator, this.tier.startTime);
+
+		console.log("format= "+format)
+        console.log("this.tier.startDate= "+this.tier.startDate)
+        console.log("this.tier.startTime= "+this.tier.startTime)
+
+
+
+        return await super.clickWithWait(locator)
+			&& await super.fillWithWait(locator, this.tier.startDate)
+			&& await super.pressKey(key.TAB, 1)
+			&& await super.fillWithWait(locator, this.tier.startTime)
+			//&& await super.fillWithWait(locator, '2:34am')
+
 	}
 
 	async getFieldEndTime() {
@@ -156,13 +161,10 @@ class TierPage extends Page {
 		let locator = await this.getFieldEndTime();
 		let format = await Utils.getDateFormat(this.driver);
 		if (!this.tier.endDate.includes("/")) {
-			this.tier.endTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(this.tier.endDate), "utc");
-			this.tier.endDate = Utils.getDateWithAdjust(timeAdjust + parseInt(this.tier.endDate), "utc");
+			this.tier.endTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(this.tier.endDate), format);
+			this.tier.endDate = Utils.getDateWithAdjust(timeAdjust + parseInt(this.tier.endDate), format);
 		}
-		if (format === "mdy") {
-			this.tier.endDate = Utils.convertDateToMdy(this.tier.endDate);
-			this.tier.endTime = Utils.convertTimeToMdy(this.tier.endTime);
-		}
+
 		return await super.clickWithWait(locator) &&
 			await super.fillWithWait(locator, this.tier.endDate) &&
 			await super.pressKey(key.TAB, 1) &&

@@ -14,6 +14,7 @@ const Utils = require('../utils/Utils.js').Utils;
 const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
 const Page = require('../pages/Page.js').Page;
 const fs = require('fs');
+const TIME_FORMAT = require('../utils/constants.js').TIME_FORMAT;
 
 class User {
     constructor(driver, file) {
@@ -194,8 +195,8 @@ class User {
 
     async changeEndTimeFromManagePage(tier, newDate, newTime) {
         logger.info("changeEndTimeFromManagePage for tier#" + tier + ", new date=" + newDate + ", new time=" + newTime);
-        let formatTimeBrowser = await Utils.getDateFormat(this.driver);
-        if ( formatTimeBrowser === "mdy" ) {
+         let formatTimeBrowser = await Utils.getDateFormat(this.driver);
+        if ( formatTimeBrowser === TIME_FORMAT.MDY ) {
             newDate = Utils.convertDateToMdy(newDate);
             newTime = Utils.convertTimeToMdy(newTime);
         }
@@ -228,7 +229,7 @@ class User {
     async changeStartTime(tier, newDate, newTime) {
         logger.info("change StartTime for tier#" + tier + ", new date=" + newDate + ", new time=" + newTime);
         let formatTimeBrowser = await Utils.getDateFormat(this.driver);
-        if ( formatTimeBrowser == "mdy" ) {
+        if ( formatTimeBrowser ===  TIME_FORMAT.MDY ) {
             newDate = Utils.convertDateToMdy(newDate);
             newTime = Utils.convertTimeToMdy(newTime);
         }
