@@ -33,7 +33,6 @@ class ContributionPage extends Page {
 			if (! await this.waitUntilShowUpTimerStatus(120)) return false;
 			const array = await this.initTimerFields();
 			const result = await super.getTextForElement(array[array.length - 1]);
-			console.log("timer status: " + result);
 			if (result.includes(statusTimer.start)) return statusTimer.start;
 			else if (result.includes(statusTimer.tier1)) return statusTimer.tier1;
 			else if (result.includes(statusTimer.tier2)) return statusTimer.tier2;

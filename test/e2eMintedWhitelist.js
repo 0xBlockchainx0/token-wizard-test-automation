@@ -349,8 +349,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 startTime = await Utils.getMintedCrowdsaleStartTime(e2eWhitelist);
                 logger.info("wait " + Date.now());
                 logger.info("wait " + startTime);
-                //console.log("Date.now() = " + Date.now());
-                //console.log("startTime =  " + startTime);
                 await driver.sleep(1000);
             }
             while ( counter-- > 0 && (Date.now() / 1000 <= startTime) );

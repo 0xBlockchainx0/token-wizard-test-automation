@@ -195,7 +195,7 @@ class User {
 
     async changeEndTimeFromManagePage(tier, newDate, newTime) {
         logger.info("changeEndTimeFromManagePage for tier#" + tier + ", new date=" + newDate + ", new time=" + newTime);
-         let formatTimeBrowser = await Utils.getDateFormat(this.driver);
+        let formatTimeBrowser = await Utils.getDateFormat(this.driver);
         if ( formatTimeBrowser === TIME_FORMAT.MDY ) {
             newDate = Utils.convertDateToMdy(newDate);
             newTime = Utils.convertTimeToMdy(newTime);
@@ -229,7 +229,7 @@ class User {
     async changeStartTime(tier, newDate, newTime) {
         logger.info("change StartTime for tier#" + tier + ", new date=" + newDate + ", new time=" + newTime);
         let formatTimeBrowser = await Utils.getDateFormat(this.driver);
-        if ( formatTimeBrowser ===  TIME_FORMAT.MDY ) {
+        if ( formatTimeBrowser === TIME_FORMAT.MDY ) {
             newDate = Utils.convertDateToMdy(newDate);
             newTime = Utils.convertTimeToMdy(newTime);
         }
@@ -283,17 +283,19 @@ class User {
     async contribute(amount) {
         logger.info("contribute  " + amount);
         const investPage = new InvestPage(this.driver);
-        return !await investPage.waitUntilShowUpWarning(15)
+        let result = !await investPage.waitUntilShowUpWarning(15)
             && await investPage.waitUntilLoaderGone()
             && await investPage.fillContribute(amount)
             && await investPage.clickButtonContribute()
             && !await investPage.waitUntilShowUpErrorNotice(10)//3 sec
             && !await investPage.waitUntilShowUpWarning(10)//3 sec
             && await new MetaMask(this.driver).signTransaction(10)
-            && await investPage.waitUntilLoaderGone()
-            && await investPage.waitUntilShowUpWarning(180)//3 sec
-            && await investPage.clickButtonOK()
-            && await investPage.waitUntilLoaderGone();
+            //&& !await investPage.waitUntilShowUpErrorNotice(10)//3 sec
+        await investPage.waitUntilLoaderGone()
+        && await investPage.waitUntilShowUpButtonOk(180)//3 sec
+        && await investPage.clickButtonOK()
+        && await investPage.waitUntilLoaderGone();
+        return result;
     }
 
     async getBalanceFromInvestPage(crowdsale) {
@@ -310,7 +312,7 @@ class User {
             await this.driver.sleep(7000);
             let result = await investPage.getBalance();
             let arr = result.split(" ");
-            result = arr[ 0 ].trim();
+            result = arr[0].trim();
             logger.info("received " + result);
             return result;
         }
