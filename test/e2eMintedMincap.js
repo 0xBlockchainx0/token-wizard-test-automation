@@ -17,7 +17,7 @@ const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
 const Utils = require('../utils/Utils.js').Utils;
 const User = require("../entity/User.js").User;
 const adjEndTimeTier2 = 540000;
-const adjEndTimeTier3 = 240000;
+const adjEndTimeTier3 = 300000;
 const TIME_FORMAT = require('../utils/constants.js').TIME_FORMAT;
 
 test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersion} `, async function () {
