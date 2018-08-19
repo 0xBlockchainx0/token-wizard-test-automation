@@ -290,9 +290,8 @@ class User {
             && !await investPage.waitUntilShowUpErrorNotice(10)//3 sec
             && !await investPage.waitUntilShowUpWarning(10)//3 sec
             && await new MetaMask(this.driver).signTransaction(10)
-            //&& !await investPage.waitUntilShowUpErrorNotice(10)//3 sec
-        await investPage.waitUntilLoaderGone()
-        && await investPage.waitUntilShowUpButtonOk(180)//3 sec
+            && await investPage.waitUntilLoaderGone();
+        await investPage.waitUntilShowUpButtonOk(180)//3 sec
         && await investPage.clickButtonOK()
         && await investPage.waitUntilLoaderGone();
         return result;
