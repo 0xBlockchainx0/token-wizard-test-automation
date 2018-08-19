@@ -291,7 +291,7 @@ class User {
             && !await investPage.waitUntilShowUpWarning(10)//3 sec
             && await new MetaMask(this.driver).signTransaction(10)
             && await investPage.waitUntilLoaderGone()
-            && await investPage.waitUntilShowUpWarning(10)//3 sec
+            && await investPage.waitUntilShowUpWarning(180)//3 sec
             && await investPage.clickButtonOK()
             && await investPage.waitUntilLoaderGone();
     }
