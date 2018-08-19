@@ -78,7 +78,7 @@ class Page {
 				return element.isDisplayed();
 		}
 		catch (err) {
-			logger.info("false");
+			logger.info("Error:" + err);
 			return false;
 		}
 	}
@@ -206,7 +206,6 @@ class Page {
 			let field = await this.getElement(element, Twaiting);
 			if (field === null) return false;
 			await field.sendKeys(k);
-			console.log(k)
 			return true;
 		}
 		catch (err) {
