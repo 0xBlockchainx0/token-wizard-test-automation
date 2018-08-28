@@ -331,7 +331,10 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 			let investor = Owner;
 			assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
             assert.equal(await investor.openContributionPage(e2eMinCap), true, 'Investor can not open Contribution page');
-            let result = await investPage.isCrowdsaleFinalized();
+            let result = await investPage.refresh()
+                && await investPage.waitUntilLoaderGone()
+                && await investPage.waitUntilShowUpCountdownTimer()
+                && await investPage.isCrowdsaleFinalized();
 			return await assert.equal(result, true, 'Test FAILED. Countdown timer has incorrect status ');
 		});
 
