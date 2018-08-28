@@ -18,8 +18,8 @@ const Utils = require('../utils/Utils.js').Utils;
 const MetaMask = require('../pages/MetaMask.js').MetaMask;
 const User = require("../entity/User.js").User;
 const Crowdsale = require('../entity/Crowdsale.js').Crowdsale;
-const endTimeForTestLater = "480000";
-const endDateForTestLater = "480000";
+const endTimeForTestLater = "540000";
+const endDateForTestLater = "540000";
 const TIME_FORMAT = require('../utils/constants.js').TIME_FORMAT;
 
 test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersion} `, async function () {
