@@ -48,7 +48,9 @@ class ContributionPage extends Page {
 
 	async isCrowdsaleFinalized() {
 		logger.info(this.name + "isCrowdsaleFinalized ");
-		return (await this.getStatusTimer() === statusTimer.finalized);
+		let status = await this.getStatusTimer();
+		console.log(status)
+		return (status === statusTimer.finalized);
 	}
 
 	async isCrowdsaleNotStarted() {

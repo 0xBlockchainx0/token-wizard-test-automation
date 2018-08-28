@@ -696,8 +696,8 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             assert.equal(await investor.openContributionPage(e2eWhitelist), true, 'Investor can not open Contribution page');
             let result = await investPage.refresh()
                 && await investPage.waitUntilLoaderGone()
-                && await investPage.waitUntilShowUpCountdownTimer();
-            await investPage.isCrowdsaleFinalized();
+                && await investPage.waitUntilShowUpCountdownTimer()
+                && await investPage.isCrowdsaleFinalized();
             return await assert.equal(result, true, 'Test FAILED. Countdown timer are not displayed ');
         });
 
