@@ -64,5 +64,11 @@ class WizardStep1 extends Page {
 		return (await this.initCheckboxes() !== null ) &&
 			await super.waitUntilDisplayed(this.checkboxDutchAuction);
 	}
+
+    async waitUntilDisplayedCheckboxWhitelistWithCap() {
+        logger.info(this.name + "waitUntilDisplayedCheckboxWhitelistWithCap: ");
+        return (await this.initCheckboxes() !== null ) &&
+            await super.waitUntilDisplayed(this.checkboxWhitelistWithCap);
+    }
 }
 module.exports.WizardStep1=WizardStep1;
