@@ -420,10 +420,11 @@ class User {
         const reservedTokens = new ReservedTokensPage(this.driver);
         await TierPage.setCountTiers(0);
 
-        let result = await welcomePage.open() &&
-            await welcomePage.clickButtonNewCrowdsale() &&
-            await wizardStep1.waitUntilDisplayedCheckboxDutchAuction() &&
-            await wizardStep1.clickCheckboxDutchAuction();
+        let result = await welcomePage.open()
+            && await wizardStep2.waitUntilLoaderGone()
+            && await welcomePage.clickButtonNewCrowdsale()
+            && await wizardStep1.waitUntilDisplayedCheckboxDutchAuction()
+            && await wizardStep1.clickCheckboxDutchAuction();
         if ( !result ) return false;
         let counter = 200;
         do {
@@ -437,8 +438,10 @@ class User {
         } while ( counter-- >= 0 );
 
         result = result
+            && await wizardStep2.waitUntilLoaderGone()
             && await wizardStep2.fillPage(crowdsale)
             && await wizardStep2.clickButtonContinue()
+            && await wizardStep2.waitUntilLoaderGone()
             && await await wizardStep3.fillPage(crowdsale, isFillBulkWhitelistAddresses, pathCSVWhitelist);
 
         if ( !result ) return false;
