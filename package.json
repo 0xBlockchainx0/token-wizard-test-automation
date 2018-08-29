@@ -4,11 +4,11 @@
   "private": false,
   "scripts": {
     "startGanache": "npm install -g ganache-cli && ganache-cli &",
-    "e2eMinted": "mocha   ./test/e2eMinted.js",
+    "e2eMinted": "npm run e2eMintedUI && npm run e2eMintedWhitelist && npm run e2eMintedMincap",
     "e2eMintedUI": "mocha   ./test/e2eMintedUI.js",
     "e2eMintedWhitelist": "mocha   ./test/e2eMintedWhitelist.js",
     "e2eMintedMincap": "mocha  ./test/e2eMintedMincap.js",
-    "e2eDutch": "mocha   ./test/e2eDutch.js",
+    "e2eDutch": "npm run e2eDutchUI && npm run e2eDutchWhitelist && npm run e2eDutchMincap",
     "e2eDutchUI": "mocha   ./test/e2eDutchUI.js",
     "e2eDutchWhitelist": "mocha   ./test/e2eDutchWhitelist.js",
     "e2eDutchMincap": "mocha   ./test/e2eDutchMincap.js",
