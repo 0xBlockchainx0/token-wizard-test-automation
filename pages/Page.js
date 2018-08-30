@@ -352,7 +352,7 @@ class Page {
 		}
 	}
 
-	async getPageTitleText() {
+	async getTitleText() {
 		logger.info("getPageTitle  ");
 		await this.initTitles();
 		return this.getTextForElement(this.titleElement);

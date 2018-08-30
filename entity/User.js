@@ -74,6 +74,17 @@ class User {
         logger.info("networkID:" + this.networkID);
     }
 
+    async openCrowdsalePage(crowdsale) {
+        logger.info(this.name + "openCrowdsalePage");
+        const startURL = Utils.getStartURL();
+        const page = new CrowdsalePage(this.driver);
+        page.url = startURL + "crowdsale?addr=" + crowdsale.proxyAddress + '&' + crowdsale.url.split('&')[1];
+        logger.info('page.url= ' + page.url)
+        return await page.open(page.url)
+            && await page.waitUntilLoaderGone()
+            && await page.waitUntilShowUpTitle();
+    }
+
     async openContributionPage(crowdsale) {
         logger.info(this.name + "openContributionPage");
         const page = new InvestPage(this.driver);

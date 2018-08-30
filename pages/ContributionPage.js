@@ -214,12 +214,12 @@ class ContributionPage extends Page {
 
 	async waitUntilShowUpErrorNotice(Twaiting) {
 		logger.info(this.name + "waitUntilShowUpErrorNotice ");
-		return super.waitUntilDisplayed(errorNotice, Twaiting);
+		return await super.waitUntilDisplayed(errorNotice, Twaiting);
 	}
 
 	async waitUntilShowUpWarning(Twaiting) {
 		logger.info(this.name + "waitUntilShowUpWarning ");
-		return super.waitUntilDisplayed(buttonOk, Twaiting);
+		return await super.waitUntilDisplayed(buttonOk, Twaiting);
 	}
 }
 

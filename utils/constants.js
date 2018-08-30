@@ -15,9 +15,14 @@ const TIME_FORMAT = {
     UTC: "utc"
 }
 
+const TITLES = {
+    CROWDSALE_PAGE:'CROWDSALE PAGE'
+}
+
 module.exports = {
 	WALLET: WALLET,
     statusTimer:statusTimer,
-    TIME_FORMAT:TIME_FORMAT
+    TIME_FORMAT:TIME_FORMAT,
+    TITLES:TITLES
 }
 global.testVersion='2.10.2'

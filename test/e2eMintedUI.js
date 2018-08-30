@@ -10,6 +10,7 @@ const WizardStep4 = require('../pages/WizardStep4.js').WizardStep4;
 const TierPage = require('../pages/TierPage.js').TierPage;
 const ReservedTokensPage = require('../pages/ReservedTokensPage.js').ReservedTokensPage;
 const CrowdsalePage = require('../pages/CrowdsalePage.js').CrowdsalePage;
+const ContributionPage = require('../pages/ContributionPage.js').InvestPage;
 const InvestPage = require('../pages/ContributionPage.js').InvestPage;
 const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const logger = require('../entity/Logger.js').logger;
@@ -22,18 +23,9 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     this.slow(1800000);
 
     const user8545_56B2File = './users/user8545_56B2.json';//Owner
-    const user8545_F16AFile = './users/user8545_F16A.json';//Investor1 - whitelisted for Tier#1 before deployment
-    const user8545_f5aAFile = './users/user8545_f5aA.json';//Investor2 - added from manage page before start
-    const user8545_ecDFFile = './users/user8545_ecDF.json';//Reserved address, also wh investor that added after start time
-    const user8545_dDdCFile = './users/user8545_dDdC.json';//Investor3 - whitelisted for Tier#2 before deployment
-    const user8545_9E96File = './users/user8545_9E96.json';//Investor4 - for checking if whitelisted in tier#1 can't buy in tier #2
     let driver;
     let Owner;
-    let Investor1;
-    let Investor2;
-    let Investor3;
-    let Investor4;
-    let ReservedAddress;
+
 
     let wallet;
     let welcomePage;
@@ -44,72 +36,34 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     let tierPage;
     let reservedTokensPage;
     let investPage;
+    let contributionPage;
+    let crowdsalePage;
+
     let startURL;
     let crowdsaleForUItests;
-    let e2eMinCap;
-    let e2eWhitelist;
-    let e2eMinCapModifiable;
     let mngPage;
-    let balance;
-    let endTime;
-    let endDate;
-
     let balanceEthOwnerBefore;
-    let balanceEthOwnerAfter;
+    let crowdsaleMintedSimple;
+
 /////////////////////////////////////////////////////////////////////////
 
     test.before(async function () {
         await Utils.copyEnvFromWizard();
-        const scenarioE2eMintedMinCap = './scenarios/scenarioE2eMintedMinCap.json';
-        const scenarioE2eMintedWhitelist = './scenarios/scenarioE2eMintedWhitelist.json';
+
         const scenarioForUItests = './scenarios/scenarioUItests.json';
-        const scenarioE2eMintedMinCapModifiable = './scenarios/scenarioE2eMintedMinCapModifiable.json';
         crowdsaleForUItests = await Utils.getMintedCrowdsaleInstance(scenarioForUItests);
-        e2eMinCap = await Utils.getMintedCrowdsaleInstance(scenarioE2eMintedMinCap);
-        e2eWhitelist = await Utils.getMintedCrowdsaleInstance(scenarioE2eMintedWhitelist);
-        e2eMinCapModifiable = await Utils.getMintedCrowdsaleInstance(scenarioE2eMintedMinCapModifiable);
+        crowdsaleMintedSimple = await Utils.getMintedCrowdsaleInstance('./scenarios/scenarioMintedSimple.json');
+
         startURL = await Utils.getStartURL();
         driver = await Utils.startBrowserWithWallet();
 
         Owner = new User(driver, user8545_56B2File);
-        Owner.minCap = 0;
-        Owner.maxCap = 100;
-        Investor1 = new User(driver, user8545_F16AFile);
-        Investor1.minCap = e2eWhitelist.tiers[0].whitelist[0].min;
-        Investor1.maxCap = e2eWhitelist.tiers[0].whitelist[0].max;
-        Investor2 = new User(driver, user8545_f5aAFile);
-        Investor2.minCap = 0;
-        Investor2.maxCap = e2eWhitelist.tiers[0].supply * 2;
-        ReservedAddress = new User(driver, user8545_ecDFFile);
-        ReservedAddress.minCap = e2eWhitelist.tiers[0].supply / 4;
-        ReservedAddress.maxCap = e2eWhitelist.tiers[0].supply / 2;
-        Investor3 = new User(driver, user8545_dDdCFile);
-        Investor3.minCap = e2eWhitelist.tiers[1].whitelist[0].min;
-        Investor3.maxCap = e2eWhitelist.tiers[1].whitelist[0].max;
-
-        Investor4 = new User(driver, user8545_9E96File);
-        Investor4.minCap = e2eWhitelist.tiers[0].whitelist[1].min;
-        Investor4.maxCap = e2eWhitelist.tiers[0].whitelist[1].max;
-
-        await Utils.receiveEth(Owner, 10);
-        await Utils.receiveEth(Investor1, 10);
-        await Utils.receiveEth(Investor2, 10);
-        await Utils.receiveEth(ReservedAddress, 10);
-        await Utils.receiveEth(Investor3, 10);
-        await Utils.receiveEth(Investor4, 10);
+        await Utils.receiveEth(Owner, 20);
 
         logger.info("Roles:");
         logger.info("Owner = " + Owner.account);
         balanceEthOwnerBefore = await Utils.getBalance(Owner);
         logger.info("Owner's balance = :" + balanceEthOwnerBefore / 1e18);
-        logger.info("Investor1  = " + Investor1.account);
-        logger.info("Investor1 balance = " + await Utils.getBalance(Investor1) / 1e18);
-        logger.info("Investor2  = :" + Investor2.account);
-        logger.info("Investor2 balance = " + await Utils.getBalance(Investor2) / 1e18);
-        logger.info("Reserved address  = " + ReservedAddress.account);
-        logger.info("ReservedAddress balance = " + await Utils.getBalance(ReservedAddress) / 1e18);
-        logger.info("Investor3  = " + Investor3.account);
-        logger.info("Investor3 balance = " + await Utils.getBalance(Investor3) / 1e18);
 
         wallet = await Utils.getWalletInstance(driver);
         await wallet.activate();//return activated Wallet and empty page
@@ -124,7 +78,8 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         reservedTokensPage = new ReservedTokensPage(driver);
         mngPage = new ManagePage(driver);
         tierPage = new TierPage(driver, crowdsaleForUItests.tiers[0]);
-
+        contributionPage = new ContributionPage(driver);
+        crowdsalePage = new CrowdsalePage(driver);
     });
 
     test.after(async function () {
@@ -298,7 +253,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         async function () {
             await wizardStep2.clickButtonContinue();
             await wizardStep3.waitUntilDisplayedTitle(180);
-            let result = await wizardStep3.getPageTitleText();
+            let result = await wizardStep3.getTitleText();
             result = (result === wizardStep3.title);
             return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
         });
@@ -552,4 +507,30 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
         });
 
+    test.it('User is able to create crowdsale(scenarioMintedSimple.json),minCap,1 tier',
+        async function () {
+            let owner = Owner;
+            assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
+            let result = await owner.createMintedCappedCrowdsale(crowdsaleMintedSimple);
+            console.log(crowdsaleMintedSimple.proxyAddress)
+            return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+        });
+    test.it('Contribution page: should be alert if invalid proxyID in address bar',
+        async function () {
+            let wrongUrl = crowdsaleMintedSimple.url.substring(0, 50) + crowdsaleMintedSimple.url.substring(52, crowdsaleMintedSimple.length)
+            let result = await contributionPage.open(wrongUrl)
+                && await contributionPage.waitUntilShowUpButtonOk()
+                && await contributionPage.clickButtonOK()
+            return await assert.equal(result, true, 'Test FAILED. Contribution page: no alert if invalid proxyID in address bar');
+        });
+    test.it('Crowdsale page: should be alert if invalid proxyID in address bar',
+        async function () {
+            let owner = Owner;
+            let wrongCrowdsale = crowdsaleMintedSimple;
+            wrongCrowdsale.proxyAddress = crowdsaleMintedSimple.proxyAddress.substring(0, crowdsaleMintedSimple.proxyAddress.length - 5)
+            let result = await owner.openCrowdsalePage(wrongCrowdsale)
+                && await contributionPage.waitUntilShowUpButtonOk()
+                && await contributionPage.clickButtonOK()
+            return await assert.equal(result, true, 'Test FAILED. Crowdsale page: no alert if invalid proxyID in address bar');
+        });
 });

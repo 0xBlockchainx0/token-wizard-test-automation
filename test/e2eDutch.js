@@ -219,7 +219,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 		async function () {
 			await wizardStep2.clickButtonContinue();
 			await wizardStep3.waitUntilDisplayedTitle(180);
-			let result = await wizardStep3.getPageTitleText();
+			let result = await wizardStep3.getTitleText();
 			result = (result === wizardStep3.title);
 			return await assert.equal(result, true, "Test FAILED. User is not able to open Step3 by clicking button Continue");
 		});

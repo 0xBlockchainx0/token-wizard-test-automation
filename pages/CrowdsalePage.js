@@ -1,8 +1,10 @@
 const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
+const TITLES = require('../utils/constants.js').TITLES;
 const By = require('selenium-webdriver/lib/by').By;
 const buttonInvest = By.className("button button_fill");
 const fieldExecID = By.className("hash");
+const title = By.className('title')
 
 class CrowdsalePage extends Page {
 
@@ -12,9 +14,15 @@ class CrowdsalePage extends Page {
 		this.name = "Crowdsale page :";
 	}
 
+    async waitUntilShowUpTitle(Twaiting) {
+        logger.info(this.name + "waitUntilShowUpTitle ");
+        return await super.waitUntilDisplayed(title, Twaiting)
+			&& await super.getTitleText() === TITLES.CROWDSALE_PAGE;
+    }
+
 	async isDisplayedButtonInvest() {
 		logger.info(this.name + " isDisplayedButtonInvest ");
-		return super.isElementDisplayed(buttonInvest);
+		return await super.isElementDisplayed(buttonInvest);
 	}
 
 	async clickButtonInvest() {

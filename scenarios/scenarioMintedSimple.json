@@ -1,0 +1,25 @@
+{
+  "name": "scenarioMintedSimple.json",
+  "ticker": "test",
+  "decimals": 18,
+  "reservedTokens":[],
+  "walletAddress":"0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b",
+  "gasprice":1,
+
+  "tiers":[
+    {
+      "name":"###1",
+      "allowModify": false,
+      "isWhitelisted":false,
+      "startDate": "",
+      "startTime": "",
+      "endDate":"",
+      "endTime":"",
+      "minCap":16,
+      "rate":1000,
+      "supply": 200,
+      "whitelist":[]
+    }
+  ]
+}
+
