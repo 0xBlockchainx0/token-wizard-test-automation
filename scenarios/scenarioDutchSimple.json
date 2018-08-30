@@ -1,0 +1,23 @@
+{
+  "name": "DutchSimple",
+  "ticker": "test",
+  "decimals": 18,
+  "totalSupply": 1000000,
+  "walletAddress": "0xdDdC96314b7f16cB243Cb07e1dE081CA367095E7",
+  "gasprice": 1,
+  "burnExcess": false,
+  "tiers": [
+    {
+      "isWhitelisted": false,
+      "startDate": "",
+      "startTime": "",
+      "endDate": "",
+      "endTime": "",
+      "minCap": 100,
+      "minRate": 1000000,
+      "maxRate": 1000001,
+      "supply": 1000000,
+      "whitelist": []
+    }
+  ]
+}

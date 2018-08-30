@@ -512,7 +512,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             let owner = Owner;
             assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
             let result = await owner.createMintedCappedCrowdsale(crowdsaleMintedSimple);
-            console.log(crowdsaleMintedSimple.proxyAddress)
             return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
         });
     test.it('Contribution page: should be alert if invalid proxyID in address bar',

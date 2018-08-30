@@ -10,7 +10,7 @@ const WizardStep4 = require('../pages/WizardStep4.js').WizardStep4;
 const TierPage = require('../pages/TierPage.js').TierPage;
 const ReservedTokensPage = require('../pages/ReservedTokensPage.js').ReservedTokensPage;
 const CrowdsalePage = require('../pages/CrowdsalePage.js').CrowdsalePage;
-const InvestPage = require('../pages/ContributionPage.js').InvestPage;
+const ContributionPage = require('../pages/ContributionPage.js').InvestPage;
 const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
@@ -25,16 +25,13 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
     this.slow(1800000);
 
     const user8545_dDdCFile = './users/user8545_dDdC.json';//Owner
-    const user8545_Db0EFile = './users/user8545_Db0E.json';//Investor1 - whitelisted before deployment
-    const user8545_F16AFile = './users/user8545_F16A.json';//Investor2 - whitelisted before deployment
-    const scenarioE2eMinCap = './scenarios/scenarioE2eDutchMincapLong.json';
-    const scenarioE2eWhitelist = './scenarios/scenarioE2eDutchWhitelistShort.json';
     const scenarioForUItests = './scenarios/scenarioUItests.json';
-    const scenarioE2eDutchCheckBurn = './scenarios/scenarioE2eDutchCheckBurn.json';
+    const scenarioDutchSimple = './scenarios/scenarioDutchSimple.json'
+    const user8545_F16AFile = './users/user8545_F16A.json';
+
     let driver;
     let Owner;
     let Investor1;
-    let Investor2;
 
     let wallet;
     let welcomePage;
@@ -45,49 +42,33 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
     let tierPage;
     let mngPage;
     let reservedTokensPage;
-    let investPage;
+    let contributionPage;
     let startURL;
     let crowdsaleForUItests;
-    let e2eMinCap;
-    let e2eWhitelist;
-    let e2eCheckBurn;
-    let balanceEthOwnerBefore;
-    let balanceEthOwnerAfter;
+    let crowdsaleDutchSimple;
+
 
 /////////////////////////////////////////////////////////////////////////
 
     test.before(async function () {
 
         await Utils.copyEnvFromWizard();
-        e2eMinCap = await Utils.getDutchCrowdsaleInstance(scenarioE2eMinCap);
 
-        e2eWhitelist = await Utils.getDutchCrowdsaleInstance(scenarioE2eWhitelist);
         crowdsaleForUItests = await Utils.getDutchCrowdsaleInstance(scenarioForUItests);
         crowdsaleForUItests.totalSupply = 1e10
-        e2eCheckBurn = await Utils.getDutchCrowdsaleInstance(scenarioE2eDutchCheckBurn);
+        crowdsaleDutchSimple = await Utils.getDutchCrowdsaleInstance(scenarioDutchSimple);
 
         startURL = await Utils.getStartURL();
         driver = await Utils.startBrowserWithWallet();
 
         Owner = new User(driver, user8545_dDdCFile);
         Owner.tokenBalance = 0;
-        Investor1 = new User(driver, user8545_Db0EFile);
-        Investor1.tokenBalance = 0;
-        Investor2 = new User(driver, user8545_F16AFile);
-        Investor2.minCap = e2eWhitelist.tiers[0].whitelist[0].min;
-        Investor2.maxCap = e2eWhitelist.tiers[0].whitelist[0].max;
-        Investor2.tokenBalance = 0;
-
+        Investor1 = new User(driver, user8545_F16AFile);
         await Utils.receiveEth(Owner, 20);
         await Utils.receiveEth(Investor1, 20);
-        await Utils.receiveEth(Investor2, 20);
         logger.info("Roles:");
         logger.info("Owner = " + Owner.account);
         logger.info("Owner's balance = :" + await Utils.getBalance(Owner) / 1e18);
-        logger.info("Investor1  = " + Investor1.account);
-        logger.info("Investor1 balance = :" + await Utils.getBalance(Investor1) / 1e18);
-        logger.info("Investor2  = " + Investor2.account);
-        logger.info("Investor2 balance = :" + await Utils.getBalance(Investor2) / 1e18);
 
         wallet = await Utils.getWalletInstance(driver);
         await wallet.activate();//return activated Wallet and empty page
@@ -98,7 +79,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
         wizardStep2 = new WizardStep2(driver);
         wizardStep3 = new WizardStep3(driver);
         wizardStep4 = new WizardStep4(driver);
-        investPage = new InvestPage(driver);
+        contributionPage = new ContributionPage(driver);
         reservedTokensPage = new ReservedTokensPage(driver);
         mngPage = new ManagePage(driver);
         tierPage = new TierPage(driver, crowdsaleForUItests.tiers[0]);
@@ -475,6 +456,32 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 && await wizardStep4.clickButtonYes();
 
             return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
+        });
+    test.it('User is able to create crowdsale(scenarioDutchSimple.json),minCap,1 tier',
+        async function () {
+            let owner = Owner;
+            assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
+            let result = await owner.createDutchAuctionCrowdsale(crowdsaleDutchSimple);
+            return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+        });
+    test.it('Contribution page: should be alert if invalid proxyID in address bar',
+        async function () {
+            let wrongUrl = crowdsaleDutchSimple.url.substring(0, 50) + crowdsaleDutchSimple.url.substring(52, crowdsaleDutchSimple.length)
+            let result = await contributionPage.open(wrongUrl)
+                && await contributionPage.waitUntilShowUpButtonOk()
+                && await contributionPage.clickButtonOK()
+            return await assert.equal(result, true, 'Test FAILED. Contribution page: no alert if invalid proxyID in address bar');
+        });
+
+    test.it('Crowdsale page: should be alert if invalid proxyID in address bar',
+        async function () {
+            let owner = Owner;
+            let wrongCrowdsale = crowdsaleDutchSimple;
+            wrongCrowdsale.proxyAddress = crowdsaleDutchSimple.proxyAddress.substring(0, crowdsaleDutchSimple.proxyAddress.length - 5)
+            let result = await owner.openCrowdsalePage(wrongCrowdsale)
+                && await contributionPage.waitUntilShowUpButtonOk()
+                && await contributionPage.clickButtonOK()
+            return await assert.equal(result, true, 'Test FAILED. Crowdsale page: no alert if invalid proxyID in address bar');
         });
 
 });
