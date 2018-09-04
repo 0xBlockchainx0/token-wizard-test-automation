@@ -23,9 +23,10 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     this.slow(1800000);
 
     const user8545_56B2File = './users/user8545_56B2.json';//Owner
+    const user77_F16AFile = './users/user77_F16A.json';//Investor1
     let driver;
     let Owner;
-
+    let Investor1;
 
     let wallet;
     let welcomePage;
@@ -45,9 +46,14 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     let balanceEthOwnerBefore;
     let crowdsaleMintedSimple;
 
+    const nameText = 'Name'
+    const tickerText = 'Tick'
+    const decimalsText = '13'
+
 /////////////////////////////////////////////////////////////////////////
 
     test.before(async function () {
+
         await Utils.copyEnvFromWizard();
 
         const scenarioForUItests = './scenarios/scenarioUItests.json';
@@ -59,6 +65,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
         Owner = new User(driver, user8545_56B2File);
         await Utils.receiveEth(Owner, 20);
+        Investor1 = new User(driver, user77_F16AFile);
 
         logger.info("Roles:");
         logger.info("Owner = " + Owner.account);
@@ -66,8 +73,8 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         logger.info("Owner's balance = :" + balanceEthOwnerBefore / 1e18);
 
         wallet = await Utils.getWalletInstance(driver);
-        await wallet.activate();//return activated Wallet and empty page
-        await Owner.setWalletAccount();
+        //await wallet.activate();//return activated Wallet and empty page
+        // await Owner.setWalletAccount();
 
         welcomePage = new WizardWelcome(driver, startURL);
         wizardStep1 = new WizardStep1(driver);
@@ -90,29 +97,47 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         await fs.ensureDirSync(outputPath);
         await fs.copySync(tempOutputPath, outputPath);
         //await fs.remove(tempOutputPath);
-        await driver.quit();
+        // await driver.quit();
     });
 ///////////////////////// UI TESTS /////////////////////////////////////
 
-    test.it('User is able to open wizard welcome page',
+    test.it('Welcome page: User is able to open wizard welcome page',
         async function () {
             await welcomePage.open();
             let result = await welcomePage.waitUntilDisplayedButtonNewCrowdsale(180);
             return await assert.equal(result, true, "Test FAILED. Wizard's page is not available ");
         });
 
+    test.it('Welcome page: Warning present if user logged out from wallet',
+        async function () {
+            let result = await welcomePage.waitUntilShowUpWarning(180)
+            return await assert.equal(result, true, "Test FAILED. No warning present if user logged out from wallet ");
+        });
+
+    test.it('Welcome page: user can confirm warning',
+        async function () {
+            let result = await welcomePage.clickButtonOK()
+            return await assert.equal(result, true, "Test FAILED. Button Ok doesn\'t present");
+        });
+
+    test.it('Welcome page: No warning present if user logged into wallet',
+        async function () {
+            await wallet.activate();//return activated Wallet and empty page
+            await Owner.setWalletAccount();
+            let result = await welcomePage.waitUntilShowUpWarning(10)
+            return await assert.equal(result, false, "Test FAILED. No warning present if user logged out from wallet ");
+        });
+
     test.it('Welcome page: button NewCrowdsale present ',
         async function () {
             let result = await welcomePage.isDisplayedButtonNewCrowdsale();
             return await assert.equal(result, true, "Test FAILED. Button NewCrowdsale not present ");
-
         });
 
     test.it('Welcome page: button ChooseContract present ',
         async function () {
             let result = await welcomePage.isDisplayedButtonChooseContract();
             return await assert.equal(result, true, "Test FAILED. button ChooseContract not present ");
-
         });
 
     test.it('Welcome page: user is able to open Step1 by clicking button NewCrowdsale ',
@@ -120,7 +145,38 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             let result = await welcomePage.clickButtonNewCrowdsale()
                 && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap();
             return await assert.equal(result, true, "Test FAILED. User is not able to activate Step1 by clicking button NewCrowdsale");
+        });
 
+    test.it('Step#1: Go back - page keep state of checkbox \'Whitelist with mincap\' ',
+        async function () {
+            const result = await wizardStep1.clickCheckboxWhitelistWithCap()
+                && await wizardStep1.goBack()
+                && await welcomePage.isDisplayedButtonChooseContract()
+                && await wizardStep1.goForward()
+                && await wizardStep1.waitUntilLoaderGone()
+                && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap()
+                && await wizardStep1.isSelectedCheckboxWhitelistWithCap()
+            return await assert.equal(result, true, "Test FAILED. Checkbox changed");
+        });
+
+    test.it('Step#1: Refresh - page keep state of checkbox \'Whitelist with mincap\' ',
+        async function () {
+            const result = await wizardStep1.clickCheckboxWhitelistWithCap()
+                && await wizardStep1.refresh()
+                && await wizardStep1.isSelectedCheckboxWhitelistWithCap()
+            return await assert.equal(result, true, "Test FAILED. Checkbox changed");
+        });
+
+    test.it('Step#1: Change network - page keep state of checkbox \'Whitelist with mincap\' ',
+        async function () {
+            const result = await wizardStep1.clickCheckboxWhitelistWithCap()
+                && await Investor1.setWalletAccount()
+                && await wizardStep1.waitUntilLoaderGone()
+                && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap()
+                && await wizardStep1.isSelectedCheckboxWhitelistWithCap()
+                && await Owner.setWalletAccount()
+                && await wizardStep1.waitUntilLoaderGone()
+            return await assert.equal(result, true, "Test FAILED. Checkbox changed");
         });
 
     test.it('Wizard step#1: user is able to open Step2 by clicking button Continue ',
@@ -137,32 +193,70 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             while ( count-- > 0 );
             let result = await wizardStep2.isDisplayedFieldName();
             return await assert.equal(result, true, "Test FAILED. User is not able to open Step2 by clicking button Continue");
-
         });
 
-    test.it('Wizard step#2: user able to fill out Name field with valid data',
+    test.it('Step#2: field \'Decimals\' has placeholder 18',
         async function () {
-            await wizardStep2.fillName("name");
-            let result = await wizardStep2.isDisplayedWarningName();
-            return await assert.equal(result, false, "Test FAILED. Wizard step#2: user able to fill Name field with valid data ");
+            return await assert.equal(await wizardStep2.getValueFieldDecimals(), '18', "Test FAILED. Step#2:incorrect placeholder for field 'Decimals'");
+        });
 
+    test.it('Wizard step#2: user able to fill out field \'Name\' with valid data',
+        async function () {
+            let result = await wizardStep2.fillName(nameText)
+                && await wizardStep2.isDisplayedWarningName();
+            return await assert.equal(result, false, "Test FAILED. Wizard step#2: field name changed");
+        });
+
+    test.it('Step#2: Go back - page keep state of field \'Name\' ',
+        async function () {
+            const result = await wizardStep2.goBack()
+                && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap()
+                && await wizardStep1.goForward()
+                && await wizardStep2.waitUntilLoaderGone()
+                && await wizardStep2.waitUntilDisplayedFieldName()
+                && await wizardStep2.waitUntilHasValueFieldName();
+            await assert.equal(result, true, "Test FAILED. Wizard step#2: field name changed");
+            return await assert.equal(await wizardStep2.getValueFieldName(), nameText, "Test FAILED.Field name changed");
+        });
+
+    test.it('Step#2: Refresh - page keep state of  field \'Name\'',
+        async function () {
+            const result = await wizardStep2.refresh()
+                && await wizardStep2.waitUntilLoaderGone()
+                && await wizardStep2.waitUntilDisplayedFieldName()
+                && await wizardStep2.waitUntilHasValueFieldName();
+            await assert.equal(result, true, "Test FAILED. Wizard step#2: field name changed");
+            return await assert.equal(await wizardStep2.getValueFieldName(), nameText, "Test FAILED.Wizard step#2: field name changed");
+        });
+
+    test.it('Step#2: Change network - page keep state of  field \'Name\'',
+        async function () {
+            const result = await Investor1.setWalletAccount()
+                && await wizardStep2.waitUntilLoaderGone()
+                && await wizardStep2.waitUntilHasValueFieldName()
+                && (await wizardStep2.getValueFieldName() === nameText)
+                && await Owner.setWalletAccount()
+                && await wizardStep2.waitUntilLoaderGone()
+                && await wizardStep2.waitUntilHasValueFieldName()
+                && (await wizardStep2.getValueFieldName() === nameText)
+            return await assert.equal(result, true, "Test FAILED. Wizard step#2: field name changed");
         });
 
     test.it('Wizard step#2: user able to fill out field Ticker with valid data',
         async function () {
-            await wizardStep2.fillTicker("test");
+            await wizardStep2.fillTicker(tickerText);
             let result = await wizardStep2.isDisplayedWarningTicker();
             return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not  able to fill out field Ticker with valid data ");
-
         });
 
     test.it('Wizard step#2: user able to fill out  Decimals field with valid data',
         async function () {
-            await wizardStep2.fillDecimals("18");
+            await wizardStep2.fillDecimals(decimalsText);
             let result = await wizardStep2.isDisplayedWarningDecimals();
             return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not able to fill Decimals  field with valid data ");
-
         });
+
+
     test.it('Wizard step#2: User is able to download CSV file with reserved tokens',
         async function () {
             let fileName = './public/reservedAddresses21.csv';
@@ -235,11 +329,59 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
     test.it('Wizard step#2: user is able to remove one of reserved tokens ',
         async function () {
-
             let amountBefore = await reservedTokensPage.amountAddedReservedTokens();
             await reservedTokensPage.removeReservedTokens(1);
             let amountAfter = await reservedTokensPage.amountAddedReservedTokens();
             return await assert.equal(amountBefore, amountAfter + 1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+        });
+
+    test.it('Step#2: Go back - page keep state of each field',
+        async function () {
+            const result = await wizardStep2.goBack()
+                && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap()
+                && await wizardStep1.goForward()
+                && await wizardStep2.waitUntilLoaderGone()
+                && await wizardStep2.waitUntilHasValueFieldName();
+            await assert.equal(result, true, "Test FAILED. Wizard step#2: page isn\'t loaded");
+            await assert.equal(await wizardStep2.getValueFieldName(), nameText, "Test FAILED.Field name changed");
+            await assert.equal(await wizardStep2.getValueFieldDecimals(), decimalsText, "Test FAILED.Field decimals changed");
+            await assert.equal(await wizardStep2.getValueFieldTicker(), tickerText, "Test FAILED.Field ticker changed");
+            await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length-1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+        });
+
+    test.it('Step#2: Refresh - page keep state of each field',
+        async function () {
+            const result = await wizardStep2.refresh()
+                && await wizardStep2.waitUntilLoaderGone()
+                && await wizardStep2.waitUntilDisplayedFieldName()
+                && await wizardStep2.waitUntilHasValueFieldName();
+            await assert.equal(result, true, "Test FAILED. Wizard step#2: page isn\'t loaded");
+            await assert.equal(await wizardStep2.getValueFieldName(), nameText, "Test FAILED.Field name changed");
+            await assert.equal(await wizardStep2.getValueFieldDecimals(), decimalsText, "Test FAILED.Field decimals changed");
+            await assert.equal(await wizardStep2.getValueFieldTicker(), tickerText, "Test FAILED.Field ticker changed");
+            await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length-1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+        });
+
+    test.it('Step#2: Change network - page keep state of each field',
+        async function () {
+            let result = await Investor1.setWalletAccount()
+                && await wizardStep2.waitUntilLoaderGone()
+                && await wizardStep2.waitUntilHasValueFieldName()
+            await assert.equal(result, true, "Test FAILED. Wizard step#2: page isn\'t loaded");
+            await assert.equal(await wizardStep2.getValueFieldName(), nameText, "Test FAILED.Field name changed");
+            await assert.equal(await wizardStep2.getValueFieldDecimals(), decimalsText, "Test FAILED.Field decimals changed");
+            await assert.equal(await wizardStep2.getValueFieldTicker(), tickerText, "Test FAILED.Field ticker changed");
+            await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length-1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+
+            result = await Owner.setWalletAccount()
+                && await wizardStep2.waitUntilLoaderGone()
+                && await wizardStep2.waitUntilHasValueFieldName()
+            await assert.equal(result, true, "Test FAILED. Wizard step#2: page isn\'t loaded");
+            await assert.equal(await wizardStep2.getValueFieldName(), nameText, "Test FAILED.Field name changed");
+            await assert.equal(await wizardStep2.getValueFieldDecimals(), decimalsText, "Test FAILED.Field decimals changed");
+            await assert.equal(await wizardStep2.getValueFieldTicker(), tickerText, "Test FAILED.Field ticker changed");
+            await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length-1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+
         });
 
     test.it('Wizard step#2: button Continue is displayed ',

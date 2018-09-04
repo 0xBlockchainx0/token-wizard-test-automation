@@ -158,11 +158,11 @@ class ContributionPage extends Page {
         return (await super.waitUntilDisplayed(countdownTimerStatus,Twaiting));
     }
 
-	async clickButtonOK() {
+/*	async clickButtonOK() {
 		logger.info(this.name + "clickButtonOK ");
 		return await super.clickWithWait(buttonOk);
 	}
-
+*/
 	async fillContribute(amount) {
 		logger.info(this.name + "fillContribute");
 		return await super.fillWithWait(fieldContribute, amount);
@@ -217,10 +217,11 @@ class ContributionPage extends Page {
 		return await super.waitUntilDisplayed(errorNotice, Twaiting);
 	}
 
-	async waitUntilShowUpWarning(Twaiting) {
+/*	async waitUntilShowUpWarning(Twaiting) {
 		logger.info(this.name + "waitUntilShowUpWarning ");
 		return await super.waitUntilDisplayed(buttonOk, Twaiting);
 	}
+	*/
 }
 
 module.exports.InvestPage = ContributionPage;

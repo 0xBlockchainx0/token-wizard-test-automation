@@ -118,10 +118,18 @@ class WizardStep2 extends Page {
 			(await this.getTextForElement(this.warningSupply) !== "");
 	}
 
-	async getFieldDecimals() {
-		logger.info(this.name + "getFieldDecimals ");
-		return super.getAttribute(fieldDecimals, "value");
+	async getValueFieldDecimals() {
+		logger.info(this.name + "getValueFieldDecimals ");
+		return await super.getAttribute(fieldDecimals, "value");
 	}
+    async getValueFieldTicker() {
+        logger.info(this.name + "getValueFieldTicker ");
+        return await super.getAttribute(fieldTicker, "value");
+    }
+    async getValueFieldName() {
+        logger.info(this.name + "getValueFieldName ");
+        return await super.getAttribute(fieldName, "value");
+    }
 
 	async isDisabledDecimals() {
 		logger.info(this.name + "isDisabledDecimals ");
@@ -140,6 +148,16 @@ class WizardStep2 extends Page {
 		logger.info(this.name + "isDisplayedFieldSupply ");
 		return await super.isElementDisplayed(fieldSupply);
 	}
+
+    async waitUntilDisplayedFieldName(Twaiting) {
+        logger.info(this.name + "waitUntilDisplayedFieldName: ");
+        return await super.waitUntilDisplayed(fieldName,Twaiting);
+    }
+
+    async waitUntilHasValueFieldName(Twaiting) {
+        logger.info(this.name + "waitUntilHasValueFieldName: ");
+        return await super.waitUntilHasValue(fieldName,Twaiting);
+    }
 
 }
 

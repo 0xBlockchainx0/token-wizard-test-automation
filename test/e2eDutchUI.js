@@ -132,6 +132,13 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
             return await assert.equal(result, true, "Test FAILED. User is not able to to click DutchAuction checkbox");
         });
 
+    test.it('Wizard step#1: user is able to click DutchAuction checkbox ',
+        async function () {
+            let result = await wizardStep1.waitUntilDisplayedCheckboxDutchAuction()
+                && await wizardStep1.clickCheckboxDutchAuction();
+            return await assert.equal(result, true, "Test FAILED. User is not able to to click DutchAuction checkbox");
+        });
+
     test.it('Wizard step#1: user is able to open Step2 by clicking button Continue ',
         async function () {
             let count = 10;
