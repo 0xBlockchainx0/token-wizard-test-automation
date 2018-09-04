@@ -23,6 +23,16 @@ const Nifty = require('../pages/Nifty.js').Nifty;
 
 class Utils {
 
+    static async delay(ms) {
+        try {
+            await new Promise(resolve => setTimeout(resolve, ms))
+            return true
+        }
+        catch ( err ) {
+            logger.info(err);
+            return false;
+        }
+    }
     static async getWalletInstance(driver) {
         logger.info("Utils: getWallet");
         try {
