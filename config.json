@@ -1,5 +1,5 @@
 {
-  "startURL" : "localhost:3000/",
+  "startURL" : "localhost:3000/?uiversion=2",
   "outputPath":"./results",
   "wallet":"NIFTY"
 

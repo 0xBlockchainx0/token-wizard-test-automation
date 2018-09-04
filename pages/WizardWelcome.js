@@ -2,8 +2,8 @@ const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 
-const buttonNewCrowdsale = By.className("button button_fill");
-const buttonChooseContract = By.className("button button_outline");
+const buttonNewCrowdsale = By.className("hm-Home_BtnNew");
+const buttonChooseContract = By.className("hm-Home_BtnChoose");
 
 class WizardWelcome extends Page {
 
