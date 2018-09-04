@@ -28,6 +28,14 @@ class Page {
 		}
 	}
 
+    async waitUntilDisappear(element, wait) {
+        logger.info("waitUntilDisappear");
+        if (wait === undefined) wait = 150;
+        if (!await this.isLocatedLoader()) return true;
+        else
+            return await this.waitUntilLocated(loaderNotDisplayed,180);
+    }
+
 	async waitUntilDisplayed(element, Twaiting) {
 		logger.info("wait until displayed");
 		let counter = Twaiting;
@@ -227,8 +235,6 @@ class Page {
 		}
 	}
 
-
-
 	async clearField(element) {
 		try {
 			logger.info("clear field :");
@@ -277,10 +283,6 @@ class Page {
 			return false;
 		}
 	}
-
-
-
-
 
 	async switchToNextPage() {
 		logger.info("switch to next tab :");
@@ -381,7 +383,6 @@ class Page {
 	}
 
 	async acceptAlert() {
-
 		logger.info("acceptAlert:")
 		try {
 			this.driver.switchTo().alert().accept();

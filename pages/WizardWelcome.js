@@ -1,9 +1,12 @@
 const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
-
 const buttonNewCrowdsale = By.className("hm-Home_BtnNew");
 const buttonChooseContract = By.className("hm-Home_BtnChoose");
+const crowdsaleList = By.className('sw-ModalWindow');
+const crowdsaleListEmpty = By.className('sw-EmptyContentTextOnly');
+const crowdsaleListAddressOwner = By.className('text-bold');
+const crowdsaleListCloseButton = By.className('sw-ModalWindow_CloseButton');
 
 class WizardWelcome extends Page {
 
@@ -50,8 +53,27 @@ class WizardWelcome extends Page {
 
 		}
 		else return true;
-
 	}
+
+	async getCrowdsaleList() {
+        logger.info(this.name + " getCrowdsaleList ");
+        return await super.getElement(crowdsaleList)
+    }
+
+    async getCrowdsaleListEmpty() {
+        logger.info(this.name + " getCrowdsaleListEmpty ");
+        return await super.getElement(crowdsaleListEmpty)
+    }
+
+    async getCrowdsaleListAddressOwner() {
+        logger.info(this.name + " getCrowdsaleListAddressOwner ");
+        return await super.getElement(crowdsaleListAddressOwner)
+    }
+
+    async getCrowdsaleListCloseButton() {
+        logger.info(this.name + " getCrowdsaleListCloseButton ");
+        return await super.getElement(crowdsaleListCloseButton)
+    }
 }
 
 module.exports.WizardWelcome = WizardWelcome;
