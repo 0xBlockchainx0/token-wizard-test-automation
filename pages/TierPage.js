@@ -221,7 +221,7 @@ class TierPage extends Page {
                 this.checkboxWhitelistingYes = array[0];
                 this.checkboxWhitelistingNo = array[1];
             }
-            return true;
+            return array;
         }
         catch ( err ) {
             logger.info("Error: " + err);
@@ -490,6 +490,75 @@ class TierPage extends Page {
         logger.info(this.name + "isDisabledFieldSupply ");
         let element = await this.getFieldSupply()
         return await this.isElementDisabled(element);
+    }
+
+    async getCheckboxAllowModifyOn() {
+        logger.info(this.name + "getCheckboxAllowModifyOn ");
+        const locator = By.id("tiers[" + this.number + "].allow_modifying_on");
+        return await super.getElement(locator);
+    }
+
+    async getCheckboxAllowModifyOff() {
+        logger.info(this.name + "getCheckboxAllowModifyOff ");
+        const locator = By.id("tiers[" + this.number + "].allow_modifying_off");
+        return await super.getElement(locator);
+    }
+
+    async getCheckboxWhitelistYes() {
+        logger.info(this.name + "getCheckboxWhitelistYes ");
+        const locator = By.id("tiers[" + this.number + "].enable_whitelisting_yes");
+        return await super.getElement(locator);
+    }
+
+    async getCheckboxWhitelistNo() {
+        logger.info(this.name + "getCheckboxWhitelistNo ");
+        const locator = By.id("tiers[" + this.number + "].enable_whitelisting_no");
+        return await super.getElement(locator);
+    }
+
+    async clickCheckboxAllowModifyOn() {
+        logger.info(this.name + "clickCheckboxAllowModifyOn ");
+        return (await this.initCheckboxes() !== null)
+            && await super.clickWithWait(this.checkboxModifyOn);
+    }
+
+    async isSelectedCheckboxAllowModifyOn() {
+        logger.info(this.name + "isSelectedCheckboxAllowModifyOn ");
+        return await super.isElementSelected(await this.getCheckboxAllowModifyOn())
+    }
+
+    async clickCheckboxAllowModifyOff() {
+        logger.info(this.name + "clickCheckboxAllowModifyOff ");
+        return (await this.initCheckboxes() !== null)
+            && await super.clickWithWait(this.checkboxModifyOff);
+    }
+
+    async isSelectedCheckboxAllowModifyOff() {
+        logger.info(this.name + "isSelectedCheckboxAllowModifyOff ");
+        return await super.isElementSelected(await this.getCheckboxAllowModifyOff())
+    }
+
+    async clickCheckboxWhitelistNo() {
+        logger.info(this.name + "clickCheckboxWhitelistNo ");
+        return (await this.initCheckboxes() !== null)
+            && await super.clickWithWait(this.checkboxWhitelistingNo);
+    }
+
+
+    async isSelectedCheckboxWhitelistNo() {
+        logger.info(this.name + "isSelectedCheckboxWhitelistNo ");
+        return await super.isElementSelected(await this.getCheckboxWhitelistNo())
+    }
+
+    async clickCheckboxWhitelistYes() {
+        logger.info(this.name + "clickCheckboxWhitelistYes ");
+        return (await this.initCheckboxes() !== null)
+            && await super.clickWithWait(this.checkboxWhitelistingYes);
+    }
+
+    async isSelectedCheckboxWhitelistYes() {
+        logger.info(this.name + "isSelectedCheckboxWhitelistYes ");
+        return await super.isElementSelected(await this.getCheckboxWhitelistYes())
     }
 }
 

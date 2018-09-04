@@ -400,6 +400,30 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
         });
     //////////////// STEP 3 /////////////////////
+    test.it('FUCK! ',
+        async function () {
+            await tierPage.clickCheckboxAllowModifyOn()
+            await Utils.delay(5000)
+            console.log(await tierPage.isSelectedCheckboxAllowModifyOn())
+            await Utils.delay(5000)
+            await tierPage.clickCheckboxWhitelistYes()
+            await Utils.delay(5000)
+            console.log(await tierPage.isSelectedCheckboxWhitelistYes())
+            await Utils.delay(5000)
+
+            await tierPage.clickCheckboxAllowModifyOff()
+            await Utils.delay(5000)
+            console.log(await tierPage.isSelectedCheckboxAllowModifyOff())
+            await Utils.delay(5000)
+            await tierPage.clickCheckboxWhitelistNo()
+            await Utils.delay(5000)
+            console.log(await tierPage.isSelectedCheckboxWhitelistNo())
+            await Utils.delay(5000)
+           // await tierPage.setModify()
+            await Utils.delay(500000000)
+            return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Safe'  by default ");
+        });
+
 
     test.it('Wizard step#3: field Wallet address contains current metamask account address  ',
         async function () {
@@ -410,22 +434,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 ///Step3 check default values
     test.it('Wizard step#3: checkbox gasprice \'Safe\'  by default ',
         async function () {
-            console.log(await wizardStep3.isSelectedCheckboxGasSafe())
-            await wizardStep3.clickCheckboxGasNormal()
-            await Utils.delay(5000)
-            console.log(await wizardStep3.isSelectedCheckboxGasNormal())
-            await wizardStep3.clickCheckboxGasFast()
-            await Utils.delay(5000)
-            console.log(await wizardStep3.isSelectedCheckboxGasFast())
-            await wizardStep3.clickCheckboxGasCustom()
-            await Utils.delay(5000)
-            console.log(await wizardStep3.isSelectedCheckboxGasCustom())
-           await wizardStep3.fillGasPriceCustom(123)
-
-
-            await Utils.delay(500000000)
-            let el = await wizardStep3.getCheckboxGasPriceSafe();
-            let result = await wizardStep3.isElementSelected(el);
+            const result = await wizardStep3.isSelectedCheckboxGasSafe()
             return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Safe'  by default ");
         });
 

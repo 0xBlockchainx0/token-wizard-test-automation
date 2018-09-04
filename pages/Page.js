@@ -200,7 +200,6 @@ class Page {
         logger.info("click with wait: " + element);
         try {
             let field = await this.getElement(element, Twaiting);
-
             await field.click();
             return true;
         }
