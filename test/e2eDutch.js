@@ -293,7 +293,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 	test.it("Wizard step#3: User is able to set 'Custom Gasprice' checkbox",
 		async function () {
 
-			let result = await wizardStep3.clickCheckboxGasPriceCustom();
+			let result = await wizardStep3.clickCheckboxGasCustom();
 			return await assert.equal(result, true, "Test FAILED. User is not able to set 'Custom Gasprice' checkbox");
 
 		});
@@ -307,7 +307,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 
 	test.it('Wizard step#3: User is able to set SafeAndCheapGasprice checkbox ',
 		async function () {
-			let result = await wizardStep3.clickCheckboxGasPriceSafe();
+			let result = await wizardStep3.clickCheckboxGasSafe();
 			return await assert.equal(result, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
 		});
 	test.it('Wizard step#3:Tier#1: User is able to fill out field Supply with valid data ',

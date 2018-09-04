@@ -66,7 +66,11 @@ class Page {
 
     async isElementSelected(element) {
         logger.info("isElementSelected");
-        return await this.driver.findElement(element).isSelected();
+        if ( element.constructor.name !== "WebElement" ) {
+            return await this.driver.findElement(element).isSelected();
+        } else {
+            return await element.isSelected();
+        }
     }
 
     async isElementLocated(element) {
