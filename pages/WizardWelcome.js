@@ -50,29 +50,28 @@ class WizardWelcome extends Page {
 		logger.info(this.name + " openWithAlertConfirmation ");
 		if (await  this.open(this.URL) === false) {
 			return !await super.acceptAlert();
-
 		}
 		else return true;
 	}
 
-	async getCrowdsaleList() {
+	async getCrowdsaleList(wait) {
         logger.info(this.name + " getCrowdsaleList ");
-        return await super.getElement(crowdsaleList)
+        return await super.getElement(crowdsaleList,wait)
     }
 
-    async getCrowdsaleListEmpty() {
+    async getCrowdsaleListEmpty(wait) {
         logger.info(this.name + " getCrowdsaleListEmpty ");
-        return await super.getElement(crowdsaleListEmpty)
+        return await super.getElement(crowdsaleListEmpty,wait)
     }
 
-    async getCrowdsaleListAddressOwner() {
+    async getCrowdsaleListAddressOwner(wait) {
         logger.info(this.name + " getCrowdsaleListAddressOwner ");
-        return await super.getElement(crowdsaleListAddressOwner)
+        return await super.getElement(crowdsaleListAddressOwner,wait)
     }
 
-    async getCrowdsaleListCloseButton() {
+    async getCrowdsaleListCloseButton(wait) {
         logger.info(this.name + " getCrowdsaleListCloseButton ");
-        return await super.getElement(crowdsaleListCloseButton)
+        return await super.getElement(crowdsaleListCloseButton,wait)
     }
 }
 

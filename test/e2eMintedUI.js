@@ -101,7 +101,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             return await assert.equal(result, true, "Welcome page: Wizard's page isn\'t available ");
         });
 
-    test.it('Welcome page: button ChooseContract present ',
+    test.it('Welcome page: button \'Choose Contract\' present ',
         async function () {
             const result = await welcomePage.isDisplayedButtonChooseContract();
             return await assert.equal(result, true, "Welcome page: button ChooseContract not present ");
@@ -118,7 +118,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     test.it('Welcome page: crowdsale list is empty',
         async function () {
             const result = await welcomePage.isElementDisplayed(await welcomePage.getCrowdsaleListEmpty())
-            return await assert.equal(result, true, "Welcome page: Crowdsale list isn't empty");
+            return await assert.equal(result, true, "Welcome page: Crowdsale list isn\'t empty");
         });
 
     test.it('Welcome page: crowdsale list contains correct account number',
@@ -135,27 +135,26 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             await assert.equal(result, true, "Welcome page: Crowdsale list doesn\'t contain close button");
         });
 
-    test.it('Welcome page: crowdsale list closes if click the close button',
+    test.it('Welcome page: crowdsale list closed if click the close button',
         async function () {
             const result = await welcomePage.clickWithWait(await welcomePage.getCrowdsaleListCloseButton())
-            && ! await welcomePage.waitUntilDisplayed(await welcomePage.getCrowdsaleList(),)
-            await assert.equal(result, true, "Welcome page: Crowdsale list doesn\'t contain close button");
+                && await Utils.delay(2000)
+                && !await welcomePage.getCrowdsaleList(15)
+            await assert.equal(result, true, "Welcome page: close button doesn\'t work");
         });
 
-    test.it('Welcome page: button NewCrowdsale present ',
+    test.it('Welcome page: button \' New Crowdsale\' present ',
         async function () {
-            await driver.sleep(2343434)
             let result = await welcomePage.isDisplayedButtonNewCrowdsale();
-            return await assert.equal(result, true, "Test FAILED. Button NewCrowdsale not present ");
+            return await assert.equal(result, true, "Test FAILED. Button \'New Crowdsale\' not present ");
         });
 
 
-    test.it('Welcome page: user is able to open Step1 by clicking button NewCrowdsale ',
+    test.it('Welcome page: user is able to open Step1 by clicking button \'New Crowdsale\' ',
         async function () {
             let result = await welcomePage.clickButtonNewCrowdsale()
                 && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap();
             return await assert.equal(result, true, "Test FAILED. User is not able to activate Step1 by clicking button NewCrowdsale");
-
         });
 
     test.it('Wizard step#1: user is able to open Step2 by clicking button Continue ',
