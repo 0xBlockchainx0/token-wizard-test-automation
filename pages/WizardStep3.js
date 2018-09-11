@@ -197,9 +197,23 @@ class WizardStep3 extends Page {
         return await super.isElementDisplayed(fieldWalletAddress)
     }
 
-    async getValueFromFieldWalletAddress() {
-        logger.info(this.name + "getValueFromFieldWalletAddress ");
+    async waitUntilDisplayedFieldWalletAddress(Twaiting) {
+        logger.info(this.name + "waitUntilDisplayedFieldWalletAddress: ");
+        return await super.waitUntilDisplayed(fieldWalletAddress,Twaiting);
+    }
+    async getValueFieldWalletAddress() {
+        logger.info(this.name + "getValueFieldWalletAddress ");
         return await super.getAttribute(fieldWalletAddress, "value");
+    }
+
+    async getValueFieldGasCustom() {
+        logger.info(this.name + "getValueFieldGasCustom ");
+        return await super.getAttribute(fieldGasPriceCustom, "value");
+    }
+
+    async isDisplayedFieldGasCustom() {
+        logger.info(this.name + "isDisplayedFieldGasCustom ");
+        return await super.isElementDisplayed(fieldGasPriceCustom)
     }
 
     async clickButtonOk() {

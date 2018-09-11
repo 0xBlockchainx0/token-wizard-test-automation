@@ -18,6 +18,10 @@ const TIME_FORMAT = {
 const TITLES = {
     CROWDSALE_PAGE:'CROWDSALE PAGE'
 }
+const placeholders = {
+    gasPriceCustom:'0.1',
+    decomals:'18'
+}
 
 module.exports = {
 	WALLET: WALLET,

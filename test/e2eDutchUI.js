@@ -218,7 +218,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
     test.it('Wizard step#3: field Wallet address contains current metamask account address  ',
         async function () {
 
-            let result = await wizardStep3.getValueFromFieldWalletAddress();
+            let result = await wizardStep3.getValueFieldWalletAddress();
             result = (result === Owner.account.toString());
             return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
         });
