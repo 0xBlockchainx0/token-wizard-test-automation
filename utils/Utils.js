@@ -430,6 +430,21 @@ class Utils {
 
     }
 
+    static async getContractSourceCode(crowdsale){
+        logger.info("Utils:getContractSourceCode");
+        let path = './contracts/';
+        switch ( crowdsale.sort ) {
+            case 'minted':
+                path = path + 'MintedPublishPage.sol';
+                break;
+            case 'dutch':
+                path = path + 'DutchPublishPage.sol';
+                break;
+            default:
+                path = path + 'MintedPublishPage.sol'
+        }
+    }
+
     static async getContractABIInitCrowdsale(crowdsale) {
         logger.info("Utils:getContractABIInitCrowdsale");
         let path = './contracts/';

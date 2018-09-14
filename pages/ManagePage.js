@@ -511,7 +511,6 @@ class ManagePage extends Page {
 
 }
 
-module
-	.exports = {
+module.exports = {
 	ManagePage: ManagePage
 }
