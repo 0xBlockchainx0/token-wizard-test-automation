@@ -55,11 +55,13 @@ class TierPage extends Page {
         const locator = By.id("tiers[" + this.number + "].tier");
         return await super.getElement(locator);
     }
+
     async getValueFieldSetupName() {
         logger.info(this.name + "getValueFieldSetupName ");
         const field = await this.getFieldSetupName()
         return await super.getAttribute(field, "value");
     }
+
     async fillSetupName() {
         logger.info(this.name + "fillSetupName ");
         if ( this.tier.name === undefined ) return true;
@@ -67,11 +69,13 @@ class TierPage extends Page {
         return await super.clearField(element) &&
             await super.fillWithWait(element, this.tier.name);
     }
+
     async getFieldRate() {
         logger.info(this.name + "getFieldRate ");
         const locator = By.id("tiers[" + this.number + "].rate");
         return await super.getElement(locator);
     }
+
     async fillRate() {
         logger.info(this.name + "fillRate ");
         if ( this.tier.rate === undefined ) return true;
@@ -79,16 +83,19 @@ class TierPage extends Page {
         return await super.clearField(element) &&
             await super.fillWithWait(element, this.tier.rate);
     }
+
     async getValueFieldRate() {
         logger.info(this.name + "getValueFieldRate ");
         const field = await this.getFieldRate()
         return await super.getAttribute(field, "value");
     }
+
     async getFieldMinCap() {
         logger.info(this.name + "getFieldMinCap ");
         const locator = By.id("tiers[" + this.number + "].minCap");
         return await super.getElement(locator);
     }
+
     async fillMinCap(tier) {
         logger.info(this.name + "fillMinCap ");
         if ( this.tier.minCap === undefined ) return true;
@@ -96,21 +103,25 @@ class TierPage extends Page {
         return await super.clearField(element) &&
             await super.fillWithWait(element, this.tier.minCap);
     }
+
     async getValueFieldMinCap() {
         logger.info(this.name + "getValueFieldMinCap ");
         const field = await this.getFieldMinCap()
         return await super.getAttribute(field, "value");
     }
+
     async getFieldSupply() {
         logger.info(this.name + "getFieldSupply ");
         const locator = By.id("tiers[" + this.number + "].supply");
         return await super.getElement(locator);
     }
+
     async getValueFieldSupply() {
         logger.info(this.name + "getValueFieldSupply ");
         const field = await this.getFieldSupply()
         return await super.getAttribute(field, "value");
     }
+
     async fillSupply() {
         logger.info(this.name + "fillSupply ");
         let element = await this.getFieldSupply();
@@ -137,11 +148,13 @@ class TierPage extends Page {
         const locator = By.id("tiers[" + this.number + "].startTime");
         return await super.getElement(locator);
     }
+
     async getValueFieldStartTime() {
         logger.info(this.name + "getValueFieldStartTime ");
         const field = await this.getFieldStartTime()
         return await super.getAttribute(field, "value");
     }
+
     async fillStartTime() {
         logger.info(this.name + "fillStartTime ");
         if ( this.tier.startDate === "" ) return true;
@@ -547,7 +560,8 @@ class TierPage extends Page {
 
     async isSelectedCheckboxAllowModifyOn() {
         logger.info(this.name + "isSelectedCheckboxAllowModifyOn ");
-        return await super.isElementSelected(await this.getCheckboxAllowModifyOn())
+        return (await this.initCheckboxes() !== null)
+            && await super.isElementSelected(await this.getCheckboxAllowModifyOn())
     }
 
     async clickCheckboxAllowModifyOff() {
