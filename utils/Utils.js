@@ -432,17 +432,19 @@ class Utils {
 
     static async getContractSourceCode(crowdsale){
         logger.info("Utils:getContractSourceCode");
-        let path = './contracts/';
+        let path = '../../public/contracts/';
         switch ( crowdsale.sort ) {
             case 'minted':
-                path = path + 'MintedPublishPage.sol';
+                path = path + 'MintedCappedProxy.sol';
                 break;
             case 'dutch':
-                path = path + 'DutchPublishPage.sol';
+                path = path + 'DutchProxy.sol';
                 break;
             default:
                 path = path + 'MintedPublishPage.sol'
         }
+
+        return await fs.readFileSync(path).toString()
     }
 
     static async getContractABIInitCrowdsale(crowdsale) {

@@ -346,7 +346,6 @@ class Page {
         }
     }
 
-
     async getChildFromElementByClassName(child, element) {
         logger.info("getChildFromElementByClassName");
         try {

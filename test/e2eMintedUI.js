@@ -118,7 +118,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         // await driver.quit();
     });
 ///////////////////////// UI TESTS /////////////////////////////////////
-    /*
+/*
         test.it('Welcome page: User is able to open wizard welcome page',
             async function () {
                 await welcomePage.open();
@@ -855,7 +855,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
             return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
         });
-    */
+*/
     test.it('User is able to create crowdsale(scenarioMintedSimple.json),minCap,1 tier',
         async function () {
             let owner = Owner;
@@ -869,8 +869,40 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
     test.it('Publish page: all fields are displayed',
         async function () {
+
         const result = await publishPage.getAmountFields()
             return await assert.equal(result, 19, 'Publish page: Not all fields are displayed ');
+        });
+
+    test.it('Publish page: name is correct',
+        async function () {
+            await driver.sleep(10000)
+            const result = await publishPage.getName()
+            return await assert.equal(crowdsaleMintedSimple.name, result, 'Publish page: name is incorrect ');
+        });
+
+    test.it('Publish page: ticker is correct',
+        async function () {
+            const result = await publishPage.getTicker()
+            return await assert.equal(crowdsaleMintedSimple.ticker, result, 'Publish page: ticker is incorrect ');
+        });
+
+    test.it('Publish page: decimals is correct',
+        async function () {
+            const result = await publishPage.getDecimals()
+            return await assert.equal(crowdsaleMintedSimple.decimals, result, 'Publish page: decimals is incorrect ');
+        });
+
+    test.it('Publish page: supply is correct',
+        async function () {
+            const result = await publishPage.getSupply()
+            return await assert.equal(result, '0','Publish page: wallet address is incorrect ');
+        });
+
+    test.it('Publish page: wallet address is correct',
+        async function () {
+            const result = await publishPage.getWalletAddress()
+            return await assert.equal(crowdsaleMintedSimple.walletAddress, result, 'Publish page: wallet address is incorrect ');
         });
 
     test.it('Publish page: contract source code is displayed and correct ',
@@ -878,14 +910,13 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             const contract = await publishPage.getTextContract()
             crowdsaleMintedSimple.sort='minted'
             const shouldBe = await Utils.getContractSourceCode(crowdsaleMintedSimple)
-
             return await assert.equal(contract, shouldBe, 'Publish page:contract source code isn\'t correct ');
         });
+
     test.it('Publish page: encoded ABI is displayed and correct ',
         async function () {
             const abi = await publishPage.getEncodedABI()
-            console.log(abi)
-            //return await assert.equal(result, 19, 'Publish page:contract source code isn\'t correct ');
+            return await assert.equal(abi.length, 256, 'Publish page:encoded ABI isn\'t correct ');
         });
 
     test.it.skip('Contribution page: should be alert if invalid proxyID in address bar',
