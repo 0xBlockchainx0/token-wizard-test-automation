@@ -198,7 +198,6 @@ class TierPage extends Page {
             this.tier.endTime = Utils.convertTimeToMdy(this.tier.endTime);
             this.tier.endDate = Utils.convertDateToMdy(this.tier.endDate);
         }
-
         return await super.clickWithWait(locator) &&
             await super.fillWithWait(locator, this.tier.endDate) &&
             await super.pressKey(key.TAB, 1) &&
@@ -472,8 +471,8 @@ class TierPage extends Page {
         && await this.fillRate()
         && await this.fillSetupName()
         && await this.fillSupply()
-        && await this.fillStartTime()
         && await this.fillEndTime()
+        && await this.fillStartTime()
         && (isFillBulkWhitelistAddresses) ? await this.fillBulkWhitelist(pathCSVWhitelist) : await this.fillWhitelist();
 
     }
