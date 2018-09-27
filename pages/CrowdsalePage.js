@@ -6,6 +6,8 @@ const buttonInvest = By.className("button button_fill");
 const fieldExecID = By.className("hash");
 const title = By.className('title')
 const funds = By.className('total-funds-title')
+const buttonContribute = By.className('button button_fill')
+
 
 class CrowdsalePage extends Page {
 
@@ -48,6 +50,35 @@ class CrowdsalePage extends Page {
         const field = (await super.findWithWait(funds))[1]
         return await super.getTextForElement(field);
     }
+    async getTokensClaimed() {
+        logger.info(this.name + "getTokensClaimed");
+        const field = (await super.findWithWait(title))[1]
+        return await super.getTextForElement(field);
+    }
+
+    async getContributors() {
+        logger.info(this.name + "getContributors");
+        const field = (await super.findWithWait(title))[2]
+        return await super.getTextForElement(field);
+    }
+
+    async getRate() {
+        logger.info(this.name + "getRate");
+        const field = (await super.findWithWait(title))[3]
+        return await super.getTextForElement(field);
+    }
+
+    async getTotalSupply() {
+        logger.info(this.name + "getTotalSupply");
+        const field = (await super.findWithWait(title))[4]
+        return await super.getTextForElement(field);
+    }
+
+    async clickButtonContribute() {
+        logger.info(this.name + "clickButtonContribute ");
+        return await super.clickWithWait(buttonContribute);
+    }
+
 
 
 }

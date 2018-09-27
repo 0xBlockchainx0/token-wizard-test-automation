@@ -441,7 +441,7 @@ class Utils {
                 path = path + 'DutchProxy.sol';
                 break;
             default:
-                path = path + 'MintedPublishPage.sol'
+                path = path + 'MintedCappedProxy.sol'
         }
 
         return await fs.readFileSync(path).toString()

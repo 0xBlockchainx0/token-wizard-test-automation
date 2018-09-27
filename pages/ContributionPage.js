@@ -183,8 +183,8 @@ class ContributionPage extends Page {
 		return await super.getTextForElement(errorNotice);
 	}
 
-	async getExecutionID() {
-		logger.info(this.name + "getExecutionID");
+	async getProxyAddress() {
+		logger.info(this.name + "getProxyAddress");
 		return (await  this.initFields() !== null) &&
 			await super.getTextForElement(this.fieldExecutionID);
 	}
