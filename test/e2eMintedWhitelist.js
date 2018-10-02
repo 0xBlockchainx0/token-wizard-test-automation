@@ -22,7 +22,7 @@ const endTimeForTestLater = "540000";
 const endDateForTestLater = "540000";
 const TIME_FORMAT = require('../utils/constants.js').TIME_FORMAT;
 
-test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersion} `, async function () {
+test.describe.skip(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersion} `, async function () {
     this.timeout(2400000);//40 min
     this.slow(1800000);
 

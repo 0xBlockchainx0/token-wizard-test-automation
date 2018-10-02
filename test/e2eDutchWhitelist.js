@@ -17,7 +17,7 @@ const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
 const Utils = require('../utils/Utils.js').Utils;
 const User = require("../entity/User.js").User;
 
-test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersion} `, async function () {
+test.describe.skip(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersion} `, async function () {
     this.timeout(2400000);//40 min
     this.slow(1800000);
 
