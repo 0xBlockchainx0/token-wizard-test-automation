@@ -158,6 +158,16 @@ class WizardStep2 extends Page {
         logger.info(this.name + "waitUntilHasValueFieldName: ");
         return await super.waitUntilHasValue(fieldName,Twaiting);
     }
+    async getValueFieldSupply() {
+        logger.info(this.name + "getValueFieldSupply ");
+        const field = await this.getFieldSupply()
+        return await super.getAttribute(field, "value");
+    }
+    async getFieldSupply() {
+        logger.info(this.name + "getFieldSupply ");
+        return await super.getElement(fieldSupply);
+    }
+
 
 }
 

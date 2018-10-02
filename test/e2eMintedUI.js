@@ -267,6 +267,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     })
 
     describe('Step#2: ', async function () {
+
         test.it('Field \'Decimals\' has placeholder 18',
             async function () {
                 return await assert.equal(await wizardStep2.getValueFieldDecimals(), placeholder.decimals, "Test FAILED. Step#2:incorrect placeholder for field 'Decimals'");

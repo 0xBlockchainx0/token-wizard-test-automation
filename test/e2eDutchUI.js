@@ -47,6 +47,23 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
     let crowdsaleForUItests;
     let crowdsaleDutchSimple;
 
+    const placeholder = {
+        gasCustom: '0.1',
+        setupNameTier1: 'Tier 1',
+        decimals: '18',
+        mincap: '0'
+    }
+
+    const newValue = {
+        name: 'Name',
+        decimals: '13',
+        totalSupply: '1000',
+        customGas: '100',
+        ticker: 'Tick',
+        rateTier1: '456',
+        supplyTier1: '1e18',
+        mincapTier2: '423'
+    }
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -99,433 +116,448 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 
     //////// UI TESTS ////////////////////////////////////////////////
 
-    test.it('User is able to open wizard welcome page',
-        async function () {
-            await welcomePage.open();
-            let result = await welcomePage.waitUntilDisplayedButtonNewCrowdsale(180);
-            return await assert.equal(result, true, "Test FAILED. Wizard's page is not available ");
-        });
+    describe('Home page', async function () {
 
-    test.it('Welcome page: button \'Choose Contract\' present ',
-        async function () {
-            const result = await welcomePage.isDisplayedButtonChooseContract();
-            return await assert.equal(result, true, "Welcome page: button ChooseContract not present ");
-        });
+        test.it('User is able to open home page',
+            async function () {
+                await welcomePage.open();
+                let result = await welcomePage.waitUntilDisplayedButtonNewCrowdsale(180);
+                return await assert.equal(result, true, "Wizard's page is not available ");
+            });
 
-    test.it('Welcome page: crowdsale list opens if click button \'Choose contract\'',
-        async function () {
-            const result = await welcomePage.clickButtonChooseContract()
-                && await welcomePage.waitUntilDisplayed(await welcomePage.getCrowdsaleList())
-                && await welcomePage.isElementDisplayed(await welcomePage.getCrowdsaleList())
-            return await assert.equal(result, true, "Welcome page: Crowdsale list isn\'t displayed ");
-        });
+        test.it('User is able to open Step1 by clicking button \'New Crowdsale\'',
+            async function () {
+                let result = await welcomePage.clickButtonNewCrowdsale()
+                    && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap();
+                return await assert.equal(result, true, "User is not able to activate Step1 by clicking button NewCrowdsale");
+            });
+    })
 
-    test.it('Welcome page: crowdsale list is empty',
-        async function () {
-            const result = await welcomePage.isElementDisplayed(await welcomePage.getCrowdsaleListEmpty())
-            return await assert.equal(result, true, "Welcome page: Crowdsale list isn\'t empty");
-        });
+    describe('Step#1 ', async function () {
 
-    test.it('Welcome page: crowdsale list contains correct account number',
-        async function () {
-            let result = await welcomePage.isElementDisplayed(await welcomePage.getCrowdsaleListAddressOwner())
-            await assert.equal(result, true, "Welcome page: Crowdsale list doesn\'t contain account number field");
-            result = await welcomePage.getTextForElement(await welcomePage.getCrowdsaleListAddressOwner())
-            return await assert.equal(result, Owner.account, "Welcome page-Crowdsale list: Account address incorrect");
-        });
+        test.it('User is able to click DutchAuction checkbox ',
+            async function () {
+                let result = await wizardStep1.waitUntilDisplayedCheckboxDutchAuction()
+                    && await wizardStep1.clickCheckboxDutchAuction();
+                return await assert.equal(result, true, "User is not able to to click DutchAuction checkbox");
+            });
+        test.it('Go back - page keep state of checkbox \'Dutch auction\'',
+            async function () {
+                const result = await wizardStep1.clickCheckboxDutchAuction()
+                    && await wizardStep1.goBack()
+                    && await welcomePage.isDisplayedButtonChooseContract()
+                    && await wizardStep1.goForward()
+                    && await wizardStep1.waitUntilLoaderGone()
+                    && await wizardStep1.waitUntilDisplayedCheckboxDutchAuction()
+                    && await wizardStep1.isSelectedCheckboxDutchAuction()
+                return await assert.equal(result, true, "Checkbox changed");
+            });
 
-    test.it('Welcome page: crowdsale list contains the close button',
-        async function () {
-            const result = await welcomePage.isElementDisplayed(await welcomePage.getCrowdsaleListCloseButton())
-            await assert.equal(result, true, "Welcome page: Crowdsale list doesn\'t contain close button");
-        });
+        test.it('Refresh - page keep state of checkbox \'Dutch auction\' ',
+            async function () {
+                const result = await wizardStep1.clickCheckboxDutchAuction()
+                    && await wizardStep1.refresh()
+                    && await wizardStep1.isSelectedCheckboxDutchAuction()
+                return await assert.equal(result, true, "Checkbox changed");
+            });
 
-    test.it('Welcome page: crowdsale list closed if click the close button',
-        async function () {
-            const result = await welcomePage.clickWithWait(await welcomePage.getCrowdsaleListCloseButton())
-                && await Utils.delay(2000)
-                && !await welcomePage.getCrowdsaleList(15)
-            await assert.equal(result, true, "Welcome page: close button doesn\'t work");
-        });
+        test.it('Change network - page keep state of checkbox \'Dutch auction\' ',
+            async function () {
+                const result = await wizardStep1.clickCheckboxDutchAuction()
+                    && await Investor1.setWalletAccount()
+                    && await wizardStep1.waitUntilLoaderGone()
+                    && await wizardStep1.waitUntilDisplayedCheckboxDutchAuction()
+                    && await wizardStep1.isSelectedCheckboxDutchAuction()
+                    && await Owner.setWalletAccount()
+                    && await wizardStep1.waitUntilLoaderGone()
+                return await assert.equal(result, true, "Checkbox changed");
+            });
 
-    test.it('Welcome page: button \' New Crowdsale\' present ',
-        async function () {
-            let result = await welcomePage.isDisplayedButtonNewCrowdsale();
-            return await assert.equal(result, true, "Test FAILED. Button \'New Crowdsale\' not present ");
-        });
-
-
-    test.it('Welcome page: user is able to open Step1 by clicking button \'New Crowdsale\' ',
-        async function () {
-            let result = await welcomePage.clickButtonNewCrowdsale()
-                && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap();
-            return await assert.equal(result, true, "Test FAILED. User is not able to activate Step1 by clicking button NewCrowdsale");
-        });
-
-    test.it('Wizard step#1: user is able to click DutchAuction checkbox ',
-        async function () {
-            let result = await wizardStep1.waitUntilDisplayedCheckboxDutchAuction()
-                && await wizardStep1.clickCheckboxDutchAuction();
-            return await assert.equal(result, true, "Test FAILED. User is not able to to click DutchAuction checkbox");
-        });
-
-    test.it('Wizard step#1: user is able to click DutchAuction checkbox ',
-        async function () {
-            let result = await wizardStep1.waitUntilDisplayedCheckboxDutchAuction()
-                && await wizardStep1.clickCheckboxDutchAuction();
-            return await assert.equal(result, true, "Test FAILED. User is not able to to click DutchAuction checkbox");
-        });
-
-    test.it('Wizard step#1: user is able to open Step2 by clicking button Continue ',
-        async function () {
-            let count = 10;
-            do {
-                await driver.sleep(1000);
-                if ( (await wizardStep1.isDisplayedButtonContinue()) &&
-                    !(await wizardStep2.isDisplayedFieldName()) ) {
-                    await wizardStep1.clickButtonContinue();
+        test.it('Step#1: user is able to open Step2 by clicking button Continue',
+            async function () {
+                await wizardStep1.clickCheckboxDutchAuction()
+                let count = 10;
+                do {
+                    await driver.sleep(1000);
+                    if ( (await wizardStep1.isDisplayedButtonContinue()) &&
+                        !(await wizardStep2.isDisplayedFieldName()) ) {
+                        await wizardStep1.clickButtonContinue();
+                    }
+                    else break;
                 }
-                else break;
-            }
-            while ( count-- > 0 );
-            let result = await wizardStep2.isDisplayedFieldName();
-            return await assert.equal(result, true, "Test FAILED. User is not able to open Step2 by clicking button Continue");
+                while ( count-- > 0 );
+                let result = await wizardStep2.isDisplayedFieldName();
+                return await assert.equal(result, true, "User is not able to open Step2 by clicking button Continue");
+            });
+    })
 
-        });
-    test.it('Wizard step#2:Check persistant if account has changed ',
-        async function () {
-            let investor = Investor1;
-            let owner = Owner;
-            assert.equal(await investor.setWalletAccount(), true, "Can not set Metamask account");
-            assert.equal(await wizardStep2.isDisplayedFieldSupply(), true, "Field 'Supply' is not displayed");
-            assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
-            return assert.equal(await wizardStep2.isDisplayedFieldSupply(), true, "Persistant failed if account has changed");
-        });
-    test.it.skip('Wizard step#2:Check persistant if page refreshed ',
-        async function () {
-            await wizardStep2.refresh();
-            await driver.sleep(2000);
-            assert.equal(await wizardStep2.isDisplayedFieldSupply(), true, "Field 'Supply' is not displayed");
-            return assert.equal(false, true, "Persistant failed if page refreshed");
-        });
+    describe('Step#2 ', async function () {
 
-    test.it('Wizard step#2: user able to fill out Name field with valid data',
-        async function () {
-            await wizardStep2.fillName("name");
-            let result = await wizardStep2.isDisplayedWarningName();
-            return await assert.equal(result, false, "Test FAILED. Wizard step#2: user able to fill Name field with valid data ");
-        });
+        test.it('User able to fill out Name field with valid data',
+            async function () {
+                let result = await wizardStep2.fillName(newValue.name);
+                return await assert.equal(result, true, "User able to fill Name field with valid data ");
+            });
 
-    test.it('Wizard step#2: user able to fill out field Ticker with valid data',
-        async function () {
-            await wizardStep2.fillTicker("test");
-            let result = await wizardStep2.isDisplayedWarningTicker();
-            return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not  able to fill out field Ticker with valid data ");
-        });
+        test.it('User able to fill out field Ticker with valid data',
+            async function () {
+                let result = await wizardStep2.fillTicker(newValue.ticker);
+                return await assert.equal(result, true, "User is not  able to fill out field Ticker with valid data ");
+            });
 
-    test.it('Wizard step#2: user able to fill out  Decimals field with valid data',
-        async function () {
-            await wizardStep2.fillDecimals("18");
-            let result = await wizardStep2.isDisplayedWarningDecimals();
-            return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not able to fill Decimals  field with valid data ");
-        });
+        test.it('User able to fill out  Decimals field with valid data',
+            async function () {
+                let result = await wizardStep2.fillDecimals(newValue.decimals);
+                return await assert.equal(result, true, "User is not able to fill Decimals  field with valid data ");
+            });
 
-    test.it('Wizard step#2: user able to fill out  Total supply field with valid data',
-        async function () {
-            await wizardStep2.fillSupply(crowdsaleForUItests.totalSupply);
-            let result = await wizardStep2.isDisplayedWarningSupply();
-            return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not able to fill Total supply  field with valid data ");
-        });
+        test.it('Go back - page keep state of each field',
+            async function () {
+                const result = await wizardStep2.goBack()
+                    && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap()
+                    && await wizardStep1.goForward()
+                    && await wizardStep2.waitUntilLoaderGone()
+                    && await wizardStep2.waitUntilHasValueFieldName();
+                await assert.equal(result, true, "page isn\'t loaded");
+                await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "Field name changed");
+                await assert.equal(await wizardStep2.getValueFieldDecimals(), newValue.decimals, "Field decimals changed");
+                await assert.equal(await wizardStep2.getValueFieldTicker(), newValue.ticker, "Field ticker changed");
+            });
 
-    test.it('Wizard step#2: button Continue is displayed and enabled',
-        async function () {
-            let result = await wizardStep2.isDisplayedButtonContinue();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#2: button Continue disabled or not displayed  ");
-        });
+        test.it('Change network - page keep state of each field',
+            async function () {
+                let result = await Investor1.setWalletAccount()
+                    && await wizardStep2.waitUntilLoaderGone()
+                    && await wizardStep2.waitUntilHasValueFieldName()
+                await assert.equal(result, true, " Wizard step#2: page isn\'t loaded");
+                await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "Field name changed");
+                await assert.equal(await wizardStep2.getValueFieldDecimals(), newValue.decimals, "Field decimals changed");
+                await assert.equal(await wizardStep2.getValueFieldTicker(), newValue.ticker, "Field ticker changed");
 
-    test.it('Wizard step#2: user is able to open Step3 by clicking button Continue ',
-        async function () {
-            await wizardStep2.clickButtonContinue();
-            await wizardStep3.waitUntilDisplayedTitle(180);
-            let result = await wizardStep3.getTitleText();
-            result = (result === wizardStep3.title);
-            return await assert.equal(result, true, "Test FAILED. User is not able to open Step3 by clicking button Continue");
-        });
+                result = await Owner.setWalletAccount()
+                    && await wizardStep2.waitUntilLoaderGone()
+                    && await wizardStep2.waitUntilHasValueFieldName()
+                await assert.equal(result, true, " Wizard step#2: page isn\'t loaded");
+                await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "Field name changed");
+                await assert.equal(await wizardStep2.getValueFieldDecimals(), newValue.decimals, "Field decimals changed");
+                await assert.equal(await wizardStep2.getValueFieldTicker(), newValue.ticker, "Field ticker changed");
 
-    test.it('Wizard step#3: field Wallet address contains current metamask account address  ',
-        async function () {
+            });
 
-            let result = await wizardStep3.getValueFieldWalletAddress();
-            result = (result === Owner.account.toString());
-            return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
-        });
+        test.it('User able to fill out  Total supply field with valid data',
+            async function () {
+                let result = await wizardStep2.fillSupply(newValue.totalSupply);
+                return await assert.equal(result, true, "User is not able to fill Total supply  field with valid data ");
+            });
 
-    test.it('Tier#1: Whitelist container present if checkbox "Whitelist enabled" is selected',
-        async function () {
-            let result = await tierPage.setWhitelisting()
-                && await tierPage.isDisplayedWhitelistContainer();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to set checkbox  'Whitelist enabled'");
-        });
+        test.it('Refresh - page keep state of each field',
+            async function () {
+                const result = await wizardStep2.refresh()
+                    && await wizardStep2.waitUntilLoaderGone()
+                    && await wizardStep2.waitUntilDisplayedFieldName()
+                    && await wizardStep2.waitUntilHasValueFieldName();
+                await assert.equal(result, true, "Test FAILED. Wizard step#2: page isn\'t loaded");
+                await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "Field name changed");
+                await assert.equal(await wizardStep2.getValueFieldDecimals(), newValue.decimals, "Field decimals changed");
+                await assert.equal(await wizardStep2.getValueFieldTicker(), newValue.ticker, "Field ticker changed");
+                await assert.equal(await wizardStep2.getValueFieldSupply(), newValue.totalSupply, "Field supply changed");
+            });
 
-    test.it('Wizard step#3: field minCap disabled if whitelist enabled ',
-        async function () {
-            let tierNumber = 1;
-            let result = await tierPage.isDisabledFieldMinCap(tierNumber);
-            return await assert.equal(result, true, "Test FAILED. Field minCap enabled if whitelist enabled");
-        });
-    test.it('Wizard step#3:Tier#1: User is able to fill out field "Supply" with valid data',
-        async function () {
-            tierPage.tier.supply = 69;
-            let result = await tierPage.fillSupply();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
-        });
-    test.it('Wizard step#3: User is able to download CSV file with whitelisted addresses',
-        async function () {
-            let fileName = "./public/whitelistAddressesTestValidation.csv";
-            let result = await tierPage.uploadWhitelistCSVFile(fileName)
-                && await wizardStep3.clickButtonOk();
-            return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
-        });
+        test.it('Button Continue is displayed and enabled',
+            async function () {
+                let result = await wizardStep2.isDisplayedButtonContinue();
+                return await assert.equal(result, true, "Button Continue disabled or not displayed  ");
+            });
 
-    test.it('Wizard step#3: field Supply disabled if whitelist added ',
-        async function () {
-            let result = await tierPage.isDisabledFieldSupply();
-            return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
-        });
 
-    test.it('Wizard step#3: Number of added whitelisted addresses is correct, data is valid',
-        async function () {
-            let shouldBe = 5;
-            let inReality = await tierPage.amountAddedWhitelist();
-            return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
+    })
+    describe.skip('Step#3 ', async function () {
+        test.it('User is able to open Step3 by clicking button Continue ',
+            async function () {
+                await wizardStep2.clickButtonContinue();
+                await wizardStep3.waitUntilDisplayedTitle(180);
+                let result = await wizardStep3.getTitleText();
+                result = (result === wizardStep3.title);
+                return await assert.equal(result, true, "Test FAILED. User is not able to open Step3 by clicking button Continue");
+            });
+        test.it('Field Wallet address contains current metamask account address  ',
+            async function () {
 
-        });
+                let result = await wizardStep3.getValueFieldWalletAddress();
+                result = (result === Owner.account.toString());
+                return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
+            });
 
-    test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
-        async function () {
-            let result = await tierPage.clickButtonClearAll()
-                && await tierPage.waitUntilShowUpPopupConfirm(180)
-                && await tierPage.clickButtonYesAlert();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-        });
+        test.it('Whitelist container present if checkbox "Whitelist enabled" is selected',
+            async function () {
+                let result = await tierPage.setWhitelisting()
+                    && await tierPage.isDisplayedWhitelistContainer();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to set checkbox  'Whitelist enabled'");
+            });
+        test.it('Field minCap disabled if whitelist enabled ',
+            async function () {
+                let tierNumber = 1;
+                let result = await tierPage.isDisabledFieldMinCap(tierNumber);
+                return await assert.equal(result, true, "Test FAILED. Field minCap enabled if whitelist enabled");
+            });
+        test.it('User is able to fill out field "Supply" with valid data',
+            async function () {
+                tierPage.tier.supply = 69;
+                let result = await tierPage.fillSupply();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+            });
+        test.it('User is able to download CSV file with whitelisted addresses',
+            async function () {
+                let fileName = "./public/whitelistAddressesTestValidation.csv";
+                let result = await tierPage.uploadWhitelistCSVFile(fileName)
+                    && await wizardStep3.clickButtonOk();
+                return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
+            });
 
-    test.it('Wizard step#3: All whitelisted addresses are removed after deletion ',
-        async function () {
-            let result = await tierPage.amountAddedWhitelist(10);
-            return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-        });
+        test.it('Field Supply disabled if whitelist added ',
+            async function () {
+                let result = await tierPage.isDisabledFieldSupply();
+                return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
+            });
 
-    test.it('Wizard step#3: field Supply enabled if whitelist was deleted ',
-        async function () {
-            let result = await tierPage.isDisabledFieldSupply();
-            return await assert.equal(result, false, "Test FAILED. Field minCap disabled if whitelist enabled");
-        });
+        test.it('Number of added whitelisted addresses is correct, data is valid',
+            async function () {
+                let shouldBe = 5;
+                let inReality = await tierPage.amountAddedWhitelist();
+                return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
 
-    test.it('Wizard step#3:Tier#1: User is able to fill out field "Supply" with valid data',
-        async function () {
-            tierPage.tier.supply = crowdsaleForUItests.totalSupply;
-            let result = await tierPage.fillSupply();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
-        });
+            });
 
-    test.it('Wizard step#3: User is able to download CSV file with more than 50 whitelisted addresses',
-        async function () {
-            let fileName = "./public/whitelistedAddresses61.csv";
-            let result = await tierPage.uploadWhitelistCSVFile(fileName);
+        test.it('User is able to bulk delete all whitelisted addresses ',
+            async function () {
+                let result = await tierPage.clickButtonClearAll()
+                    && await tierPage.waitUntilShowUpPopupConfirm(180)
+                    && await tierPage.clickButtonYesAlert();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+            });
 
-            return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
-        });
+        test.it('All whitelisted addresses are removed after deletion ',
+            async function () {
+                let result = await tierPage.amountAddedWhitelist(10);
+                return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+            });
 
-    test.it('Wizard step#3: Alert present if number of whitelisted addresses greater 50 ',
-        async function () {
-            let result = await reservedTokensPage.waitUntilShowUpPopupConfirm(100)
-                && await reservedTokensPage.clickButtonOk();
-            return await assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
-        });
+        test.it('Field Supply enabled if whitelist was deleted ',
+            async function () {
+                let result = await tierPage.isDisabledFieldSupply();
+                return await assert.equal(result, false, "Test FAILED. Field minCap disabled if whitelist enabled");
+            });
 
-    test.it('Wizard step#3: Number of added whitelisted addresses is correct, data is valid',
-        async function () {
-            let shouldBe = 50;
-            let inReality = await tierPage.amountAddedWhitelist();
-            return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
+        test.it('User is able to fill out field "Supply" with valid data',
+            async function () {
+                tierPage.tier.supply = crowdsaleForUItests.totalSupply;
+                let result = await tierPage.fillSupply();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+            });
 
-        });
+        test.it('User is able to download CSV file with more than 50 whitelisted addresses',
+            async function () {
+                let fileName = "./public/whitelistedAddresses61.csv";
+                let result = await tierPage.uploadWhitelistCSVFile(fileName);
 
-    test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
-        async function () {
-            let result = await tierPage.clickButtonClearAll()
-                && await tierPage.waitUntilShowUpPopupConfirm(180)
-                && await tierPage.clickButtonYesAlert();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-        });
-    test.it('Wizard step#3: User is able to add several whitelisted addresses one by one ',
-        async function () {
-            let result = await tierPage.fillWhitelist();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
-        });
+                return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
+            });
 
-    test.it('Wizard step#3: User is able to remove one whitelisted address',
-        async function () {
-            let beforeRemoving = await tierPage.amountAddedWhitelist();
-            let numberAddressForRemove = 1;
-            await tierPage.removeWhiteList(numberAddressForRemove - 1);
-            let afterRemoving = await tierPage.amountAddedWhitelist();
-            return await assert.equal(beforeRemoving, afterRemoving + 1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
-        });
+        test.it('Alert present if number of whitelisted addresses greater 50 ',
+            async function () {
+                let result = await reservedTokensPage.waitUntilShowUpPopupConfirm(100)
+                    && await reservedTokensPage.clickButtonOk();
+                return await assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
+            });
 
-    test.it('Wizard step#3: User is able to bulk delete all whitelisted addresses ',
-        async function () {
-            let result = await tierPage.clickButtonClearAll()
-                && await tierPage.waitUntilShowUpPopupConfirm(180)
-                && await tierPage.clickButtonYesAlert()
-                && await tierPage.waitUntilLoaderGone();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-        });
+        test.it('Number of added whitelisted addresses is correct, data is valid',
+            async function () {
+                let shouldBe = 50;
+                let inReality = await tierPage.amountAddedWhitelist();
+                return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
 
-    test.it("Wizard step#3: User is able to set 'Custom Gasprice' checkbox",
-        async function () {
+            });
 
-            let result = await wizardStep3.clickCheckboxGasCustom();
-            return await assert.equal(result, true, "Test FAILED. User is not able to set 'Custom Gasprice' checkbox");
+        test.it('User is able to bulk delete all whitelisted addresses ',
+            async function () {
+                let result = await tierPage.clickButtonClearAll()
+                    && await tierPage.waitUntilShowUpPopupConfirm(180)
+                    && await tierPage.clickButtonYesAlert();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+            });
+        test.it('User is able to add several whitelisted addresses one by one ',
+            async function () {
+                let result = await tierPage.fillWhitelist();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
+            });
 
-        });
+        test.it('User is able to remove one whitelisted address',
+            async function () {
+                let beforeRemoving = await tierPage.amountAddedWhitelist();
+                let numberAddressForRemove = 1;
+                await tierPage.removeWhiteList(numberAddressForRemove - 1);
+                let afterRemoving = await tierPage.amountAddedWhitelist();
+                return await assert.equal(beforeRemoving, afterRemoving + 1, "Test FAILED. Wizard step#3: User is NOT able to remove one whitelisted address");
+            });
 
-    test.it(" Wizard step#3: User is able to fill out the  'CustomGasprice' field with valid value",
-        async function () {
-            let customValue = 100;
-            let result = await wizardStep3.fillGasPriceCustom(customValue);
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill 'Custom Gasprice' with valid value");
-        });
+        test.it('User is able to bulk delete all whitelisted addresses ',
+            async function () {
+                let result = await tierPage.clickButtonClearAll()
+                    && await tierPage.waitUntilShowUpPopupConfirm(180)
+                    && await tierPage.clickButtonYesAlert()
+                    && await tierPage.waitUntilLoaderGone();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+            });
 
-    test.it('Wizard step#3: User is able to set SafeAndCheapGasprice checkbox ',
-        async function () {
-            let result = await wizardStep3.clickCheckboxGasSafe();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
-        });
+        test.it("User is able to set 'Custom Gasprice' checkbox",
+            async function () {
 
-    test.it("Wizard step#3:Tier#1: User is able to fill out field 'minRate' with valid data",
-        async function () {
-            tierPage.tier.minRate = 100;
-            let result = await tierPage.fillMinRate();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3:Tier#1: User is not able to fill out field 'minRate' with valid data");
-        });
-    test.it("Wizard step#3:Tier#1: User is able to fill out field 'maxRate' with valid data",
-        async function () {
-            tierPage.tier.maxRate = 10;
-            let result = await tierPage.fillMaxRate();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3:Tier#1: User is not able to fill out field 'maxRate' with valid data");
-        });
+                let result = await wizardStep3.clickCheckboxGasCustom();
+                return await assert.equal(result, true, "Test FAILED. User is not able to set 'Custom Gasprice' checkbox");
 
-    test.it("Wizard step#3: Button 'Continue' disabled if minRate > maxRate ",
-        async function () {
-            let result = !await wizardStep3.isEnabledButtonContinue();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: Button 'Continue' enabled if minRate > maxRate");
+            });
 
-        });
-    test.it('Wizard step#3: User is able to fill out field maxRate with valid data ',
-        async function () {
-            tierPage.tier.maxRate = 1000;
-            let result = await tierPage.fillMaxRate();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is not able to fill out field maxRate with valid data");
-        });
+        test.it("User is able to fill out the  'CustomGasprice' field with valid value",
+            async function () {
+                let customValue = 100;
+                let result = await wizardStep3.fillGasPriceCustom(customValue);
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill 'Custom Gasprice' with valid value");
+            });
 
-    test.it("Wizard step#3: Button 'Continue' disabled if crowdsaleSupply>totalSupply",
-        async function () {
-            tierPage.tier.supply = crowdsaleForUItests.totalSupply + 1;
-            let result = await tierPage.fillSupply()
-                && !await wizardStep3.isEnabledButtonContinue();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3: Button 'Continue' ensabled if crowdsaleSupply>totalSupply");
+        test.it('User is able to set SafeAndCheapGasprice checkbox ',
+            async function () {
+                let result = await wizardStep3.clickCheckboxGasSafe();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: 'Safe and cheap' Gas price checkbox does not set by default");
+            });
 
-        });
-    test.it('Wizard step#3:Tier#1: User is able to fill out field Supply with valid data ',
-        async function () {
-            tierPage.tier.supply = crowdsaleForUItests.totalSupply - 1;
-            let result = await tierPage.fillSupply();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#3:Tier#1: User is not able to fill out field Supply with valid data");
+        test.it("User is able to fill out field 'minRate' with valid data",
+            async function () {
+                tierPage.tier.minRate = 100;
+                let result = await tierPage.fillMinRate();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3:Tier#1: User is not able to fill out field 'minRate' with valid data");
+            });
+        test.it("User is able to fill out field 'maxRate' with valid data",
+            async function () {
+                tierPage.tier.maxRate = 10;
+                let result = await tierPage.fillMaxRate();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3:Tier#1: User is not able to fill out field 'maxRate' with valid data");
+            });
 
-        });
-    test.it('Wizard step#3: user is able to proceed to Step4 by clicking button Continue ',
-        async function () {
-            let result = await wizardStep3.clickButtonContinue()
-                && await wizardStep4.waitUntilDisplayedModal(60);
-            return await assert.equal(result, true, "Test FAILED. User is not able to open Step4 by clicking button Continue");
-        });
-    /////////////// STEP4 //////////////
-    test.it('Wizard step#4: alert present if user reload the page ',
-        async function () {
-            await wizardStep4.refresh();
-            await driver.sleep(2000);
-            let result = await wizardStep4.isPresentAlert();
-            return await assert.equal(result, true, "Test FAILED.  Alert does not present if user refresh the page");
-        });
+        test.it("Button 'Continue' disabled if minRate > maxRate ",
+            async function () {
+                let result = !await wizardStep3.isEnabledButtonContinue();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: Button 'Continue' enabled if minRate > maxRate");
 
-    test.it('Wizard step#4: user is able to accept alert after reloading the page ',
-        async function () {
+            });
+        test.it('User is able to fill out field maxRate with valid data ',
+            async function () {
+                tierPage.tier.maxRate = 1000;
+                let result = await tierPage.fillMaxRate();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is not able to fill out field maxRate with valid data");
+            });
 
-            let result = await wizardStep4.acceptAlert()
-                && await wizardStep4.waitUntilDisplayedModal(80);
-            return await assert.equal(result, true, "Test FAILED. Wizard step#4: Modal does not present after user has accepted alert");
-        });
+        test.it("Button 'Continue' disabled if crowdsaleSupply>totalSupply",
+            async function () {
+                tierPage.tier.supply = crowdsaleForUItests.totalSupply + 1;
+                let result = await tierPage.fillSupply()
+                    && !await wizardStep3.isEnabledButtonContinue();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3: Button 'Continue' ensabled if crowdsaleSupply>totalSupply");
 
-    test.it('Wizard step#4: button SkipTransaction is  presented if user reject a transaction ',
-        async function () {
-            let result = await wallet.rejectTransaction()
-                && await wallet.rejectTransaction()
-                && await wizardStep4.isDisplayedButtonSkipTransaction();
-            return await assert.equal(result, true, "Test FAILED. Wizard step#4: button'Skip transaction' does not present if user reject the transaction");
-        });
+            });
+        test.it('User is able to fill out field Supply with valid data ',
+            async function () {
+                tierPage.tier.supply = crowdsaleForUItests.totalSupply - 1;
+                let result = await tierPage.fillSupply();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#3:Tier#1: User is not able to fill out field Supply with valid data");
 
-    test.it('Wizard step#4: user is able to skip transaction ',
-        async function () {
+            });
+        test.it('User is able to proceed to Step4 by clicking button Continue ',
+            async function () {
+                let result = await wizardStep3.clickButtonContinue()
+                    && await wizardStep4.waitUntilDisplayedModal(60);
+                return await assert.equal(result, true, "Test FAILED. User is not able to open Step4 by clicking button Continue");
+            });
+    })
 
-            let result = await wizardStep4.clickButtonSkipTransaction()
-                && await wizardStep4.waitUntilShowUpPopupConfirm(80)
-                && await wizardStep4.clickButtonYes();
-            return await assert.equal(result, true, "Test FAILED.Wizard step#4:  user is not able to skip transaction");
-        });
+    describe.skip('Step#4 ', async function () {
+        test.it('Alert present if user reload the page ',
+            async function () {
+                await wizardStep4.refresh();
+                await driver.sleep(2000);
+                let result = await wizardStep4.isPresentAlert();
+                return await assert.equal(result, true, "Test FAILED.  Alert does not present if user refresh the page");
+            });
 
-    test.it('Wizard step#4: alert is presented if user wants to leave the wizard ',
-        async function () {
+        test.it('User is able to accept alert after reloading the page ',
+            async function () {
 
-            let result = await welcomePage.openWithAlertConfirmation();
-            return await assert.equal(result, false, "Test FAILED. Wizard step#4: Alert does not present if user wants to leave the site");
-        });
+                let result = await wizardStep4.acceptAlert()
+                    && await wizardStep4.waitUntilDisplayedModal(80);
+                return await assert.equal(result, true, "Test FAILED. Wizard step#4: Modal does not present after user has accepted alert");
+            });
 
-    test.it('Wizard step#4: User is able to stop deployment ',
-        async function () {
+        test.it('Button SkipTransaction is  presented if user reject a transaction ',
+            async function () {
+                let result = await wallet.rejectTransaction()
+                    && await wallet.rejectTransaction()
+                    && await wizardStep4.isDisplayedButtonSkipTransaction();
+                return await assert.equal(result, true, "Test FAILED. Wizard step#4: button'Skip transaction' does not present if user reject the transaction");
+            });
 
-            let result = await wizardStep4.waitUntilShowUpButtonCancelDeployment(80)
-                && await wizardStep4.clickButtonCancelDeployment()
-                && await wizardStep4.waitUntilShowUpPopupConfirm(80)
-                && await wizardStep4.clickButtonYes();
+        test.it('User is able to skip transaction ',
+            async function () {
 
-            return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
-        });
-    test.it('User is able to create crowdsale(scenarioDutchSimple.json),minCap,1 tier',
-        async function () {
-            let owner = Owner;
-            assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
-            let result = await owner.createDutchAuctionCrowdsale(crowdsaleDutchSimple);
-            return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
-        });
-    test.it('Contribution page: should be alert if invalid proxyID in address bar',
-        async function () {
-            let wrongUrl = crowdsaleDutchSimple.url.substring(0, 50) + crowdsaleDutchSimple.url.substring(52, crowdsaleDutchSimple.length)
-            let result = await contributionPage.open(wrongUrl)
-                && await contributionPage.waitUntilShowUpButtonOk()
-                && await contributionPage.clickButtonOK()
-            return await assert.equal(result, true, 'Test FAILED. Contribution page: no alert if invalid proxyID in address bar');
-        });
+                let result = await wizardStep4.clickButtonSkipTransaction()
+                    && await wizardStep4.waitUntilShowUpPopupConfirm(80)
+                    && await wizardStep4.clickButtonYes();
+                return await assert.equal(result, true, "Test FAILED.Wizard step#4:  user is not able to skip transaction");
+            });
 
-    test.it('Crowdsale page: should be alert if invalid proxyID in address bar',
-        async function () {
-            let owner = Owner;
-            let wrongCrowdsale = crowdsaleDutchSimple;
-            wrongCrowdsale.proxyAddress = crowdsaleDutchSimple.proxyAddress.substring(0, crowdsaleDutchSimple.proxyAddress.length - 5)
-            let result = await owner.openCrowdsalePage(wrongCrowdsale)
-                && await contributionPage.waitUntilShowUpButtonOk()
-                && await contributionPage.clickButtonOK()
-            return await assert.equal(result, true, 'Test FAILED. Crowdsale page: no alert if invalid proxyID in address bar');
-        });
+        test.it('Alert is presented if user wants to leave the wizard ',
+            async function () {
+
+                let result = await welcomePage.openWithAlertConfirmation();
+                return await assert.equal(result, false, "Test FAILED. Wizard step#4: Alert does not present if user wants to leave the site");
+            });
+
+        test.it('User is able to stop deployment ',
+            async function () {
+
+                let result = await wizardStep4.waitUntilShowUpButtonCancelDeployment(80)
+                    && await wizardStep4.clickButtonCancelDeployment()
+                    && await wizardStep4.waitUntilShowUpPopupConfirm(80)
+                    && await wizardStep4.clickButtonYes();
+
+                return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
+            });
+    })
+    describe.skip('Others ', async function () {
+        test.it('User is able to create crowdsale(scenarioDutchSimple.json),minCap,1 tier',
+            async function () {
+                let owner = Owner;
+                assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
+                let result = await owner.createDutchAuctionCrowdsale(crowdsaleDutchSimple);
+                return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+            });
+        test.it('Contribution page: should be alert if invalid proxyID in address bar',
+            async function () {
+                let wrongUrl = crowdsaleDutchSimple.url.substring(0, 50) + crowdsaleDutchSimple.url.substring(52, crowdsaleDutchSimple.length)
+                let result = await contributionPage.open(wrongUrl)
+                    && await contributionPage.waitUntilShowUpButtonOk()
+                    && await contributionPage.clickButtonOK()
+                return await assert.equal(result, true, 'Test FAILED. Contribution page: no alert if invalid proxyID in address bar');
+            });
+
+        test.it('Crowdsale page: should be alert if invalid proxyID in address bar',
+            async function () {
+                let owner = Owner;
+                let wrongCrowdsale = crowdsaleDutchSimple;
+                wrongCrowdsale.proxyAddress = crowdsaleDutchSimple.proxyAddress.substring(0, crowdsaleDutchSimple.proxyAddress.length - 5)
+                let result = await owner.openCrowdsalePage(wrongCrowdsale)
+                    && await contributionPage.waitUntilShowUpButtonOk()
+                    && await contributionPage.clickButtonOK()
+                return await assert.equal(result, true, 'Test FAILED. Crowdsale page: no alert if invalid proxyID in address bar');
+            });
+    })
 
 });
