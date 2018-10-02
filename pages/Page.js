@@ -6,6 +6,7 @@ const By = require('selenium-webdriver/lib/by').By;
 const loader = By.className("loading-container");
 const loaderNotDisplayed = By.className("loading-container notdisplayed");
 const titles = By.className("title");
+const buttonOk = By.className("swal2-confirm swal2-styled");
 
 class Page {
 
@@ -39,7 +40,7 @@ class Page {
     }
 
     async waitUntilDisplayed(element, Twaiting) {
-        logger.info("wait until displayed");
+        logger.info("waitUntilDisplayed");
         let counter = Twaiting;
         if ( counter === undefined ) counter = 180;
         try {
@@ -70,6 +71,15 @@ class Page {
         catch ( err ) {
             logger.info("Error: " + err);
             return false;
+        }
+    }
+
+    async isElementSelected(element) {
+        logger.info("isElementSelected");
+        if ( element.constructor.name !== "WebElement" ) {
+            return await this.driver.findElement(element).isSelected();
+        } else {
+            return await element.isSelected();
         }
     }
 
@@ -200,7 +210,6 @@ class Page {
         logger.info("click with wait: " + element);
         try {
             let field = await this.getElement(element, Twaiting);
-
             await field.click();
             return true;
         }
@@ -322,9 +331,22 @@ class Page {
     }
 
     async goBack() {
-        logger.info("go back :");
+
+        logger.info("goBack");
         try {
             this.driver.navigate().back();
+            return true;
+        }
+        catch ( err ) {
+            logger.info("Error: " + err);
+            return false;
+        }
+    }
+
+    async goForward() {
+        logger.info("goForward");
+        try {
+            this.driver.navigate().forward();
             return true;
         }
         catch ( err ) {
@@ -396,6 +418,34 @@ class Page {
         }
     }
 
+    async waitUntilShowUpWarning(Twaiting) {
+        logger.info("waitUntilShowUpWarning ");
+        return await this.waitUntilDisplayed(buttonOk, Twaiting);
+    }
+
+    async clickButtonOK() {
+        logger.info("clickButtonOK ");
+        return await this.clickWithWait(buttonOk);
+    }
+
+    async waitUntilHasValue(element, Twaiting) {
+        logger.info("waitUntilHasValue ");
+        try {
+            let field = await this.getElement(element, 3);
+            if ( field === null ) return false;
+            if ( Twaiting === undefined ) Twaiting = 180;
+            do {
+                await this.driver.sleep(333);
+                if ( await this.getAttribute(field, "value") !== '' ) return true;
+            }
+            while ( Twaiting-- > 0 )
+            return false;
+        }
+        catch ( err ) {
+            logger.info(err);
+            return false;
+        }
+    }
 }
 
 module.exports.Page = Page;

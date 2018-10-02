@@ -1,7 +1,9 @@
 const logger= require('../entity/Logger.js').logger;
 const Page=require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
-const  buttonContinue= By.className("button button_fill");
+const  buttonContinue= By.className("sw-ButtonContinue");
+const checkboxWhitelistWithCap =By.id('white-list-with-cap');
+const checkboxDutchAuction = By.id('dutch-auction');
 
 class WizardStep1 extends Page {
 
@@ -16,7 +18,7 @@ class WizardStep1 extends Page {
     async initCheckboxes() {
 		try {
 			logger.info(this.name + "initCheckboxes ");
-			let locator = By.className("radio");
+			let locator = By.className("sw-RadioItems_Radio");
 			let array = await super.findWithWait(locator);
 			this.checkboxWhitelistWithCap = array[0];
 			this.checkboxDutchAuction = array[1];
@@ -26,6 +28,16 @@ class WizardStep1 extends Page {
 			return null;
 		}
 	}
+
+    async isSelectedCheckboxWhitelistWithCap() {
+        logger.info(this.name + "isSelectedCheckboxWhitelistWithCap: ");
+        return super.isElementSelected(checkboxWhitelistWithCap)
+	}
+
+    async isSelectedCheckboxDutchAuction() {
+        logger.info(this.name + "isSelectedCheckboxDutchAuction: ");
+        return super.isElementSelected(checkboxDutchAuction)
+    }
 
     async isDisplayedButtonContinue() {
 	    logger.info(this.name+": isDisplayedButtonContinue: ");

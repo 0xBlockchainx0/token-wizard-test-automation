@@ -332,11 +332,10 @@ class User {
         }
     }
 
-    async createMintedCappedCrowdsale(crowdsale, isFillBulkReservedAddresses, pathCSV, isFillBulkWhitelistAddresses, pathCSVWhitelist) {
+   // async createMintedCappedCrowdsale(crowdsale, isFillBulkReservedAddresses, pathCSV, isFillBulkWhitelistAddresses, pathCSVWhitelist) {
 
-
+    async createMintedCappedCrowdsale(obj) {
         logger.info(" createMintedCappedCrowdsale ");
-
         const startURL = Utils.getStartURL();
         const welcomePage = new WizardWelcome(this.driver, startURL);
         const wizardStep1 = new WizardStep1(this.driver);
@@ -367,12 +366,12 @@ class User {
 
         result = result
             && await wizardStep2.waitUntilLoaderGone()
-            && await wizardStep2.fillPage(crowdsale)
-            && ((isFillBulkReservedAddresses) ? await reservedTokens.fillBulkReservedTokens(pathCSV) : await reservedTokens.fillReservedTokens(crowdsale))
+            && await wizardStep2.fillPage(obj.crowdsale)
+            && ((obj.isFillBulkReservedAddresses) ? await reservedTokens.fillBulkReservedTokens(obj.pathCSV) : await reservedTokens.fillReservedTokens(obj.crowdsale))
             && await wizardStep2.scrollDownUntilButtonContinueDislayed()
             && await wizardStep2.clickButtonContinue()
             && await wizardStep2.waitUntilLoaderGone()
-            && await wizardStep3.fillPage(crowdsale, isFillBulkWhitelistAddresses, pathCSVWhitelist);
+            && await wizardStep3.fillPage(obj.crowdsale, obj.isFillBulkWhitelistAddresses, obj.pathCSVWhitelist);
 
         counter = 200;
         do {
@@ -389,11 +388,13 @@ class User {
         } while ( counter-- >= 0 );
 
         result = result &&
-            await wizardStep4.deployContracts(crowdsale) &&
+            await wizardStep4.deployContracts(obj.crowdsale)
+        if (obj.stop.publish)  return result;
+        result = result &&
             await wizardStep4.waitUntilDisplayedButtonContinue() &&
             await wizardStep4.clickButtonContinue() &&
             await wizardStep4.waitUntilLoaderGone();
-        crowdsale.proxyAddress = await crowdsalePage.getProxyAddress();
+        obj.crowdsale.proxyAddress = await crowdsalePage.getProxyAddress();
 
         counter = 200;
         do {
@@ -409,16 +410,16 @@ class User {
         } while ( counter-- >= 0 );
 
         result = result && await investPage.waitUntilLoaderGone();
-        crowdsale.url = await investPage.getURL();
+        obj.crowdsale.url = await investPage.getURL();
 
-        logger.info("Final invest page link: " + crowdsale.url);
-        logger.info("proxyAddress " + crowdsale.proxyAddress);
-        crowdsale.networkID = this.networkID;
-        crowdsale.sort = 'minted';
-        crowdsale.executionID = await Utils.getProxyExecID(crowdsale);
-        logger.info("executionID " + crowdsale.executionID);
+        logger.info("Final invest page link: " + obj.crowdsale.url);
+        logger.info("proxyAddress " + obj.crowdsale.proxyAddress);
+        obj.crowdsale.networkID = this.networkID;
+        obj.crowdsale.sort = 'minted';
+        obj.crowdsale.executionID = await Utils.getProxyExecID(obj.crowdsale);
+        logger.info("executionID " + obj.crowdsale.executionID);
 
-        return result && crowdsale.proxyAddress !== "";
+        return result && obj.crowdsale.proxyAddress !== "";
     }
 
     async createDutchAuctionCrowdsale(crowdsale, isFillBulkWhitelistAddresses, pathCSVWhitelist) {

@@ -22,6 +22,16 @@ const MetaMask = require('../pages/MetaMask.js').MetaMask;
 const Nifty = require('../pages/Nifty.js').Nifty;
 
 class Utils {
+    static async delay(ms) {
+        try {
+            await new Promise(resolve => setTimeout(resolve, ms))
+            return true
+        }
+        catch ( err ) {
+            logger.info(err);
+            return false;
+        }
+    }
 
     static async delay(ms) {
         try {
@@ -428,6 +438,23 @@ class Utils {
                 return Utils.getFromEnvMintedIDXAddress();
         }
 
+    }
+
+    static async getContractSourceCode(crowdsale){
+        logger.info("Utils:getContractSourceCode");
+        let path = '../../public/contracts/';
+        switch ( crowdsale.sort ) {
+            case 'minted':
+                path = path + 'MintedCappedProxy.sol';
+                break;
+            case 'dutch':
+                path = path + 'DutchProxy.sol';
+                break;
+            default:
+                path = path + 'MintedCappedProxy.sol'
+        }
+
+        return await fs.readFileSync(path).toString()
     }
 
     static async getContractABIInitCrowdsale(crowdsale) {

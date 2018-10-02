@@ -56,6 +56,12 @@ class TierPage extends Page {
         return await super.getElement(locator);
     }
 
+    async getValueFieldSetupName() {
+        logger.info(this.name + "getValueFieldSetupName ");
+        const field = await this.getFieldSetupName()
+        return await super.getAttribute(field, "value");
+    }
+
     async fillSetupName() {
         logger.info(this.name + "fillSetupName ");
         if ( this.tier.name === undefined ) return true;
@@ -78,6 +84,12 @@ class TierPage extends Page {
             await super.fillWithWait(element, this.tier.rate);
     }
 
+    async getValueFieldRate() {
+        logger.info(this.name + "getValueFieldRate ");
+        const field = await this.getFieldRate()
+        return await super.getAttribute(field, "value");
+    }
+
     async getFieldMinCap() {
         logger.info(this.name + "getFieldMinCap ");
         const locator = By.id("tiers[" + this.number + "].minCap");
@@ -92,10 +104,22 @@ class TierPage extends Page {
             await super.fillWithWait(element, this.tier.minCap);
     }
 
+    async getValueFieldMinCap() {
+        logger.info(this.name + "getValueFieldMinCap ");
+        const field = await this.getFieldMinCap()
+        return await super.getAttribute(field, "value");
+    }
+
     async getFieldSupply() {
         logger.info(this.name + "getFieldSupply ");
         const locator = By.id("tiers[" + this.number + "].supply");
         return await super.getElement(locator);
+    }
+
+    async getValueFieldSupply() {
+        logger.info(this.name + "getValueFieldSupply ");
+        const field = await this.getFieldSupply()
+        return await super.getAttribute(field, "value");
     }
 
     async fillSupply() {
@@ -125,6 +149,12 @@ class TierPage extends Page {
         return await super.getElement(locator);
     }
 
+    async getValueFieldStartTime() {
+        logger.info(this.name + "getValueFieldStartTime ");
+        const field = await this.getFieldStartTime()
+        return await super.getAttribute(field, "value");
+    }
+
     async fillStartTime() {
         logger.info(this.name + "fillStartTime ");
         if ( this.tier.startDate === "" ) return true;
@@ -150,6 +180,12 @@ class TierPage extends Page {
         return await super.getElement(locator);
     }
 
+    async getValueFieldEndTime() {
+        logger.info(this.name + "getValueFieldEndTime ");
+        const field = await this.getFieldEndTime()
+        return await super.getAttribute(field, "value");
+    }
+
     async fillEndTime() {
         logger.info(this.name + "fillEndTime ");
         if ( this.tier.endDate === "" ) return true;
@@ -162,7 +198,6 @@ class TierPage extends Page {
             this.tier.endTime = Utils.convertTimeToMdy(this.tier.endTime);
             this.tier.endDate = Utils.convertDateToMdy(this.tier.endDate);
         }
-
         return await super.clickWithWait(locator) &&
             await super.fillWithWait(locator, this.tier.endDate) &&
             await super.pressKey(key.TAB, 1) &&
@@ -221,7 +256,7 @@ class TierPage extends Page {
                 this.checkboxWhitelistingYes = array[0];
                 this.checkboxWhitelistingNo = array[1];
             }
-            return true;
+            return array;
         }
         catch ( err ) {
             logger.info("Error: " + err);
@@ -436,8 +471,8 @@ class TierPage extends Page {
         && await this.fillRate()
         && await this.fillSetupName()
         && await this.fillSupply()
-        && await this.fillStartTime()
         && await this.fillEndTime()
+        && await this.fillStartTime()
         && (isFillBulkWhitelistAddresses) ? await this.fillBulkWhitelist(pathCSVWhitelist) : await this.fillWhitelist();
 
     }
@@ -490,6 +525,76 @@ class TierPage extends Page {
         logger.info(this.name + "isDisabledFieldSupply ");
         let element = await this.getFieldSupply()
         return await this.isElementDisabled(element);
+    }
+
+    async getCheckboxAllowModifyOn() {
+        logger.info(this.name + "getCheckboxAllowModifyOn ");
+        const locator = By.id("tiers[" + this.number + "].allow_modifying_on");
+        return await super.getElement(locator);
+    }
+
+    async getCheckboxAllowModifyOff() {
+        logger.info(this.name + "getCheckboxAllowModifyOff ");
+        const locator = By.id("tiers[" + this.number + "].allow_modifying_off");
+        return await super.getElement(locator);
+    }
+
+    async getCheckboxWhitelistYes() {
+        logger.info(this.name + "getCheckboxWhitelistYes ");
+        const locator = By.id("tiers[" + this.number + "].enable_whitelisting_yes");
+        return await super.getElement(locator);
+    }
+
+    async getCheckboxWhitelistNo() {
+        logger.info(this.name + "getCheckboxWhitelistNo ");
+        const locator = By.id("tiers[" + this.number + "].enable_whitelisting_no");
+        return await super.getElement(locator);
+    }
+
+    async clickCheckboxAllowModifyOn() {
+        logger.info(this.name + "clickCheckboxAllowModifyOn ");
+        return (await this.initCheckboxes() !== null)
+            && await super.clickWithWait(this.checkboxModifyOn);
+    }
+
+    async isSelectedCheckboxAllowModifyOn() {
+        logger.info(this.name + "isSelectedCheckboxAllowModifyOn ");
+        return (await this.initCheckboxes() !== null)
+            && await super.isElementSelected(await this.getCheckboxAllowModifyOn())
+    }
+
+    async clickCheckboxAllowModifyOff() {
+        logger.info(this.name + "clickCheckboxAllowModifyOff ");
+        return (await this.initCheckboxes() !== null)
+            && await super.clickWithWait(this.checkboxModifyOff);
+    }
+
+    async isSelectedCheckboxAllowModifyOff() {
+        logger.info(this.name + "isSelectedCheckboxAllowModifyOff ");
+        return await super.isElementSelected(await this.getCheckboxAllowModifyOff())
+    }
+
+    async clickCheckboxWhitelistNo() {
+        logger.info(this.name + "clickCheckboxWhitelistNo ");
+        return (await this.initCheckboxes() !== null)
+            && await super.clickWithWait(this.checkboxWhitelistingNo);
+    }
+
+
+    async isSelectedCheckboxWhitelistNo() {
+        logger.info(this.name + "isSelectedCheckboxWhitelistNo ");
+        return await super.isElementSelected(await this.getCheckboxWhitelistNo())
+    }
+
+    async clickCheckboxWhitelistYes() {
+        logger.info(this.name + "clickCheckboxWhitelistYes ");
+        return (await this.initCheckboxes() !== null)
+            && await super.clickWithWait(this.checkboxWhitelistingYes);
+    }
+
+    async isSelectedCheckboxWhitelistYes() {
+        logger.info(this.name + "isSelectedCheckboxWhitelistYes ");
+        return await super.isElementSelected(await this.getCheckboxWhitelistYes())
     }
 }
 
