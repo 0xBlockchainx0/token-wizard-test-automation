@@ -355,10 +355,10 @@ class Page {
         }
     }
 
-    async getChildFromElementByClassName(child, element) {
-        logger.info("getChildFromElementByClassName");
+    async getChildsByClassName(className, element) {
+        logger.info("getChildsByClassName");
         try {
-            return await element.findElements(By.className(child.toString()));
+            return await element.findElements(By.className(className.toString()));
         }
         catch ( err ) {
             logger.info("Error: " + err);

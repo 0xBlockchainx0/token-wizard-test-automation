@@ -54,7 +54,7 @@ class ManagePage extends Page {
 			if (arrayWh === null) return null;
 			let array;
 			for (let i = 0; i < arrayWh.length; i++) {
-				array = await this.getChildFromElementByClassName("input", arrayWh[i]);
+				array = await this.getChildsByClassName("input", arrayWh[i]);
 				if (array !== null) {
 					this.fieldWhAddress[i] = array[0];
 					this.fieldWhMin[i] = array[1];
@@ -298,7 +298,7 @@ class ManagePage extends Page {
 	async getButtonAddWhitelist(tier) {
 		logger.info(this.name + "getButtonAddWhitelist ");
 		let containers = await super.findWithWait(contentContainer);
-		let element = await this.getChildFromElementByClassName("button button_fill button_fill_plus", containers[tier+1]);
+		let element = await this.getChildsByClassName("button button_fill button_fill_plus", containers[tier+1]);
 		return element[0];
 	}
 	async clickButtonAddWhitelist(tier) {
@@ -447,7 +447,7 @@ class ManagePage extends Page {
 			let elements = await super.findWithWait(whitelistContainer);
 			let element = elements[tierNumber - 1];
 			const locator = "white-list-item-container-inner";
-			let array = await super.getChildFromElementByClassName(locator, element);
+			let array = await super.getChildsByClassName(locator, element);
 			if (array === null) return null;
 			let addresses = [];
 			for (let i = 0; i < array.length; i++) {
@@ -468,7 +468,7 @@ class ManagePage extends Page {
 		const mincapBlock = By.className("left");
 		const elements = await super.findWithWait(mincapBlock);
 		const locator = "error";
-		let warnings = await super.getChildFromElementByClassName(locator, elements[0]);
+		let warnings = await super.getChildsByClassName(locator, elements[0]);
 		if (warnings === null) return null;
 		return (await super.getTextForElement(warnings[0]) !== "");
 	}

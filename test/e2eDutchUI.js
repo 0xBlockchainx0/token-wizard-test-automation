@@ -51,7 +51,8 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
         gasCustom: '0.1',
         setupNameTier1: 'Tier 1',
         decimals: '18',
-        mincap: '0'
+        mincap: '0',
+        totalSupply: '0'
     }
 
     const newValue = {
@@ -141,27 +142,26 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     && await wizardStep1.clickCheckboxDutchAuction();
                 return await assert.equal(result, true, "User is not able to to click DutchAuction checkbox");
             });
-        test.it('Go back - page keep state of checkbox \'Dutch auction\'',
+        test.it.skip('Go back - page keep state of checkbox \'Dutch auction\'',
             async function () {
-                const result = await wizardStep1.clickCheckboxDutchAuction()
-                    && await wizardStep1.goBack()
+                const result = await wizardStep1.goBack()
                     && await welcomePage.isDisplayedButtonChooseContract()
                     && await wizardStep1.goForward()
                     && await wizardStep1.waitUntilLoaderGone()
                     && await wizardStep1.waitUntilDisplayedCheckboxDutchAuction()
                     && await wizardStep1.isSelectedCheckboxDutchAuction()
-                return await assert.equal(result, true, "Checkbox changed");
+                return await assert.equal(result, true, "Checkbox changed after go back");
             });
 
-        test.it('Refresh - page keep state of checkbox \'Dutch auction\' ',
+        test.it.skip('Refresh - page keep state of checkbox \'Dutch auction\' ',
             async function () {
                 const result = await wizardStep1.clickCheckboxDutchAuction()
                     && await wizardStep1.refresh()
                     && await wizardStep1.isSelectedCheckboxDutchAuction()
-                return await assert.equal(result, true, "Checkbox changed");
+                return await assert.equal(result, true, "Checkbox changed after refresh");
             });
 
-        test.it('Change network - page keep state of checkbox \'Dutch auction\' ',
+        test.it.skip('Change network - page keep state of checkbox \'Dutch auction\' ',
             async function () {
                 const result = await wizardStep1.clickCheckboxDutchAuction()
                     && await Investor1.setWalletAccount()
@@ -170,10 +170,10 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     && await wizardStep1.isSelectedCheckboxDutchAuction()
                     && await Owner.setWalletAccount()
                     && await wizardStep1.waitUntilLoaderGone()
-                return await assert.equal(result, true, "Checkbox changed");
+                return await assert.equal(result, true, "Checkbox changed after changing network");
             });
 
-        test.it('Step#1: user is able to open Step2 by clicking button Continue',
+        test.it('User is able to open Step2 by clicking button Continue',
             async function () {
                 await wizardStep1.clickCheckboxDutchAuction()
                 let count = 10;
@@ -192,11 +192,77 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
     })
 
     describe('Step#2 ', async function () {
-
-        test.it('User able to fill out Name field with valid data',
+        const invalidValues = {
+            name: '012345678901234567790123456789f',
+            ticker: 'qwe$#',
+            decimals: '19',
+            supply: '0'
+        }
+        test.it('Button \'Back\' opens Step#1',
             async function () {
-                let result = await wizardStep2.fillName(newValue.name);
+                const result = await wizardStep2.clickButtonBack()
+                    && await wizardStep1.waitUntilDisplayedCheckboxDutchAuction()
+                await assert.equal(result, true, 'Incorrect behavior of button \'Back\'')
+            });
+        test.it('user is able to open Step2 by clicking button Continue',
+            async function () {
+                await wizardStep1.clickCheckboxDutchAuction()
+                let count = 10;
+                do {
+                    await driver.sleep(1000);
+                    if ( (await wizardStep1.isDisplayedButtonContinue()) &&
+                        !(await wizardStep2.isDisplayedFieldName()) ) {
+                        await wizardStep1.clickButtonContinue();
+                    }
+                    else break;
+                }
+                while ( count-- > 0 );
+                let result = await wizardStep2.isDisplayedFieldName();
+                return await assert.equal(result, true, "User is not able to open Step2 by clicking button Continue");
+            });
+        test.it('Error message if name longer than 30 symbols',
+            async function () {
+                await wizardStep2.fillName(invalidValues.name);
+                const result = await wizardStep2.getWarningText('name')
+                return await assert.equal(result, 'Please enter a valid name between 1-30 characters', 'Incorrect error message');
+            });
+        test.it('Error message if name is empty',
+            async function () {
+                await wizardStep2.fillName('');
+                const result = await wizardStep2.getWarningText('name')
+                return await assert.equal(result, 'This field is required', 'Incorrect error message');
+            });
+        test.it('User able to fill out name field with valid data',
+            async function () {
+                const result = await wizardStep2.fillName(newValue.name);
                 return await assert.equal(result, true, "User able to fill Name field with valid data ");
+            });
+        test.it('No error message if name is valid',
+            async function () {
+                const result = await wizardStep2.getWarningText('name')
+                return await assert.equal(result, '', 'unexpected error message');
+            });
+
+        test.it('Error message if ticker longer than 5 symbols',
+            async function () {
+                await wizardStep2.fillTicker(invalidValues.name);
+                const result = await wizardStep2.getWarningText('ticker')
+                return await assert.equal(result, 'Please enter a valid ticker between 1-5 characters', 'Incorrect error message');
+            });
+
+        test.it('Error message if ticker contains special symbols',
+            async function () {
+                await wizardStep2.fillTicker(invalidValues.ticker);
+                const result = await wizardStep2.getWarningText('ticker')
+                return await assert.equal(result, 'Only alphanumeric characters', 'Incorrect error message');
+            });
+
+        test.it('Error message if ticker is empty',
+            async function () {
+                await wizardStep2.fillTicker('');
+                await wizardStep2.refresh()
+                const result = await wizardStep2.getWarningText('ticker')
+                return await assert.equal(result, 'This field is required', 'Incorrect error message');
             });
 
         test.it('User able to fill out field Ticker with valid data',
@@ -205,7 +271,24 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "User is not  able to fill out field Ticker with valid data ");
             });
 
-        test.it('User able to fill out  Decimals field with valid data',
+        test.it('Decimals field has placeholder 18',
+            async function () {
+                const result = await wizardStep2.getValueFieldDecimals()
+                return await assert.equal(result, placeholder.decimals, 'Incorrect placeholder');
+            });
+        test.it('Error message if decimals more than 18',
+            async function () {
+                await wizardStep2.fillDecimals(invalidValues.decimals);
+                const result = await wizardStep2.getWarningText('decimals')
+                return await assert.equal(result, 'Should not be greater than 18', 'Incorrect error message');
+            });
+        test.it('Error message if decimals is empty',
+            async function () {
+                await wizardStep2.fillDecimals('');
+                const result = await wizardStep2.getWarningText('decimals')
+                return await assert.equal(result, 'This field is required', 'Incorrect error message');
+            });
+        test.it('User able to fill out decimals field with valid data',
             async function () {
                 let result = await wizardStep2.fillDecimals(newValue.decimals);
                 return await assert.equal(result, true, "User is not able to fill Decimals  field with valid data ");
@@ -243,8 +326,19 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 await assert.equal(await wizardStep2.getValueFieldTicker(), newValue.ticker, "Field ticker changed");
 
             });
+        test.it('Supply field has placeholder 0',
+            async function () {
+                const result = await wizardStep2.getValueFieldSupply()
+                return await assert.equal(result, placeholder.totalSupply, 'Incorrect placeholder');
+            });
+        test.it('Error message if total supply is 0',
+            async function () {
+                await wizardStep2.fillSupply(invalidValues.supply);
+                const result = await wizardStep2.getWarningText('supply')
+                return await assert.equal(result, 'Please enter a valid number greater than 0', 'Incorrect error message');
+            });
 
-        test.it('User able to fill out  Total supply field with valid data',
+        test.it('User able to fill out Total supply field with valid data',
             async function () {
                 let result = await wizardStep2.fillSupply(newValue.totalSupply);
                 return await assert.equal(result, true, "User is not able to fill Total supply  field with valid data ");
@@ -268,8 +362,6 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 let result = await wizardStep2.isDisplayedButtonContinue();
                 return await assert.equal(result, true, "Button Continue disabled or not displayed  ");
             });
-
-
     })
     describe.skip('Step#3 ', async function () {
         test.it('User is able to open Step3 by clicking button Continue ',

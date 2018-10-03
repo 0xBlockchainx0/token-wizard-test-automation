@@ -223,8 +223,8 @@ class TierPage extends Page {
         logger.info(this.name + "initWhitelistFields ");
         try {
             let containers = await super.findWithWait(contentContainer);
-            let element = await this.getChildFromElementByClassName("white-list-container", containers[this.number + 1]);
-            let array = await this.getChildFromElementByClassName("input", element[0]);
+            let element = await this.getChildsByClassName("white-list-container", containers[this.number + 1]);
+            let array = await this.getChildsByClassName("input", element[0]);
 
             if ( array === null ) return null;
             else {
@@ -244,7 +244,7 @@ class TierPage extends Page {
         logger.info(this.name + "initCheckboxes ");
         try {
             let containers = await super.findWithWait(contentContainer);
-            let array = await this.getChildFromElementByClassName("radio-inline", containers[this.number + 1]);
+            let array = await this.getChildsByClassName("radio-inline", containers[this.number + 1]);
 
             if ( array.length > 2 ) {
                 this.checkboxModifyOn = array[0];
@@ -291,7 +291,7 @@ class TierPage extends Page {
     async getButtonAddWhitelist() {
         logger.info(this.name + "getButtonAddWhitelist ");
         let containers = await super.findWithWait(contentContainer);
-        let element = await this.getChildFromElementByClassName("button button_fill button_fill_plus", containers[this.number + 1]);
+        let element = await this.getChildsByClassName("button button_fill button_fill_plus", containers[this.number + 1]);
         return element[0];
     }
 

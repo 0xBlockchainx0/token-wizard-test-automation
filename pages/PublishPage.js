@@ -25,7 +25,7 @@ class PublishPage extends Page {
     async getTextContract() {
         logger.info(this.name + "getTextContract ");
         const arr = await super.findWithWait(copyArea);
-        const copy = await super.getChildFromElementByClassName('copy', arr[0])
+        const copy = await super.getChildsByClassName('copy', arr[0])
         const text = await super.getAttribute(copy[0], 'data-clipboard-text')
         return text
     }
@@ -33,7 +33,7 @@ class PublishPage extends Page {
     async getEncodedABI() {
         logger.info(this.name + "getEncodedABI ");
         const arr = await super.findWithWait(copyArea);
-        const copy = await super.getChildFromElementByClassName('copy', arr[1])
+        const copy = await super.getChildsByClassName('copy', arr[1])
         const text = await super.getAttribute(copy[0], 'data-clipboard-text')
         return text
     }
