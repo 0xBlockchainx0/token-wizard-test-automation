@@ -142,7 +142,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     && await wizardStep1.clickCheckboxDutchAuction();
                 return await assert.equal(result, true, "User is not able to to click DutchAuction checkbox");
             });
-        test.it.skip('Go back - page keep state of checkbox \'Dutch auction\'',
+        test.it('Go back - page keep state of checkbox \'Dutch auction\'',
             async function () {
                 const result = await wizardStep1.goBack()
                     && await welcomePage.isDisplayedButtonChooseContract()
@@ -153,7 +153,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Checkbox changed after go back");
             });
 
-        test.it.skip('Refresh - page keep state of checkbox \'Dutch auction\' ',
+        test.it('Refresh - page keep state of checkbox \'Dutch auction\' ',
             async function () {
                 const result = await wizardStep1.clickCheckboxDutchAuction()
                     && await wizardStep1.refresh()
@@ -161,7 +161,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Checkbox changed after refresh");
             });
 
-        test.it.skip('Change network - page keep state of checkbox \'Dutch auction\' ',
+        test.it('Change network - page keep state of checkbox \'Dutch auction\' ',
             async function () {
                 const result = await wizardStep1.clickCheckboxDutchAuction()
                     && await Investor1.setWalletAccount()
@@ -217,7 +217,8 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     else break;
                 }
                 while ( count-- > 0 );
-                let result = await wizardStep2.isDisplayedFieldName();
+                let result = await wizardStep2.waitUntilLoaderGone()
+                    && await wizardStep2.isDisplayedFieldName();
                 return await assert.equal(result, true, "User is not able to open Step2 by clicking button Continue");
             });
         test.it('Error message if name longer than 30 symbols',
