@@ -266,6 +266,34 @@ class ReservedTokensPage extends Page {
         return await this.waitUntilDisplayed(buttonYesAlert, Twaiting);
     }
 
+    async getWarningText(field) {
+        logger.info(this.name + "getWarningText " + field);
+        try {
+            const elements = await super.findWithWait(inputFields)
+            let element
+            switch ( field ) {
+                case 'name':
+                    element = elements[0];
+                    break
+                case 'ticker':
+                    element = elements[1];
+                    break
+                case 'decimals':
+                    element = elements[2];
+                    break
+                case 'supply':
+                    element = elements[3];
+                    break
+            }
+            const error = await this.getChildsByClassName('sw-Error', element)
+            if ( (error === null) || (error === undefined) ) return ''
+            else return await error[0].getText()
+        }
+        catch ( err ) {
+            return ''
+        }
+    }
+
 }
 
 module.exports.ReservedTokensPage = ReservedTokensPage;

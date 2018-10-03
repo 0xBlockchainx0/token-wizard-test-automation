@@ -267,10 +267,48 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     })
 
     describe('Step#2: ', async function () {
-
-        test.it('Field \'Decimals\' has placeholder 18',
+        const invalidValues = {
+            name: '012345678901234567790123456789f',
+            ticker: 'qwe$#',
+            decimals: '19',
+            address:'lsdnfoiwd',
+            value:'0.00000123134824956234651234234'
+        }
+        test.it('Button \'Back\' opens Step#1',
             async function () {
-                return await assert.equal(await wizardStep2.getValueFieldDecimals(), placeholder.decimals, "Test FAILED. Step#2:incorrect placeholder for field 'Decimals'");
+                const result = await wizardStep2.clickButtonBack()
+                    && await wizardStep1.waitUntilDisplayedCheckboxDutchAuction()
+                await assert.equal(result, true, 'Incorrect behavior of button \'Back\'')
+            });
+        test.it('user is able to open Step2 by clicking button Continue',
+            async function () {
+                await wizardStep1.clickCheckboxWhitelistWithCap()
+                let count = 10;
+                do {
+                    await driver.sleep(1000);
+                    if ( (await wizardStep1.isDisplayedButtonContinue()) &&
+                        !(await wizardStep2.isDisplayedFieldName()) ) {
+                        await wizardStep1.clickButtonContinue();
+                    }
+                    else break;
+                }
+                while ( count-- > 0 );
+                let result = await wizardStep2.waitUntilLoaderGone()
+                    && await wizardStep2.isDisplayedFieldName();
+                return await assert.equal(result, true, "User is not able to open Step2 by clicking button Continue");
+            });
+
+        test.it('Error message if name longer than 30 symbols',
+            async function () {
+                await wizardStep2.fillName(invalidValues.name);
+                const result = await wizardStep2.getWarningText('name')
+                return await assert.equal(result, 'Please enter a valid name between 1-30 characters', 'Incorrect error message');
+            });
+        test.it('Error message if name is empty',
+            async function () {
+                await wizardStep2.fillName('');
+                const result = await wizardStep2.getWarningText('name')
+                return await assert.equal(result, 'This field is required', 'Incorrect error message');
             });
 
         test.it('User able to fill out field \'Name\' with valid data',
@@ -314,11 +352,52 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#2: field name changed");
             });
 
+        test.it('Error message if ticker longer than 5 symbols',
+            async function () {
+                await wizardStep2.fillTicker(invalidValues.name);
+                const result = await wizardStep2.getWarningText('ticker')
+                return await assert.equal(result, 'Please enter a valid ticker between 1-5 characters', 'Incorrect error message');
+            });
+
+        test.it('Error message if ticker contains special symbols',
+            async function () {
+                await wizardStep2.fillTicker(invalidValues.ticker);
+                const result = await wizardStep2.getWarningText('ticker')
+                return await assert.equal(result, 'Only alphanumeric characters', 'Incorrect error message');
+            });
+
+        test.it('Error message if ticker is empty',
+            async function () {
+                await wizardStep2.fillTicker('');
+                await wizardStep2.refresh()
+                const result = await wizardStep2.getWarningText('ticker')
+                return await assert.equal(result, 'This field is required', 'Incorrect error message');
+            });
+
         test.it('User able to fill out field Ticker with valid data',
             async function () {
                 await wizardStep2.fillTicker(newValue.ticker);
                 let result = await wizardStep2.isDisplayedWarningTicker();
                 return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not  able to fill out field Ticker with valid data ");
+            });
+
+        test.it('Field \'Decimals\' has placeholder 18',
+            async function () {
+                return await assert.equal(await wizardStep2.getValueFieldDecimals(), placeholder.decimals, "Test FAILED. Step#2:incorrect placeholder for field 'Decimals'");
+            });
+
+        test.it('Error message if decimals more than 18',
+            async function () {
+                await wizardStep2.fillDecimals(invalidValues.decimals);
+                const result = await wizardStep2.getWarningText('decimals')
+                return await assert.equal(result, 'Should not be greater than 18', 'Incorrect error message');
+            });
+
+        test.it('Error message if decimals is empty',
+            async function () {
+                await wizardStep2.fillDecimals('');
+                const result = await wizardStep2.getWarningText('decimals')
+                return await assert.equal(result, 'This field is required', 'Incorrect error message');
             });
 
         test.it('User able to fill out  Decimals field with valid data',
@@ -327,6 +406,18 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#2: user is not able to fill Decimals  field with valid data ");
             });
 
+        test.it.skip('Error message if invalid reserved address',
+            async function () {
+                await reservedTokensPage.fillAddress(invalidValues.address);
+                const result = await wizardStep2.getWarningText('address')
+                return await assert.equal(result, 'The inserted address is invalid', 'Incorrect error message');
+            });
+        test.it.skip('Error message if value exceed decimals specified',
+            async function () {
+                await reservedTokensPage.fillValue(invalidValues.value);
+                const result = await wizardStep2.getWarningText('value')
+                return await assert.equal(result, 'Value must be positive and decimals should not exceed the amount of decimals specified', 'Incorrect error message');
+            });
 
         test.it('User is able to download CSV file with reserved tokens',
             async function () {
