@@ -145,6 +145,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
         test.it('Go back - page keep state of checkbox \'Dutch auction\'',
             async function () {
                 const result = await wizardStep1.goBack()
+                    && await wizardStep1.waitUntilLoaderGone()
                     && await welcomePage.isDisplayedButtonChooseContract()
                     && await wizardStep1.goForward()
                     && await wizardStep1.waitUntilLoaderGone()
