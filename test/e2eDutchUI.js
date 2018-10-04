@@ -142,7 +142,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     && await wizardStep1.clickCheckboxDutchAuction();
                 return await assert.equal(result, true, "User is not able to to click DutchAuction checkbox");
             });
-        test.it('Go back - page keep state of checkbox \'Dutch auction\'',
+        test.it.skip('Go back - page keep state of checkbox \'Dutch auction\'',
             async function () {
                 const result = await wizardStep1.goBack()
                     && await wizardStep1.waitUntilLoaderGone()
@@ -154,7 +154,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Checkbox changed after go back");
             });
 
-        test.it('Refresh - page keep state of checkbox \'Dutch auction\' ',
+        test.it.skip('Refresh - page keep state of checkbox \'Dutch auction\' ',
             async function () {
                 const result = await wizardStep1.clickCheckboxDutchAuction()
                     && await wizardStep1.refresh()
@@ -296,7 +296,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "User is not able to fill Decimals  field with valid data ");
             });
 
-        test.it('Go back - page keep state of each field',
+        test.it.skip('Go back - page keep state of each field',
             async function () {
                 const result = await wizardStep2.goBack()
                     && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap()
