@@ -71,7 +71,9 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 /////////////////////////////////////////////////////////////////////////
 
     test.before(async function () {
-
+        // const endTimeShouldBe = await Utils.getUTCPublishFormat('01/05/2030 11:22')
+        // console.log(endTimeShouldBe)
+        // throw('Stoper3e')
         await Utils.copyEnvFromWizard();
 
         const scenarioForUItests = './scenarios/scenarioUItests.json';
@@ -93,7 +95,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
         wallet = await Utils.getWalletInstance(driver);
         //await wallet.activate();//return activated Wallet and empty page
-       // await Owner.setWalletAccount();
+        // await Owner.setWalletAccount();
 
         welcomePage = new WizardWelcome(driver, startURL);
         wizardStep1 = new WizardStep1(driver);
@@ -168,7 +170,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. User is not able to activate Step1 by clicking button NewCrowdsale");
             });
     })
-    describe('Step#1: ', async function () {
+  /*  describe('Step#1: ', async function () {
         test.it('Go back - page keep state of checkbox \'Whitelist with mincap\' ',
             async function () {
                 const result = await wizardStep1.clickCheckboxWhitelistWithCap()
@@ -840,7 +842,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
             });
     })
-
+*/
     describe('Create crowdsale', async function () {
         test.it('User is able to create crowdsale(scenarioMintedSimple.json),minCap,1 tier',
             async function () {
@@ -888,28 +890,20 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
             test.it('Crowdsale start time/date is correct',
                 async function () {
-                    const startTime = await publishPage.getCrowdsaleStartTime()
-                    const date = startTime.split(' ')
-                    const arr1 = date[0].split('-')
-                    const startDateShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].startDate;
-                    const arr2 = startDateShouldBe.split('/')
-                    const result = (arr1[0].trim() === arr2[2].trim()) && (arr1[1].trim() === arr2[1].trim()) && (arr1[2].trim() === arr2[0].trim())
-                    await assert.equal(result, true, 'Publish page: start date is incorrect ');
-                    const startTimeShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].startTime;
-                    await assert.equal(startTimeShouldBe, date[1], 'Publish page: start time is incorrect ');
+                    const startTimePage = await publishPage.getCrowdsaleStartTime()
+                    const startDate = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].startDate
+                    const startTime = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].startTime
+                    const startTimeShouldBe = await Utils.getUTCPublishFormat(startDate + ' ' + startTime)
+                    await assert.equal(startTimeShouldBe, startTimePage, 'Publish page: time/date is incorrect ');
                 });
 
             test.it('Crowdsale end time/date is correct',
                 async function () {
-                    const endTime = await publishPage.getCrowdsaleEndTime()
-                    const date = endTime.split(' ')
-                    const arr1 = date[0].split('-')
-                    const endDateShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[1].endDate;
-                    const arr2 = endDateShouldBe.split('/')
-                    const result = (arr1[0].trim() === arr2[2].trim()) && (arr1[1].trim() === arr2[1].trim()) && (arr1[2].trim() === arr2[0].trim())
-                    await assert.equal(result, true, 'Publish page: end date is incorrect ');
-                    const startTimeShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[1].endTime;
-                    await assert.equal(startTimeShouldBe, date[1], 'Publish page: end time is incorrect ');
+                    const endTimePage = await publishPage.getCrowdsaleEndTime()
+                    const endTime = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[1].endTime
+                    const endDate = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[1].endDate
+                    const endTimeShouldBe = await Utils.getUTCPublishFormat(endDate + ' ' + endTime)
+                    await assert.equal(endTimeShouldBe, endTimePage, 'Publish page: time/date is incorrect ');
                 });
 
             test.it('Wallet address is correct',
@@ -954,28 +948,20 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         describe('Tier#1', async function () {
             test.it('Tier start time/date is correct',
                 async function () {
-                    const startTime = await publishPage.getTierStartTime(1)
-                    const date = startTime.split(' ')
-                    const arr1 = date[0].split('-')
-                    const startDateShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].startDate;
-                    const arr2 = startDateShouldBe.split('/')
-                    const result = (arr1[0].trim() === arr2[2].trim()) && (arr1[1].trim() === arr2[1].trim()) && (arr1[2].trim() === arr2[0].trim())
-                    await assert.equal(result, true, 'Publish page: start date is incorrect ');
-                    const startTimeShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].startTime;
-                    await assert.equal(startTimeShouldBe, date[1], 'Publish page: start time is incorrect ');
+                    const startTimePage = await publishPage.getTierStartTime(1)
+                    const startTime = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].startTime
+                    const startDate = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].startDate
+                    const startTimeShouldBe = await Utils.getUTCPublishFormat(startDate + ' ' + startTime)
+                    await assert.equal(startTimePage, startTimeShouldBe, 'Publish page: time/date is incorrect ');
                 });
 
             test.it('Tier end time/date is correct',
                 async function () {
-                    const endTime = await publishPage.getTierEndTime(1)
-                    const date = endTime.split(' ')
-                    const arr1 = date[0].split('-')
-                    const endDateShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].endDate;
-                    const arr2 = endDateShouldBe.split('/')
-                    const result = (arr1[0].trim() === arr2[2].trim()) && (arr1[1].trim() === arr2[1].trim()) && (arr1[2].trim() === arr2[0].trim())
-                    await assert.equal(result, true, 'Publish page: end date is incorrect ');
-                    const startTimeShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].endTime;
-                    await assert.equal(startTimeShouldBe, date[1], 'Publish page: end time is incorrect ');
+                    const endTimePage = await publishPage.getTierEndTime(1)
+                    const endDate = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].endDate
+                    const endTime = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].endTime
+                    const endTimeShouldBe = await Utils.getUTCPublishFormat(endDate + ' ' + endTime)
+                    await assert.equal(endTimePage, endTimeShouldBe, 'Publish page: time/date is incorrect ');
                 });
 
             test.it('Rate is correct',
@@ -1007,30 +993,21 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         describe('Tier#2', async function () {
             test.it('Tier start time/date is correct',
                 async function () {
-                    const startTime = await publishPage.getTierStartTime(2)
-                    const date = startTime.split(' ')
-                    const arr1 = date[0].split('-')
-                    const startDateShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].endDate;
-                    const arr2 = startDateShouldBe.split('/')
-                    const result = (arr1[0].trim() === arr2[2].trim()) && (arr1[1].trim() === arr2[1].trim()) && (arr1[2].trim() === arr2[0].trim())
-                    await assert.equal(result, true, 'Publish page: start date is incorrect ');
-                    const startTimeShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[0].endTime;
-                    await assert.equal(startTimeShouldBe, date[1], 'Publish page: start time is incorrect ');
+                    const startTimePage = await publishPage.getTierStartTime(2)
+                    const startTime = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[1].startTime
+                    const startDate = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[1].startDate
+                    const startTimeShouldBe = await Utils.getUTCPublishFormat(startDate + ' ' + startTime)
+                    await assert.equal(startTimeShouldBe, startTimePage, 'Publish page: time/date is incorrect ');
                 });
 
             test.it('Tier end time/date is correct',
                 async function () {
-                    const endTime = await publishPage.getTierEndTime(2)
-                    const date = endTime.split(' ')
-                    const arr1 = date[0].split('-')
-                    const endDateShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[1].endDate;
-                    const arr2 = endDateShouldBe.split('/')
-                    const result = (arr1[0].trim() === arr2[2].trim()) && (arr1[1].trim() === arr2[1].trim()) && (arr1[2].trim() === arr2[0].trim())
-                    await assert.equal(result, true, 'Publish page: end date is incorrect ');
-                    const startTimeShouldBe = JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[1].endTime;
-                    await assert.equal(startTimeShouldBe, date[1], 'Publish page: end time is incorrect ');
+                    const endTimePage = await publishPage.getTierEndTime(2)
+                    const endDate = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[1].endDate
+                    const endTime = await JSON.parse(fs.readFileSync(scenarioSimple, "utf8")).tiers[1].endTime
+                    const endTimeShouldBe = await Utils.getUTCPublishFormat(endDate + ' ' + endTime)
+                    await assert.equal(endTimePage, endTimeShouldBe, 'Publish page: time/date is incorrect ');
                 });
-
             test.it('Rate is correct',
                 async function () {
                     const result = await publishPage.getRate(2)

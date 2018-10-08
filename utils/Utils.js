@@ -259,6 +259,20 @@ class Utils {
         return "" + s[1] + "/" + s[0] + "/" + s[2];
     }
 
+    static async getUTCPublishFormat(date) {
+        logger.info('Utils:getUTCPublishFormat')
+        const utc = new Date(new Date(date).valueOf())
+        const year = utc.getUTCFullYear()
+        const month = (utc.getUTCMonth() + 1).length > 1 ? utc.getUTCMonth() + 1 : '0' + (utc.getUTCMonth() + 1)
+        const dat = (utc.getUTCDate().length > 1) ? utc.getUTCDate() : '0' + utc.getUTCDate()
+        const hours = utc.getUTCHours()
+        const minutes = utc.getUTCMinutes()
+        const utcDate = year + '-' + dat + '-' + month + ' ' + hours + ':' + minutes + ' (UTC +0000)'
+        logger.info(utcDate)
+        return utcDate
+    }
+
+
     static getTimeWithAdjust(adj, format) {
         logger.info("Utils: getTimeWithAdjust, format =" + format + " , adj= " + adj)
         let date = new Date(Date.now() + adj);
@@ -430,7 +444,7 @@ class Utils {
 
     }
 
-    static async getContractSourceCode(crowdsale){
+    static async getContractSourceCode(crowdsale) {
         logger.info("Utils:getContractSourceCode");
         let path = '../../public/contracts/';
         switch ( crowdsale.sort ) {
