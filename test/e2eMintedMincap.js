@@ -125,7 +125,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         async function () {
             let owner = Owner;
             assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
-            let result = await owner.createMintedCappedCrowdsale(e2eMinCap);
+            let result = await owner.createMintedCappedCrowdsale({crowdsale:e2eMinCap});
             Owner.tokenBalance = 0;
             Investor1.tokenBalance = 0;
             Investor2.tokenBalance = 0;

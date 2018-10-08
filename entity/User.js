@@ -389,7 +389,8 @@ class User {
 
         result = result &&
             await wizardStep4.deployContracts(obj.crowdsale)
-        if (obj.stop.publish)  return result;
+        console.log(obj.stop)
+        if ((obj.stop !== undefined) && (obj.stop.publish === true)) return result;
         result = result &&
             await wizardStep4.waitUntilDisplayedButtonContinue() &&
             await wizardStep4.clickButtonContinue() &&
