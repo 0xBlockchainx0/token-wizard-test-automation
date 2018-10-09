@@ -141,7 +141,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         async function () {
             let owner = Owner;
             assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
-            let result = await owner.createMintedCappedCrowdsale(e2eWhitelist);
+            let result = await owner.createMintedCappedCrowdsale({crowdsale:e2eWhitelist});
             logger.info("e2eWhitelist.proxyAddress  " + e2eWhitelist.proxyAddress);
             logger.info("e2eWhitelist.executionID  " + e2eWhitelist.executionID);
             logger.info("e2eWhitelist.networkID  " + e2eWhitelist.networkID);
