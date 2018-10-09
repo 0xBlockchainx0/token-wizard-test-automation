@@ -3,13 +3,13 @@ const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const Utils = require('../utils/Utils.js').Utils;
 const ReservedTokensContainer = By.className("sw-ReservedTokensTable_Row");
-const buttonAdd = By.className("sw-NumericInput_ButtonPlus");//("button button_fill button_no_icon");
-const itemsRemove = By.className("sw-ReservedTokensTable_Delete");
-const buttonClearAll = By.className("sw-ReservedTokensListControls_Button sw-ReservedTokensListControls_Button-clearall");
+const buttonAdd = By.className("sw-ButtonPlus");//("button button_fill button_no_icon");
+const itemsRemove = By.className("sw-ButtonDelete ");
+const buttonClearAll = By.className("sw-ButtonCSV sw-ButtonCSV-clearall");
 const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const buttonNoAlert = By.className("swal2-cancel swal2-styled");
 const buttonOK = By.className("swal2-confirm swal2-styled");
-const buttonDownloadTemplate = By.className('sw-ReservedTokensListControls_Button sw-ReservedTokensListControls_Button-downloadcsv m-r-0')
+const buttonDownloadTemplate = By.className('sw-ButtonCSV sw-ButtonCSV-downloadcsv m-r-0')
 
 class ReservedTokensPage extends Page {
 
@@ -163,7 +163,7 @@ class ReservedTokensPage extends Page {
     async clickButtonClearAll() {
         logger.info(this.name + " clickButtonClearAll :");
         try {
-            await this.driver.executeScript("document.getElementsByClassName('sw-ReservedTokensListControls_Button sw-ReservedTokensListControls_Button-clearall')[0].click();");
+            await this.driver.executeScript("document.getElementsByClassName('sw-ButtonCSV sw-ButtonCSV-clearall')[0].click();");
             return true;
         }
         catch ( err ) {

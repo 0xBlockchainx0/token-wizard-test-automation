@@ -23,6 +23,7 @@ const Nifty = require('../pages/Nifty.js').Nifty;
 
 class Utils {
     static async delay(ms) {
+        logger.info('Utils: delay ' + ms + 'ms')
         try {
             await new Promise(resolve => setTimeout(resolve, ms))
             return true
@@ -43,6 +44,7 @@ class Utils {
             return false;
         }
     }
+
     static async getWalletInstance(driver) {
         logger.info("Utils: getWallet");
         try {
@@ -440,7 +442,7 @@ class Utils {
 
     }
 
-    static async getContractSourceCode(crowdsale){
+    static async getContractSourceCode(crowdsale) {
         logger.info("Utils:getContractSourceCode");
         let path = '../../public/contracts/';
         switch ( crowdsale.sort ) {

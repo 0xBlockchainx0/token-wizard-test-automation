@@ -7,7 +7,7 @@ const fieldName = By.id("name");
 const fieldTicker = By.id("ticker");
 const fieldDecimals = By.id("decimals");
 const fieldSupply = By.id("supply");
-const inputFields = By.className('sw-InputField')
+const inputFields = By.className('sw-InputField2 ')
 const buttonBack = By.className('sw-ButtonBack')
 
 class WizardStep2 extends Page {
@@ -75,6 +75,7 @@ class WizardStep2 extends Page {
         logger.info(this.name + "clickButtonContinue ");
         return await super.clickWithWait(buttonContinue);
     }
+
     async clickButtonBack() {
         logger.info(this.name + "clickButtonBack ");
         return await super.clickWithWait(buttonBack);
@@ -194,7 +195,7 @@ class WizardStep2 extends Page {
         return await super.getElement(fieldDecimals);
     }
 
-    async getWarningText(field) {
+    async getWarningText(field, Twait) {
         logger.info(this.name + "getWarningText " + field);
         try {
             const elements = await super.findWithWait(inputFields)
@@ -213,6 +214,7 @@ class WizardStep2 extends Page {
                     element = elements[3];
                     break
             }
+            if ( !await super.waitUntilDisplayed(By.className('sw-Error'), Twait) ) return ''
             const error = await this.getChildsByClassName('sw-Error', element)
             if ( (error === null) || (error === undefined) ) return ''
             else return await error[0].getText()

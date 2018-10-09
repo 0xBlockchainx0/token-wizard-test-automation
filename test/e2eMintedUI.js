@@ -221,6 +221,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             async function () {
                 const result = await wizardStep1.clickCheckboxWhitelistWithCap()
                     && await wizardStep1.goBack()
+                    && await wizardStep1.waitUntilLoaderGone()
                     && await welcomePage.isDisplayedButtonChooseContract()
                     && await wizardStep1.goForward()
                     && await wizardStep1.waitUntilLoaderGone()
@@ -233,6 +234,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             async function () {
                 const result = await wizardStep1.clickCheckboxWhitelistWithCap()
                     && await wizardStep1.refresh()
+                    && await wizardStep1.waitUntilLoaderGone()
                     && await wizardStep1.isSelectedCheckboxWhitelistWithCap()
                 return await assert.equal(result, true, "Test FAILED. Checkbox changed");
             });
