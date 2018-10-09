@@ -1210,12 +1210,12 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
             test.it('Alert text is correct',
                 async function () {
-                    const textShouldBe = 'Wait, please. Crowdsale company hasn\'t started yet. It\'ll start from Thu May 09 2030 05:16:00 GMT-0700 (Pacific Daylight Time).'
+                    const textShouldBe = 'Wait, please. Crowdsale company hasn\'t started yet. It\'ll start from Thu May 09 2030 05:16:00'
                     const warningText = await contributionPage.getWarningText()
-                    return await assert.equal(textShouldBe, warningText, 'Alert\'s text is incorrect');
+                    return await assert.equal(warningText.includes(textShouldBe), true,'Alert\'s text is incorrect');
                 });
 
-            test.it('Should be alert if invalid proxyID in address bar',
+            test.it('Should be alert if invalid crowdsale url in address bar',
                 async function () {
                     crowdsaleMintedSimple.url = await contributionPage.getURL()
                     let wrongUrl = crowdsaleMintedSimple.url.substring(0, 50) + crowdsaleMintedSimple.url.substring(52, crowdsaleMintedSimple.length)
