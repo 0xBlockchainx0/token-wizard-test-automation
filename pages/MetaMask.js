@@ -31,214 +31,214 @@ let accountOrderNumber = 1;
 
 class MetaMask extends Page {
 
-	constructor(driver) {
-		super(driver);
-		this.driver = driver;
-		this.URL = `chrome-extension://${MetamaskId}//popup.html`;
-		this.name = "Metamask  "
-		this.networks=[0, 3, 42, 4, 8545];
-	}
+    constructor(driver) {
+        super(driver);
+        this.driver = driver;
+        this.URL = `chrome-extension://${MetamaskId}//popup.html`;
+        this.name = "Metamask  "
+        this.networks = [0, 3, 42, 4, 8545];
+    }
 
-	async clickButtonSubmitTransaction() {
-		return await this.clickWithWait(buttonSubmit);
-	}
+    async clickButtonSubmitTransaction() {
+        return await this.clickWithWait(buttonSubmit);
+    }
 
-	async activate() {
-		logger.info(this.name + "activate ");
-		return await this.switchToNextPage() &&
-			await this.open(this.URL) &&
-			await this.pressKey(key.TAB, 15) &&
-			await this.clickWithWait(buttonAccept) &&
-			await this.pressKey(key.TAB, 3) &&
-			await this.clickWithWait(buttonAccept) &&
-			await this.pressKey(key.TAB, 3) &&
-			await this.clickWithWait(buttonAccept) &&
-			await this.waitUntilLocated(fieldNewPass) &&
-			await this.clickWithWait(fieldNewPass) &&
-			await this.fillWithWait(fieldNewPass, pass) &&
-			await this.fillWithWait(fieldConfirmPass, pass) &&
-			await this.clickWithWait(buttonCreate) &&
-			await this.waitUntilDisplayed(buttonIveCopied) &&
-			await this.clickWithWait(buttonIveCopied) &&
-			await this.switchToNextPage();
-	}
+    async activate() {
+        logger.info(this.name + "activate ");
+        return await this.switchToNextPage() &&
+            await this.open(this.URL) &&
+            await this.pressKey(key.TAB, 15) &&
+            await this.clickWithWait(buttonAccept) &&
+            await this.pressKey(key.TAB, 3) &&
+            await this.clickWithWait(buttonAccept) &&
+            await this.pressKey(key.TAB, 3) &&
+            await this.clickWithWait(buttonAccept) &&
+            await this.waitUntilLocated(fieldNewPass) &&
+            await this.clickWithWait(fieldNewPass) &&
+            await this.fillWithWait(fieldNewPass, pass) &&
+            await this.fillWithWait(fieldConfirmPass, pass) &&
+            await this.clickWithWait(buttonCreate) &&
+            await this.waitUntilDisplayed(buttonIveCopied) &&
+            await this.clickWithWait(buttonIveCopied) &&
+            await this.switchToNextPage();
+    }
 
-	async importAccount(user) {
-		logger.info(this.name + "importAccount ");
-		user.accountOrderInWallet = accountOrderNumber;
-		return await  this.switchToNextPage() &&
-			await  this.setNetwork(user.networkID) &&
-			await  this.clickImportAccount() &&
-			await  this.fillWithWait(fieldPrivateKey, user.privateKey) &&
-			await  this.waitUntilDisplayed(buttonImport) &&
-			await  this.clickWithWait(buttonImport) &&
-			await  this.switchToNextPage();
-	}
+    async importAccount(user) {
+        logger.info(this.name + "importAccount ");
+        user.accountOrderInWallet = accountOrderNumber;
+        return await this.switchToNextPage() &&
+            await this.setNetwork(user.networkID) &&
+            await this.clickImportAccount() &&
+            await this.fillWithWait(fieldPrivateKey, user.privateKey) &&
+            await this.waitUntilDisplayed(buttonImport) &&
+            await this.clickWithWait(buttonImport) &&
+            await this.switchToNextPage();
+    }
 
-	async selectAccount(user) {
-		logger.info(this.name + "selectAccount ");
-		try {
-			await this.switchToNextPage();
-			await this.setNetwork(user.networkID);
-			await super.clickWithWait(popupAccount);
-			await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" +
-				user.accountOrderInWallet + "].click();");
-			await this.switchToNextPage();
-			return true;
-		}
-		catch (err) {
-			return false;
-		}
-	}
+    async selectAccount(user) {
+        logger.info(this.name + "selectAccount ");
+        try {
+            await this.switchToNextPage();
+            await this.setNetwork(user.networkID);
+            await super.clickWithWait(popupAccount);
+            await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" +
+                user.accountOrderInWallet + "].click();");
+            await this.switchToNextPage();
+            return true;
+        }
+        catch ( err ) {
+            return false;
+        }
+    }
 
-	async clickImportAccount() {
-		logger.info(this.name + "clickImportAccount ");
-		try {
-			await super.clickWithWait(popupAccount);
-			await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')["
-				+ (accountOrderNumber + 1) + "].click();");
-			accountOrderNumber++;
-			return true;
-		}
-		catch (err) {
-			return false;
-		}
-	}
+    async clickImportAccount() {
+        logger.info(this.name + "clickImportAccount ");
+        try {
+            await super.clickWithWait(popupAccount);
+            await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')["
+                + (accountOrderNumber + 1) + "].click();");
+            accountOrderNumber++;
+            return true;
+        }
+        catch ( err ) {
+            return false;
+        }
+    }
 
-	async signTransaction(refreshCount, tier) {
-		logger.info(this.name + "signTransaction ");
-		await this.switchToNextPage();
-		let counter = 5;
-		if (refreshCount !== undefined) counter = refreshCount;
-		do {
-			await this.refresh();
-			await super.waitUntilLocated(iconChangeAccount);
-			if (await this.isElementDisplayed(buttonSubmit)) {
+    async signTransaction(refreshCount) {
+        logger.info(this.name + "signTransaction ");
+        await this.switchToNextPage();
+        let counter = 5;
+        if ( refreshCount !== undefined ) counter = refreshCount;
+        do {
+            await this.refresh();
+            await super.waitUntilLocated(iconChangeAccount);
+            if ( await this.isElementDisplayed(buttonSubmit) ) {
 
-				return await this.fillGasLimit(4600000)
-					&& await this.waitUntilDisplayed(buttonSubmit)
-					&& await this.clickButtonSubmitTransaction()
-					&& await  this.switchToNextPage();
-			}
-			await this.driver.sleep(3000);
-		} while (counter-- >= 0);
+                return await this.fillGasLimit(4600000)
+                    && await this.waitUntilDisplayed(buttonSubmit)
+                    && await this.clickButtonSubmitTransaction()
+                    && await this.switchToNextPage();
+            }
+            await this.driver.sleep(3000);
+        } while ( counter-- >= 0 );
 
-		await this.switchToNextPage();
-		return false;
-	}
+        await this.switchToNextPage();
+        return false;
+    }
 
-	async setNetwork(provider) {
-		logger.info(this.name + "setNetwork ");
-		try {
-			await super.clickWithWait(popupNetwork);
-			let orderNumber = this.networks.indexOf(provider);
-			let script = "document.getElementsByClassName('dropdown-menu-item')[" + orderNumber + "].click();"
-			if (orderNumber < 0) await this.addNetwork(provider);
-			else await this.driver.executeScript(script);
-			return true;
-		}
-		catch (err) {
-			return false;
-		}
-	}
+    async setNetwork(provider) {
+        logger.info(this.name + "setNetwork ");
+        try {
+            await super.clickWithWait(popupNetwork);
+            let orderNumber = this.networks.indexOf(provider);
+            let script = "document.getElementsByClassName('dropdown-menu-item')[" + orderNumber + "].click();"
+            if ( orderNumber < 0 ) await this.addNetwork(provider);
+            else await this.driver.executeScript(script);
+            return true;
+        }
+        catch ( err ) {
+            return false;
+        }
+    }
 
-	async addNetwork(provider) {
-		logger.info(this.name + "addNetwork ");
-		let url;
-		switch (provider) {
-			case 77: {
-				url = "https://sokol.poa.network";
-				this.networks.push(77);
-				break;
-			}
-			case 99: {
-				url = "https://core.poa.network";
-				this.networks.push(99);
-				break;
-			}
-			default: {
-				url = "https://sokol.poa.network";
-			}
-		}
-		await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" +
-			(this.networks.length - 1) + "].click();");
-		return await super.fillWithWait(fieldNewRPCURL, url) &&
-			await super.clickWithWait(buttonSave) &&
-			await super.clickWithWait(arrowBackRPCURL);
-	}
+    async addNetwork(provider) {
+        logger.info(this.name + "addNetwork ");
+        let url;
+        switch ( provider ) {
+            case 77: {
+                url = "https://sokol.poa.network";
+                this.networks.push(77);
+                break;
+            }
+            case 99: {
+                url = "https://core.poa.network";
+                this.networks.push(99);
+                break;
+            }
+            default: {
+                url = "https://sokol.poa.network";
+            }
+        }
+        await this.driver.executeScript("document.getElementsByClassName('dropdown-menu-item')[" +
+            (this.networks.length - 1) + "].click();");
+        return await super.fillWithWait(fieldNewRPCURL, url) &&
+            await super.clickWithWait(buttonSave) &&
+            await super.clickWithWait(arrowBackRPCURL);
+    }
 
-	async clickButtonReject() {
-		logger.info(this.name + "clickButtonReject ");
-		return await super.clickWithWait(buttonReject);
-	}
+    async clickButtonReject() {
+        logger.info(this.name + "clickButtonReject ");
+        return await super.clickWithWait(buttonReject);
+    }
 
-	async rejectTransaction(refreshCount) {
-		logger.info(this.name + " rejectTransaction ");
-		let counter = 5;
-		if (refreshCount !== undefined) counter = refreshCount;
-		await this.switchToNextPage();
-		do {
-			await this.refresh();
-			await super.waitUntilLocated(iconChangeAccount);
-			if (await this.isElementDisplayed(buttonReject)) {
-				return await this.clickButtonReject()
-					&& await this.switchToNextPage();
-			}
-			await this.driver.sleep(1000);
-		} while (counter-- >= 0);
-		await this.switchToNextPage();
-		return false;
-	}
+    async rejectTransaction(refreshCount) {
+        logger.info(this.name + " rejectTransaction ");
+        let counter = 5;
+        if ( refreshCount !== undefined ) counter = refreshCount;
+        await this.switchToNextPage();
+        do {
+            await this.refresh();
+            await super.waitUntilLocated(iconChangeAccount);
+            if ( await this.isElementDisplayed(buttonReject) ) {
+                return await this.clickButtonReject()
+                    && await this.switchToNextPage();
+            }
+            await this.driver.sleep(1000);
+        } while ( counter-- >= 0 );
+        await this.switchToNextPage();
+        return false;
+    }
 
-	async clickButtonSend() {
-		logger.info(this.name + " clickButtonSend ");
-		return await this.clickWithWait(buttonSend);
-	}
+    async clickButtonSend() {
+        logger.info(this.name + " clickButtonSend ");
+        return await this.clickWithWait(buttonSend);
+    }
 
-	async fillGasLimit(value) {
-		logger.info(this.name + " fillGasLimit ");
-		return await this.clearFieldFromStart(fieldGasLimit)
-			&& await this.fillWithWait(fieldGasLimit, value);
+    async fillGasLimit(value) {
+        logger.info(this.name + " fillGasLimit ");
+        return await this.clearFieldFromStart(fieldGasLimit)
+            && await this.fillWithWait(fieldGasLimit, value);
 
-	}
+    }
 
-	async fillRecipientAddress(address) {
-		logger.info(this.name + " fillRecipientAddress ");
-		return await this.fillWithWait(fieldRecipientAddress, address);
-	}
+    async fillRecipientAddress(address) {
+        logger.info(this.name + " fillRecipientAddress ");
+        return await this.fillWithWait(fieldRecipientAddress, address);
+    }
 
-	async fillAmount(amount) {
-		logger.info(this.name + " fillAmount ");
-		return await this.fillWithWait(fieldAmount, amount);
-	}
+    async fillAmount(amount) {
+        logger.info(this.name + " fillAmount ");
+        return await this.fillWithWait(fieldAmount, amount);
+    }
 
-	async clickButtonNext() {
-		logger.info(this.name + " clickButtonNext ");
-		return await this.clickWithWait(buttonNext);
-	}
+    async clickButtonNext() {
+        logger.info(this.name + " clickButtonNext ");
+        return await this.clickWithWait(buttonNext);
+    }
 
-	async testMetamask() {
-		logger.info(this.name + " testMetamask ");
-		await this.switchToNextPage();
-		await this.clickButtonSend();
-		await this.fillRecipientAddress("0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b");
-		await this.fillAmount("0.01");
-		await this.clickButtonNext();
+    async testMetamask() {
+        logger.info(this.name + " testMetamask ");
+        await this.switchToNextPage();
+        await this.clickButtonSend();
+        await this.fillRecipientAddress("0x56B2e3C3cFf7f3921Dc2e0F8B8e20d1eEc29216b");
+        await this.fillAmount("0.01");
+        await this.clickButtonNext();
 
-		await this.clearFieldFromStart(fieldGasLimit);
-		await this.fillGasLimit(50000);
-		throw("Stop");
+        await this.clearFieldFromStart(fieldGasLimit);
+        await this.fillGasLimit(50000);
+        throw("Stop");
 
-	}
+    }
 
 }
 
 module.exports = {
-	MetaMask: MetaMask,
-	buttonAccept:buttonAccept,
-	fieldNewPass:fieldNewPass,
-	fieldConfirmPass:fieldConfirmPass,
-	buttonCreate:buttonCreate,
-	buttonIveCopied:buttonIveCopied,
-	pass:pass
+    MetaMask: MetaMask,
+    buttonAccept: buttonAccept,
+    fieldNewPass: fieldNewPass,
+    fieldConfirmPass: fieldConfirmPass,
+    buttonCreate: buttonCreate,
+    buttonIveCopied: buttonIveCopied,
+    pass: pass
 };

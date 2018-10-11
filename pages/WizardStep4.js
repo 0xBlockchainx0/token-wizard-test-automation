@@ -12,11 +12,12 @@ const MetaMask = require('../pages/MetaMask.js').MetaMask;
 const By = by.By;
 const buttonContinue = By.xpath("//*[contains(text(),'Continue')]");
 const modal = By.className("modal");
-//const buttonOK=By.xpath('/html/body/div[2]/div/div[3]/button[1]');
 const buttonOK = By.className("swal2-confirm swal2-styled");
-const buttonSkipTransaction = By.className("no_image button button_fill");
+const buttonSkipTransaction =By.xpath("//*[contains(text(),'Skip transaction')]")
+const buttonRetryTransaction =By.xpath("//*[contains(text(),'Retry transaction')]")
 const buttonYes = By.className("swal2-confirm swal2-styled");
 const buttonCancelDeployment = By.className("button button_outline");
+const txStatus = By.className('tx-status')
 
 class WizardStep4 extends page.Page {
 
@@ -47,7 +48,7 @@ class WizardStep4 extends page.Page {
 	}
 
 	async clickButtonOk() {
-		logger.info(this.name + "buttonOK: ");
+		logger.info(this.name + "clickButtonOk ");
 		return await super.clickWithWait(buttonOK);
 	}
 
@@ -62,17 +63,26 @@ class WizardStep4 extends page.Page {
 		return await super.isElementDisplayed(buttonSkipTransaction);
 
 	}
+    async isDisplayedButtonRetryTransaction() {
+        logger.info(this.name + "Is present isDisplayedButtonRetryTransaction: ");
+        return await super.isElementDisplayed(buttonRetryTransaction);
 
+    }
+    async clickButtonRetryTransaction() {
+        logger.info(this.name + "clickButtonRetryTransaction: ");
+        return await super.clickWithWait(buttonRetryTransaction);
+    }
 	async clickButtonSkipTransaction() {
 		logger.info(this.name + "buttonSkipTransaction: ");
-		try {
+        return await super.clickWithWait(buttonSkipTransaction);
+		/*try {
 			await this.driver.executeScript("document.getElementsByClassName('no_image button button_fill')[0].click();");
 			return true;
 		}
 		catch (err) {
 			logger.info("Error " + err);
 			return false;
-		}
+		}*/
 	}
 
 	async clickButtonYes() {
@@ -123,9 +133,22 @@ class WizardStep4 extends page.Page {
 	}
 
 	async waitUntilShowUpButtonCancelDeployment(Twaiting) {
+
 		logger.info("waitUntilShowUpPopupConfirm: ");
+
 		return await this.waitUntilDisplayed(buttonCancelDeployment, Twaiting);
 	}
+
+    async getTxStatus() {
+        logger.info("getTxStatus  ");
+        return this.getTextForElement(txStatus);
+    }
+
+    async getTextWarning() {
+        logger.info("getTextWarning  ");
+        return this.getTextForElement(By.id('swal2-content'));
+    }
+
 
 }
 
