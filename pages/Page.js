@@ -414,8 +414,8 @@ class Page {
         return await this.waitUntilDisplayed(buttonOk, Twaiting);
     }
 
-    async clickButtonOK() {
-        logger.info("clickButtonOK ");
+    async clickButtonOk() {
+        logger.info("clickButtonOk ");
         return await this.clickWithWait(buttonOk);
     }
 
