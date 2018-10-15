@@ -462,7 +462,7 @@ test.describe('POA token-wizard. Test suite #1',  async function() {
 		async function () {
 
 			let result = await wizardStep4.acceptAlert() ;
-			await driver.sleep(2000);
+			await driver.sleep(10000);
 		    result = result && await wizardStep4.isPresentModal();
 			return await assert.equal(result, true, "Test FAILED. Modal does not present after user has accepted alert");
 	});
