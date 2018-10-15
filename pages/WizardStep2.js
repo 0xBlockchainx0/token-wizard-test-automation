@@ -2,7 +2,7 @@ const key = require('selenium-webdriver').Key;
 const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
-const buttonContinue = By.className('sw-ButtonContinue_Text')
+const buttonContinue = By.className('sw-ButtonContinue')
 const fieldName = By.id("name");
 const fieldTicker = By.id("ticker");
 const fieldDecimals = By.id("decimals");
@@ -81,6 +81,10 @@ class WizardStep2 extends Page {
         return await super.clickWithWait(buttonBack);
     }
 
+    async isDisabledButtonContinue() {
+        logger.info(this.name + "isDisabledButtonContinue ");
+        return await super.isElementDisabled(buttonContinue);
+    }
 
     async scrollDownUntilButtonContinueDislayed() {
         logger.info(this.name + "scrollDownUntilButtonContinueDislayed ");
@@ -195,7 +199,7 @@ class WizardStep2 extends Page {
         return await super.getElement(fieldDecimals);
     }
 
-    async getWarningText(field, Twait) {
+    async getWarningText(field) {
         logger.info(this.name + "getWarningText " + field);
         try {
             const elements = await super.findWithWait(inputFields)
@@ -213,8 +217,10 @@ class WizardStep2 extends Page {
                 case 'supply':
                     element = elements[3];
                     break
+                default:
+                    element = elements[0];
             }
-            if ( !await super.waitUntilDisplayed(By.className('sw-Errors_Item'), Twait) ) return ''
+            if ( !await super.waitUntilDisplayed(By.className('sw-Errors_Item'), 10) ) return ''
             const error = await this.getChildsByClassName('sw-Errors_Item', element)
             if ( (error === null) || (error === undefined) ) return ''
             else return await error[0].getText()

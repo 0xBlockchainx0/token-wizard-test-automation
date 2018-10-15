@@ -244,6 +244,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 const result = await wizardStep1.clickCheckboxWhitelistWithCap()
                     && await Investor1.setWalletAccount()
                     && await wizardStep1.waitUntilLoaderGone()
+                    && await Utils.delay(2000)
                     && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap()
                     && await wizardStep1.isSelectedCheckboxWhitelistWithCap()
                     && await Owner.setWalletAccount()
@@ -273,8 +274,8 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             name: '012345678901234567790123456789f',
             ticker: 'qwe$#',
             decimals: '19',
-            address:'lsdnfoiwd',
-            value:'0.00000123134824956234651234234'
+            address: 'lsdnfoiwd',
+            value: '0.00000123134824956234651234234'
         }
         test.it('Button \'Back\' opens Step#1',
             async function () {
@@ -304,9 +305,15 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             async function () {
                 await wizardStep2.fillName(invalidValues.name);
                 const result = await wizardStep2.getWarningText('name')
-                console.log(result)
                 return await assert.equal(result, 'Please enter a valid name between 1-30 characters', 'Incorrect error message');
             });
+
+        test.it('Button \'Continue\' disabled if name is wrong',
+            async function () {
+                const result = await wizardStep2.isDisabledButtonContinue()
+                return await assert.equal(result, true, 'Button \'Continue\' is enabled if error message');
+            });
+
         test.it('Error message if name is empty',
             async function () {
                 await wizardStep2.fillName('');
@@ -409,16 +416,17 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#2: user is not able to fill Decimals  field with valid data ");
             });
 
-        test.it.skip('Error message if invalid reserved address',
+        test.it('Error message if invalid reserved address',
             async function () {
                 await reservedTokensPage.fillAddress(invalidValues.address);
-                const result = await wizardStep2.getWarningText('address')
+                const result = await reservedTokensPage.getWarningText('address')
                 return await assert.equal(result, 'The inserted address is invalid', 'Incorrect error message');
             });
-        test.it.skip('Error message if value exceed decimals specified',
+        test.it('Error message if value exceed decimals specified',
             async function () {
                 await reservedTokensPage.fillValue(invalidValues.value);
-                const result = await wizardStep2.getWarningText('value')
+                const result = await reservedTokensPage.getWarningText('value')
+                await reservedTokensPage.fillValue('')
                 return await assert.equal(result, 'Value must be positive and decimals should not exceed the amount of decimals specified', 'Incorrect error message');
             });
 
@@ -551,18 +559,16 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
         test.it('Button Continue is displayed ',
             async function () {
-                let result = await wizardStep2.isDisplayedButtonContinue();
+                const result = await wizardStep2.isDisplayedButtonContinue();
                 return await assert.equal(result, true, "Test FAILED. Wizard step#2: button Continue  not present ");
-
             });
 
-        test.it.skip('User is able to open Step3 by clicking button Continue ',
+        test.it('User is able to open Step3 by clicking button Continue ',
             async function () {
                 await wizardStep2.clickButtonContinue();
                 await wizardStep3.waitUntilDisplayedTitle(180);
-                let result = await wizardStep3.getTitleText();
-                result = (result === wizardStep3.title);
-                return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
+                const result = await wizardStep3.getTitleText();
+                return await assert.equal(result.toUpperCase(), wizardStep3.title.toUpperCase(), "Test FAILED. Page\'s title is incorrect");
             });
     })
     describe.skip('Step#3: ', async function () {

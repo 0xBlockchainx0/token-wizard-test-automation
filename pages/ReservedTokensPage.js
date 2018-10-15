@@ -10,6 +10,7 @@ const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const buttonNoAlert = By.className("swal2-cancel swal2-styled");
 const buttonOK = By.className("swal2-confirm swal2-styled");
 const buttonDownloadTemplate = By.className('sw-ButtonCSV sw-ButtonCSV-downloadcsv m-r-0')
+const errors = By.className('sw-FormError')
 
 class ReservedTokensPage extends Page {
 
@@ -119,19 +120,27 @@ class ReservedTokensPage extends Page {
             await this.fillWithWait(this.fieldAddress, value);
     }
 
+    async clearValue() {
+        logger.info(this.name + " clearValue");
+        try {
+            await this.driver.executeScript("document.getElementsByClassName('sw-TextField')[4].value=''");
+            return true
+        } catch ( err ) {
+            return false
+        }
+    }
+
     async fillValue(value) {
         logger.info(this.name + " fillValue with value " + value);
-        if ( value === "" ) return true;
-        return (await this.initInputFields() !== null) &&
-            await this.clearField(this.fieldValue) &&
-            await this.fillWithWait(this.fieldValue, value)
 
+        return (await this.initInputFields() !== null)
+            && await this.clearValue()
+            && await this.fillWithWait(this.fieldValue, value)
     }
 
     async fillOneReservedToken(reservedTokens) {
         logger.info(this.name + "fillOneReservedToken ");
         return await this.fillAddress(reservedTokens.address)
-            //&& await this.setDimension(reservedTokens.dimension)
             && await this.fillValue(reservedTokens.value)
 
     }
@@ -252,13 +261,11 @@ class ReservedTokensPage extends Page {
     async clickButtonOk() {
         logger.info("clickButtonOk");
         return await super.clickWithWait(buttonOK);
-
     }
 
     async isDisplayedButtonOk() {
         logger.info(this.name + "isDisplayedButtonOk ");
         return await super.isElementDisplayed(buttonOK);
-
     }
 
     async waitUntilShowUpPopupConfirm(Twaiting) {
@@ -269,27 +276,24 @@ class ReservedTokensPage extends Page {
     async getWarningText(field) {
         logger.info(this.name + "getWarningText " + field);
         try {
-            const elements = await super.findWithWait(inputFields)
+            const elements = await super.findWithWait(errors)
             let element
             switch ( field ) {
-                case 'name':
+                case 'address':
                     element = elements[0];
                     break
-                case 'ticker':
+                case 'value':
                     element = elements[1];
                     break
-                case 'decimals':
-                    element = elements[2];
-                    break
-                case 'supply':
-                    element = elements[3];
-                    break
+                default:
+                    element = elements[0];
             }
-            const error = await this.getChildsByClassName('sw-Error', element)
-            if ( (error === null) || (error === undefined) ) return ''
-            else return await error[0].getText()
+            if ( !await super.waitUntilDisplayed(errors, 10) ) return ''
+            if ( (element === null) || (element === undefined) ) return ''
+            else return await element.getText()
         }
         catch ( err ) {
+            console.log(err)
             return ''
         }
     }
