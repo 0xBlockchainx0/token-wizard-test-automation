@@ -304,6 +304,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             async function () {
                 await wizardStep2.fillName(invalidValues.name);
                 const result = await wizardStep2.getWarningText('name')
+                console.log(result)
                 return await assert.equal(result, 'Please enter a valid name between 1-30 characters', 'Incorrect error message');
             });
         test.it('Error message if name is empty',

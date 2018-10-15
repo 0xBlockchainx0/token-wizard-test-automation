@@ -214,8 +214,8 @@ class WizardStep2 extends Page {
                     element = elements[3];
                     break
             }
-            if ( !await super.waitUntilDisplayed(By.className('sw-Error'), Twait) ) return ''
-            const error = await this.getChildsByClassName('sw-Error', element)
+            if ( !await super.waitUntilDisplayed(By.className('sw-Errors_Item'), Twait) ) return ''
+            const error = await this.getChildsByClassName('sw-Errors_Item', element)
             if ( (error === null) || (error === undefined) ) return ''
             else return await error[0].getText()
         }
