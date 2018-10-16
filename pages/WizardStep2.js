@@ -198,7 +198,6 @@ class WizardStep2 extends Page {
         logger.info(this.name + "getFieldDecimals");
         return await super.getElement(fieldDecimals);
     }
-
     async getWarningText(field) {
         logger.info(this.name + "getWarningText " + field);
         try {
@@ -229,6 +228,8 @@ class WizardStep2 extends Page {
             return ''
         }
     }
+
+
 
 
 }

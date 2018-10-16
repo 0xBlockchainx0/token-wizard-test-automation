@@ -353,6 +353,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             async function () {
                 const result = await Investor1.setWalletAccount()
                     && await wizardStep2.waitUntilLoaderGone()
+                    && await Utils.delay(2000)
                     && await wizardStep2.waitUntilHasValueFieldName()
                     && (await wizardStep2.getValueFieldName() === newValue.name)
                     && await Owner.setWalletAccount()
@@ -364,14 +365,16 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
         test.it('Error message if ticker longer than 5 symbols',
             async function () {
-                await wizardStep2.fillTicker(invalidValues.name);
+                await wizardStep2.fillTicker(invalidValues.name)
+                await Utils.delay(1000)
                 const result = await wizardStep2.getWarningText('ticker')
                 return await assert.equal(result, 'Please enter a valid ticker between 1-5 characters', 'Incorrect error message');
             });
 
         test.it('Error message if ticker contains special symbols',
             async function () {
-                await wizardStep2.fillTicker(invalidValues.ticker);
+                await wizardStep2.fillTicker(invalidValues.ticker)
+                await Utils.delay(1000)
                 const result = await wizardStep2.getWarningText('ticker')
                 return await assert.equal(result, 'Only alphanumeric characters', 'Incorrect error message');
             });
@@ -386,8 +389,9 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
         test.it('User able to fill out field Ticker with valid data',
             async function () {
-                await wizardStep2.fillTicker(newValue.ticker);
-                let result = await wizardStep2.isDisplayedWarningTicker();
+                await wizardStep2.fillTicker(newValue.ticker)
+                await Utils.delay(1000)
+                const result = await wizardStep2.isDisplayedWarningTicker();
                 return await assert.equal(result, false, "Test FAILED. Wizard step#2: user is not  able to fill out field Ticker with valid data ");
             });
 
@@ -491,7 +495,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             async function () {
                 await reservedTokensPage.fillReservedTokens(crowdsaleForUItests);
                 let result = await reservedTokensPage.amountAddedReservedTokens();
-                return await assert.equal(result, crowdsaleForUItests.reservedTokens.length, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+                return await assert.equal(result,crowdsaleForUItests.reservedTokens.length, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
             });
 
         test.it('Field Decimals is disabled if reserved tokens are added ',
@@ -571,8 +575,11 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result.toUpperCase(), wizardStep3.title.toUpperCase(), "Test FAILED. Page\'s title is incorrect");
             });
     })
-    describe.skip('Step#3: ', async function () {
+    describe('Step#3: ', async function () {
+const invalidValues={
 
+    walletAddress:'0x56B2e3C3cFf7f3921D2e0F8B8e20d1eEc2926b'
+}
         test.it('Field Wallet address contains current metamask account address  ',
             async function () {
                 let result = await wizardStep3.getValueFieldWalletAddress();
@@ -580,7 +587,15 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
             });
 
-        test.it('Checkbox gasprice \'Safe\'  by default ',
+        test.it('Error message if wallet address is incorrect',
+            async function () {
+                await wizardStep3.fillWalletAddress(invalidValues.walletAddress);
+                const result = await wizardStep3.getWarningText('walletAddress')
+                await assert.equal(result, 'Please enter a valid address', 'Incorrect error message');
+                await wizardStep3.fillWalletAddress(Owner.account.toString());
+             });
+
+        test.it('Checkbox gasprice \'Safe\' by default ',
             async function () {
                 const result = await wizardStep3.isSelectedCheckboxGasSafe()
                     && !await wizardStep3.isSelectedCheckboxGasNormal()

@@ -207,22 +207,6 @@ class ReservedTokensPage extends Page {
         return await super.clickWithWait(buttonNoAlert);
     }
 
-    async isPresentWarningAddress() {
-        logger.info(this.name + "isPresentWarningAddress ");
-        return false;
-        await this.initWarnings();
-        if ( (await super.getTextForElement(this.warningAddress)) !== "" ) return true;
-        else return false;
-    }
-
-    async isPresentWarningValue() {
-        logger.info(this.name + "isPresentWarningValue ");
-        return false;
-        await this.initWarnings();
-        if ( (await super.getTextForElement(this.warningValue)) !== "" ) return true;
-        else return false;
-    }
-
     async fillReservedTokens(crowdsale) {
         logger.info(this.name + "fillReservedTokens ");
         let result = true;

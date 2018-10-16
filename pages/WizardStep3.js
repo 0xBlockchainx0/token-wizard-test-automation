@@ -11,7 +11,7 @@ const checkboxGasSafe = By.id('slow')
 const checkboxGasNormal = By.id('normal')
 const checkboxGasFast = By.id('fast')
 const checkboxGasCustom = By.id('custom')
-const fieldGasPriceCustom = By.id('customGasPrice')
+const fieldGasPriceCustom = By.id('gas-price-custom-value')
 
 class WizardStep3 extends Page {
 
@@ -199,8 +199,9 @@ class WizardStep3 extends Page {
 
     async waitUntilDisplayedFieldWalletAddress(Twaiting) {
         logger.info(this.name + "waitUntilDisplayedFieldWalletAddress: ");
-        return await super.waitUntilDisplayed(fieldWalletAddress,Twaiting);
+        return await super.waitUntilDisplayed(fieldWalletAddress, Twaiting);
     }
+
     async getValueFieldWalletAddress() {
         logger.info(this.name + "getValueFieldWalletAddress ");
         return await super.getAttribute(fieldWalletAddress, "value");
@@ -256,6 +257,31 @@ class WizardStep3 extends Page {
         else {
             logger.info("present and disabled");
             return false;
+        }
+    }
+
+    async getWarningText(field) {
+        logger.info(this.name + "getWarningText " + field);
+        try {
+            const elements = await super.findWithWait(inputFields)
+            let element
+            switch ( field ) {
+                case 'walletAddress':
+                    element = elements[0];
+                    break
+                case 'gasPrice':
+                    element = elements[1];
+                    break
+                default:
+                    element = elements[0];
+            }
+            if ( !await super.waitUntilDisplayed(By.className('sw-Errors_Item'), 10) ) return ''
+            const error = await this.getChildsByClassName('sw-Errors_Item', element)
+            if ( (error === null) || (error === undefined) ) return ''
+            else return await error[0].getText()
+        }
+        catch ( err ) {
+            return ''
         }
     }
 }
