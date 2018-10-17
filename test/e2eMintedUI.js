@@ -366,7 +366,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         test.it('Error message if ticker longer than 5 symbols',
             async function () {
                 await wizardStep2.fillTicker(invalidValues.name)
-                await Utils.delay(1000)
+                await Utils.delay(2000)
                 const result = await wizardStep2.getWarningText('ticker')
                 return await assert.equal(result, 'Please enter a valid ticker between 1-5 characters', 'Incorrect error message');
             });
@@ -374,7 +374,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         test.it('Error message if ticker contains special symbols',
             async function () {
                 await wizardStep2.fillTicker(invalidValues.ticker)
-                await Utils.delay(1000)
+                await Utils.delay(2000)
                 const result = await wizardStep2.getWarningText('ticker')
                 return await assert.equal(result, 'Only alphanumeric characters', 'Incorrect error message');
             });
@@ -491,11 +491,11 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, 0, "Wizard step#2: user is NOT able bulk delete of reserved tokens");
             });
 
-        test.it('User is able to add reserved tokens one by one ',
+        test.it('User is able sequental to add reserved tokens',
             async function () {
                 await reservedTokensPage.fillReservedTokens(crowdsaleForUItests);
                 let result = await reservedTokensPage.amountAddedReservedTokens();
-                return await assert.equal(result,crowdsaleForUItests.reservedTokens.length, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+                return await assert.equal(result, crowdsaleForUItests.reservedTokens.length, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
             });
 
         test.it('Field Decimals is disabled if reserved tokens are added ',
@@ -509,7 +509,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 let amountBefore = await reservedTokensPage.amountAddedReservedTokens();
                 await reservedTokensPage.removeReservedTokens(1);
                 let amountAfter = await reservedTokensPage.amountAddedReservedTokens();
-                return await assert.equal(amountBefore, amountAfter + 1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+                return await assert.equal(amountBefore, amountAfter + 1, "Test FAILED. Wizard step#2: user is NOT able to remove reserved tokens");
             });
 
         test.it('Go back - page keep state of each field',
@@ -544,6 +544,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 let result = await Investor1.setWalletAccount()
                     && await wizardStep2.waitUntilLoaderGone()
                     && await wizardStep2.waitUntilHasValueFieldName()
+                    && await Utils.delay(2000)
                 await assert.equal(result, true, "Test FAILED. Wizard step#2: page isn\'t loaded");
                 await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "Test FAILED.Field name changed");
                 await assert.equal(await wizardStep2.getValueFieldDecimals(), newValue.decimals, "Test FAILED.Field decimals changed");
@@ -553,6 +554,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 result = await Owner.setWalletAccount()
                     && await wizardStep2.waitUntilLoaderGone()
                     && await wizardStep2.waitUntilHasValueFieldName()
+                    && await Utils.delay(2000)
                 await assert.equal(result, true, "Test FAILED. Wizard step#2: page isn\'t loaded");
                 await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "Test FAILED.Field name changed");
                 await assert.equal(await wizardStep2.getValueFieldDecimals(), newValue.decimals, "Test FAILED.Field decimals changed");
@@ -576,10 +578,10 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
     })
     describe('Step#3: ', async function () {
-const invalidValues={
+        const invalidValues = {
 
-    walletAddress:'0x56B2e3C3cFf7f3921D2e0F8B8e20d1eEc2926b'
-}
+            walletAddress: '0x56B2e3C3cFf7f3921D2e0F8B8e20d1eEc2926b'
+        }
         test.it('Field Wallet address contains current metamask account address  ',
             async function () {
                 let result = await wizardStep3.getValueFieldWalletAddress();
@@ -589,11 +591,13 @@ const invalidValues={
 
         test.it('Error message if wallet address is incorrect',
             async function () {
-                await wizardStep3.fillWalletAddress(invalidValues.walletAddress);
-                const result = await wizardStep3.getWarningText('walletAddress')
+                let result = await wizardStep3.fillWalletAddress(invalidValues.walletAddress)
+                    && await wizardStep3.waitUntilHasValue('walletAddress')
+                await assert.equal(result,true ,'Cannot fill out the field');
+                result = await wizardStep3.getWarningText('walletAddress')
                 await assert.equal(result, 'Please enter a valid address', 'Incorrect error message');
                 await wizardStep3.fillWalletAddress(Owner.account.toString());
-             });
+            });
 
         test.it('Checkbox gasprice \'Safe\' by default ',
             async function () {
@@ -801,7 +805,7 @@ const invalidValues={
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
             });
 
-        test.it('User is able to add several whitelisted addresses one by one ',
+        test.it('User is able sequental to add several whitelisted addresses  ',
             async function () {
                 const result = await tierPage.fillWhitelist();
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");

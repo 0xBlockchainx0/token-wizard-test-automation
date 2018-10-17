@@ -12,6 +12,7 @@ const checkboxGasNormal = By.id('normal')
 const checkboxGasFast = By.id('fast')
 const checkboxGasCustom = By.id('custom')
 const fieldGasPriceCustom = By.id('gas-price-custom-value')
+const inputFields = By.className('sw-InputField2 ')
 
 class WizardStep3 extends Page {
 
@@ -227,6 +228,29 @@ class WizardStep3 extends Page {
         return await super.isElementDisplayed(buttonContinue);
     }
 
+    async waitUntilHasValue(field, Twait) {
+        logger.info(this.name + "waitUntilHasValue " + field);
+        try {
+            const elements = await super.findWithWait(inputFields)
+            let element
+            switch ( field ) {
+                case 'walletAddress':
+                    element = (await super.findWithWait(fieldWalletAddress))[0];
+                    break
+                case 'gasPrice':
+                    element = elements[1];
+                    break
+                default:
+                    element = elements[0];
+            }
+            return await super.waitUntilHasValue(element, Twait)
+        }
+        catch ( err ) {
+            logger.info(err)
+            return false
+        }
+    }
+
     async fillPage(crowdsale, isFillBulkWhitelistAddresses, pathCSVWhitelist) {
         logger.info(this.name + "fillPage ");
 
@@ -281,6 +305,7 @@ class WizardStep3 extends Page {
             else return await error[0].getText()
         }
         catch ( err ) {
+            console.log(err)
             return ''
         }
     }

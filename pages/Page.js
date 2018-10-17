@@ -446,6 +446,15 @@ class Page {
             return false;
         }
     }
+
+    async  scrollTo (element) {
+        try {
+            await this.driver.executeScript('arguments[0].scrollIntoView();', element)
+            return true
+        } catch (err) {
+            return false
+        }
+    }
 }
 
 module.exports.Page = Page;

@@ -213,6 +213,8 @@ class ReservedTokensPage extends Page {
         for ( let i = 0; i < crowdsale.reservedTokens.length; i++ ) {
             result = result
                 && await this.fillOneReservedToken(crowdsale.reservedTokens[i])
+                && await super.scrollTo((await super.findWithWait(buttonAdd))[0])
+                && await Utils.delay(1000)
                 && await this.clickButtonAddReservedTokens();
         }
         return result;
