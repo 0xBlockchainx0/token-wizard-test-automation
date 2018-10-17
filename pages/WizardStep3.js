@@ -294,7 +294,7 @@ class WizardStep3 extends Page {
                     element = elements[0];
                     break
                 case 'gasPrice':
-                    element = elements[1];
+                    element = (await super.findWithWait(By.className('sw-GasPriceInput')))[0]
                     break
                 default:
                     element = elements[0];

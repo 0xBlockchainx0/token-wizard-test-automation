@@ -222,6 +222,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 const result = await wizardStep1.clickCheckboxWhitelistWithCap()
                     && await wizardStep1.goBack()
                     && await wizardStep1.waitUntilLoaderGone()
+                    && await Utils.delay(2000)
                     && await welcomePage.isDisplayedButtonChooseContract()
                     && await wizardStep1.goForward()
                     && await wizardStep1.waitUntilLoaderGone()
@@ -523,7 +524,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "Test FAILED.Field name changed");
                 await assert.equal(await wizardStep2.getValueFieldDecimals(), newValue.decimals, "Test FAILED.Field decimals changed");
                 await assert.equal(await wizardStep2.getValueFieldTicker(), newValue.ticker, "Test FAILED.Field ticker changed");
-               // await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length - 1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+                // await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length - 1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
             });
 
         test.it('Refresh - page keep state of each field',
@@ -536,7 +537,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "Test FAILED.Field name changed");
                 await assert.equal(await wizardStep2.getValueFieldDecimals(), newValue.decimals, "Test FAILED.Field decimals changed");
                 await assert.equal(await wizardStep2.getValueFieldTicker(), newValue.ticker, "Test FAILED.Field ticker changed");
-               // await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length - 1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+                // await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length - 1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
             });
 
         test.it('Change network - page keep state of each field',
@@ -593,7 +594,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             async function () {
                 let result = await wizardStep3.fillWalletAddress(invalidValues.walletAddress)
                     && await wizardStep3.waitUntilHasValue('walletAddress')
-                await assert.equal(result,true ,'Cannot fill out the field');
+                await assert.equal(result, true, 'Cannot fill out the field');
                 result = await wizardStep3.getWarningText('walletAddress')
                 await assert.equal(result, 'Please enter a valid address', 'Incorrect error message');
                 await wizardStep3.fillWalletAddress(Owner.account.toString());
@@ -655,23 +656,82 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, placeholder.gasCustom, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
             });
 
-        test.it('User is able to fill out the  CustomGasprice field with valid value',
+        test.it('Error message if Field \'Gas price custom\' is empty',
+            async function () {
+                let result = await wizardStep3.fillGasPriceCustom(' ')
+                    && await wizardStep3.waitUntilHasValue('gasPrice')
+                    && await Utils.delay(2000)
+                await assert.equal(result, true, 'Cannot fill out the field');
+                result = await wizardStep3.getWarningText('gasPrice')
+                await assert.equal(result, 'Should be greater or equal than 0.1', 'Incorrect error message');
+            });
+
+        test.it('User is able to fill out the CustomGasprice field with valid value',
             async function () {
                 const result = await wizardStep3.fillGasPriceCustom(newValue.customGas);
                 return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
             });
+
+        test.it('no error message if CustomGasprice field has valid value',
+            async function () {
+                const result = await wizardStep3.getWarningText('gasPrice')
+                await assert.equal(result, '', 'Unexpected error message');
+            });
     })
-    describe.skip('Tier#1: ', async function () {
-        test.it('Field \'Mincap\' has value 0 by default ',
+    describe('Tier#1: ', async function () {
+        const invalidValues = {
+
+            nameLong: 'qertyuiopasdfghjklzxcvbnmqwertyui'
+        }
+        test.it('Field \'Mincap\' has placeholder 0 ',
             async function () {
                 const result = await tierPage.getValueFieldMinCap();
                 return await assert.equal(result, placeholder.mincap, "Tier#1: field 'Mincap' has incorrect value by default ");
             });
-        test.it('Field \'Setup name\' has value 0 by default ',
+
+        test.it('Error message if field \'Mincap\' is empty',
+            async function () {
+                const tier = tierPage
+                tier.tier.minCap = ' '
+                let result = await tier.fillMinCap(1)
+                    && await Utils.delay(2000)
+                await assert.equal(result, true, 'Cannot fill out the field');
+                result = await tier.getWarningText('minCap')
+                await assert.equal(result, 'Please enter a valid number greater or equal than 0', 'Incorrect error message');
+            });
+
+        test.it('Field \'Setup name\' has correct placeholder',
             async function () {
                 const result = await tierPage.getValueFieldSetupName();
-                return await assert.equal(result, placeholder.setupNameTier1, "Tier#1: field 'Setup name' has incorrect value by default ");
+                return await assert.equal(result, placeholder.setupNameTier1, "Tier#1: field 'Setup name' has incorrect placeholder ");
             });
+
+        test.it('Error message if field \'Setup name\' is empty',
+            async function () {
+                const tier = tierPage
+                tier.tier.name = ''
+                let result = await tier.fillSetupName()
+                    && await Utils.delay(2000)
+                await assert.equal(result, true, 'Cannot fill out the field');
+                result = await tier.getWarningText('name')
+                await assert.equal(result, 'This field is required', 'Incorrect error message');
+            });
+
+        test.it('Error message if name too long',
+            async function () {
+                const tier = tierPage
+                tier.tier.name = invalidValues.nameLong
+                console.log(tier.tier.name)
+                let result = await tier.fillSetupName()
+                    && await tier.waitUntilHasValue('name')
+                    && await Utils.delay(2000)
+                await assert.equal(result, true, 'Cannot fill out the field');
+                result = await tier.getWarningText('name')
+                await assert.equal(result, 'Please enter a valid name between 1-30 characters', 'Incorrect error message');
+            });
+
+
+
 
         test.it('Checkbox \'Allow Modify\' is off by default ',
             async function () {

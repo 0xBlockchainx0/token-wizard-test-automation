@@ -14,6 +14,7 @@ const fieldMinRate = By.id("tiers[0].minRate");
 const fieldMaxRate = By.id("tiers[0].maxRate");
 const contentContainer = By.className("steps-content container");
 const TIME_FORMAT = require('../utils/constants.js').TIME_FORMAT;
+const inputFields = By.className('sw-InputField2 ')
 let COUNT_TIERS = 0;
 const timeAdjust = 0;//relative value  for tier time
 
@@ -529,25 +530,25 @@ class TierPage extends Page {
 
     async getCheckboxAllowModifyOn() {
         logger.info(this.name + "getCheckboxAllowModifyOn ");
-        const locator = By.id("tiers[" + this.number + "].allow_modifying_on");
+        const locator = By.id("tiers[" + this.number + "].updatable.allow_modifying_on");
         return await super.getElement(locator);
     }
 
     async getCheckboxAllowModifyOff() {
         logger.info(this.name + "getCheckboxAllowModifyOff ");
-        const locator = By.id("tiers[" + this.number + "].allow_modifying_off");
+        const locator = By.id("tiers[" + this.number + "].updatable.allow_modifying_off");
         return await super.getElement(locator);
     }
 
     async getCheckboxWhitelistYes() {
         logger.info(this.name + "getCheckboxWhitelistYes ");
-        const locator = By.id("tiers[" + this.number + "].enable_whitelisting_yes");
+        const locator = By.id("tiers[" + this.number + "].whitelistEnabled.enable_whitelisting_yes");
         return await super.getElement(locator);
     }
 
     async getCheckboxWhitelistNo() {
         logger.info(this.name + "getCheckboxWhitelistNo ");
-        const locator = By.id("tiers[" + this.number + "].enable_whitelisting_no");
+        const locator = By.id("tiers[" + this.number + "].whitelistEnabled.enable_whitelisting_no");
         return await super.getElement(locator);
     }
 
@@ -595,6 +596,88 @@ class TierPage extends Page {
     async isSelectedCheckboxWhitelistYes() {
         logger.info(this.name + "isSelectedCheckboxWhitelistYes ");
         return await super.isElementSelected(await this.getCheckboxWhitelistYes())
+    }
+
+    async waitUntilHasValue(field, Twait) {
+        logger.info(this.name + "waitUntilHasValue " + field);
+        try {
+            const tierBlock = (await super.findWithWait(By.className('sw-TierBlock')))[0]
+            const elements = await super.getChildsByClassName('sw-TextField',tierBlock)
+            let element
+            switch ( field ) {
+                case 'name':
+                    element = elements[0];
+                    break
+                case 'startTime':
+                    element = elements[1];
+                    break
+                case 'endTime':
+                    element = elements[2];
+                    break
+                case 'rate':
+                    element = elements[3];
+                    break
+                case 'supply':
+                    element = elements[4];
+                    break
+                case 'minCap':
+                    element = elements[5];
+                    break
+                default:
+                    element = elements[0];
+            }
+            return await super.waitUntilHasValue(element, Twait)
+        }
+        catch ( err ) {
+            logger.info(err)
+            return false
+        }
+    }
+
+    async getWarningText(field) {
+        logger.info(this.name + "getWarningText " + field);
+        try {
+            const tierBlock = (await super.findWithWait(By.className('sw-TierBlock')))[0]
+            const elements = await super.getChildsByClassName('sw-InputField2',tierBlock)
+            console.log(elements.length)
+            let element
+            switch ( field ) {
+                case 'name':
+                    element = elements[0];
+                    break
+                case 'startTime':
+                    element = elements[1];
+                    break
+                case 'endTime':
+                    element = elements[2];
+                    break
+                case 'rate':
+                    element = elements[3];
+                    break
+                case 'supply':
+                    element = elements[4];
+                    break
+                case 'minCap':
+                    element = elements[5];
+                    break
+                default:
+                    element = elements[0];
+            }
+            if ( !await super.waitUntilDisplayed(By.className('sw-Errors_Item'), 10) ) return ''
+            const errors = await this.getChildsByClassName('sw-Errors_Item', element)
+            let text=''
+            if ( (errors === null) || (errors === undefined) ) return ''
+            else {
+                for (let i=0;i<errors.length;i++){
+                    text+=await errors[i].getText()
+                }
+                return text
+            }
+        }
+        catch ( err ) {
+            console.log(err)
+            return ''
+        }
     }
 }
 
