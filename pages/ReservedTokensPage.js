@@ -210,10 +210,11 @@ class ReservedTokensPage extends Page {
     async fillReservedTokens(crowdsale) {
         logger.info(this.name + "fillReservedTokens ");
         let result = true;
+        const button = (await super.findWithWait(buttonAdd))[0]
         for ( let i = 0; i < crowdsale.reservedTokens.length; i++ ) {
             result = result
                 && await this.fillOneReservedToken(crowdsale.reservedTokens[i])
-                && await super.scrollTo((await super.findWithWait(buttonAdd))[0])
+                && await super.scrollTo(button)
                 && await Utils.delay(1000)
                 && await this.clickButtonAddReservedTokens();
         }
