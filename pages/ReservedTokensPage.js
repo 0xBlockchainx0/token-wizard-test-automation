@@ -1,4 +1,5 @@
 const logger = require('../entity/Logger.js').logger;
+const Key = require('selenium-webdriver').Key;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const Utils = require('../utils/Utils.js').Utils;
@@ -160,8 +161,13 @@ class ReservedTokensPage extends Page {
 
     async clickButtonAddReservedTokens() {
         logger.info(this.name + "clickButtonAddReservedTokens ");
-        return await super.clickWithWait(buttonAdd);
+        const button = (await this.findWithWait(buttonAdd))[0]
+        await button.click()
+        return true
+        //return await super.clickWithWait(buttonAdd);
     }
+
+
 
     async removeReservedTokens(value) {
         logger.info(this.name + "removeReservedTokens ");
