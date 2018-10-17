@@ -29,4 +29,4 @@ module.exports = {
     TIME_FORMAT:TIME_FORMAT,
     TITLES:TITLES
 }
-global.testVersion='new Design 3.0.5'
+global.testVersion='new Design 3.0.6'

@@ -448,10 +448,12 @@ class Page {
     }
 
     async  scrollTo (element) {
+        logger.info('scrollTo '+ element)
         try {
             await this.driver.executeScript('arguments[0].scrollIntoView();', element)
             return true
         } catch (err) {
+            logger.info(err)
             return false
         }
     }
