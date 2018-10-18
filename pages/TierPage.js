@@ -2,6 +2,7 @@ const logger = require('../entity/Logger.js').logger;
 const key = require('selenium-webdriver').Key;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
+const webdriver = require('selenium-webdriver');
 const Utils = require('../utils/Utils.js').Utils;
 const wizardStep3 = require("./WizardStep3.js");
 const itemsRemove = By.className("item-remove");
@@ -244,8 +245,11 @@ class TierPage extends Page {
     async initCheckboxes() {
         logger.info(this.name + "initCheckboxes ");
         try {
-            let containers = await super.findWithWait(contentContainer);
-            let array = await this.getChildsByClassName("radio-inline", containers[this.number + 1]);
+            const tier = By.className('sw-TierBlock')
+            const containers = await super.findWithWait(tier)
+            console.log(this.number)
+
+            let array = await this.getChildsByClassName("sw-RadioButton_Button", containers[this.number]);
 
             if ( array.length > 2 ) {
                 this.checkboxModifyOn = array[0];
@@ -555,19 +559,20 @@ class TierPage extends Page {
     async clickCheckboxAllowModifyOn() {
         logger.info(this.name + "clickCheckboxAllowModifyOn ");
         return (await this.initCheckboxes() !== null)
-            && await super.clickWithWait(this.checkboxModifyOn);
+            && await super.findWithWait(this.checkboxModifyOn)
+        // await this.driver.executeScript("document.getElementsByClassName('sw-RadioButton_Button')[2].click();");
+        // return true
     }
 
     async isSelectedCheckboxAllowModifyOn() {
         logger.info(this.name + "isSelectedCheckboxAllowModifyOn ");
-        return (await this.initCheckboxes() !== null)
-            && await super.isElementSelected(await this.getCheckboxAllowModifyOn())
+        return await super.isElementSelected(await this.getCheckboxAllowModifyOn())
     }
 
     async clickCheckboxAllowModifyOff() {
         logger.info(this.name + "clickCheckboxAllowModifyOff ");
         return (await this.initCheckboxes() !== null)
-            && await super.clickWithWait(this.checkboxModifyOff);
+            && await super.findWithWait(this.checkboxModifyOff)
     }
 
     async isSelectedCheckboxAllowModifyOff() {
@@ -577,8 +582,7 @@ class TierPage extends Page {
 
     async clickCheckboxWhitelistNo() {
         logger.info(this.name + "clickCheckboxWhitelistNo ");
-        return (await this.initCheckboxes() !== null)
-            && await super.clickWithWait(this.checkboxWhitelistingNo);
+        return await super.clickWithWait(await this.getCheckboxWhitelistNo());
     }
 
 
@@ -589,8 +593,7 @@ class TierPage extends Page {
 
     async clickCheckboxWhitelistYes() {
         logger.info(this.name + "clickCheckboxWhitelistYes ");
-        return (await this.initCheckboxes() !== null)
-            && await super.clickWithWait(this.checkboxWhitelistingYes);
+        return await super.clickWithWait(await this.getCheckboxWhitelistYes());
     }
 
     async isSelectedCheckboxWhitelistYes() {
@@ -602,7 +605,7 @@ class TierPage extends Page {
         logger.info(this.name + "waitUntilHasValue " + field);
         try {
             const tierBlock = (await super.findWithWait(By.className('sw-TierBlock')))[0]
-            const elements = await super.getChildsByClassName('sw-TextField',tierBlock)
+            const elements = await super.getChildsByClassName('sw-TextField', tierBlock)
             let element
             switch ( field ) {
                 case 'name':
@@ -638,7 +641,7 @@ class TierPage extends Page {
         logger.info(this.name + "getWarningText " + field);
         try {
             const tierBlock = (await super.findWithWait(By.className('sw-TierBlock')))[0]
-            const elements = await super.getChildsByClassName('sw-InputField2',tierBlock)
+            const elements = await super.getChildsByClassName('sw-InputField2', tierBlock)
             console.log(elements.length)
             let element
             switch ( field ) {
@@ -665,11 +668,11 @@ class TierPage extends Page {
             }
             if ( !await super.waitUntilDisplayed(By.className('sw-Errors_Item'), 10) ) return ''
             const errors = await this.getChildsByClassName('sw-Errors_Item', element)
-            let text=''
+            let text = ''
             if ( (errors === null) || (errors === undefined) ) return ''
             else {
-                for (let i=0;i<errors.length;i++){
-                    text+=await errors[i].getText()
+                for ( let i = 0; i < errors.length; i++ ) {
+                    text += await errors[i].getText()
                 }
                 return text
             }

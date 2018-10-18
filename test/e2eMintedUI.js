@@ -680,7 +680,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     })
     describe('Tier#1: ', async function () {
         const invalidValues = {
-
             nameLong: 'qertyuiopasdfghjklzxcvbnmqwertyui'
         }
         test.it('Field \'Mincap\' has placeholder 0 ',
@@ -730,8 +729,66 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 await assert.equal(result, 'Please enter a valid name between 1-30 characters', 'Incorrect error message');
             });
 
+        test.it('Error message if rate is negative',
+            async function () {
+                const tier = tierPage
+                tier.tier.rate = '-1'
+                let result = await tier.fillRate()
+                    && await  tier.waitUntilHasValue('rate')
+                    && await Utils.delay(2000)
+                await assert.equal(result, true, 'Cannot fill out the field');
+                result = await tier.getWarningText('rate')
+                await assert.equal(result, 'Please enter a valid number greater than 0', 'Incorrect error message');
+            });
 
+        test.it('Error messages if field \'Rate\' is empty',
+            async function () {
+                const tier = tierPage
+                tier.tier.rate = ''
+                let result = await tier.fillRate()
+                    && await Utils.delay(2000)
+                await assert.equal(result, true, 'Cannot fill out the field');
+                result = await tier.getWarningText('rate')
+                await assert.equal(result.includes('Please enter a valid number greater than 0'), true, 'Incorrect error message');
+                await assert.equal(result.includes('Should be integer'), true, 'Incorrect error message');
+                await assert.equal(result.includes('Should not be greater than 1 quintillion (10^18)'), true, 'Incorrect error message');
+            });
 
+        test.it('Error messages if rate is not integer',
+            async function () {
+                const tier = tierPage
+                tier.tier.rate = '1.2345'
+                let result = await tier.fillRate()
+                    && await  tier.waitUntilHasValue('rate')
+                    && await Utils.delay(2000)
+                await assert.equal(result, true, 'Cannot fill out the field');
+                result = await tier.getWarningText('rate')
+                await assert.equal(result,'Should be integer', true, 'Incorrect error message');
+            });
+
+        test.it('Error messages if rate is greater than 1e18',
+            async function () {
+                const tier = tierPage
+                tier.tier.rate = '1e19'
+                let result = await tier.fillRate()
+                    && await  tier.waitUntilHasValue('rate')
+                    && await Utils.delay(2000)
+                await assert.equal(result, true, 'Cannot fill out the field');
+                result = await tier.getWarningText('rate')
+                await assert.equal(result,'Should not be greater than 1 quintillion (10^18)', true, 'Incorrect error message');
+            });
+
+        test.it('Error message if field \'Supply\' is empty',
+            async function () {
+                const tier = tierPage
+                tier.tier.supply = '-1'
+                let result = await tier.fillSupply()
+                    && await Utils.delay(2000)
+                await assert.equal(result, true, 'Cannot fill out the field');
+                result = await tier.getWarningText('supply')
+                console.log(result)
+                await assert.equal(result, 'Please enter a valid number greater than 0', 'Incorrect error message');
+            });
 
         test.it('Checkbox \'Allow Modify\' is off by default ',
             async function () {
@@ -746,7 +803,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Tier#1: checkbox 'Enable Whitelist' isn\'t NO by default ");
             });
 
-        test.it('User is able to set checkbox  \'Allow Modify on\'',
+        test.it.skip('User is able to set checkbox  \'Allow Modify on\'',
             async function () {
                 const result = await tierPage.clickCheckboxAllowModifyOn()
                     && await tierPage.isSelectedCheckboxAllowModifyOn()
@@ -754,19 +811,19 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Allow Modify on' isn\'t selected ");
             });
 
-        test.it('Whitelist container isn\'t present if checkbox "Whitelist enabled" is no',
+        test.it.skip('Whitelist container isn\'t present if checkbox "Whitelist enabled" is no',
             async function () {
                 const result = await tierPage.isDisplayedWhitelistContainer();
                 return await assert.equal(result, false, 'Test FAILED. Wizard step#3: User is NOT able to set checkbox  "Whitelist enabled"');
             });
-        test.it('Whitelist container present if checkbox "Whitelist enabled" is selected',
+        test.it.skip('Whitelist container present if checkbox "Whitelist enabled" is selected',
             async function () {
                 const result = await tierPage.clickCheckboxWhitelistYes()
                     && await tierPage.isDisplayedWhitelistContainer();
                 return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to set checkbox  "Whitelist enabled"');
             });
 
-        test.it('Field minCap disabled if whitelist enabled ',
+        test.it.skip('Field minCap disabled if whitelist enabled ',
             async function () {
                 const tierNumber = 1;
                 const result = await tierPage.isDisabledFieldMinCap(tierNumber);
@@ -786,7 +843,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
             });
 
-        test.it('User is able to download CSV file with whitelisted addresses',
+        test.it.skip('User is able to download CSV file with whitelisted addresses',
             async function () {
                 const fileName = "./public/whitelistAddressesTestValidation.csv";
                 const result = await tierPage.uploadWhitelistCSVFile(fileName)
@@ -795,20 +852,20 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
             });
 
-        test.it('Field Supply disabled if whitelist added ',
+        test.it.skip('Field Supply disabled if whitelist added ',
             async function () {
                 const result = await tierPage.isDisabledFieldSupply();
                 return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
             });
 
-        test.it('Number of added whitelisted addresses is correct, data is valid',
+        test.it.skip('Number of added whitelisted addresses is correct, data is valid',
             async function () {
                 const shouldBe = 5;
                 const inReality = await tierPage.amountAddedWhitelist();
                 return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
             });
 
-        test.it('User is able to bulk delete all whitelisted addresses ',
+        test.it.skip('User is able to bulk delete all whitelisted addresses ',
             async function () {
                 const result = await tierPage.clickButtonClearAll()
                     && await tierPage.waitUntilShowUpPopupConfirm(180)
@@ -816,40 +873,40 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
             });
 
-        test.it('All whitelisted addresses are removed after deletion ',
+        test.it.skip('All whitelisted addresses are removed after deletion ',
             async function () {
                 const result = await tierPage.amountAddedWhitelist(10);
                 return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
             });
 
-        test.it('Field Supply enabled if whitelist was deleted ',
+        test.it.skip('Field Supply enabled if whitelist was deleted ',
             async function () {
                 const result = await tierPage.isDisabledFieldSupply();
                 return await assert.equal(result, false, "Test FAILED. Field minCap disabled if whitelist enabled");
             });
 
-        test.it('User is able to fill out field "Supply" with valid data',
+        test.it.skip('User is able to fill out field "Supply" with valid data',
             async function () {
                 tierPage.tier.supply = newValue.supplyTier1;
                 const result = await tierPage.fillSupply();
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
             });
 
-        test.it('User is able to download CSV file with more than 50 whitelisted addresses',
+        test.it.skip('User is able to download CSV file with more than 50 whitelisted addresses',
             async function () {
                 const fileName = "./public/whitelistedAddresses61.csv";
                 const result = await tierPage.uploadWhitelistCSVFile(fileName);
                 return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
             });
 
-        test.it('Alert present if number of whitelisted addresses greater 50 ',
+        test.it.skip('Alert present if number of whitelisted addresses greater 50 ',
             async function () {
                 const result = await tierPage.waitUntilShowUpPopupConfirm(100)
                     && await wizardStep3.clickButtonOk();
                 return await assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
             });
 
-        test.it('Number of added whitelisted addresses is correct, data is valid',
+        test.it.skip('Number of added whitelisted addresses is correct, data is valid',
             async function () {
                 const shouldBe = 50;
                 const inReality = await tierPage.amountAddedWhitelist();
@@ -857,7 +914,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
             });
 
-        test.it('User is able to bulk delete all whitelisted addresses ',
+        test.it.skip('User is able to bulk delete all whitelisted addresses ',
             async function () {
                 const result = await tierPage.clickButtonClearAll()
                     && await tierPage.waitUntilShowUpPopupConfirm(180)
@@ -865,13 +922,13 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
             });
 
-        test.it('User is able sequental to add several whitelisted addresses  ',
+        test.it.skip('User is able sequental to add several whitelisted addresses  ',
             async function () {
                 const result = await tierPage.fillWhitelist();
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
             });
 
-        test.it('User is able to remove one whitelisted address',
+        test.it.skip('User is able to remove one whitelisted address',
             async function () {
                 const beforeRemoving = await tierPage.amountAddedWhitelist();
                 const numberAddressForRemove = 1;

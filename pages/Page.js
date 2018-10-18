@@ -209,7 +209,7 @@ class Page {
     async clickWithWait(element, Twaiting) {
         logger.info("click with wait: " + element);
         try {
-            let field = await this.getElement(element, Twaiting);
+            const field = await this.getElement(element, Twaiting);
             await field.click();
             return true;
         }
@@ -222,7 +222,7 @@ class Page {
     async fillWithWait(element, k, Twaiting) {
         logger.info("fill with wait : value = " + k);
         try {
-            let field = await this.getElement(element, Twaiting);
+            const field = await this.getElement(element, Twaiting);
             if ( field === null ) return false;
             await field.sendKeys(k);
             return true;
