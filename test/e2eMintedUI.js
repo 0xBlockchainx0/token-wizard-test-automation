@@ -1164,7 +1164,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             test.it('Rate is correct ',
                 async function () {
                     const result = await crowdsalePage.getRate()
-                    return await assert.equal(result, crowdsaleMintedSimple.tiers[1].rate, 'Rate is incorrect')
+                    return await assert.equal(result, crowdsaleMintedSimple.tiers[0].rate, 'Rate is incorrect')
                 });
 
             test.it('Total supply is correct ',
