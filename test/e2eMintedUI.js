@@ -282,27 +282,27 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
 
 
-        test.it.skip('User is able to download CSV file with reserved tokens',
+        test.it('User is able to download CSV file with reserved tokens',
             async function () {
                 let fileName = './public/reservedAddresses21.csv';
                 let result = await reservedTokensPage.uploadReservedCSVFile(fileName);
                 return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
             });
 
-        test.it.skip('Alert present if number of reserved addresses greater 20 ',
+        test.it('Alert present if number of reserved addresses greater 20 ',
             async function () {
                 let result = await reservedTokensPage.waitUntilShowUpPopupConfirm(100)
                     && await reservedTokensPage.clickButtonOk();
                 return await assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
             });
-        test.it.skip('Added only 20 reserved addresses from CSV file',
+        test.it('Added only 20 reserved addresses from CSV file',
             async function () {
                 let correctNumberReservedTokens = 20;
                 let result = await reservedTokensPage.amountAddedReservedTokens();
                 return await assert.equal(result, correctNumberReservedTokens, "Test FAILED. Wizard step#2: number of added reserved tokens is correct");
             });
 
-        test.it.skip('Check validator for reserved addresses',
+        test.it('Check validator for reserved addresses',
             async function () {
                 let fileName = './public/reservedAddressesTestValidation.csv';
                 let result = await reservedTokensPage.uploadReservedCSVFile(fileName);
@@ -310,28 +310,28 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
             });
 
-        test.it.skip('Added only valid data from CSV file',
+        test.it('Added only valid data from CSV file',
             async function () {
                 let correctNumberReservedTokens = 20;
                 let result = await reservedTokensPage.amountAddedReservedTokens();
                 return await assert.equal(result, correctNumberReservedTokens, "Test FAILED. Wizard step#2: number of added reserved tokens is correct");
             });
 
-        test.it.skip('Button ClearAll is displayed ',
+        test.it('Button ClearAll is displayed ',
             async function () {
 
                 let result = await reservedTokensPage.isLocatedButtonClearAll();
                 return await assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
             });
 
-        test.it.skip('Alert present after clicking ClearAll',
+        test.it('Alert present after clicking ClearAll',
             async function () {
                 await reservedTokensPage.clickButtonClearAll();
                 let result = await reservedTokensPage.isDisplayedButtonNoAlert();
                 return await assert.equal(result, true, "Test FAILED.Alert does NOT present after select ClearAll or button No does NOT present");
             });
 
-        test.it.skip('User is able to bulk delete of reserved tokens ',
+        test.it('User is able to bulk delete of reserved tokens ',
             async function () {
                 let result = await reservedTokensPage.waitUntilShowUpPopupConfirm(20)
                     && await reservedTokensPage.clickButtonYesAlert()
@@ -339,20 +339,20 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, 0, "Wizard step#2: user is NOT able bulk delete of reserved tokens");
             });
 
-        test.it.skip('User is able to add reserved tokens one by one ',
+        test.it('User is able to add reserved tokens one by one ',
             async function () {
                 await reservedTokensPage.fillReservedTokens(crowdsaleForUItests);
                 let result = await reservedTokensPage.amountAddedReservedTokens();
                 return await assert.equal(result, crowdsaleForUItests.reservedTokens.length, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
             });
 
-        test.it.skip('Field Decimals is disabled if reserved tokens are added ',
+        test.it('Field Decimals is disabled if reserved tokens are added ',
             async function () {
                 let result = await wizardStep2.isDisabledDecimals();
                 return await assert.equal(result, true, "Wizard step#2: field Decimals enabled if reserved tokens added ");
             });
 
-        test.it.skip('User is able to remove one of reserved tokens ',
+        test.it('User is able to remove one of reserved tokens ',
             async function () {
                 let amountBefore = await reservedTokensPage.amountAddedReservedTokens();
                 await reservedTokensPage.removeReservedTokens(1);
@@ -360,7 +360,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(amountBefore, amountAfter + 1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
             });
 
-        test.it.skip('Go back - page keep state of each field',
+        test.it('Go back - page keep state of each field',
             async function () {
                 const result = await wizardStep2.goBack()
                     && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap()
@@ -374,7 +374,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length - 1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
             });
 
-        test.it.skip('Refresh - page keep state of each field',
+        test.it('Refresh - page keep state of each field',
             async function () {
                 const result = await wizardStep2.refresh()
                     && await wizardStep2.waitUntilLoaderGone()
@@ -387,7 +387,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length - 1, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
             });
 
-        test.it.skip('Change network - page keep state of each field',
+        test.it('Change network - page keep state of each field',
             async function () {
                 let result = await Investor1.setWalletAccount()
                     && await wizardStep2.waitUntilLoaderGone()
@@ -434,7 +434,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
             });
 
-        test.it.skip('Checkbox gasprice \'Safe\'  by default ',
+        test.it('Checkbox gasprice \'Safe\'  by default ',
             async function () {
                 const result = await wizardStep3.isSelectedCheckboxGasSafe()
                     && !await wizardStep3.isSelectedCheckboxGasNormal()
@@ -444,21 +444,21 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Safe'  by default ");
             });
 
-        test.it.skip('User is able to set checkbox gasprice \'Normal\'',
+        test.it('User is able to set checkbox gasprice \'Normal\'',
             async function () {
                 const result = await wizardStep3.clickCheckboxGasNormal()
                     && await wizardStep3.isSelectedCheckboxGasNormal()
                 return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Normal' isn\'t selected ");
             });
 
-        test.it.skip('User is able to set checkbox gasprice \'Safe\'',
+        test.it('User is able to set checkbox gasprice \'Safe\'',
             async function () {
                 const result = await wizardStep3.clickCheckboxGasSafe()
                     && await wizardStep3.isSelectedCheckboxGasSafe()
                 return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Safe' isn\'t selected ");
             });
 
-        test.it.skip('Field \'Gas price custom\' isn\'t displayed if checkbox gasprice \'Custom\' isn\'t selected ',
+        test.it('Field \'Gas price custom\' isn\'t displayed if checkbox gasprice \'Custom\' isn\'t selected ',
             async function () {
                 const result = await wizardStep3.isDisplayedFieldGasCustom()
                 return await assert.equal(result, false, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
@@ -471,26 +471,26 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Fast' isn\'t selected ");
             });
 
-        test.it.skip('User is able to set "Custom Gasprice" checkbox',
+        test.it('User is able to set "Custom Gasprice" checkbox',
             async function () {
                 const result = await wizardStep3.clickCheckboxGasCustom()
                     && await wizardStep3.isSelectedCheckboxGasCustom()
                 return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
             });
 
-        test.it.skip('Field \'Gas price custom\' displayed if checkbox gasprice \'Custom\'is selected ',
+        test.it('Field \'Gas price custom\' displayed if checkbox gasprice \'Custom\'is selected ',
             async function () {
                 const result = await wizardStep3.isDisplayedFieldGasCustom()
                 return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
             });
 
-        test.it.skip('Field \'Gas price custom\' has correct placeholder ',
+        test.it('Field \'Gas price custom\' has correct placeholder ',
             async function () {
                 const result = await wizardStep3.getValueFieldGasCustom()
                 return await assert.equal(result, placeholder.gasCustom, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
             });
 
-        test.it.skip('User is able to fill out the  CustomGasprice field with valid value',
+        test.it('User is able to fill out the  CustomGasprice field with valid value',
             async function () {
                 const result = await wizardStep3.fillGasPriceCustom(newValue.customGas);
                 return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
@@ -561,7 +561,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
             });
 
-        test.it.skip('User is able to download CSV file with whitelisted addresses',
+        test.it('User is able to download CSV file with whitelisted addresses',
             async function () {
                 const fileName = "./public/whitelistAddressesTestValidation.csv";
                 const result = await tierPage.uploadWhitelistCSVFile(fileName)
@@ -570,20 +570,20 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
             });
 
-        test.it.skip('Field Supply disabled if whitelist added ',
+        test.it('Field Supply disabled if whitelist added ',
             async function () {
                 const result = await tierPage.isDisabledFieldSupply();
                 return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
             });
 
-        test.it.skip('Number of added whitelisted addresses is correct, data is valid',
+        test.it('Number of added whitelisted addresses is correct, data is valid',
             async function () {
                 const shouldBe = 5;
                 const inReality = await tierPage.amountAddedWhitelist();
                 return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
             });
 
-        test.it.skip('User is able to bulk delete all whitelisted addresses ',
+        test.it('User is able to bulk delete all whitelisted addresses ',
             async function () {
                 const result = await tierPage.clickButtonClearAll()
                     && await tierPage.waitUntilShowUpPopupConfirm(180)
@@ -591,13 +591,13 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
             });
 
-        test.it.skip('All whitelisted addresses are removed after deletion ',
+        test.it('All whitelisted addresses are removed after deletion ',
             async function () {
                 const result = await tierPage.amountAddedWhitelist(10);
                 return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
             });
 
-        test.it.skip('Field Supply enabled if whitelist was deleted ',
+        test.it('Field Supply enabled if whitelist was deleted ',
             async function () {
                 const result = await tierPage.isDisabledFieldSupply();
                 return await assert.equal(result, false, "Test FAILED. Field minCap disabled if whitelist enabled");
@@ -610,21 +610,21 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
             });
 
-        test.it.skip('User is able to download CSV file with more than 50 whitelisted addresses',
+        test.it('User is able to download CSV file with more than 50 whitelisted addresses',
             async function () {
                 const fileName = "./public/whitelistedAddresses61.csv";
                 const result = await tierPage.uploadWhitelistCSVFile(fileName);
                 return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
             });
 
-        test.it.skip('Alert present if number of whitelisted addresses greater 50 ',
+        test.it('Alert present if number of whitelisted addresses greater 50 ',
             async function () {
                 const result = await tierPage.waitUntilShowUpPopupConfirm(100)
                     && await wizardStep3.clickButtonOk();
                 return await assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
             });
 
-        test.it.skip('Number of added whitelisted addresses is correct, data is valid',
+        test.it('Number of added whitelisted addresses is correct, data is valid',
             async function () {
                 const shouldBe = 50;
                 const inReality = await tierPage.amountAddedWhitelist();
@@ -632,7 +632,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
             });
 
-        test.it.skip('User is able to bulk delete all whitelisted addresses ',
+        test.it('User is able to bulk delete all whitelisted addresses ',
             async function () {
                 const result = await tierPage.clickButtonClearAll()
                     && await tierPage.waitUntilShowUpPopupConfirm(180)
@@ -640,13 +640,13 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
             });
 
-        test.it.skip('User is able to add several whitelisted addresses one by one ',
+        test.it('User is able to add several whitelisted addresses one by one ',
             async function () {
                 const result = await tierPage.fillWhitelist();
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
             });
 
-        test.it.skip('User is able to remove one whitelisted address',
+        test.it('User is able to remove one whitelisted address',
             async function () {
                 const beforeRemoving = await tierPage.amountAddedWhitelist();
                 const numberAddressForRemove = 1;
@@ -693,7 +693,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
             });
 
-        test.it.skip('Go back - page keep state  ',
+        test.it('Go back - page keep state  ',
             async function () {
                 const result = await wizardStep3.goBack()
                     && await wizardStep2.waitUntilDisplayedFieldName()
@@ -722,7 +722,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
             });
 
-        test.it.skip('Refresh - page keep state of checkbox \'Whitelist with mincap\' ',
+        test.it('Refresh - page keep state of checkbox \'Whitelist with mincap\' ',
             async function () {
                 const result = await wizardStep3.refresh()
                     && await wizardStep1.waitUntilLoaderGone()
@@ -748,7 +748,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
             });
 
-        test.it.skip('Change network - page keep state of checkbox \'Whitelist with mincap\' ',
+        test.it('Change network - page keep state of checkbox \'Whitelist with mincap\' ',
             async function () {
                 const result = await Investor1.setWalletAccount()
                     && await wizardStep1.waitUntilLoaderGone()
@@ -997,7 +997,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(result, 'Yes', 'Publish page: optimized flag name is incorrect ');
                 });
 
-            test.it('Publish page: contract source code is displayed and correct ',
+            test.it.skip('Publish page: contract source code is displayed and correct ',
                 async function () {
                     const contract = await publishPage.getTextContract()
                     crowdsaleMintedSimple.sort = 'minted'
@@ -1261,7 +1261,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             test.it('max contribution is correct',
                 async function () {
                     const result = await contributionPage.getMaxContribution()
-                    const shouldBe = crowdsaleMintedSimple.tiers[0].supply + ' ' + crowdsaleMintedSimple.ticker
+                    const shouldBe = 'You are not allowed'
                     return await assert.equal(result, shouldBe, 'incorrect max contribution');
                 });
 
