@@ -5,7 +5,7 @@ const By = require('selenium-webdriver/lib/by').By;
 const Utils = require('../utils/Utils.js').Utils;
 const ReservedTokensContainer = By.className("sw-ReservedTokensTable_Row");
 const buttonAdd = By.className("sw-ButtonPlus");//("button button_fill button_no_icon");
-const itemsRemove = By.className("sw-ButtonDelete ");
+const itemsRemove = By.className("sw-ButtonDelete");
 const buttonClearAll = By.className("sw-ButtonCSV sw-ButtonCSV-clearall");
 const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const buttonNoAlert = By.className("swal2-cancel swal2-styled");
@@ -49,6 +49,7 @@ class ReservedTokensPage extends Page {
             for ( let i = 0; i < array.length; i++ ) {
                 this.itemsRemove[i] = array[i];
             }
+            console.log(array.length)
             return array;
         }
         catch ( err ) {
@@ -171,8 +172,9 @@ class ReservedTokensPage extends Page {
 
     async removeReservedTokens(value) {
         logger.info(this.name + "removeReservedTokens ");
-        return (await this.initItemsRemove() !== null) &&
-            await super.clickWithWait(this.itemsRemove[value]);
+        const array = await this.initItemsRemove()
+        return (array !== null)
+            && await super.clickWithWait(array[value]);
     }
 
     async clickButtonClearAll() {

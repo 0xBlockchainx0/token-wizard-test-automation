@@ -5,11 +5,11 @@ const By = require('selenium-webdriver/lib/by').By;
 const webdriver = require('selenium-webdriver');
 const Utils = require('../utils/Utils.js').Utils;
 const wizardStep3 = require("./WizardStep3.js");
-const itemsRemove = By.className("item-remove");
+const itemsRemove = By.className("sw-ButtonDelete ");
 const buttonAddWhitelist = By.className("button button_fill button_fill_plus");
 
-const whitelistContainerInner = By.className("white-list-item-container-inner");//white-list-input-container-inner
-const buttonClearAll = By.className("fa fa-trash");
+const whitelistContainerInner = By.className("sw-WhiteListTable_Row");
+const buttonClearAll = "sw-ButtonCSV sw-ButtonCSV-clearall"
 const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const fieldMinRate = By.id("tiers[0].minRate");
 const fieldMaxRate = By.id("tiers[0].maxRate");
@@ -225,10 +225,9 @@ class TierPage extends Page {
     async initWhitelistFields(Twait) {
         logger.info(this.name + "initWhitelistFields ");
         try {
-            if (Twait === undefined) Twait = 180
-            const containers = await super.findWithWait(whitelistContainer,Twait);
-            let array = await this.getChildsByClassName("sw-InputField ", containers[this.number]);
-
+            if ( Twait === undefined ) Twait = 180
+            const containers = await super.findWithWait(whitelistContainer, Twait);
+            const array = await this.getChildsByClassName("sw-TextField", containers[this.number]);
             if ( array === null ) return null;
             else {
                 this.fieldAddressWhitelist = array[0];
@@ -250,7 +249,6 @@ class TierPage extends Page {
             const tier = By.className('sw-BorderedBlock sw-BorderedBlock-TierBlocksWhitelistCapped')
             const containers = await super.findWithWait(tier)
             const array = await super.getChildsByClassName('sw-RadioButton_Button', containers[this.number]);
-            console.log(array.length)
             if ( array.length > 2 ) {
                 this.checkboxModifyOn = array[2];
                 this.checkboxModifyOff = array[3];
@@ -295,15 +293,15 @@ class TierPage extends Page {
 
     async getButtonAddWhitelist() {
         logger.info(this.name + "getButtonAddWhitelist ");
-        let containers = await super.findWithWait(contentContainer);
-        let element = await this.getChildsByClassName("button button_fill button_fill_plus", containers[this.number + 1]);
+        const containers = await super.findWithWait(whitelistContainer);
+        console.log('containers.length' + containers.length)
+        let element = await this.getChildsByClassName("sw-ButtonPlus", containers[this.number]);
         return element[0];
     }
 
     async clickButtonAddWhitelist() {
         logger.info(this.name + "clickButtonAddWhitelist ");
-        //if (this.tier.minRate !== undefined) return true;
-        let element = await this.getButtonAddWhitelist();
+        const element = await this.getButtonAddWhitelist();
         return await super.clickWithWait(element);
     }
 
@@ -351,7 +349,7 @@ class TierPage extends Page {
     async clickButtonClearAll() {
         logger.info(this.name + "clickButtonClearAll:");
         try {
-            await this.driver.executeScript("document.getElementsByClassName('fa fa-trash')[0].click();");
+            await this.driver.executeScript("document.getElementsByClassName('" + buttonClearAll + "')[0].click();");
             return true;
         }
         catch ( err ) {
@@ -497,9 +495,7 @@ class TierPage extends Page {
 
     async fillWhitelist() {
         logger.info(this.name + "fillWhitelist ");
-
         try {
-
             for ( let i = 0; i < this.tier.whitelist.length; i++ ) {
                 logger.info(this.name + "fillWhitelist #" + i + ": ");
                 do {
