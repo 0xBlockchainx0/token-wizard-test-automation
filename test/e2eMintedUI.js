@@ -217,7 +217,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
     })
     describe('Step#1: ', async function () {
-        test.it('Go back - page keep state of checkbox \'Whitelist with mincap\' ',
+        test.it.skip('Go back - page keep state of checkbox \'Whitelist with mincap\' ',
             async function () {
                 const result = await wizardStep1.clickCheckboxWhitelistWithCap()
                     && await wizardStep1.goBack()

@@ -5,7 +5,7 @@ const webdriver = require('selenium-webdriver');
 const By = require('selenium-webdriver/lib/by').By;
 const loader = By.className("loading-container");
 const loaderNotDisplayed = By.className("loading-container notdisplayed");
-const titles = By.className("st-StepContent_InfoTitle");
+const titles = By.className("st-StepInfo_Title");
 const buttonOk = By.className("swal2-confirm swal2-styled");
 
 class Page {
