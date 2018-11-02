@@ -5,7 +5,7 @@ const TierPage = require('../pages/TierPage.js').TierPage;
 
 const buttonContinue = By.xpath("//*[contains(text(),'Continue')]");
 const buttonOK = By.className("swal2-confirm swal2-styled");
-const buttonAddTier = By.className("button button_fill_secondary");
+const buttonAddTier = By.className("ti-AddTierButton_PlusIcon");
 const fieldWalletAddress = By.id("walletAddress");
 const checkboxGasSafe = By.id('slow')
 const checkboxGasNormal = By.id('normal')

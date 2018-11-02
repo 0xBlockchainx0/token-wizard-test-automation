@@ -7,13 +7,14 @@ const Utils = require('../utils/Utils.js').Utils;
 const wizardStep3 = require("./WizardStep3.js");
 const itemsRemove = By.className("item-remove");
 const buttonAddWhitelist = By.className("button button_fill button_fill_plus");
-const whitelistContainer = By.className("white-list-container");
+
 const whitelistContainerInner = By.className("white-list-item-container-inner");//white-list-input-container-inner
 const buttonClearAll = By.className("fa fa-trash");
 const buttonYesAlert = By.className("swal2-confirm swal2-styled");
 const fieldMinRate = By.id("tiers[0].minRate");
 const fieldMaxRate = By.id("tiers[0].maxRate");
-const contentContainer = By.className("steps-content container");
+
+const whitelistContainer = By.className("sw-WhitelistInputBlock")
 const TIME_FORMAT = require('../utils/constants.js').TIME_FORMAT;
 const inputFields = By.className('sw-InputField2 ')
 let COUNT_TIERS = 0;
@@ -224,9 +225,8 @@ class TierPage extends Page {
     async initWhitelistFields() {
         logger.info(this.name + "initWhitelistFields ");
         try {
-            let containers = await super.findWithWait(contentContainer);
-            let element = await this.getChildsByClassName("white-list-container", containers[this.number + 1]);
-            let array = await this.getChildsByClassName("input", element[0]);
+            const containers = await super.findWithWait(whitelistContainer);
+            let array = await this.getChildsByClassName("sw-InputField ", containers[this.number]);
 
             if ( array === null ) return null;
             else {
@@ -237,7 +237,7 @@ class TierPage extends Page {
             return array;
         }
         catch ( err ) {
-            logger.info("Error: " + err);
+            logger.info(err);
             return null;
         }
     }
@@ -245,17 +245,16 @@ class TierPage extends Page {
     async initCheckboxes() {
         logger.info(this.name + "initCheckboxes ");
         try {
-            const tier = By.className('sw-TierBlock')
+            //const tier = By.className('sw-TierBlock')
+            const tier = By.className('sw-BorderedBlock sw-BorderedBlock-TierBlocksWhitelistCapped')
             const containers = await super.findWithWait(tier)
-            console.log(this.number)
-
-            let array = await this.getChildsByClassName("sw-RadioButton_Button", containers[this.number]);
-
+            const array = await super.getChildsByClassName('sw-RadioButton_Button', containers[this.number]);
+            console.log(array.length)
             if ( array.length > 2 ) {
-                this.checkboxModifyOn = array[0];
-                this.checkboxModifyOff = array[1];
-                this.checkboxWhitelistingYes = array[2];
-                this.checkboxWhitelistingNo = array[3];
+                this.checkboxModifyOn = array[2];
+                this.checkboxModifyOff = array[3];
+                this.checkboxWhitelistingYes = array[0];
+                this.checkboxWhitelistingNo = array[1];
             }
             else { //if DUTCH
                 this.checkboxWhitelistingYes = array[0];
@@ -330,7 +329,7 @@ class TierPage extends Page {
 
     async isDisplayedWhitelistContainer() {
         logger.info(this.name + "isDisplayedWhitelistContainer ");
-        return (await this.initWhitelistFields() !== null)
+        return (await this.waitUntilDisplayed(whitelistContainer, 10))
     }
 
     async amountAddedWhitelist(Twaiting) {
@@ -559,9 +558,8 @@ class TierPage extends Page {
     async clickCheckboxAllowModifyOn() {
         logger.info(this.name + "clickCheckboxAllowModifyOn ");
         return (await this.initCheckboxes() !== null)
-            && await super.findWithWait(this.checkboxModifyOn)
-        // await this.driver.executeScript("document.getElementsByClassName('sw-RadioButton_Button')[2].click();");
-        // return true
+            && await super.clickWithWait(this.checkboxModifyOn)
+
     }
 
     async isSelectedCheckboxAllowModifyOn() {
@@ -593,7 +591,8 @@ class TierPage extends Page {
 
     async clickCheckboxWhitelistYes() {
         logger.info(this.name + "clickCheckboxWhitelistYes ");
-        return await super.clickWithWait(await this.getCheckboxWhitelistYes());
+        return (await this.initCheckboxes() !== null)
+            && await super.clickWithWait(this.checkboxWhitelistingYes)
     }
 
     async isSelectedCheckboxWhitelistYes() {
@@ -642,7 +641,6 @@ class TierPage extends Page {
         try {
             const tierBlock = (await super.findWithWait(By.className('sw-TierBlock')))[0]
             const elements = await super.getChildsByClassName('sw-InputField2', tierBlock)
-            console.log(elements.length)
             let element
             switch ( field ) {
                 case 'name':

@@ -241,7 +241,7 @@ class Page {
             return await this.driver.findElements(element);
         }
         catch ( err ) {
-            logger.info("Element " + element + " have not appeared in" + Twaiting * 333 / 1000 + " sec.");
+            logger.info(err);
             return null;
         }
     }
