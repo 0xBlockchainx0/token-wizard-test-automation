@@ -29,9 +29,9 @@ class TierPage extends Page {
         this.number = COUNT_TIERS++;
         this.name = "Tier #" + this.number + ": ";
 
-        this.fieldWhAddressTier;
-        this.fieldMinTier;
-        this.fieldMaxTier;
+        this.fieldAddressWhitelist;
+        this.fieldMinWhitelist;
+        this.fieldMaxWhitelist;
         this.checkboxModifyOn;
         this.checkboxModifyOff;
         this.checkboxWhitelistingYes;
@@ -222,17 +222,18 @@ class TierPage extends Page {
         }
     }
 
-    async initWhitelistFields() {
+    async initWhitelistFields(Twait) {
         logger.info(this.name + "initWhitelistFields ");
         try {
-            const containers = await super.findWithWait(whitelistContainer);
+            if (Twait === undefined) Twait = 180
+            const containers = await super.findWithWait(whitelistContainer,Twait);
             let array = await this.getChildsByClassName("sw-InputField ", containers[this.number]);
 
             if ( array === null ) return null;
             else {
-                this.fieldWhAddressTier = array[0];
-                this.fieldMinTier = array[1];
-                this.fieldMaxTier = array[2];
+                this.fieldAddressWhitelist = array[0];
+                this.fieldMinWhitelist = array[1];
+                this.fieldMaxWhitelist = array[2];
             }
             return array;
         }
@@ -271,25 +272,25 @@ class TierPage extends Page {
     async fillAddress(address) {
         logger.info(this.name + "fillAddress ");
         return (await this.initWhitelistFields() !== null)
-            && (this.fieldWhAddressTier !== undefined)
-            && await super.clearField(this.fieldWhAddressTier) &&
-            await super.fillWithWait(this.fieldWhAddressTier, address);
+            && (this.fieldAddressWhitelist !== undefined)
+            && await super.clearField(this.fieldAddressWhitelist) &&
+            await super.fillWithWait(this.fieldAddressWhitelist, address);
     }
 
     async fillMin(value) {
         logger.info(this.name + "fillMin ");
         return (await this.initWhitelistFields() !== null)
-            && (this.fieldMinTier !== undefined) &&
-            await super.clearField(this.fieldMinTier) &&
-            await super.fillWithWait(this.fieldMinTier, value);
+            && (this.fieldMinWhitelist !== undefined) &&
+            await super.clearField(this.fieldMinWhitelist) &&
+            await super.fillWithWait(this.fieldMinWhitelist, value);
     }
 
     async fillMax(value) {
         logger.info(this.name + "fillMax  ");
         return (await this.initWhitelistFields() !== null)
-            && (this.fieldMaxTier !== undefined)
-            && await super.clearField(this.fieldMaxTier)
-            && await super.fillWithWait(this.fieldMaxTier, value);
+            && (this.fieldMaxWhitelist !== undefined)
+            && await super.clearField(this.fieldMaxWhitelist)
+            && await super.fillWithWait(this.fieldMaxWhitelist, value);
     }
 
     async getButtonAddWhitelist() {
@@ -329,7 +330,8 @@ class TierPage extends Page {
 
     async isDisplayedWhitelistContainer() {
         logger.info(this.name + "isDisplayedWhitelistContainer ");
-        return (await this.waitUntilDisplayed(whitelistContainer, 10))
+        return (await this.initWhitelistFields(10) !== null)
+            && await this.waitUntilDisplayed(this.fieldAddressWhitelist, 10)
     }
 
     async amountAddedWhitelist(Twaiting) {
@@ -555,26 +557,26 @@ class TierPage extends Page {
         return await super.getElement(locator);
     }
 
-    async clickCheckboxAllowModifyOn() {
-        logger.info(this.name + "clickCheckboxAllowModifyOn ");
+    async clickCheckboxAllowModifyYes() {
+        logger.info(this.name + "clickCheckboxAllowModifyYes ");
         return (await this.initCheckboxes() !== null)
             && await super.clickWithWait(this.checkboxModifyOn)
 
     }
 
-    async isSelectedCheckboxAllowModifyOn() {
-        logger.info(this.name + "isSelectedCheckboxAllowModifyOn ");
+    async isSelectedCheckboxAllowModifyYes() {
+        logger.info(this.name + "isSelectedCheckboxAllowModifyYes ");
         return await super.isElementSelected(await this.getCheckboxAllowModifyOn())
     }
 
-    async clickCheckboxAllowModifyOff() {
-        logger.info(this.name + "clickCheckboxAllowModifyOff ");
+    async clickCheckboxAllowModifyNo() {
+        logger.info(this.name + "clickCheckboxAllowModifyNo ");
         return (await this.initCheckboxes() !== null)
             && await super.findWithWait(this.checkboxModifyOff)
     }
 
-    async isSelectedCheckboxAllowModifyOff() {
-        logger.info(this.name + "isSelectedCheckboxAllowModifyOff ");
+    async isSelectedCheckboxAllowModifyNo() {
+        logger.info(this.name + "isSelectedCheckboxAllowModifyNo ");
         return await super.isElementSelected(await this.getCheckboxAllowModifyOff())
     }
 
@@ -582,7 +584,6 @@ class TierPage extends Page {
         logger.info(this.name + "clickCheckboxWhitelistNo ");
         return await super.clickWithWait(await this.getCheckboxWhitelistNo());
     }
-
 
     async isSelectedCheckboxWhitelistNo() {
         logger.info(this.name + "isSelectedCheckboxWhitelistNo ");

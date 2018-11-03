@@ -52,19 +52,34 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     const placeholder = {
         gasCustom: '0.1',
         setupNameTier1: 'Tier 1',
+        setupNameTier2: 'Tier 2',
         decimals: '18',
         mincap: '0'
     }
 
     const newValue = {
-        setupNameTier1: 'tier#1',
+        tier1: {
+            name: 'tier#1',
+            rate: '456',
+            supply: '1e18',
+            mincap: '423',
+            allowModify: true,
+            enableWhitelist: false
+        },
+        tier2: {
+            name: 'tier#2',
+            rate: '789',
+            supply: '1234',
+            mincap: '13',
+            allowModify: false,
+            enableWhitelist: true
+        },
+
         name: 'Name',
         decimals: '13',
         customGas: '100',
         ticker: 'Tick',
-        rateTier1: '456',
-        supplyTier1: '1e18',
-        mincapTier2: '423'
+
     }
 
 
@@ -583,547 +598,556 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
             walletAddress: '0x56B2e3C3cFf7f3921D2e0F8B8e20d1eEc2926b'
         }
-        test.it('Field Wallet address contains current metamask account address  ',
-            async function () {
-                let result = await wizardStep3.getValueFieldWalletAddress();
-                result = (result === Owner.account.toString());
-                return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
-            });
+        describe('Crowdsale data', async function () {
 
-        test.it.skip('Error message if wallet address is incorrect',
-            async function () {
-                let result = await wizardStep3.fillWalletAddress(invalidValues.walletAddress)
-                    && await wizardStep3.waitUntilHasValue('walletAddress')
-                await assert.equal(result, true, 'Cannot fill out the field');
-                result = await wizardStep3.getWarningText('walletAddress')
-                await assert.equal(result, 'Please enter a valid address', 'Incorrect error message');
-                await wizardStep3.fillWalletAddress(Owner.account.toString());
-            });
+            test.it("Button 'Continue' is disabled if data are wrong",
+                async function () {
+                    let result = await wizardStep3.isDisabledButtonContinue();
+                    return await assert.equal(result, true, "Button 'Continue' is enabled");
+                });
 
-        test.it('Checkbox gasprice \'Safe\' by default ',
-            async function () {
-                const result = await wizardStep3.isSelectedCheckboxGasSafe()
-                    && !await wizardStep3.isSelectedCheckboxGasNormal()
-                    && !await wizardStep3.isSelectedCheckboxGasFast()
-                    && !await wizardStep3.isSelectedCheckboxGasCustom()
-                    && !await wizardStep3.isDisplayedFieldGasCustom()
-                return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Safe'  by default ");
-            });
+            test.it('Field Wallet address contains current metamask account address  ',
+                async function () {
+                    let result = await wizardStep3.getValueFieldWalletAddress();
+                    result = (result === Owner.account.toString());
+                    return await assert.equal(result, true, "Test FAILED. Wallet address does not match the metamask account address ");
+                });
 
-        test.it('User is able to set checkbox gasprice \'Normal\'',
-            async function () {
-                const result = await wizardStep3.clickCheckboxGasNormal()
-                    && await wizardStep3.isSelectedCheckboxGasNormal()
-                return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Normal' isn\'t selected ");
-            });
+            test.it.skip('Error message if wallet address is incorrect',
+                async function () {
+                    let result = await wizardStep3.fillWalletAddress(invalidValues.walletAddress)
+                        && await wizardStep3.waitUntilHasValue('walletAddress')
+                    await assert.equal(result, true, 'Cannot fill out the field');
+                    result = await wizardStep3.getWarningText('walletAddress')
+                    await assert.equal(result, 'Please enter a valid address', 'Incorrect error message');
+                    await wizardStep3.fillWalletAddress(Owner.account.toString());
+                });
 
-        test.it('User is able to set checkbox gasprice \'Safe\'',
-            async function () {
-                const result = await wizardStep3.clickCheckboxGasSafe()
-                    && await wizardStep3.isSelectedCheckboxGasSafe()
-                return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Safe' isn\'t selected ");
-            });
+            test.it('Checkbox gasprice \'Safe\' by default ',
+                async function () {
+                    const result = await wizardStep3.isSelectedCheckboxGasSafe()
+                        && !await wizardStep3.isSelectedCheckboxGasNormal()
+                        && !await wizardStep3.isSelectedCheckboxGasFast()
+                        && !await wizardStep3.isSelectedCheckboxGasCustom()
+                        && !await wizardStep3.isDisplayedFieldGasCustom()
+                    return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Safe'  by default ");
+                });
 
-        test.it('Field \'Gas price custom\' isn\'t displayed if checkbox gasprice \'Custom\' isn\'t selected ',
-            async function () {
-                const result = await wizardStep3.isDisplayedFieldGasCustom()
-                return await assert.equal(result, false, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
-            });
+            test.it('User is able to set checkbox gasprice \'Normal\'',
+                async function () {
+                    const result = await wizardStep3.clickCheckboxGasNormal()
+                        && await wizardStep3.isSelectedCheckboxGasNormal()
+                    return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Normal' isn\'t selected ");
+                });
 
-        test.it('User is able to set checkbox gasprice \'Fast\'',
-            async function () {
-                const result = await wizardStep3.clickCheckboxGasFast()
-                    && await wizardStep3.isSelectedCheckboxGasFast()
-                return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Fast' isn\'t selected ");
-            });
+            test.it('User is able to set checkbox gasprice \'Safe\'',
+                async function () {
+                    const result = await wizardStep3.clickCheckboxGasSafe()
+                        && await wizardStep3.isSelectedCheckboxGasSafe()
+                    return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Safe' isn\'t selected ");
+                });
 
-        test.it('User is able to set "Custom Gasprice" checkbox',
-            async function () {
-                const result = await wizardStep3.clickCheckboxGasCustom()
-                    && await wizardStep3.isSelectedCheckboxGasCustom()
-                return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
-            });
+            test.it('Field \'Gas price custom\' isn\'t displayed if checkbox gasprice \'Custom\' isn\'t selected ',
+                async function () {
+                    const result = await wizardStep3.isDisplayedFieldGasCustom()
+                    return await assert.equal(result, false, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
+                });
 
-        test.it('Field \'Gas price custom\' displayed if checkbox gasprice \'Custom\'is selected ',
-            async function () {
-                const result = await wizardStep3.isDisplayedFieldGasCustom()
-                return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
-            });
+            test.it('User is able to set checkbox gasprice \'Fast\'',
+                async function () {
+                    const result = await wizardStep3.clickCheckboxGasFast()
+                        && await wizardStep3.isSelectedCheckboxGasFast()
+                    return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Fast' isn\'t selected ");
+                });
 
-        test.it('Field \'Gas price custom\' has correct placeholder ',
-            async function () {
-                const result = await wizardStep3.getValueFieldGasCustom()
-                return await assert.equal(result, placeholder.gasCustom, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
-            });
+            test.it('User is able to set "Custom Gasprice" checkbox',
+                async function () {
+                    const result = await wizardStep3.clickCheckboxGasCustom()
+                        && await wizardStep3.isSelectedCheckboxGasCustom()
+                    return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
+                });
 
-        test.it.skip('Error message if Field \'Gas price custom\' is empty',
-            async function () {
-                let result = await wizardStep3.fillGasPriceCustom(' ')
-                    && await wizardStep3.waitUntilHasValue('gasPrice')
-                    && await Utils.delay(2000)
-                await assert.equal(result, true, 'Cannot fill out the field');
-                result = await wizardStep3.getWarningText('gasPrice')
-                await assert.equal(result, 'Should be greater or equal than 0.1', 'Incorrect error message');
-            });
+            test.it('Field \'Gas price custom\' displayed if checkbox gasprice \'Custom\'is selected ',
+                async function () {
+                    const result = await wizardStep3.isDisplayedFieldGasCustom()
+                    return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
+                });
 
-        test.it('User is able to fill out the CustomGasprice field with valid value',
-            async function () {
-                const result = await wizardStep3.fillGasPriceCustom(newValue.customGas);
-                return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
-            });
+            test.it('Field \'Gas price custom\' has correct placeholder ',
+                async function () {
+                    const result = await wizardStep3.getValueFieldGasCustom()
+                    return await assert.equal(result, placeholder.gasCustom, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
+                });
 
-        test.it('no error message if CustomGasprice field has valid value',
-            async function () {
-                const result = await wizardStep3.getWarningText('gasPrice')
-                await assert.equal(result, '', 'Unexpected error message');
-            });
+            test.it.skip('Error message if Field \'Gas price custom\' is empty',
+                async function () {
+                    let result = await wizardStep3.fillGasPriceCustom(' ')
+                        && await wizardStep3.waitUntilHasValue('gasPrice')
+                        && await Utils.delay(2000)
+                    await assert.equal(result, true, 'Cannot fill out the field');
+                    result = await wizardStep3.getWarningText('gasPrice')
+                    await assert.equal(result, 'Should be greater or equal than 0.1', 'Incorrect error message');
+                });
+
+            test.it('User is able to fill out the CustomGasprice field with valid value',
+                async function () {
+                    const result = await wizardStep3.fillGasPriceCustom(newValue.customGas);
+                    return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to fill "Custom Gasprice" with valid value');
+                });
+
+            test.it('no error message if CustomGasprice field has valid value',
+                async function () {
+                    const result = await wizardStep3.getWarningText('gasPrice')
+                    await assert.equal(result, '', 'Unexpected error message');
+                });
+        })
+        describe('Tier#1: ', async function () {
+            const invalidValues = {
+                nameLong: 'qertyuiopasdfghjklzxcvbnmqwertyui'
+            }
+            test.it('Field \'Mincap\' has placeholder 0 ',
+                async function () {
+                    const result = await tierPage.getValueFieldMinCap();
+                    return await assert.equal(result, placeholder.mincap, "Tier#1: field 'Mincap' has incorrect value by default ");
+                });
+
+            test.it.skip('Error message if field \'Mincap\' is empty',
+                async function () {
+                    const tier = tierPage
+                    tier.tier.minCap = ' '
+                    let result = await tier.fillMinCap(1)
+                        && await Utils.delay(2000)
+                    await assert.equal(result, true, 'Cannot fill out the field');
+                    result = await tier.getWarningText('minCap')
+                    await assert.equal(result, 'Please enter a valid number greater or equal than 0', 'Incorrect error message');
+                });
+
+            test.it('Field \'Setup name\' has correct placeholder',
+                async function () {
+                    const result = await tierPage.getValueFieldSetupName();
+                    return await assert.equal(result, placeholder.setupNameTier1, "Tier#1: field 'Setup name' has incorrect placeholder ");
+                });
+
+            test.it.skip('Error message if field \'Setup name\' is empty',
+                async function () {
+                    const tier = tierPage
+                    tier.tier.name = ''
+                    let result = await tier.fillSetupName()
+                        && await Utils.delay(2000)
+                    await assert.equal(result, true, 'Cannot fill out the field');
+                    result = await tier.getWarningText('name')
+                    await assert.equal(result, 'This field is required', 'Incorrect error message');
+                });
+
+            test.it.skip('Error message if name too long',
+                async function () {
+                    const tier = tierPage
+                    tier.tier.name = invalidValues.nameLong
+                    let result = await tier.fillSetupName()
+                        && await tier.waitUntilHasValue('name')
+                        && await Utils.delay(2000)
+                    await assert.equal(result, true, 'Cannot fill out the field');
+                    result = await tier.getWarningText('name')
+                    await assert.equal(result, 'Please enter a valid name between 1-30 characters', 'Incorrect error message');
+                });
+
+            test.it.skip('Error message if rate is negative',
+                async function () {
+                    const tier = tierPage
+                    tier.tier.rate = '-1'
+                    let result = await tier.fillRate()
+                        && await tier.waitUntilHasValue('rate')
+                        && await Utils.delay(2000)
+                    await assert.equal(result, true, 'Cannot fill out the field');
+                    result = await tier.getWarningText('rate')
+                    await assert.equal(result, 'Please enter a valid number greater than 0', 'Incorrect error message');
+                });
+
+            test.it.skip("Error messages if field 'Rate' is empty",
+                async function () {
+                    const tier = tierPage
+                    tier.tier.rate = ''
+                    let result = await tier.fillRate()
+                        && await Utils.delay(2000)
+                    await assert.equal(result, true, 'Cannot fill out the field');
+                    result = await tier.getWarningText('rate')
+                    await assert.equal(result.includes('Please enter a valid number greater than 0'), true, 'Incorrect error message');
+                    await assert.equal(result.includes('Should be integer'), true, 'Incorrect error message');
+                    await assert.equal(result.includes('Should not be greater than 1 quintillion (10^18)'), true, 'Incorrect error message');
+                });
+
+            test.it.skip('Error messages if rate is not integer',
+                async function () {
+                    const tier = tierPage
+                    tier.tier.rate = '1.2345'
+                    let result = await tier.fillRate()
+                        && await tier.waitUntilHasValue('rate')
+                        && await Utils.delay(2000)
+                    await assert.equal(result, true, 'Cannot fill out the field');
+                    result = await tier.getWarningText('rate')
+                    await assert.equal(result, 'Should be integer', true, 'Incorrect error message');
+                });
+
+            test.it.skip('Error messages if rate is greater than 1e18',
+                async function () {
+                    const tier = tierPage
+                    tier.tier.rate = '1e19'
+                    let result = await tier.fillRate()
+                        && await tier.waitUntilHasValue('rate')
+                        && await Utils.delay(2000)
+                    await assert.equal(result, true, 'Cannot fill out the field');
+                    result = await tier.getWarningText('rate')
+                    await assert.equal(result, 'Should not be greater than 1 quintillion (10^18)', true, 'Incorrect error message');
+                });
+
+            test.it.skip("Error message if field 'Supply' is empty",
+                async function () {
+                    const tier = tierPage
+                    tier.tier.supply = '-1'
+                    let result = await tier.fillSupply()
+                        && await Utils.delay(2000)
+                    await assert.equal(result, true, 'Cannot fill out the field');
+                    result = await tier.getWarningText('supply')
+                    console.log(result)
+                    await assert.equal(result, 'Please enter a valid number greater than 0', 'Incorrect error message');
+                });
+
+            test.it("User is able to fill out field 'Supply' with valid data",
+                async function () {
+                    tierPage.tier.supply = newValue.tier1.supply;
+                    let result = await tierPage.fillSupply();
+                    return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+                });
+
+            test.it("Checkbox 'Allow Modify' is 'No' by default",
+                async function () {
+                    const result = await tierPage.isSelectedCheckboxAllowModifyNo()
+                        && !await tierPage.isSelectedCheckboxAllowModifyYes();
+                    return await assert.equal(result, true, "Tier#1: checkbox 'Allow modifying' isn't 'No' by default ");
+                });
+
+            test.it("Checkbox 'Enable Whitelist' is 'No' by default",
+                async function () {
+                    const result = await tierPage.isSelectedCheckboxWhitelistNo()
+                        && !await tierPage.isSelectedCheckboxWhitelistYes();
+                    return await assert.equal(result, true, "Checkbox 'Enable whitelisting' isn't 'No' by default ");
+                });
+
+            test.it("User is able to set checkbox 'Allow Modify Yes'",
+                async function () {
+                    const result = await tierPage.clickCheckboxAllowModifyYes()
+                        && await tierPage.isSelectedCheckboxAllowModifyYes()
+                        && !await tierPage.isSelectedCheckboxAllowModifyNo()
+                    return await assert.equal(result, true, "Checkbox 'Allow Modify Yes' isn't selected ");
+                });
+
+            test.it("Whitelist container isn't displayed if checkbox 'Whitelist enabled' is 'No'",
+                async function () {
+                    const result = await tierPage.isDisplayedWhitelistContainer();
+                    return await assert.equal(result, false, "Unexpected whitelist container is displayed");
+                });
+
+            test.it("User is able to set checkbox 'Enable whitelisting Yes'",
+                async function () {
+                    const result = await tierPage.clickCheckboxWhitelistYes()
+                        && await tierPage.isSelectedCheckboxWhitelistYes()
+                        && !await tierPage.isSelectedCheckboxWhitelistNo()
+                    return await assert.equal(result, true, "Checkbox 'Enable whitelisting Yes' isn't selected ");
+                });
+
+            test.it('Whitelist container is presented if checkbox "Enable whitelisting Yes" is selected',
+                async function () {
+                    const result = await tierPage.isDisplayedWhitelistContainer();
+                    return await assert.equal(result, true, "Whitelist container isn't displayed");
+                });
+
+            test.it.skip('Field minCap disabled if whitelist enabled ',
+                async function () {
+                    const tierNumber = 1;
+                    const result = await tierPage.isDisabledFieldMinCap(tierNumber);
+                    return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
+                });
+
+            test.it("User is able to fill out field 'Setup name' with valid data",
+                async function () {
+                    tierPage.tier.name = newValue.tier1.name;
+                    let result = await tierPage.fillSetupName();
+
+                    return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+                });
+
+            test.it.skip('User is able to download CSV file with whitelisted addresses',
+                async function () {
+                    const fileName = "./public/whitelistAddressesTestValidation.csv";
+                    const result = await tierPage.uploadWhitelistCSVFile(fileName)
+                        && await tierPage.waitUntilShowUpPopupConfirm(180)
+                        && await wizardStep3.clickButtonOk();
+                    return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
+                });
+
+            test.it.skip('Field Supply disabled if whitelist added ',
+                async function () {
+                    const result = await tierPage.isDisabledFieldSupply();
+                    return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
+                });
+
+            test.it.skip('Number of added whitelisted addresses is correct, data is valid',
+                async function () {
+                    const shouldBe = 5;
+                    const inReality = await tierPage.amountAddedWhitelist();
+                    return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
+                });
+
+            test.it.skip('User is able to bulk delete all whitelisted addresses ',
+                async function () {
+                    const result = await tierPage.clickButtonClearAll()
+                        && await tierPage.waitUntilShowUpPopupConfirm(180)
+                        && await tierPage.clickButtonYesAlert();
+                    return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+                });
+
+            test.it.skip('All whitelisted addresses are removed after deletion ',
+                async function () {
+                    const result = await tierPage.amountAddedWhitelist(10);
+                    return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+                });
+
+            test.it.skip('Field Supply enabled if whitelist was deleted ',
+                async function () {
+                    const result = await tierPage.isDisabledFieldSupply();
+                    return await assert.equal(result, false, "Test FAILED. Field minCap disabled if whitelist enabled");
+                });
+
+            test.it.skip('User is able to fill out field "Supply" with valid data',
+                async function () {
+                    tierPage.tier.supply = newValue.newValue.tier1;
+                    const result = await tierPage.fillSupply();
+                    return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+                });
+
+            test.it.skip('User is able to download CSV file with more than 50 whitelisted addresses',
+                async function () {
+                    const fileName = "./public/whitelistedAddresses61.csv";
+                    const result = await tierPage.uploadWhitelistCSVFile(fileName);
+                    return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
+                });
+
+            test.it.skip('Alert present if number of whitelisted addresses greater 50 ',
+                async function () {
+                    const result = await tierPage.waitUntilShowUpPopupConfirm(100)
+                        && await wizardStep3.clickButtonOk();
+                    return await assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
+                });
+
+            test.it.skip('Number of added whitelisted addresses is correct, data is valid',
+                async function () {
+                    const shouldBe = 50;
+                    const inReality = await tierPage.amountAddedWhitelist();
+                    return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
+                });
+
+            test.it.skip('User is able to bulk delete all whitelisted addresses ',
+                async function () {
+                    const result = await tierPage.clickButtonClearAll()
+                        && await tierPage.waitUntilShowUpPopupConfirm(180)
+                        && await tierPage.clickButtonYesAlert();
+                    return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
+                });
+
+            test.it.skip('User is able sequental to add several whitelisted addresses  ',
+                async function () {
+                    const result = await tierPage.fillWhitelist();
+                    return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
+                });
+
+            test.it.skip('User is able to remove one whitelisted address',
+                async function () {
+                    const beforeRemoving = await tierPage.amountAddedWhitelist();
+                    const numberAddressForRemove = 1;
+                    await tierPage.removeWhiteList(numberAddressForRemove - 1);
+                    const afterRemoving = await tierPage.amountAddedWhitelist();
+                    return await assert.equal(beforeRemoving, afterRemoving + 1, "User is NOT able to remove one whitelisted address");
+                });
+
+
+            test.it('User is able to fill out field "Rate" with valid data',
+                async function () {
+                    tierPage.number = 0;
+                    tierPage.tier.rate = newValue.tier1.rate;
+                    const result = await tierPage.fillRate();
+                    return await assert.equal(result, true, "User is NOT able to fill out field 'Rate' with valid data");
+                });
+        })
+        describe('Tier#2:', async function () {
+
+            test.it('User is able to add tier',
+                async function () {
+                    tierPage.number = 1;
+                    const result = await wizardStep3.clickButtonAddTier();
+                    return await assert.equal(result, true, "Wizard step#3: User is able to add tier");
+                });
+
+            test.it("Field 'Setup name' has correct placeholder",
+                async function () {
+                    const result = await tierPage.getValueFieldSetupName();
+                    return await assert.equal(result, placeholder.setupNameTier2, "field 'Setup name' has incorrect placeholder ");
+                });
+
+            test.it("User is able to fill out field 'Setup name' with valid data",
+                async function () {
+                    tierPage.tier.name = newValue.tier2.name;
+                    let result = await tierPage.fillSetupName();
+                    return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+                });
+
+            test.it("User is able to fill out field 'Rate' with valid data",
+                async function () {
+
+                    tierPage.tier.rate = newValue.tier2.rate;
+                    let result = await tierPage.fillRate();
+                    return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
+                });
+
+            test.it("User is able to fill out field 'Supply' with valid data",
+                async function () {
+                    tierPage.tier.supply = newValue.tier2.supply;
+                    let result = await tierPage.fillSupply();
+                    return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+                });
+
+            test.it("User is able to fill out field 'minCap' with valid data",
+                async function () {
+                    tierPage.tier.minCap = newValue.tier2.mincap;
+                    let tierNumber = 2;
+                    let result = await tierPage.fillMinCap(tierNumber,);
+                    return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
+                });
+
+            test.it("Checkbox 'Allow Modify' is 'No' by default",
+                async function () {
+                    const result = await tierPage.isSelectedCheckboxAllowModifyNo()
+                        && !await tierPage.isSelectedCheckboxAllowModifyYes();
+                    return await assert.equal(result, true, "Tier#1: checkbox 'Allow Modify' isn\'t OFF by default ");
+                });
+
+            test.it("Checkbox 'Enable Whitelist' is 'No' by default",
+                async function () {
+                    const result = await tierPage.isSelectedCheckboxWhitelistNo()
+                        && !await tierPage.isSelectedCheckboxWhitelistYes();
+                    return await assert.equal(result, true, "Checkbox 'Enable Whitelist' isn\'t NO by default ");
+                });
+
+            test.it("Whitelist container isn't displayed if checkbox 'Whitelist enabled' is 'No'",
+                async function () {
+                    const result = await tierPage.isDisplayedWhitelistContainer();
+                    console.log("result" + result)
+                    return await assert.equal(result, false, "Unexpected whitelist container is displayed");
+                });
+
+        })
+        describe('Check persistant', async function () {
+
+            test.it('Go back - page keep state  ',
+                async function () {
+                    const result = await wizardStep3.goBack()
+                        && await wizardStep2.waitUntilDisplayedFieldName()
+                        && await Utils.delay(5000)
+                        && await wizardStep3.goForward()
+                        && await wizardStep1.waitUntilLoaderGone()
+                        && await wizardStep3.waitUntilDisplayedFieldWalletAddress()
+                    await assert.equal(result, true, "Page crashed after go back/forward");
+                    await assert.equal(await wizardStep3.isSelectedCheckboxGasCustom(), true, "Checkbox gasprice 'Custom' lost state after moving back/forward");
+                    await assert.equal(await wizardStep3.getValueFieldGasCustom(), newValue.customGas, "field 'Gas Custom' lost value after moving back/forward");
+                    await assert.equal(await wizardStep3.getValueFieldWalletAddress(), Owner.account, "field 'Wallet address' lost value after moving back/forward");
+                    tierPage.number = 0
+                    await assert.equal(await tierPage.isSelectedCheckboxAllowModifyNo(), false, "Tier#" + tierPage.number +" Checkbox 'Allow modifying Yes' lost state after moving back/forward");
+                    await assert.equal(await tierPage.isSelectedCheckboxAllowModifyYes(), true, "Tier#" + tierPage.number + " Checkbox 'Allow modifying No' lost state after moving back/forward");
+
+                    await assert.equal(await tierPage.isSelectedCheckboxWhitelistYes(), true,"Tier#" + tierPage.number + " Checkbox 'Enable whitelist Yes' lost state after moving back/forward");
+                    await assert.equal(await tierPage.isSelectedCheckboxWhitelistNo(), false,"Tier#" + tierPage.number + "Checkbox 'Enable whitelist No' lost state after moving back/forward");
+
+                    await assert.equal(await tierPage.getValueFieldSetupName(), newValue.tier1.name, "Tier#" + tierPage.number + " field 'Setup name' lost value after moving back/forward");
+                    await assert.equal(await tierPage.getValueFieldRate(), newValue.tier1.rate, "Tier#" + tierPage.number + " field 'Rate' lost value after moving back/forward");
+                    await assert.equal(await tierPage.getValueFieldSupply(), newValue.tier1.supply, "Tier#" + tierPage.number + " field 'Supply' lost value after moving back/forward");
+                    await assert.equal(await tierPage.getValueFieldMinCap(), 0, "Tier#" + tierPage.number + " field 'Mincap' lost value after moving back/forward");
+                    await assert.equal(await tierPage.isDisabledFieldMinCap(), true, "Tier#" + tierPage.number + " field 'Mincap' became enabled after moving back/forward");
+                    tierPage.number = 1;
+                    await assert.equal(await tierPage.getValueFieldSetupName(), newValue.tier2.name, "Tier#" + tierPage.number + " field 'Setup name' lost value after moving back/forward");
+                    await assert.equal(await tierPage.getValueFieldRate(), newValue.tier2.rate, "Tier#" + tierPage.number + " field 'Rate' lost value after moving back/forward");
+                    await assert.equal(await tierPage.getValueFieldSupply(), newValue.tier2.supply, "Tier#" + tierPage.number + " field 'Supply' lost value after moving back/forward");
+                    await assert.equal(await tierPage.getValueFieldMinCap(), newValue.tier2.mincap, "Tier#" + tierPage.number + " field 'Mincap' lost value after moving back/forward");
+                    await assert.equal(await tierPage.isDisabledFieldMinCap(), false, "Tier#" + tierPage.number + " field 'Mincap' became disabled after moving back/forward");
+                });
+
+            test.it('Refresh - page keep state of checkbox \'Whitelist with mincap\' ',
+                async function () {
+                    const result = await wizardStep3.refresh()
+                        && await wizardStep1.waitUntilLoaderGone()
+                        && await wizardStep3.waitUntilDisplayedFieldWalletAddress()
+                    await assert.equal(result, true, "Page crashed after go back/forward");
+                    await assert.equal(await wizardStep3.isSelectedCheckboxGasCustom(), true, "Checkbox gasprice 'Custom' lost state after refreshing");
+                    await assert.equal(await wizardStep3.getValueFieldGasCustom(), newValue.customGas, "field 'Gas Custom' lost value after refreshing");
+                    await assert.equal(await wizardStep3.getValueFieldWalletAddress(), Owner.account, "field 'Wallet address' lost value after refreshing");
+                    tierPage.number = 0
+                    await assert.equal(await tierPage.isSelectedCheckboxAllowModifyNo(), false, "Tier#" + tierPage.number +" Checkbox 'Allow modifying Yes' lost state after refreshing");
+                    await assert.equal(await tierPage.isSelectedCheckboxAllowModifyYes(), true, "Tier#" + tierPage.number + " Checkbox 'Allow modifying No' lost state after refreshing");
+
+                    await assert.equal(await tierPage.isSelectedCheckboxWhitelistYes(), true,"Tier#" + tierPage.number + " Checkbox 'Enable whitelist Yes' lost state after refreshing");
+                    await assert.equal(await tierPage.isSelectedCheckboxWhitelistNo(), false,"Tier#" + tierPage.number + "Checkbox 'Enable whitelist No' lost state after refreshing");
+
+                    await assert.equal(await tierPage.getValueFieldSetupName(), newValue.tier1.name, "Tier#" + tierPage.number + " field 'Setup name' lost value after refreshing");
+                    await assert.equal(await tierPage.getValueFieldRate(), newValue.tier1.rate, "Tier#" + tierPage.number + " field 'Rate' lost value after refreshing");
+                    await assert.equal(await tierPage.getValueFieldSupply(), newValue.tier1.supply, "Tier#" + tierPage.number + " field 'Supply' lost value after refreshing");
+                    await assert.equal(await tierPage.getValueFieldMinCap(), 0, "Tier#" + tierPage.number + " field 'Mincap' lost value after refreshing");
+                    await assert.equal(await tierPage.isDisabledFieldMinCap(), true, "Tier#" + tierPage.number + " field 'Mincap' became enabled after refreshing");
+                    tierPage.number = 1;
+                    await assert.equal(await tierPage.getValueFieldSetupName(), newValue.tier2.name, "Tier#" + tierPage.number + " field 'Setup name' lost value after refreshing");
+                    await assert.equal(await tierPage.getValueFieldRate(), newValue.tier2.rate, "Tier#" + tierPage.number + " field 'Rate' lost value after refreshing");
+                    await assert.equal(await tierPage.getValueFieldSupply(), newValue.tier2.supply, "Tier#" + tierPage.number + " field 'Supply' lost value after refreshing");
+                    await assert.equal(await tierPage.getValueFieldMinCap(), newValue.tier2.mincap, "Tier#" + tierPage.number + " field 'Mincap' lost value after refreshing");
+                    await assert.equal(await tierPage.isDisabledFieldMinCap(), false, "Tier#" + tierPage.number + " field 'Mincap' became disabled after refreshing");
+
+                });
+
+            test.it('Change network - page keep state of checkbox \'Whitelist with mincap\' ',
+                async function () {
+                    const result = await Investor1.setWalletAccount()
+                        && await wizardStep1.waitUntilLoaderGone()
+                        && await Owner.setWalletAccount()
+                        && await wizardStep3.waitUntilDisplayedFieldWalletAddress()
+                    await assert.equal(result, true, "Page crashed after go back/forward");
+                    await assert.equal(await wizardStep3.isSelectedCheckboxGasCustom(), true, "Checkbox gasprice 'Custom' lost state after changing network");
+                    await assert.equal(await wizardStep3.getValueFieldGasCustom(), newValue.customGas, "field 'Gas Custom' lost value after changing network");
+                    await assert.equal(await wizardStep3.getValueFieldWalletAddress(), Owner.account, "field 'Wallet address' lost value after changing network");
+                    tierPage.number = 0
+                    await assert.equal(await tierPage.isSelectedCheckboxAllowModifyNo(), false, "Tier#" + tierPage.number +" Checkbox 'Allow modifying Yes' lost state after changing network");
+                    await assert.equal(await tierPage.isSelectedCheckboxAllowModifyYes(), true, "Tier#" + tierPage.number + " Checkbox 'Allow modifying No' lost state after changing network");
+
+                    await assert.equal(await tierPage.isSelectedCheckboxWhitelistYes(), true,"Tier#" + tierPage.number + " Checkbox 'Enable whitelist Yes' lost state after changing network");
+                    await assert.equal(await tierPage.isSelectedCheckboxWhitelistNo(), false,"Tier#" + tierPage.number + "Checkbox 'Enable whitelist No' lost state after changing network");
+
+                    await assert.equal(await tierPage.getValueFieldSetupName(), newValue.tier1.name, "Tier#" + tierPage.number + " field 'Setup name' lost value after changing network");
+                    await assert.equal(await tierPage.getValueFieldRate(), newValue.tier1.rate, "Tier#" + tierPage.number + " field 'Rate' lost value after changing network");
+                    await assert.equal(await tierPage.getValueFieldSupply(), newValue.tier1.supply, "Tier#" + tierPage.number + " field 'Supply' lost value after changing network");
+                    await assert.equal(await tierPage.getValueFieldMinCap(), 0, "Tier#" + tierPage.number + " field 'Mincap' lost value after changing network");
+                    await assert.equal(await tierPage.isDisabledFieldMinCap(), true, "Tier#" + tierPage.number + " field 'Mincap' became enabled after changing network");
+                    tierPage.number = 1;
+                    await assert.equal(await tierPage.getValueFieldSetupName(), newValue.tier2.name, "Tier#" + tierPage.number + " field 'Setup name' lost value after changing network");
+                    await assert.equal(await tierPage.getValueFieldRate(), newValue.tier2.rate, "Tier#" + tierPage.number + " field 'Rate' lost value after changing network");
+                    await assert.equal(await tierPage.getValueFieldSupply(), newValue.tier2.supply, "Tier#" + tierPage.number + " field 'Supply' lost value after changing network");
+                    await assert.equal(await tierPage.getValueFieldMinCap(), newValue.tier2.mincap, "Tier#" + tierPage.number + " field 'Mincap' lost value after changing network");
+                    await assert.equal(await tierPage.isDisabledFieldMinCap(), false, "Tier#" + tierPage.number + " field 'Mincap' became disabled after changing network");
+                });
+
+            test.it('User is able to proceed to Step4 by clicking button Continue ',
+                async function () {
+                    await wizardStep3.clickButtonContinue();
+                    let result = await wizardStep4.waitUntilDisplayedModal(60);
+                    return await assert.equal(result, true, "Modal isn't displayed");
+                });
+        })
     })
-    describe('Tier#1: ', async function () {
-        const invalidValues = {
-            nameLong: 'qertyuiopasdfghjklzxcvbnmqwertyui'
-        }
-        test.it('Field \'Mincap\' has placeholder 0 ',
-            async function () {
-                const result = await tierPage.getValueFieldMinCap();
-                return await assert.equal(result, placeholder.mincap, "Tier#1: field 'Mincap' has incorrect value by default ");
-            });
 
-        test.it.skip('Error message if field \'Mincap\' is empty',
-            async function () {
-                const tier = tierPage
-                tier.tier.minCap = ' '
-                let result = await tier.fillMinCap(1)
-                    && await Utils.delay(2000)
-                await assert.equal(result, true, 'Cannot fill out the field');
-                result = await tier.getWarningText('minCap')
-                await assert.equal(result, 'Please enter a valid number greater or equal than 0', 'Incorrect error message');
-            });
-
-        test.it('Field \'Setup name\' has correct placeholder',
-            async function () {
-                const result = await tierPage.getValueFieldSetupName();
-                return await assert.equal(result, placeholder.setupNameTier1, "Tier#1: field 'Setup name' has incorrect placeholder ");
-            });
-
-        test.it.skip('Error message if field \'Setup name\' is empty',
-            async function () {
-                const tier = tierPage
-                tier.tier.name = ''
-                let result = await tier.fillSetupName()
-                    && await Utils.delay(2000)
-                await assert.equal(result, true, 'Cannot fill out the field');
-                result = await tier.getWarningText('name')
-                await assert.equal(result, 'This field is required', 'Incorrect error message');
-            });
-
-        test.it.skip('Error message if name too long',
-            async function () {
-                const tier = tierPage
-                tier.tier.name = invalidValues.nameLong
-                let result = await tier.fillSetupName()
-                    && await tier.waitUntilHasValue('name')
-                    && await Utils.delay(2000)
-                await assert.equal(result, true, 'Cannot fill out the field');
-                result = await tier.getWarningText('name')
-                await assert.equal(result, 'Please enter a valid name between 1-30 characters', 'Incorrect error message');
-            });
-
-        test.it.skip('Error message if rate is negative',
-            async function () {
-                const tier = tierPage
-                tier.tier.rate = '-1'
-                let result = await tier.fillRate()
-                    && await  tier.waitUntilHasValue('rate')
-                    && await Utils.delay(2000)
-                await assert.equal(result, true, 'Cannot fill out the field');
-                result = await tier.getWarningText('rate')
-                await assert.equal(result, 'Please enter a valid number greater than 0', 'Incorrect error message');
-            });
-
-        test.it.skip("Error messages if field 'Rate' is empty",
-            async function () {
-                const tier = tierPage
-                tier.tier.rate = ''
-                let result = await tier.fillRate()
-                    && await Utils.delay(2000)
-                await assert.equal(result, true, 'Cannot fill out the field');
-                result = await tier.getWarningText('rate')
-                await assert.equal(result.includes('Please enter a valid number greater than 0'), true, 'Incorrect error message');
-                await assert.equal(result.includes('Should be integer'), true, 'Incorrect error message');
-                await assert.equal(result.includes('Should not be greater than 1 quintillion (10^18)'), true, 'Incorrect error message');
-            });
-
-        test.it.skip('Error messages if rate is not integer',
-            async function () {
-                const tier = tierPage
-                tier.tier.rate = '1.2345'
-                let result = await tier.fillRate()
-                    && await  tier.waitUntilHasValue('rate')
-                    && await Utils.delay(2000)
-                await assert.equal(result, true, 'Cannot fill out the field');
-                result = await tier.getWarningText('rate')
-                await assert.equal(result,'Should be integer', true, 'Incorrect error message');
-            });
-
-        test.it.skip('Error messages if rate is greater than 1e18',
-            async function () {
-                const tier = tierPage
-                tier.tier.rate = '1e19'
-                let result = await tier.fillRate()
-                    && await  tier.waitUntilHasValue('rate')
-                    && await Utils.delay(2000)
-                await assert.equal(result, true, 'Cannot fill out the field');
-                result = await tier.getWarningText('rate')
-                await assert.equal(result,'Should not be greater than 1 quintillion (10^18)', true, 'Incorrect error message');
-            });
-
-        test.it.skip("Error message if field 'Supply' is empty",
-            async function () {
-                const tier = tierPage
-                tier.tier.supply = '-1'
-                let result = await tier.fillSupply()
-                    && await Utils.delay(2000)
-                await assert.equal(result, true, 'Cannot fill out the field');
-                result = await tier.getWarningText('supply')
-                console.log(result)
-                await assert.equal(result, 'Please enter a valid number greater than 0', 'Incorrect error message');
-            });
-
-        test.it('User is able to fill out field "Supply" with valid data',
-            async function () {
-                tierPage.tier.supply = 69;
-                let result = await tierPage.fillSupply();
-                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
-            });
-
-        test.it("Checkbox 'Allow Modify' is 'No' by default",
-            async function () {
-                const result = await tierPage.isSelectedCheckboxAllowModifyOff()
-                    && !await tierPage.isSelectedCheckboxAllowModifyOn();
-                return await assert.equal(result, true, "Tier#1: checkbox 'Allow modifying' isn't 'No' by default ");
-            });
-
-        test.it("Checkbox 'Enable Whitelist' is 'No' by default",
-            async function () {
-                const result = await tierPage.isSelectedCheckboxWhitelistNo()
-                    && !await tierPage.isSelectedCheckboxWhitelistYes();
-                return await assert.equal(result, true, "Checkbox 'Enable whitelisting' isn't 'No' by default ");
-            });
-
-        test.it("User is able to set checkbox 'Allow Modify Yes'",
-            async function () {
-                const result = await tierPage.clickCheckboxAllowModifyOn()
-                    && await tierPage.isSelectedCheckboxAllowModifyOn()
-                    && !await tierPage.isSelectedCheckboxAllowModifyOff()
-                return await assert.equal(result, true, "Checkbox 'Allow Modify Yes' isn't selected ");
-            });
-
-        test.it("Whitelist container isn't displayed if checkbox 'Whitelist enabled' is 'No'",
-            async function () {
-                const result = await tierPage.isDisplayedWhitelistContainer();
-                console.log("result"+result)
-                return await assert.equal(result, false, "Unexpected whitelist container is displayed");
-            });
-
-        test.it("User is able to set checkbox 'Enable whitelisting Yes'",
-            async function () {
-                const result = await tierPage.clickCheckboxWhitelistYes()
-                    && await tierPage.isSelectedCheckboxWhitelistYes()
-                    && !await tierPage.isSelectedCheckboxWhitelistNo()
-                return await assert.equal(result, true, "Checkbox 'Enable whitelisting Yes' isn't selected ");
-            });
-
-        test.it ('Whitelist container is presented if checkbox "Enable whitelisting Yes" is selected',
-            async function () {
-                const result = await tierPage.isDisplayedWhitelistContainer();
-                return await assert.equal(result, true, "Whitelist container isn't displayed");
-            });
-
-        test.it.skip('Field minCap disabled if whitelist enabled ',
-            async function () {
-                const tierNumber = 1;
-                const result = await tierPage.isDisabledFieldMinCap(tierNumber);
-                return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
-            });
-        test.it('User is able to fill out field "Setup name" with valid data',
-            async function () {
-                tierPage.tier.name = newValue.setupNameTier1;
-                let result = await tierPage.fillSetupName();
-
-                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
-            });
-
-        test.it.skip('User is able to download CSV file with whitelisted addresses',
-            async function () {
-                const fileName = "./public/whitelistAddressesTestValidation.csv";
-                const result = await tierPage.uploadWhitelistCSVFile(fileName)
-                    && await tierPage.waitUntilShowUpPopupConfirm(180)
-                    && await wizardStep3.clickButtonOk();
-                return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
-            });
-
-        test.it.skip('Field Supply disabled if whitelist added ',
-            async function () {
-                const result = await tierPage.isDisabledFieldSupply();
-                return await assert.equal(result, true, "Test FAILED. Field minCap disabled if whitelist enabled");
-            });
-
-        test.it.skip('Number of added whitelisted addresses is correct, data is valid',
-            async function () {
-                const shouldBe = 5;
-                const inReality = await tierPage.amountAddedWhitelist();
-                return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
-            });
-
-        test.it.skip('User is able to bulk delete all whitelisted addresses ',
-            async function () {
-                const result = await tierPage.clickButtonClearAll()
-                    && await tierPage.waitUntilShowUpPopupConfirm(180)
-                    && await tierPage.clickButtonYesAlert();
-                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-            });
-
-        test.it.skip('All whitelisted addresses are removed after deletion ',
-            async function () {
-                const result = await tierPage.amountAddedWhitelist(10);
-                return await assert.equal(result, 0, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-            });
-
-        test.it.skip('Field Supply enabled if whitelist was deleted ',
-            async function () {
-                const result = await tierPage.isDisabledFieldSupply();
-                return await assert.equal(result, false, "Test FAILED. Field minCap disabled if whitelist enabled");
-            });
-
-        test.it.skip('User is able to fill out field "Supply" with valid data',
-            async function () {
-                tierPage.tier.supply = newValue.supplyTier1;
-                const result = await tierPage.fillSupply();
-                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
-            });
-
-        test.it.skip('User is able to download CSV file with more than 50 whitelisted addresses',
-            async function () {
-                const fileName = "./public/whitelistedAddresses61.csv";
-                const result = await tierPage.uploadWhitelistCSVFile(fileName);
-                return await assert.equal(result, true, 'Test FAILED. Wizard step#3: User is NOT able to download CVS file with whitelisted addresses');
-            });
-
-        test.it.skip('Alert present if number of whitelisted addresses greater 50 ',
-            async function () {
-                const result = await tierPage.waitUntilShowUpPopupConfirm(100)
-                    && await wizardStep3.clickButtonOk();
-                return await assert.equal(result, true, "Test FAILED.ClearAll button is NOT present");
-            });
-
-        test.it.skip('Number of added whitelisted addresses is correct, data is valid',
-            async function () {
-                const shouldBe = 50;
-                const inReality = await tierPage.amountAddedWhitelist();
-                return await assert.equal(shouldBe, inReality, "Test FAILED. Wizard step#3: Number of added whitelisted addresses is NOT correct");
-            });
-
-        test.it.skip('User is able to bulk delete all whitelisted addresses ',
-            async function () {
-                const result = await tierPage.clickButtonClearAll()
-                    && await tierPage.waitUntilShowUpPopupConfirm(180)
-                    && await tierPage.clickButtonYesAlert();
-                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to bulk delete all whitelisted addresses");
-            });
-
-        test.it.skip('User is able sequental to add several whitelisted addresses  ',
-            async function () {
-                const result = await tierPage.fillWhitelist();
-                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to add several whitelisted addresses");
-            });
-
-        test.it.skip('User is able to remove one whitelisted address',
-            async function () {
-                const beforeRemoving = await tierPage.amountAddedWhitelist();
-                const numberAddressForRemove = 1;
-                await tierPage.removeWhiteList(numberAddressForRemove - 1);
-                const afterRemoving = await tierPage.amountAddedWhitelist();
-                return await assert.equal(beforeRemoving, afterRemoving + 1, "User is NOT able to remove one whitelisted address");
-            });
-
-
-        test.it('User is able to fill out field "Rate" with valid data',
-            async function () {
-                tierPage.number = 0;
-                tierPage.tier.rate = newValue.rateTier1;
-                const result = await tierPage.fillRate();
-                return await assert.equal(result, true, "User is NOT able to fill out field 'Rate' with valid data");
-            });
-    })
-    describe ('Tier#2:', async function () {
-        test.it('User is able to add tier',
-            async function () {
-                const result = await wizardStep3.clickButtonAddTier();
-                return await assert.equal(result, true, "Wizard step#3: User is able to add tier");
-            });
-
-        test.it("User is able to fill out field 'Rate' with valid data",
-            async function () {
-                tierPage.number = 1;
-                tierPage.tier.rate = newValue.rateTier1;
-                let result = await tierPage.fillRate();
-                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is NOT able to fill out field 'Rate' with valid data");
-            });
-
-        test.it("User is able to fill out field 'Supply' with valid data",
-            async function () {
-                tierPage.tier.supply = newValue.supplyTier1;
-                let result = await tierPage.fillSupply();
-                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
-            });
-
-        test.it("User is able to fill out field 'minCap' with valid data",
-            async function () {
-                tierPage.tier.minCap = newValue.mincapTier2;
-                let tierNumber = 2;
-                let result = await tierPage.fillMinCap(tierNumber,);
-                return await assert.equal(result, true, "Test FAILED. Wizard step#3: User is able to fill out field 'Supply' with valid data");
-            });
-
-        test.it("Checkbox 'Allow Modify' is 'No' by default",
-            async function () {
-                const result = await tierPage.isSelectedCheckboxAllowModifyOff()
-                    && !await tierPage.isSelectedCheckboxAllowModifyOn();
-                return await assert.equal(result, true, "Tier#1: checkbox 'Allow Modify' isn\'t OFF by default ");
-            });
-
-        test.it("Checkbox 'Enable Whitelist' is 'No' by default",
-            async function () {
-                const result = await tierPage.isSelectedCheckboxWhitelistNo()
-                    && !await tierPage.isSelectedCheckboxWhitelistYes();
-                return await assert.equal(result, true, "Checkbox 'Enable Whitelist' isn\'t NO by default ");
-            });
-
-        test.it("User is able to set checkbox 'Allow Modify Yes'",
-            async function () {
-                const result = await tierPage.clickCheckboxAllowModifyOn()
-                    && await tierPage.isSelectedCheckboxAllowModifyOn()
-                    && !await tierPage.isSelectedCheckboxAllowModifyOff()
-                return await assert.equal(result, true, "Checkbox 'Allow Modify Yes' isn't selected ");
-            });
-
-        test.it("Whitelist container isn't displayed if checkbox 'Whitelist enabled' is 'No'",
-            async function () {
-                const result = await tierPage.isDisplayedWhitelistContainer();
-                console.log("result"+result)
-                return await assert.equal(result, false, "Unexpected whitelist container is displayed");
-            });
-
-        test.it("User is able to set checkbox 'Enable whitelisting Yes'",
-            async function () {
-                const result = await tierPage.clickCheckboxWhitelistYes()
-                    && await tierPage.isSelectedCheckboxWhitelistYes()
-                    && !await tierPage.isSelectedCheckboxWhitelistNo()
-                return await assert.equal(result, true, "Checkbox 'Enable whitelisting Yes' isn't selected ");
-            });
-
-        test.it ('Whitelist container is presented if checkbox "Enable whitelisting Yes" is selected',
-            async function () {
-                const result = await tierPage.isDisplayedWhitelistContainer();
-                return await assert.equal(result, true, "Whitelist container isn't displayed");
-            });
-
-        test.it('Field minCap disabled if whitelist enabled ',
-            async function () {
-                const tierNumber = 1;
-                const result = await tierPage.isDisabledFieldMinCap(tierNumber);
-                return await assert.equal(result, true, "Field minCap disabled if whitelist enabled");
-            });
-
-        test.it('Go back - page keep state  ',
-            async function () {
-                const result = await wizardStep3.goBack()
-                    && await wizardStep2.waitUntilDisplayedFieldName()
-                    && await Utils.delay(5000)
-                    && await wizardStep3.goForward()
-                    && await wizardStep1.waitUntilLoaderGone()
-                    && await wizardStep3.waitUntilDisplayedFieldWalletAddress()
-                await assert.equal(result, true, "Test FAILED.Page crashed after go back/forward");
-                await assert.equal(await wizardStep3.isSelectedCheckboxGasCustom(), true, "Checkbox \'Custom\' lost state after refresh");
-                await assert.equal(await wizardStep3.getValueFieldGasCustom(), newValue.customGas, "field \'Gas Custom\' lost value after refresh");
-                await assert.equal(await wizardStep3.getValueFieldWalletAddress(), Owner.account, "field \'Gas Custom\' lost value after refresh");
-                tierPage.number = 0
-                await assert.equal(await tierPage.isSelectedCheckboxAllowModifyOff(), false, "Checkbox \'Allow modify off\' lost state after refresh");
-                await assert.equal(await tierPage.isSelectedCheckboxAllowModifyOn(), true, "Checkbox \'Allow modify on\' lost state after refresh");
-
-                await assert.equal(await tierPage.isSelectedCheckboxWhitelistYes(), true, "Checkbox \'Enable whitelist\' lost state after refresh");
-                await assert.equal(await tierPage.isSelectedCheckboxWhitelistNo(), false, "Checkbox \'Enable whitelist\' lost state after refresh");
-
-                await assert.equal(await tierPage.getValueFieldSetupName(), newValue.setupNameTier1, "field \'Setup name\' lost value after refresh");
-                await assert.equal(await tierPage.getValueFieldRate(), newValue.rateTier1, "field \'Rate\' lost value after refresh");
-                await assert.equal(await tierPage.getValueFieldSupply(), newValue.supplyTier1, "field \'Supply\' lost value after refresh");
-                await assert.equal(await tierPage.getValueFieldMinCap(), 0, "field \'Mincap\' lost value after refresh");
-                await assert.equal(await tierPage.isDisabledFieldMinCap(), true, "field 'Mincap' became enabled after refresh");
-                tierPage.number = 1;
-                await assert.equal(await tierPage.getValueFieldMinCap(), newValue.mincapTier2, "field \'Mincap\' lost value after refresh");
-
-            });
-
-        test.it('Refresh - page keep state of checkbox \'Whitelist with mincap\' ',
-            async function () {
-                const result = await wizardStep3.refresh()
-                    && await wizardStep1.waitUntilLoaderGone()
-                    && await wizardStep3.waitUntilDisplayedFieldWalletAddress()
-                await assert.equal(result, true, "Test FAILED.Page crashed after refreshing");
-                await assert.equal(await wizardStep3.isSelectedCheckboxGasCustom(), true, "Checkbox \'Custom\' lost state after refresh");
-                await assert.equal(await wizardStep3.getValueFieldGasCustom(), newValue.customGas, "field \'Gas Custom\' lost value after refresh");
-                await assert.equal(await wizardStep3.getValueFieldWalletAddress(), Owner.account, "field \'Gas Custom\' lost value after refresh");
-                tierPage.number = 0
-                await assert.equal(await tierPage.isSelectedCheckboxAllowModifyOff(), false, "Checkbox \'Allow modify off\' lost state after refresh");
-                await assert.equal(await tierPage.isSelectedCheckboxAllowModifyOn(), true, "Checkbox \'Allow modify on\' lost state after refresh");
-
-                await assert.equal(await tierPage.isSelectedCheckboxWhitelistYes(), true, "Checkbox \'Enable whitelist\' lost state after refresh");
-                await assert.equal(await tierPage.isSelectedCheckboxWhitelistNo(), false, "Checkbox \'Enable whitelist\' lost state after refresh");
-
-                await assert.equal(await tierPage.getValueFieldSetupName(), newValue.setupNameTier1, "field \'Setup name\' lost value after refresh");
-                await assert.equal(await tierPage.getValueFieldRate(), newValue.rateTier1, "field \'Rate\' lost value after refresh");
-                await assert.equal(await tierPage.getValueFieldSupply(), newValue.supplyTier1, "field \'Supply\' lost value after refresh");
-                await assert.equal(await tierPage.getValueFieldMinCap(), 0, "field \'Mincap\' lost value after refresh");
-                await assert.equal(await tierPage.isDisabledFieldMinCap(), true, "field 'Mincap' became enabled after refresh");
-                tierPage.number = 1;
-                await assert.equal(await tierPage.getValueFieldMinCap(), newValue.mincapTier2, "field \'Mincap\' lost value after refresh");
-
-            });
-
-        test.it('Change network - page keep state of checkbox \'Whitelist with mincap\' ',
-            async function () {
-                const result = await Investor1.setWalletAccount()
-                    && await wizardStep1.waitUntilLoaderGone()
-                    && await Owner.setWalletAccount()
-                    && await wizardStep3.waitUntilDisplayedFieldWalletAddress()
-                await assert.equal(result, true, "Test FAILED.Page crashed after switch account");
-                await assert.equal(await wizardStep3.isSelectedCheckboxGasCustom(), true, "Checkbox \'Custom\' lost state after refresh");
-                await assert.equal(await wizardStep3.getValueFieldGasCustom(), newValue.customGas, "field \'Gas Custom\' lost value after refresh");
-                await assert.equal(await wizardStep3.getValueFieldWalletAddress(), Owner.account, "field \'Gas Custom\' lost value after refresh");
-                tierPage.number = 0
-                await assert.equal(await tierPage.isSelectedCheckboxAllowModifyOff(), false, "Checkbox \'Allow modify off\' lost state after refresh");
-                await assert.equal(await tierPage.isSelectedCheckboxAllowModifyOn(), true, "Checkbox \'Allow modify on\' lost state after refresh");
-
-                await assert.equal(await tierPage.isSelectedCheckboxWhitelistYes(), true, "Checkbox \'Enable whitelist\' lost state after refresh");
-                await assert.equal(await tierPage.isSelectedCheckboxWhitelistNo(), false, "Checkbox \'Enable whitelist\' lost state after refresh");
-
-                await assert.equal(await tierPage.getValueFieldSetupName(), newValue.setupNameTier1, "field \'Setup name\' lost value after refresh");
-                await assert.equal(await tierPage.getValueFieldRate(), newValue.rateTier1, "field \'Rate\' lost value after refresh");
-                await assert.equal(await tierPage.getValueFieldSupply(), newValue.supplyTier1, "field \'Supply\' lost value after refresh");
-                await assert.equal(await tierPage.getValueFieldMinCap(), 0, "field \'Mincap\' lost value after refresh");
-                await assert.equal(await tierPage.isDisabledFieldMinCap(), true, "field 'Mincap' became enabled after refresh");
-                tierPage.number = 1;
-                await assert.equal(await tierPage.getValueFieldMinCap(), newValue.mincapTier2, "field \'Mincap\' lost value after refresh");
-            });
-
-
-        test.it('User is able to proceed to Step4 by clicking button Continue ',
-            async function () {
-                await wizardStep3.clickButtonContinue();
-                let result = await wizardStep4.waitUntilDisplayedModal(60);
-                return await assert.equal(result, true, "Test FAILED. User is not able to activate Step2 by clicking button Continue");
-            });
-    })
     describe.skip('Step#4:', async function () {
         test.it('Modal is displayed ',
             async function () {

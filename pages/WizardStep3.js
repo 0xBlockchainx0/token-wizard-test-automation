@@ -3,7 +3,7 @@ const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const TierPage = require('../pages/TierPage.js').TierPage;
 
-const buttonContinue = By.xpath("//*[contains(text(),'Continue')]");
+const buttonContinue = By.className("sw-ButtonContinue");
 const buttonOK = By.className("swal2-confirm swal2-styled");
 const buttonAddTier = By.className("ti-AddTierButton_PlusIcon");
 const fieldWalletAddress = By.id("walletAddress");
@@ -65,6 +65,11 @@ class WizardStep3 extends Page {
     async clickButtonContinue() {
         logger.info(this.name + "clickButtonContinue ");
         return await super.clickWithWait(buttonContinue);
+    }
+
+    async isDisabledButtonContinue() {
+        logger.info(this.name + "isDisabledButtonContinue ");
+        return await super.isElementDisabled(buttonContinue);
     }
 
     async fillWalletAddress(value) {
