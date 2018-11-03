@@ -1150,43 +1150,110 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
     describe('Step#4:', async function () {
 
-        test.it("Alert present if page had reloaded",
+        test.it("Check status of transaction, should be 'please confirm'",
+            async function () {
+                const result = await wizardStep4.getTxStatus()
+                return await assert.equal(result.includes('please confirm'), true, 'tx status is incorrect');
+            });
+
+        test.it('Alert present if user reload the page ',
             async function () {
                 await wizardStep4.refresh();
                 await driver.sleep(2000);
                 const result = await wizardStep4.isPresentAlert();
-                return await assert.equal(result, true, "Alert does not present");
+                return await assert.equal(result, true, "Test FAILED.  Alert does not present if user refresh the page");
             });
 
-        test.it("Accept alert after reloading the page ",
+        test.it('Warning after accepting alert ',
             async function () {
-                let result = await wizardStep4.acceptAlert()
+                const result = await wizardStep4.acceptAlert()
+                    && await wizardStep4.waitUntilShowUpWarning(80);
+                return await assert.equal(result, true, "Alert isn\'t displayed");
+            });
+
+        test.it('Check warning\'s text ',
+            async function () {
+                const result = await wizardStep4.getTextWarning()
+                const shouldBe = 'Please cancel pending transaction, if there\'s any, in your wallet (Nifty Wallet or Metamask) and Continue'
+                return await assert.equal(result, shouldBe, "Alert isn\'t displayed");
+            });
+
+        test.it('Modal is displayed after confirm warning ',
+            async function () {
+                const result = await wizardStep4.clickButtonOk()
                     && await wizardStep4.waitUntilDisplayedModal(80);
-                return await assert.equal(result, true, "Modal does not present");
+                return await assert.equal(result, true, "Modal isn\'t displayed");
             });
 
-        test.it("Button 'SkipTransaction' is displayed if transaction was rejected",
+        test.it('Check status of transaction, should be \'please confirm\'',
             async function () {
-                let result = await wallet.rejectTransaction(20)
-                    && await wallet.rejectTransaction(20)
+                const result = await wizardStep4.getTxStatus()
+                return await assert.equal(result.includes('please confirm'), true, 'tx status is incorrect');
+            });
+
+        test.it('Button \'Skip transaction\' is displayed if user reject a transaction ',
+            async function () {
+                const result = await wallet.rejectTransaction(20)
                     && await wizardStep4.isDisplayedButtonSkipTransaction();
-                return await assert.equal(result, true, "Button 'Skip transaction' does not present");
+                return await assert.equal(result, true, "button'Skip transaction' does not present if user reject the transaction");
             });
 
-        test.it("User is able to skip transaction",
+        test.it('Button \'Retry transaction\' is displayed if user reject a transaction ',
             async function () {
-
-                let result = await wizardStep4.clickButtonSkipTransaction()
-                    && await wizardStep4.waitUntilShowUpPopupConfirm(80)
-                    && await wizardStep4.clickButtonYes();
-                return await assert.equal(result, true, "User is not able to skip transaction");
+                const result = await wizardStep4.isDisplayedButtonRetryTransaction()
+                return await assert.equal(result, true, "button'Retry transaction' does not present if user reject the transaction");
             });
 
-        test.it("Alert if user wants leaves the wizard",
+        test.it('User is able to retry transaction ',
             async function () {
+                const result = await wizardStep4.clickButtonRetryTransaction()
+                    && !await wizardStep4.isDisplayedButtonRetryTransaction()
+                    && !await wizardStep4.isDisplayedButtonSkipTransaction()
+                return await assert.equal(result, true, "user is not able to retry transaction");
+            });
 
-                let result = await welcomePage.openWithAlertonfirmation();
-                return await assert.equal(result, false, "Alert does not present");
+        test.it('user able to confirm transaction',
+            async function () {
+                const result = await Utils.delay(5000)
+                    && await wallet.signTransaction(20)
+                    && await wizardStep4.isDisplayedModal()
+                return await assert.equal(result, true, 'user is not able to confirm transaction');
+            });
+
+        test.it('warning if user skip transaction ',
+            async function () {
+                await wizardStep4.refresh();
+                await driver.sleep(2000);
+                const result = await wizardStep4.isPresentAlert()
+                    && await wizardStep4.acceptAlert()
+                    && await wizardStep4.waitUntilShowUpWarning(80)
+                    && await wizardStep4.clickButtonOk()
+                    && await Utils.delay(5000)
+                    && await wallet.rejectTransaction(20)
+                    // && await wizardStep4.waitUntilLoaderGone(20)
+                    && await wizardStep4.clickButtonSkipTransaction()
+                    && await wizardStep4.waitUntilShowUpWarning(80)
+                return await assert.equal(result, true, "button \'Skip transaction\' isn\'t clickable");
+            });
+
+        test.it('confirm warning ',
+            async function () {
+                const result = await wizardStep4.clickButtonOk()
+                    && await wizardStep4.waitUntilDisplayedModal(80);
+                return await assert.equal(result, true, 'can not confirm warning');
+            });
+
+        test.it('Button \'Retry transaction\' is not  displayed if user skipped a transaction ',
+            async function () {
+                const result =  await wizardStep4.isDisplayedButtonRetryTransaction()
+                return await assert.equal(result, false, "button'Retry transaction' is displayed if user skip the transaction");
+            });
+
+
+        test.it('Alert is presented if user wants to leave the wizard ',
+            async function () {
+                const result = await welcomePage.openWithAlertConfirmation();
+                return await assert.equal(result, false, "Test FAILED. Alert does not present if user wants to leave the site");
             });
 
         test.it('User is able to stop deployment ',
@@ -1197,9 +1264,10 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     && await wizardStep4.waitUntilShowUpPopupConfirm(80)
                     && await wizardStep4.clickButtonYes();
 
-                return await assert.equal(result, true, " Button 'Cancel' does not present");
+                return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
             });
     })
+
 
     describe.skip('Create crowdsale', async function () {
         test.it('User is able to create crowdsale(scenarioMintedSimple.json),minCap,1 tier',
