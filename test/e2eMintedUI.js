@@ -1148,53 +1148,45 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         })
     })
 
-    describe.skip('Step#4:', async function () {
-        test.it('Modal is displayed ',
-            async function () {
+    describe('Step#4:', async function () {
 
-                let result = await wizardStep4.waitUntilDisplayedModal()
-                    && await wizardStep4.isDisplayedModal();
-                return await assert.equal(result, true, "Test FAILED. Modal is not displayed");
-            });
-
-        test.it('Alert present if user reload the page ',
+        test.it("Alert present if page had reloaded",
             async function () {
                 await wizardStep4.refresh();
                 await driver.sleep(2000);
-                let result = await wizardStep4.isPresentAlert();
-                return await assert.equal(result, true, "Test FAILED.  Alert does not present if user refresh the page");
+                const result = await wizardStep4.isPresentAlert();
+                return await assert.equal(result, true, "Alert does not present");
             });
 
-        test.it('User is able to accept alert after reloading the page ',
+        test.it("Accept alert after reloading the page ",
             async function () {
-
                 let result = await wizardStep4.acceptAlert()
                     && await wizardStep4.waitUntilDisplayedModal(80);
-                return await assert.equal(result, true, "Test FAILED. Modal does not present after user has accepted alert");
+                return await assert.equal(result, true, "Modal does not present");
             });
 
-        test.it('Button SkipTransaction is  presented if user reject a transaction ',
+        test.it("Button 'SkipTransaction' is displayed if transaction was rejected",
             async function () {
                 let result = await wallet.rejectTransaction(20)
                     && await wallet.rejectTransaction(20)
                     && await wizardStep4.isDisplayedButtonSkipTransaction();
-                return await assert.equal(result, true, "Test FAILED. button'Skip transaction' does not present if user reject the transaction");
+                return await assert.equal(result, true, "Button 'Skip transaction' does not present");
             });
 
-        test.it('User is able to skip transaction ',
+        test.it("User is able to skip transaction",
             async function () {
 
                 let result = await wizardStep4.clickButtonSkipTransaction()
                     && await wizardStep4.waitUntilShowUpPopupConfirm(80)
                     && await wizardStep4.clickButtonYes();
-                return await assert.equal(result, true, "Test FAILED. user is not able to skip transaction");
+                return await assert.equal(result, true, "User is not able to skip transaction");
             });
 
-        test.it('Alert is presented if user wants to leave the wizard ',
+        test.it("Alert if user wants leaves the wizard",
             async function () {
 
-                let result = await welcomePage.openWithAlertConfirmation();
-                return await assert.equal(result, false, "Test FAILED. Alert does not present if user wants to leave the site");
+                let result = await welcomePage.openWithAlertonfirmation();
+                return await assert.equal(result, false, "Alert does not present");
             });
 
         test.it('User is able to stop deployment ',
@@ -1205,7 +1197,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     && await wizardStep4.waitUntilShowUpPopupConfirm(80)
                     && await wizardStep4.clickButtonYes();
 
-                return await assert.equal(result, true, "Test FAILED. Button 'Cancel' does not present");
+                return await assert.equal(result, true, " Button 'Cancel' does not present");
             });
     })
 
