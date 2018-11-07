@@ -3,10 +3,6 @@ const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const buttonNewCrowdsale = By.className("hm-Home_BtnNew");
 const buttonChooseContract = By.className("hm-Home_BtnChoose");
-const crowdsaleList = By.className('sw-ModalWindow');
-const crowdsaleListEmpty = By.className('sw-EmptyContentTextOnly');
-const crowdsaleListAddressOwner = By.className('text-bold');
-const crowdsaleListCloseButton = By.className('sw-ModalWindow_CloseButton');
 
 class WizardWelcome extends Page {
 
@@ -49,30 +45,10 @@ class WizardWelcome extends Page {
 	async openWithAlertConfirmation() {
 		logger.info(this.name + " openWithAlertConfirmation ");
 		if (await  this.open(this.URL) === false) {
-			return !await super.acceptAlert();
+			return ! await super.acceptAlert();
 		}
 		else return true;
 	}
-
-	async getCrowdsaleList(wait) {
-        logger.info(this.name + " getCrowdsaleList ");
-        return await super.getElement(crowdsaleList,wait)
-    }
-
-    async getCrowdsaleListEmpty(wait) {
-        logger.info(this.name + " getCrowdsaleListEmpty ");
-        return await super.getElement(crowdsaleListEmpty,wait)
-    }
-
-    async getCrowdsaleListAddressOwner(wait) {
-        logger.info(this.name + " getCrowdsaleListAddressOwner ");
-        return await super.getElement(crowdsaleListAddressOwner,wait)
-    }
-
-    async getCrowdsaleListCloseButton(wait) {
-        logger.info(this.name + " getCrowdsaleListCloseButton ");
-        return await super.getElement(crowdsaleListCloseButton,wait)
-    }
 }
 
 module.exports.WizardWelcome = WizardWelcome;

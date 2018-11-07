@@ -368,7 +368,7 @@ class User {
             && await wizardStep2.waitUntilLoaderGone()
             && await wizardStep2.fillPage(obj.crowdsale)
             && ((obj.isFillBulkReservedAddresses) ? await reservedTokens.fillBulkReservedTokens(obj.pathCSV) : await reservedTokens.fillReservedTokens(obj.crowdsale))
-            && await wizardStep2.scrollDownUntilButtonContinueDislayed()
+            && await wizardStep2.scrollDownUntilButtonContinueDisplayed()
             && await wizardStep2.clickButtonContinue()
             && await wizardStep2.waitUntilLoaderGone()
             && await wizardStep3.fillPage(obj.crowdsale, obj.isFillBulkWhitelistAddresses, obj.pathCSVWhitelist);

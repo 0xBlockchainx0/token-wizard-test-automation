@@ -294,7 +294,7 @@ class TierPage extends Page {
     async getButtonAddWhitelist() {
         logger.info(this.name + "getButtonAddWhitelist ");
         const containers = await super.findWithWait(whitelistContainer);
-        console.log('containers.length' + containers.length)
+
         let element = await this.getChildsByClassName("sw-ButtonPlus", containers[this.number]);
         return element[0];
     }
@@ -468,13 +468,13 @@ class TierPage extends Page {
     async fillTier(isFillBulkWhitelistAddresses, pathCSVWhitelist) {
         logger.info(this.name + "fillTier ");
         return await this.setModify()
+        && await this.fillSupply()
         && await this.fillMinCap()
         && await this.setWhitelisting()
         && await this.fillMinRate()
         && await this.fillMaxRate()
         && await this.fillRate()
         && await this.fillSetupName()
-        && await this.fillSupply()
         && await this.fillEndTime()
         && await this.fillStartTime()
         && (isFillBulkWhitelistAddresses) ? await this.fillBulkWhitelist(pathCSVWhitelist) : await this.fillWhitelist();

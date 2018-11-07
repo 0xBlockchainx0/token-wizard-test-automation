@@ -90,12 +90,10 @@ class WizardStep4 extends page.Page {
 
     async deployContracts(crowdsale) {
         logger.info(this.name + "deployContracts: ");
-        let timeLimitTransactions = 75;
-        let Tfactor = 1;
+        const timeLimitTransactions = 75;
         let allTransactions = 0;
-        let skippedTransactions = 0;
         let timeLimit = timeLimitTransactions * crowdsale.tiers.length;
-        let metaMask = new MetaMask(this.driver);
+        const metaMask = new MetaMask(this.driver);
         do {
             logger.info("Transaction# " + allTransactions++);
             if (await metaMask.signTransaction()) {
@@ -104,19 +102,11 @@ class WizardStep4 extends page.Page {
             else {
                 logger.info(" failed");
             }
-            await this.driver.sleep(Tfactor * 2000);//anyway won't be faster than start time
-            if (await this.isDisplayedButtonSkipTransaction()) {
-                await this.clickButtonSkipTransaction();
-                await super.waitUntilDisplayed(buttonYes);
-                await this.clickButtonYes();
-                logger.info("Transaction #" + allTransactions + " is skipped.");
-                skippedTransactions++;
-            }
-        } while ((timeLimit-- >= 0) && (skippedTransactions <= 5) && (await this.isDisplayedModal()));
+            await this.driver.sleep(1000);//anyway won't be faster than start time
 
-        logger.info("Crowdsale created." +
-            "\n" + " Transaction were done:" + (allTransactions - skippedTransactions) +
-            "\n" + "Transaction were skipped: " + skippedTransactions);
+        } while ((timeLimit-- >= 0)  && (await this.isDisplayedModal()));
+
+        logger.info("Crowdsale created.Transaction were done:" + allTransactions )
         return await this.waitUntilLoaderGone() &&
             await this.clickButtonOk();
     }

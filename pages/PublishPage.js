@@ -3,9 +3,11 @@ const key = require('selenium-webdriver').Key;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const Utils = require('../utils/Utils.js').Utils;
-const copyArea = By.className('copy-area-container')
+const textArea = By.className('pb-DisplayTextArea_Content')
 const fields = By.className('display-container')
-const values = By.className('value')
+const values = By.className('pb-DisplayField_Value pb-DisplayField_Value-MobileTextSizeMedium')
+const valuesTime = By.className('pb-DisplayField_Value pb-DisplayField_Value-MobileTextSizeSmall')
+
 const buttonContinue= By.className('button button_fill button_no_border')
 const buttonDownload = By.className('button button_fill_secondary button_no_border')
 const errorNotice = By.className("css-6bx4c3");
@@ -24,17 +26,15 @@ class PublishPage extends Page {
 
     async getTextContract() {
         logger.info(this.name + "getTextContract ");
-        const arr = await super.findWithWait(copyArea);
-        const copy = await super.getChildsByClassName('copy', arr[0])
-        const text = await super.getAttribute(copy[0], 'data-clipboard-text')
+        const array = await super.findWithWait(textArea);
+        const text = await super.getTextForElement(array[0])
         return text
     }
 
     async getEncodedABI() {
         logger.info(this.name + "getEncodedABI ");
-        const arr = await super.findWithWait(copyArea);
-        const copy = await super.getChildsByClassName('copy', arr[1])
-        const text = await super.getAttribute(copy[0], 'data-clipboard-text')
+        const array = await super.findWithWait(textArea);
+        const text = await super.getTextForElement(array[1])
         return text
     }
 
@@ -69,74 +69,74 @@ class PublishPage extends Page {
     }
 
     async getCrowdsaleStartTime() {
-        logger.info(this.name + "getStartTime ");
-        const value = await super.findWithWait(values)
-        return await value[5].getText()
+        logger.info(this.name + "getCrowdsaleStartTime ");
+        const value = await super.findWithWait(valuesTime)
+        return await value[0].getText()
     }
 
     async getCrowdsaleEndTime() {
-        logger.info(this.name + "getStartTime ");
-        const value = await super.findWithWait(values)
-        return await value[6].getText()
+        logger.info(this.name + "getCrowdsaleEndTime ");
+        const value = await super.findWithWait(valuesTime)
+        return await value[1].getText()
     }
     async getTierStartTime(tier) {
         logger.info(this.name + "getTierStartTime ");
-        const value = await super.findWithWait(values)
-        return await value[7+7*(tier-1)].getText()
+        const value = await super.findWithWait(valuesTime)
+        return await value[2+2*(tier-1)].getText()
     }
 
     async getTierEndTime(tier) {
         logger.info(this.name + "getTierEndTime ");
-        const value = await super.findWithWait(values)
-        return await value[8+7*(tier-1)].getText()
-    }
-
-    async getRate(tier) {
-        logger.info(this.name + "getRate ");
-        const value = await super.findWithWait(values)
-        return await value[9+7*(tier-1)].getText()
-    }
-
-    async getAllowModifying(tier) {
-        logger.info(this.name + "getAllowModifying ");
-        const value = await super.findWithWait(values)
-        return await value[10+7*(tier-1)].getText()
-    }
-
-    async getMaxcap(tier) {
-        logger.info(this.name + "getMaxcap ");
-        const value = await super.findWithWait(values)
-        return await value[11+7*(tier-1)].getText()
+        const value = await super.findWithWait(valuesTime)
+        return await value[3+2*(tier-1)].getText()
     }
 
     async getWhitelisting(tier) {
         logger.info(this.name + "getWhitelisting ");
         const value = await super.findWithWait(values)
-        return await value[12+7*(tier-1)].getText()
+        return await value[5+5*(tier-1)].getText()
+    }
+
+    async getAllowModifying(tier) {
+        logger.info(this.name + "getAllowModifying ");
+        const value = await super.findWithWait(values)
+        return await value[6+5*(tier-1)].getText()
     }
 
     async getMincap(tier) {
         logger.info(this.name + "getMincap ");
         const value = await super.findWithWait(values)
-        return await value[13+7*(tier-1)].getText()
+        return await value[7+5*(tier-1)].getText()
+    }
+
+    async getMaxcap(tier) {
+        logger.info(this.name + "getMaxcap ");
+        const value = await super.findWithWait(values)
+        return await value[8+5*(tier-1)].getText()
+    }
+
+    async getRate(tier) {
+        logger.info(this.name + "getRate ");
+        const value = await super.findWithWait(values)
+        return await value[9+5*(tier-1)].getText()
     }
 
     async getCompilerVersion() {
         logger.info(this.name + "getCompilerVersion ");
         const value = await super.findWithWait(values)
-        return await value[21].getText()
+        return await value[15].getText()
     }
 
     async getContractName() {
         logger.info(this.name + "getContractName ");
         const value = await super.findWithWait(values)
-        return await value[22].getText()
+        return await value[16].getText()
     }
 
     async getOptimized() {
         logger.info(this.name + "getOptimized ");
         const value = await super.findWithWait(values)
-        return await value[23].getText()
+        return await value[17].getText()
     }
 
     async clickButtonContinue() {

@@ -396,7 +396,7 @@ class Page {
         logger.info("isPresentAlert:")
         try {
 
-            let result = await this.driver.switchTo().alert().getText();
+            const result = await this.driver.switchTo().alert().getText();
             logger.info("alert text:  " + result);
             return true;
         }
@@ -407,13 +407,13 @@ class Page {
     }
 
     async acceptAlert() {
-        logger.info("acceptAlert:")
+        logger.info("acceptAlert ")
         try {
             this.driver.switchTo().alert().accept();
             return true;
         }
         catch ( err ) {
-            logger.info("Error " + err);
+            logger.info(err);
             return false;
         }
     }

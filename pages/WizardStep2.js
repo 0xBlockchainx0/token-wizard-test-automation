@@ -86,8 +86,8 @@ class WizardStep2 extends Page {
         return await super.isElementDisabled(buttonContinue);
     }
 
-    async scrollDownUntilButtonContinueDislayed() {
-        logger.info(this.name + "scrollDownUntilButtonContinueDislayed ");
+    async scrollDownUntilButtonContinueDisplayed() {
+        logger.info(this.name + "scrollDownUntilButtonContinueDisplayed ");
         try {
             await this.pressKey(key.TAB, 5);
             return true;
