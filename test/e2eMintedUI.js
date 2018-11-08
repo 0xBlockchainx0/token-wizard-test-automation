@@ -257,7 +257,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(result, 'Yes', 'Publish page: optimized flag name is incorrect ');
                 });
 
-            test.it('Contract source code is displayed and correct ',
+            test.it.skip('Contract source code is displayed and correct ',
                 async function () {
                     const contract = await publishPage.getTextContract()
                     crowdsaleMintedSimple.sort = 'minted'
@@ -265,7 +265,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(contract, shouldBe, "contract source code isn't correct")
                 })
 
-            test.it('Encoded ABI is displayed and correct ',
+            test.it.skip('Encoded ABI is displayed and correct ',
                 async function () {
                     const abi = await publishPage.getEncodedABI()
                     return await assert.equal(abi.length, 256, 'Publish page:encoded ABI isn\'t correct ');
