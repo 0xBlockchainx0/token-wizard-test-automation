@@ -3,6 +3,7 @@ const key = require('selenium-webdriver').Key;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const Utils = require('../utils/Utils.js').Utils;
+const TITLES = require('../utils/constants.js').TITLES;
 const textArea = By.className('pb-DisplayTextArea_Content')
 const fields = By.className('display-container')
 const values = By.className('pb-DisplayField_Value pb-DisplayField_Value-MobileTextSizeMedium')
@@ -16,6 +17,7 @@ class PublishPage extends Page {
     constructor(driver) {
         super(driver);
         this.name = 'PublishPage '
+        this.title = TITLES.PUBLISH_PAGE
     }
 
     async getAmountFields() {

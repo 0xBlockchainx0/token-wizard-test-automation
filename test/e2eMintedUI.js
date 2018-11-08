@@ -186,6 +186,14 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     })
     describe('Publish page', async function () {
         describe('Common data', async function () {
+
+            test.it("Title is correct",
+                async function () {
+
+                    await publishPage.waitUntilDisplayedTitle(180)
+                    const result = await publishPage.getTitleText();
+                    return await assert.equal(result.toUpperCase(), publishPage.title.toUpperCase(), "Page's title is incorrect");
+                });
             test.it('Name is correct',
                 async function () {
                     await driver.sleep(10000)
@@ -217,39 +225,39 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(crowdsaleMintedSimple.walletAddress, result, 'Publish page: wallet address is incorrect ');
                 });
 
-            test.it('Crowdsale start time/date is correct',
+            test.it.skip('Crowdsale start time/date is correct',
                 async function () {
                     const time = await publishPage.getCrowdsaleStartTime()
                     const shouldBe = '2030-02-01 13:16 (UTC +0000)'
                     await assert.equal(time, shouldBe, "crowdsale start time is incorrect")
                 });
 
-            test.it('Crowdsale end time/date is correct',
+            test.it.skip('Crowdsale end time/date is correct',
                 async function () {
                     const time = await publishPage.getCrowdsaleEndTime()
                     const shouldBe = '2036-04-03 14:28 (UTC +0000)'
                     await assert.equal(time, shouldBe, "crowdsale end time is incorrect")
                 });
 
-            test.it('Publish page : compiler version is correct',
+            test.it('Compiler version is correct',
                 async function () {
                     const result = await publishPage.getCompilerVersion()
                     return await assert.equal(result.includes('0.4.'), true, 'Publish page: compiler version is incorrect ');
                 });
 
-            test.it('Publish page : contract name is correct',
+            test.it('Contract name is correct',
                 async function () {
                     const result = await publishPage.getContractName()
                     return await assert.equal(result, 'MintedCappedProxy', 'Publish page: contract name is incorrect ');
                 });
 
-            test.it('Publish page : optimized flag is correct',
+            test.it('Optimized flag is correct',
                 async function () {
                     const result = await publishPage.getOptimized()
                     return await assert.equal(result, 'Yes', 'Publish page: optimized flag name is incorrect ');
                 });
 
-            test.it('Publish page: contract source code is displayed and correct ',
+            test.it('Contract source code is displayed and correct ',
                 async function () {
                     const contract = await publishPage.getTextContract()
                     crowdsaleMintedSimple.sort = 'minted'
@@ -257,21 +265,21 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(contract, shouldBe, "contract source code isn't correct")
                 })
 
-            test.it('Publish page: encoded ABI is displayed and correct ',
+            test.it('Encoded ABI is displayed and correct ',
                 async function () {
                     const abi = await publishPage.getEncodedABI()
                     return await assert.equal(abi.length, 256, 'Publish page:encoded ABI isn\'t correct ');
                 });
         })
         describe('Tier#1', async function () {
-            test.it('Tier start time/date is correct',
+            test.it.skip('Tier start time/date is correct',
                 async function () {
                     const time = await publishPage.getTierStartTime(1)
                     const shouldBe = '2030-02-01 13:16 (UTC +0000)'
                     await assert.equal(time, shouldBe, "tier start time is incorrect")
                 });
 
-            test.it('Tier end time/date is correct',
+            test.it.skip('Tier end time/date is correct',
                 async function () {
                     const time = await publishPage.getTierEndTime(1)
                     const shouldBe = '2031-04-03 14:28 (UTC +0000)'
@@ -305,14 +313,14 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
         describe('Tier#2', async function () {
-            test.it('Tier start time/date is correct',
+            test.it.skip('Tier start time/date is correct',
                 async function () {
                     const time = await publishPage.getTierStartTime(2)
                     const shouldBe = '2031-04-03 14:28 (UTC +0000)'
                     await assert.equal(time, shouldBe, "tier start time is incorrect")
                 });
 
-            test.it('Tier end time/date is correct',
+            test.it.skip('Tier end time/date is correct',
                 async function () {
                     const time = await publishPage.getTierEndTime(2)
                     const shouldBe = '2036-04-03 14:28 (UTC +0000)'
@@ -324,21 +332,25 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     const result = await publishPage.getRate(2)
                     return await assert.equal(crowdsaleMintedSimple.tiers[1].rate, result, "rate is incorrect");
                 });
+
             test.it('Allow modifying is correct',
                 async function () {
                     const result = (await publishPage.getAllowModifying(2)) === 'No'
                     return await assert.equal(result, true, "allow modify is incorrect");
                 });
+
             test.it('Maxcap is correct',
                 async function () {
                     const result = await publishPage.getMaxcap(2)
                     return await assert.equal(crowdsaleMintedSimple.tiers[1].supply, result, "maxcap is incorrect");
                 });
+
             test.it('Whitelisting is correct',
                 async function () {
                     const result = (await publishPage.getWhitelisting(2)) === 'No'
                     return await assert.equal(result, true, "whitelisting is incorrect");
                 });
+
             test.it('Mincap is correct',
                 async function () {
                     const result = await publishPage.getMincap(2)
@@ -371,58 +383,66 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
     })
-    describe.skip('Crowdsale page:', async function () {
+    describe ("Crowdsale page:", async function () {
 
-        test.it('Proxy address is correct ',
+        test.it("Title is correct",
             async function () {
-                const result = await crowdsalePage.getProxyAddress()
-                return await assert.equal(result.length, 42, 'Proxy address is incorrect');
+                await Utils.delay(5000)
+                await publishPage.waitUntilDisplayedTitle(180)
+                const result = await crowdsalePage.getTitleText();
+                return await assert.equal(result.toUpperCase(), crowdsalePage.title.toUpperCase(), "Page's title is incorrect");
             });
-        test.it('Raised funds is correct ',
+        test.it("Proxy address is correct",
+            async function () {
+
+                const result = await crowdsalePage.getProxyAddress()
+                return await assert.equal(result.length, 42, "proxy address is incorrect");
+            });
+        test.it("Raised funds is correct",
             async function () {
                 const result = await crowdsalePage.getRaisedFunds()
-                return await assert.equal(result, '0 ETH', 'Raised funds is incorrect');
+                return await assert.equal(result, '0 ETH', "raised funds is incorrect");
             });
-        test.it('Goal funds is correct ',
+        test.it("Goal funds is correct",
             async function () {
                 const result = await crowdsalePage.getGoalFunds()
                 const goal = crowdsaleMintedSimple.tiers[0].supply / crowdsaleMintedSimple.tiers[0].rate + crowdsaleMintedSimple.tiers[1].supply / crowdsaleMintedSimple.tiers[1].rate
-                return await assert.equal(result.includes(goal.toString().slice(0, 15)), true, 'Goal funds is incorrect');
+                return await assert.equal(result.includes(goal.toString().slice(0, 15)), true, "goal funds is incorrect");
             });
-        test.it('Tokens claimed is correct ',
+        test.it("Tokens claimed is correct",
             async function () {
                 const result = await crowdsalePage.getTokensClaimed()
-                return await assert.equal(result, '0', 'Tokens claimed is incorrect')
+                return await assert.equal(result, '0', "tokens claimed is incorrect")
             });
-        test.it('Contributors number is correct ',
+        test.it("Contributors number is correct",
             async function () {
                 const result = await crowdsalePage.getContributors()
-                return await assert.equal(result, '0', 'Contributors number is incorrect')
+                return await assert.equal(result, '0', "contributors number is incorrect")
             });
 
-        test.it('Rate is correct ',
+        test.it("Rate is correct",
             async function () {
                 const result = await crowdsalePage.getRate()
-                return await assert.equal(result, crowdsaleMintedSimple.tiers[1].rate, 'Rate is incorrect')
+                return await assert.equal(result, crowdsaleMintedSimple.tiers[0].rate, "rate is incorrect")
             });
 
-        test.it('Total supply is correct ',
+        test.it("Total supply is correct",
             async function () {
                 const result = await crowdsalePage.getTotalSupply()
                 const goal = crowdsaleMintedSimple.tiers[0].supply + crowdsaleMintedSimple.tiers[1].supply
-                return await assert.equal(result, goal, 'Total supply is incorrect')
+                return await assert.equal(result, goal, "total supply is incorrect")
             });
 
-        test.it('Clicking button \'Continue\' opens Contribution page ',
+        test.it("Clicking button 'Contribute' opens Contribution page",
             async function () {
                 const result = await crowdsalePage.clickButtonContribute()
                     && await crowdsalePage.waitUntilLoaderGone()
                     && await contributionPage.waitUntilShowUpCountdownTimer()
-                return await assert.equal(result, true, 'Contribution page hasn\'t opened ');
+                return await assert.equal(result, true, "contribution page hasn't opened");
             });
     })
 
-    describe.skip('Contribution page:', async function () {
+    describe.skip("Contribution page:", async function () {
         test.it('Should be alert if invalid proxyID in address bar',
             async function () {
                 crowdsaleMintedSimple.url = await contributionPage.getURL()
@@ -444,7 +464,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, 'Test FAILED. Crowdsale page: no alert if invalid proxyID in address bar');
             });
     })
-    describe.skip('Not empty crowdsale list', async function () {
+    describe.skip("Not empty crowdsale list", async function () {
 
         test.it("User is able to open wizard welcome page",
             async function () {
@@ -537,7 +557,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     describe.skip("Empty crowdsale list ", async function () {
     })
 
-    describe('Step#1: ', async function () {
+    describe("Step#1:", async function () {
 
         test.it.skip("Move back/forward - page keep state of checkbox 'Whitelist with mincap'",
             async function () {
@@ -592,7 +612,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
     })
 
-    describe('Step#2:', async function () {
+    describe("Step#2:", async function () {
         const invalidValues = {
             name: '012345678901234567790123456789f',
             ticker: 'qwe$#',
@@ -903,10 +923,10 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 await wizardStep2.clickButtonContinue();
                 await wizardStep3.waitUntilDisplayedTitle(180);
                 const result = await wizardStep3.getTitleText();
-                return await assert.equal(result.toUpperCase(), wizardStep3.title.toUpperCase(), "Test FAILED. Page\'s title is incorrect");
+                return await assert.equal(result.toUpperCase(), wizardStep3.title.toUpperCase(), "Page's title is incorrect");
             });
     })
-    describe('Step#3: ', async function () {
+    describe("Step#3: ", async function () {
         const invalidValues = {
 
             walletAddress: '0x56B2e3C3cFf7f3921D2e0F8B8e20d1eEc2926b'

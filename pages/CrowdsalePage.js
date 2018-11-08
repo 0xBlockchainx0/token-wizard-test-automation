@@ -2,11 +2,13 @@ const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const TITLES = require('../utils/constants.js').TITLES;
 const By = require('selenium-webdriver/lib/by').By;
-const buttonInvest = By.className("button button_fill");
-const fieldExecID = By.className("hash");
+
+
+const fieldExecID = By.className("cs-CrowdsaleID_HashText")
 const title = By.className('st-StepInfo_Title')
-const funds = By.className('total-funds-title')
-const buttonContribute = By.className('button button_fill')
+const funds = By.className('cs-CrowdsaleProgress_FundsTitle')
+const buttonContribute = By.className('sw-ButtonContinue_Text')
+const values = By.className('cs-CrowdsaleSummaryItem_Title')
 
 
 class CrowdsalePage extends Page {
@@ -15,6 +17,7 @@ class CrowdsalePage extends Page {
         super(driver);
         this.URL;
         this.name = "Crowdsale page :";
+        this.title = TITLES.CROWDSALE_PAGE
     }
 
 
@@ -52,25 +55,25 @@ class CrowdsalePage extends Page {
     }
     async getTokensClaimed() {
         logger.info(this.name + "getTokensClaimed");
-        const field = (await super.findWithWait(title))[1]
+        const field = (await super.findWithWait(values))[0]
         return await super.getTextForElement(field);
     }
 
     async getContributors() {
         logger.info(this.name + "getContributors");
-        const field = (await super.findWithWait(title))[2]
+        const field = (await super.findWithWait(values))[1]
         return await super.getTextForElement(field);
     }
 
     async getRate() {
         logger.info(this.name + "getRate");
-        const field = (await super.findWithWait(title))[3]
+        const field = (await super.findWithWait(values))[2]
         return await super.getTextForElement(field);
     }
 
     async getTotalSupply() {
         logger.info(this.name + "getTotalSupply");
-        const field = (await super.findWithWait(title))[4]
+        const field = (await super.findWithWait(values))[3]
         return await super.getTextForElement(field);
     }
 

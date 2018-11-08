@@ -16,7 +16,8 @@ const TIME_FORMAT = {
 }
 
 const TITLES = {
-    CROWDSALE_PAGE:'CROWDSALE PAGE'
+    CROWDSALE_PAGE:'CROWDSALE PAGE',
+    PUBLISH_PAGE:'Publish'
 }
 const placeholders = {
     gasPriceCustom:'0.1',
@@ -29,4 +30,4 @@ module.exports = {
     TIME_FORMAT:TIME_FORMAT,
     TITLES:TITLES
 }
-global.testVersion='new Design 3.0.7'
+global.testVersion='new Design 3.1.0'
