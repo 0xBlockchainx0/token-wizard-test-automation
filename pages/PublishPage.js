@@ -8,8 +8,8 @@ const fields = By.className('display-container')
 const values = By.className('pb-DisplayField_Value pb-DisplayField_Value-MobileTextSizeMedium')
 const valuesTime = By.className('pb-DisplayField_Value pb-DisplayField_Value-MobileTextSizeSmall')
 
-const buttonContinue= By.className('button button_fill button_no_border')
-const buttonDownload = By.className('button button_fill_secondary button_no_border')
+const buttonContinue= By.className('sw-ButtonContinue_Text')
+const buttonDownload = By.className('sw-ButtonDownload ')
 const errorNotice = By.className("css-6bx4c3");
 class PublishPage extends Page {
 

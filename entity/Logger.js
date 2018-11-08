@@ -16,7 +16,7 @@ const logger = createLogger({
     myFormat
     ),
   transports: [
-   // new (winston.transports.Console)(),
+    new (winston.transports.Console)(),
     new (winston.transports.File)({filename: tempOutputFile})
   ]
 });

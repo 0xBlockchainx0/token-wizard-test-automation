@@ -467,6 +467,7 @@ class TierPage extends Page {
 
     async fillTier(isFillBulkWhitelistAddresses, pathCSVWhitelist) {
         logger.info(this.name + "fillTier ");
+        await Utils.delay(2000)
         return await this.setModify()
         && await this.fillSupply()
         && await this.fillMinCap()

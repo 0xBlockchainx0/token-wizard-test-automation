@@ -395,7 +395,6 @@ class Page {
     async isPresentAlert() {
         logger.info("isPresentAlert:")
         try {
-
             const result = await this.driver.switchTo().alert().getText();
             logger.info("alert text:  " + result);
             return true;

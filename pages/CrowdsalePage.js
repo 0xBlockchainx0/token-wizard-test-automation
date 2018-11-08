@@ -4,7 +4,7 @@ const TITLES = require('../utils/constants.js').TITLES;
 const By = require('selenium-webdriver/lib/by').By;
 const buttonInvest = By.className("button button_fill");
 const fieldExecID = By.className("hash");
-const title = By.className('title')
+const title = By.className('st-StepInfo_Title')
 const funds = By.className('total-funds-title')
 const buttonContribute = By.className('button button_fill')
 
@@ -21,7 +21,7 @@ class CrowdsalePage extends Page {
     async waitUntilShowUpTitle(Twaiting) {
         logger.info(this.name + "waitUntilShowUpTitle ");
         return await super.waitUntilDisplayed(title, Twaiting)
-            && (await super.getTitleText() === TITLES.CROWDSALE_PAGE);
+            && ((await super.getTitleText()).toString().toUpperCase() === TITLES.CROWDSALE_PAGE.toUpperCase());
     }
 
     async isDisplayedButtonInvest() {

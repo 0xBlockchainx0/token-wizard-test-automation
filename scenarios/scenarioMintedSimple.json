@@ -28,9 +28,9 @@
       "startTime": "05:16",
       "endDate":"03/04/2036",
       "endTime":"07:28",
-      "minCap":16.5,
+      "minCap":18,
       "rate":321,
-      "supply": 93.87,
+      "supply": 400,
       "whitelist":[]
     }
   ]
