@@ -837,7 +837,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, 0, "user isn't able bulk delete all reserved tokens");
             });
 
-        test.it('User is able sequental to add reserved tokens',
+        test.it('User is able to add reserved tokens',
             async function () {
                 await reservedTokensPage.refresh()//for prevent ElementNotVisibleError
                 const result = await reservedTokensPage.fillReservedTokens(crowdsaleForUItests)

@@ -162,8 +162,10 @@ class ReservedTokensPage extends Page {
 
     async clickButtonAddReservedTokens() {
         logger.info(this.name + "clickButtonAddReservedTokens ");
-        const button = (await this.findWithWait(buttonAdd))[0]
-        await button.click()
+        //const button = (await this.findWithWait(buttonAdd))[0]
+       // await button.click()
+       // return true
+        await this.driver.executeScript("document.getElementsByClassName('sw-ButtonPlus')[0].click();")
         return true
         //return await super.clickWithWait(buttonAdd);
     }
@@ -223,7 +225,7 @@ class ReservedTokensPage extends Page {
             result = result
                 && await this.fillOneReservedToken(crowdsale.reservedTokens[i])
                 && await super.scrollTo(button)
-                && await Utils.delay(1000)
+                && await Utils.delay(3000)
                 && await this.clickButtonAddReservedTokens();
         }
         return result;
