@@ -1006,13 +1006,13 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(result, true, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
                 });
 
-            test.it.skip('Field \'Gas price custom\' has correct placeholder ',
+            test.it('Field \'Gas price custom\' has correct placeholder ',
                 async function () {
                     const result = await wizardStep3.getValueFieldGasCustom()
                     return await assert.equal(result, placeholder.gasCustom, "Wizard step#3: checkbox gasprice 'Custom' isn\'t selected ");
                 });
 
-            test.it.skip("Error message if Field 'Gas price custom' is empty",
+            test.it("Error message if Field 'Gas price custom' is empty",
                 async function () {
                     let result = await wizardStep3.fillGasPriceCustom(' ')
                         && await wizardStep3.waitUntilHasValue('gasPrice')
