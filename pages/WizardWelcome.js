@@ -1,8 +1,10 @@
 const logger = require('../entity/Logger.js').logger;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
-const buttonNewCrowdsale = By.className("hm-Home_BtnNew");
-const buttonChooseContract = By.className("hm-Home_BtnChoose");
+const buttonNewCrowdsale = By.className("hm-ButtonCreateCrowdsale");
+const buttonChooseContract = By.className("hm-ButtonChooseCrowdsale");
+const buttonResume = By.className('hm-ButtonResumeCrowdsale')
+const buttonCancel = By.className('hm-ButtonCancelCrowdsale')
 
 class WizardWelcome extends Page {
 
@@ -22,6 +24,16 @@ class WizardWelcome extends Page {
 		return await  super.clickWithWait(buttonChooseContract);
 	}
 
+    async clickButtonResume() {
+        logger.info(this.name + "clickButtonResume");
+        return await super.clickWithWait(buttonResume);
+    }
+
+    async clickButtonCancel() {
+        logger.info(this.name + "clickButtonCancel");
+        return await super.clickWithWait(buttonCancel);
+    }
+
 	async open() {
 		logger.info(this.name + ": open");
 		return await super.open(this.URL);
@@ -32,10 +44,25 @@ class WizardWelcome extends Page {
 		return await super.waitUntilDisplayed(buttonNewCrowdsale, Twaiting);
 	}
 
-	async isDisplayedButtonNewCrowdsale() {
+    async waitUntilDisplayedButtonResume(Twaiting) {
+        logger.info(this.name + "waitUntilDisplayedButtonResume: ");
+        return await super.waitUntilDisplayed(buttonResume, Twaiting);
+    }
+
+    async isDisplayedButtonNewCrowdsale() {
 		logger.info(this.name + ": isDisplayedButtonNewCrowdsale:");
 		return await super.isElementDisplayed(buttonNewCrowdsale);
 	}
+
+    async isDisplayedButtonResume() {
+        logger.info(this.name + ": isDisplayedButtonResume:");
+        return await super.isElementDisplayed(buttonResume);
+    }
+
+    async isDisplayedButtonCancel() {
+        logger.info(this.name + ": isDisplayedButtonCancel:");
+        return await super.isElementDisplayed(buttonCancel);
+    }
 
 	async isDisplayedButtonChooseContract() {
 		logger.info(this.name + ": isDisplayedButtonChooseContract");

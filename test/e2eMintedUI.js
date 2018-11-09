@@ -121,7 +121,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         publishPage = new PublishPage(driver)
         crowdsaleListPage = new CrowdsaleList(driver)
 
-       // await Utils.delay(100000000)
+        // await Utils.delay(100000000)
     });
 
     test.after(async function () {
@@ -383,7 +383,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
     })
-    describe ("Crowdsale page:", async function () {
+    describe("Crowdsale page:", async function () {
 
         test.it("Title is correct",
             async function () {
@@ -1591,11 +1591,50 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "alert does not present if user wants to leave TW");
             });
 
-        test.it("Welcome page is displayed after stopping deployment",
+        test.it("Welcome page: button 'Resume crowdsale' is displayed if pending deployment ",
             async function () {
-                const result = await welcomePage.waitUntilDisplayedButtonNewCrowdsale(180)
+                const result = await welcomePage.waitUntilDisplayedButtonResume(180)
                 return await assert.equal(result, true, "welcome page is not available ")
             });
+
+        test.it("Welcome page: button 'Cancel crowdsale' is displayed if pending deployment ",
+            async function () {
+                const result = await welcomePage.isDisplayedButtonCancel(180)
+                return await assert.equal(result, true, "welcome page is not available ")
+            });
+
+        test.it("Welcome page: user able to resume a pending crowdsale",
+            async function () {
+                const result = await welcomePage.clickButtonResume(180)
+                    && await wizardStep4.waitUntilDisplayedModal()
+                return await assert.equal(result, true, "user isn't able to resume crowdsale")
+            });
+        test.it("Alert if user leaves TW",
+            async function () {
+                await wizardStep4.open('localhost:3000/?uiversion=2')
+                await Utils.delay(2000)
+                if ( await wizardStep4.isPresentAlert() ) await wizardStep4.acceptAlert()
+                //return await assert.equal(result, true, "alert does not present if user wants to leave TW");
+            });
+
+        test.it("Welcome page: user is able to cancel a pending crowdsale",
+            async function () {
+                const result = await welcomePage.waitUntilLoaderGone()
+                    && await welcomePage.waitUntilDisplayedButtonResume(180)
+                    && await welcomePage.clickButtonCancel(180)
+                    && await welcomePage.waitUntilShowUpWarning(180)
+                    && await welcomePage.clickButtonOK()
+                    && await welcomePage.waitUntilDisplayedButtonNewCrowdsale()
+                    && await welcomePage.isDisplayedButtonChooseContract()
+                return await assert.equal(result, true, "user isn't able to cancel a pending crowdsale")
+            });
+        test.it("User is able to start new crowdsale after cancelation of pending crowdsale",
+            async function () {
+                const result = await welcomePage.clickButtonNewCrowdsale()
+                    && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap();
+                return await assert.equal(result, true, "user is not able to activate Step1 by clicking button 'New crowdsale'");
+            });
+
     })
 
 

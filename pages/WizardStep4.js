@@ -1,11 +1,11 @@
 const Logger = require('../entity/Logger.js');
 const logger = Logger.logger;
 const Utils = require('../utils/Utils.js').Utils;
-const page = require('./Page.js');
+const Page = require('./Page.js').Page;
 const MetaMask = require('../pages/MetaMask.js').MetaMask;
-const By = require('selenium-webdriver/lib/by').By;
+const By = require('selenium-webdriver/lib/by').By
 const buttonContinue = By.xpath("//*[contains(text(),'Continue')]");
-const modal = By.className("sw-ModalWindow");
+const modal = By.className("sw-ModalWindow")
 const buttonOK = By.className("swal2-confirm swal2-styled");
 const buttonSkipTransaction =By.className("sw-ButtonSkip")
 const buttonRetryTransaction =By.className("sw-ButtonRetry")
@@ -13,7 +13,7 @@ const buttonYes = By.className("swal2-confirm swal2-styled");
 const buttonCancelDeployment = By.className("button button_outline");
 const txStatus = By.className('md-TxProgressStatus_ActiveText')
 
-class WizardStep4 extends page.Page {
+class WizardStep4 extends Page {
 
     constructor(driver) {
         super(driver);
