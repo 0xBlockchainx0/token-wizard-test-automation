@@ -266,9 +266,13 @@ class Utils {
         if ( month.length === 1 ) month = '0' + month
         let day = date.getDate().toString()
         if ( day.length === 1 ) day = '0' + day
+        let hours = date.getHours().toString()
+        if ( hours.length === 1 ) hours = '0' + hours
+        let minutes = date.getMinutes().toString()
+        if ( minutes.length === 1 ) minutes = '0' + minutes
         switch ( format ) {
             case 'publish':
-                return date.getFullYear() + '-' + day + '-' + month + ' ' + date.getHours() + ':' + date.getMinutes() + ' (UTC +0000)'
+                return date.getFullYear() + '-' + day + '-' + month + ' ' + hours + ':' + minutes + ' (UTC +0000)'
             default:
                 return ''
         }

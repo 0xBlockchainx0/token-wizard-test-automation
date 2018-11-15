@@ -1589,9 +1589,10 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
         test.it("Warning if user skipped transaction",
             async function () {
-                await wizardStep4.refresh();
-                await driver.sleep(2000);
-                const result = await wizardStep4.isPresentAlert()
+
+                const result = await wizardStep4.refresh()
+                    && await Utils.delay(5000)
+                    && await wizardStep4.isPresentAlert()
                     && await wizardStep4.acceptAlert()
                     && await wizardStep4.waitUntilShowUpWarning(80)
                     && await wizardStep4.clickButtonOk()
