@@ -174,7 +174,7 @@ class WizardStep3 extends Page {
 
     async setBurnExcess(burnExcess) {
         logger.info(this.name + "setBurnExcess");
-        console.log(burnExcess)
+
         if (burnExcess === undefined) return true
         if ( burnExcess ) return await this.clickCheckboxBurnExcessYes();
         else return await this.clickCheckboxBurnExcessNo();

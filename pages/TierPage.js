@@ -161,20 +161,22 @@ class TierPage extends Page {
     async fillStartTime() {
         logger.info(this.name + "fillStartTime ");
         if ( this.tier.startDate === "" ) return true;
-        let locator = await this.getFieldStartTime();
-        let format = await Utils.getDateFormat(this.driver);
-        if ( !this.tier.startDate.includes("/") ) {
-            this.tier.startTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(this.tier.startTime), format);
-            this.tier.startDate = Utils.getDateWithAdjust(timeAdjust + parseInt(this.tier.startDate), format);
+        const locator = await this.getFieldStartTime();
+        const format = await Utils.getDateFormat(this.driver);
+        let startTime = this.tier.startTime
+        let startDate = this.tier.startDate
+        if ( ! startDate.includes("/") ) {
+            startTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(startTime), format);
+            startDate = Utils.getDateWithAdjust(timeAdjust + parseInt(startDate), format);
         } else if ( format === TIME_FORMAT.MDY ) {
-            this.tier.startTime = Utils.convertTimeToMdy(this.tier.startTime);
-            this.tier.startDate = Utils.convertDateToMdy(this.tier.startDate);
+            startTime = Utils.convertTimeToMdy(startTime);
+            startDate = Utils.convertDateToMdy(startDate);
         }
 
         return await super.clickWithWait(locator)
-            && await super.fillWithWait(locator, this.tier.startDate)
+            && await super.fillWithWait(locator, startDate)
             && await super.pressKey(key.TAB, 1)
-            && await super.fillWithWait(locator, this.tier.startTime)
+            && await super.fillWithWait(locator, startTime)
     }
 
     async getFieldEndTime() {
@@ -192,19 +194,21 @@ class TierPage extends Page {
     async fillEndTime() {
         logger.info(this.name + "fillEndTime ");
         if ( this.tier.endDate === "" ) return true;
-        let locator = await this.getFieldEndTime();
-        let format = await Utils.getDateFormat(this.driver);
-        if ( !this.tier.endDate.includes("/") ) {
-            this.tier.endTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(this.tier.endDate), format);
-            this.tier.endDate = Utils.getDateWithAdjust(timeAdjust + parseInt(this.tier.endDate), format);
+        const locator = await this.getFieldEndTime();
+        const format = await Utils.getDateFormat(this.driver);
+        let endTime = this.tier.endTime
+        let endDate = this.tier.endDate
+        if ( ! endDate.includes("/") ) {
+            endTime = Utils.getTimeWithAdjust(timeAdjust + parseInt(endTime), format);
+            endDate = Utils.getDateWithAdjust(timeAdjust + parseInt(endDate), format);
         } else if ( format === TIME_FORMAT.MDY ) {
-            this.tier.endTime = Utils.convertTimeToMdy(this.tier.endTime);
-            this.tier.endDate = Utils.convertDateToMdy(this.tier.endDate);
+            endTime = Utils.convertTimeToMdy(endTime);
+            endDate = Utils.convertDateToMdy(endDate);
         }
         return await super.clickWithWait(locator) &&
-            await super.fillWithWait(locator, this.tier.endDate) &&
+            await super.fillWithWait(locator, endDate) &&
             await super.pressKey(key.TAB, 1) &&
-            await super.fillWithWait(locator, this.tier.endTime);
+            await super.fillWithWait(locator, endTime);
     }
 
     async initItemsRemove() {

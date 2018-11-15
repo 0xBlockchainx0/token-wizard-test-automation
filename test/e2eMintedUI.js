@@ -181,6 +181,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     crowdsale: crowdsaleMintedSimple,
                     stop: { publish: true }
                 });
+
                 return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
             });
     })
@@ -225,18 +226,28 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(crowdsaleMintedSimple.walletAddress, result, 'Publish page: wallet address is incorrect ');
                 });
 
-            test.it.skip('Crowdsale start time/date is correct',
+            test.it('Crowdsale start time/date is correct',
                 async function () {
                     const time = await publishPage.getCrowdsaleStartTime()
-                    const shouldBe = '2030-02-01 13:16 (UTC +0000)'
-                    await assert.equal(time, shouldBe, "crowdsale start time is incorrect")
+                    const startDate = crowdsaleMintedSimple.tiers[0].startDate
+                    const startTime = crowdsaleMintedSimple.tiers[0].startTime
+                    const date = await Utils.convertDateToUtc0(startDate, startTime)
+                    const datePublish = await Utils.formatDate(date, 'publish')
+                    console.log('inReal   ' + time)
+                    console.log('shouldBe   ' + datePublish)
+                    await assert.equal(time, datePublish, "crowdsale start time is incorrect")
                 });
 
-            test.it.skip('Crowdsale end time/date is correct',
+            test.it('Crowdsale end time/date is correct',
                 async function () {
                     const time = await publishPage.getCrowdsaleEndTime()
-                    const shouldBe = '2036-04-03 14:28 (UTC +0000)'
-                    await assert.equal(time, shouldBe, "crowdsale end time is incorrect")
+                    const endDate = crowdsaleMintedSimple.tiers[1].endDate
+                    const endTime = crowdsaleMintedSimple.tiers[1].endTime
+                    const date = await Utils.convertDateToUtc0(endDate, endTime)
+                    const datePublish = await Utils.formatDate(date, 'publish')
+                    console.log('inReal   ' + time)
+                    console.log('shouldBe   ' + datePublish)
+                    await assert.equal(time, datePublish, "crowdsale end time is incorrect")
                 });
 
             test.it('Compiler version is correct',
@@ -272,18 +283,29 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
         describe('Tier#1', async function () {
-            test.it.skip('Tier start time/date is correct',
+            test.it('Tier start time/date is correct',
                 async function () {
                     const time = await publishPage.getTierStartTime(1)
-                    const shouldBe = '2030-02-01 13:16 (UTC +0000)'
-                    await assert.equal(time, shouldBe, "tier start time is incorrect")
+                    const startDate = crowdsaleMintedSimple.tiers[0].startDate
+                    const startTime = crowdsaleMintedSimple.tiers[0].startTime
+                    const date = await Utils.convertDateToUtc0(startDate, startTime)
+                    const datePublish = await Utils.formatDate(date, 'publish')
+                    console.log('inReal   ' + time)
+                    console.log('shouldBe   ' + datePublish)
+                    await assert.equal(time, datePublish, "tier's start time is incorrect")
                 });
 
-            test.it.skip('Tier end time/date is correct',
+
+            test.it('Tier end time/date is correct',
                 async function () {
                     const time = await publishPage.getTierEndTime(1)
-                    const shouldBe = '2031-04-03 14:28 (UTC +0000)'
-                    await assert.equal(time, shouldBe, "tier end time is incorrect")
+                    const endDate = crowdsaleMintedSimple.tiers[0].endDate
+                    const endTime = crowdsaleMintedSimple.tiers[0].endTime
+                    const date = await Utils.convertDateToUtc0(endDate, endTime)
+                    const datePublish = await Utils.formatDate(date, 'publish')
+                    console.log('inReal   ' + time)
+                    console.log('shouldBe   ' + datePublish)
+                    await assert.equal(time, datePublish, "tier's end time is incorrect")
                 });
 
             test.it('Rate is correct',
@@ -313,18 +335,28 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
         describe('Tier#2', async function () {
-            test.it.skip('Tier start time/date is correct',
+            test.it('Tier start time/date is correct',
                 async function () {
                     const time = await publishPage.getTierStartTime(2)
-                    const shouldBe = '2031-04-03 14:28 (UTC +0000)'
-                    await assert.equal(time, shouldBe, "tier start time is incorrect")
+                    const startDate = crowdsaleMintedSimple.tiers[1].startDate
+                    const startTime = crowdsaleMintedSimple.tiers[1].startTime
+                    const date = await Utils.convertDateToUtc0(startDate, startTime)
+                    const datePublish = await Utils.formatDate(date, 'publish')
+                    console.log('inReal   ' + time)
+                    console.log('shouldBe   ' + datePublish)
+                    await assert.equal(time, datePublish, "tier's start time is incorrect")
                 });
 
-            test.it.skip('Tier end time/date is correct',
+            test.it('Tier end time/date is correct',
                 async function () {
                     const time = await publishPage.getTierEndTime(2)
-                    const shouldBe = '2036-04-03 14:28 (UTC +0000)'
-                    await assert.equal(time, shouldBe, "tier start time is incorrect")
+                    const endDate = crowdsaleMintedSimple.tiers[1].endDate
+                    const endTime = crowdsaleMintedSimple.tiers[1].endTime
+                    const date = await Utils.convertDateToUtc0(endDate, endTime)
+                    const datePublish = await Utils.formatDate(date, 'publish')
+                    console.log('inReal   ' + time)
+                    console.log('shouldBe   ' + datePublish)
+                    await assert.equal(time, datePublish, "tier's end time is incorrect")
                 });
 
             test.it('Rate is correct',
@@ -1439,6 +1471,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                         && await wizardStep1.waitUntilLoaderGone()
                         && await Owner.setWalletAccount()
                         && await wizardStep3.waitUntilDisplayedFieldWalletAddress()
+                    await Utils.delay(2000)
                     await assert.equal(result, true, "Page crashed after go back/forward");
                     await assert.equal(await wizardStep3.isSelectedCheckboxGasCustom(), true, "Checkbox gasprice 'Custom' lost state after changing network");
                     await assert.equal(await wizardStep3.getValueFieldGasCustom(), newValue.customGas, "field 'Gas Custom' lost value after changing network");
