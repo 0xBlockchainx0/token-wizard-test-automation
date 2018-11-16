@@ -171,7 +171,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
     })
 
-    describe('Create crowdsale', async function () {
+    describe ("Create crowdsale", async function () {
 
         test.it('User is able to create crowdsale(scenarioMintedSimple.json),2 tiers',
             async function () {
@@ -185,12 +185,11 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
             });
     })
-    describe('Publish page', async function () {
+    describe ("Publish page", async function () {
         describe('Common data', async function () {
 
             test.it("Title is correct",
                 async function () {
-
                     await publishPage.waitUntilDisplayedTitle(180)
                     const result = await publishPage.getTitleText();
                     return await assert.equal(result.toUpperCase(), publishPage.title.toUpperCase(), "Page's title is incorrect");
@@ -294,8 +293,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     console.log('shouldBe   ' + datePublish)
                     await assert.equal(time, datePublish, "tier's start time is incorrect")
                 });
-
-
             test.it('Tier end time/date is correct',
                 async function () {
                     const time = await publishPage.getTierEndTime(1)
@@ -307,7 +304,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     console.log('shouldBe   ' + datePublish)
                     await assert.equal(time, datePublish, "tier's end time is incorrect")
                 });
-
             test.it('Rate is correct',
                 async function () {
                     const result = await publishPage.getRate(1)
@@ -394,6 +390,9 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             test.it("Warning displayed after refreshing",
                 async function () {
                     const result = await publishPage.refresh()
+                        && await Utils.delay(2000)
+                        && await wizardStep4.isPresentAlert()
+                        && await wizardStep4.acceptAlert()
                         && await publishPage.waitUntilShowUpWarning()
                         && await publishPage.clickButtonOK()
                     return await assert.equal(result, true, "warning does not present");
@@ -415,7 +414,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
     })
-    describe("Crowdsale page:", async function () {
+    describe ("Crowdsale page:", async function () {
 
         test.it("Title is correct",
             async function () {
@@ -605,11 +604,29 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "Checkbox 'Whitelist with mincap' was changed after move back/forward");
             });
 
-        test.it("Refresh - page keep state of checkbox 'Whitelist with mincap'",
+        test.it("Alert if user is going to leave TW",
+            async function () {
+                const result = await wizardStep1.clickCheckboxDutchAuction()
+                    && await wizardStep1.clickCheckboxWhitelistWithCap()
+                    && (!await wizardStep1.open('localhost:3000/?uiversion=2'))
+                    && await wizardStep1.isPresentAlert()
+                    && await wizardStep1.cancelAlert()
+                    && await wizardStep1.waitUntilDisappearAlert()
+                return await assert.equal(result, true, "alert does not present if user wants to leave TW");
+            });
+
+        test.it("Alert is displayed if reload the page",
             async function () {
                 const result = await wizardStep1.clickCheckboxWhitelistWithCap()
                     && await wizardStep1.refresh()
-                    && await wizardStep1.waitUntilLoaderGone()
+                    && await Utils.delay(2000)
+                    && await wizardStep1.isPresentAlert()
+                    && await wizardStep1.acceptAlert()
+                return await assert.equal(result, true, "alert does not present");
+            });
+        test.it("Refresh - page keep state of checkbox 'Whitelist with mincap'",
+            async function () {
+                const result = await wizardStep1.waitUntilLoaderGone()
                     && await wizardStep1.isSelectedCheckboxWhitelistWithCap()
                 return await assert.equal(result, true, "Checkbox 'Whitelist with mincap' was changed after refresh");
             });
@@ -618,6 +635,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             async function () {
                 const result = await wizardStep1.clickCheckboxWhitelistWithCap()
                     && await Investor1.setWalletAccount()
+                    && (await wizardStep1.isPresentAlert() ? await wizardStep1.cancelAlert() : true)
                     && await wizardStep1.waitUntilLoaderGone()
                     && await Utils.delay(2000)
                     && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap()
@@ -677,6 +695,15 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "user is not able to open Step2 by clicking button 'Continue'");
             });
 
+        test.it("Alert if user is going to leave TW",
+            async function () {
+                const result = (!await wizardStep2.open('localhost:3000/?uiversion=2'))
+                    && await wizardStep2.isPresentAlert()
+                    && await wizardStep2.cancelAlert()
+                    && await wizardStep2.waitUntilDisappearAlert()
+                return await assert.equal(result, true, "alert does not present if user wants to leave TW");
+            });
+
         test.it("Error message if name longer than 30 symbols",
             async function () {
                 const result = await wizardStep2.fillName(invalidValues.name)
@@ -716,11 +743,19 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "field 'Name' was changed");
             });
 
-        test.it("Refresh - page keep state of  field 'Name'",
+        test.it("Alert is displayed if reload the page",
             async function () {
                 const result = await wizardStep2.refresh()
                     && await wizardStep2.waitUntilLoaderGone()
-                    && await wizardStep2.waitUntilDisplayedFieldName()
+                    && await Utils.delay(2000)
+                    && await wizardStep2.isPresentAlert()
+                    && await wizardStep2.acceptAlert()
+                return await assert.equal(result, true, "alert does not present");
+            });
+
+        test.it("Reload - page keep state of  field 'Name'",
+            async function () {
+                const result = await wizardStep2.waitUntilDisplayedFieldName()
                     && await wizardStep2.waitUntilHasValueFieldName();
                 await assert.equal(result, true, "field 'Name' was changed");
                 return await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "field 'Name' was changed");
@@ -729,6 +764,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         test.it("Change network - page keep state of  field 'Name'",
             async function () {
                 const result = await Investor1.setWalletAccount()
+                    && (await wizardStep1.isPresentAlert() ? await wizardStep1.cancelAlert() : true)
                     && await wizardStep2.waitUntilLoaderGone()
                     && await Utils.delay(2000)
                     && await wizardStep2.waitUntilHasValueFieldName()
@@ -758,9 +794,12 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
         test.it("Error message if field 'Ticker' is empty",
             async function () {
-                await wizardStep2.fillTicker('')
-                await wizardStep2.refresh()
-                const result = await wizardStep2.getWarningText('ticker')
+                const result = await wizardStep2.fillTicker('')
+                    && await wizardStep2.refresh()
+                    && await Utils.delay(2000)
+                    && (await wizardStep2.isPresentAlert() ? await wizardStep2.acceptAlert() : true)
+                    && await wizardStep2.waitUntilDisappearAlert()
+                    && await wizardStep2.getWarningText('ticker')
                 return await assert.equal(result, "This field is required", "Incorrect error message");
             });
 
@@ -869,12 +908,15 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, 0, "user isn't able bulk delete all reserved tokens");
             });
 
-        test.it('User is able to add reserved tokens',
+        test.it("User is able to add reserved tokens",
             async function () {
-                await reservedTokensPage.refresh()//for prevent ElementNotVisibleError
-                const result = await reservedTokensPage.fillReservedTokens(crowdsaleForUItests)
+                const result = await reservedTokensPage.refresh()//for prevent ElementNotVisibleError
+                    && (await reservedTokensPage.isPresentAlert() ? await reservedTokensPage.acceptAlert() : true)
+                    && await reservedTokensPage.waitUntilDisappearAlert()
+                    && await reservedTokensPage.waitUntilLoaderGone()
+                    && await reservedTokensPage.fillReservedTokens(crowdsaleForUItests)
                     && await reservedTokensPage.amountAddedReservedTokens();
-                return await assert.equal(result, crowdsaleForUItests.reservedTokens.length, "Test FAILED. Wizard step#2: user is NOT able to add reserved tokens");
+                return await assert.equal(result, crowdsaleForUItests.reservedTokens.length, "user isn't able to add reserved tokens");
             });
 
         test.it("Field 'Decimals' is disabled if reserved tokens are added",
@@ -886,8 +928,9 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         test.it("User is able to remove one of reserved tokens",
             async function () {
                 await reservedTokensPage.refresh()//for prevent ElementNotVisibleError
+                if ( await reservedTokensPage.isPresentAlert() ) await reservedTokensPage.cancelAlert()
+                await reservedTokensPage.waitUntilDisappearAlert()
                 let amountBefore = await reservedTokensPage.amountAddedReservedTokens();
-                await Utils.delay(2000)
                 await reservedTokensPage.removeReservedTokens(1);
                 let amountAfter = await reservedTokensPage.amountAddedReservedTokens();
                 return await assert.equal(amountBefore - 1, amountAfter, "User is not able to remove reserved tokens");
@@ -907,11 +950,20 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 await assert.equal(await reservedTokensPage.amountAddedReservedTokens(), crowdsaleForUItests.reservedTokens.length - 1, "reserved tokens changed");
             });
 
-        test.it("Refresh - page keep state of each field",
+        test.it("Alert is displayed if reload the page",
             async function () {
                 const result = await wizardStep2.refresh()
                     && await wizardStep2.waitUntilLoaderGone()
-                    && await wizardStep2.waitUntilDisplayedFieldName()
+                    && await Utils.delay(2000)
+                    && await wizardStep2.isPresentAlert()
+                    && await wizardStep2.acceptAlert()
+                return await assert.equal(result, true, "alert does not present");
+            });
+
+
+        test.it("Reload - page keep state of each field",
+            async function () {
+                const result = await wizardStep2.waitUntilDisplayedFieldName()
                     && await wizardStep2.waitUntilHasValueFieldName();
                 await assert.equal(result, true, "page isn't loaded");
                 await assert.equal(await wizardStep2.getValueFieldName(), newValue.name, "field 'Name' changed");
@@ -964,6 +1016,15 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             walletAddress: '0x56B2e3C3cFf7f3921D2e0F8B8e20d1eEc2926b'
         }
         describe('Crowdsale data', async function () {
+
+            test.it("Alert if user is going to leave TW",
+                async function () {
+                    const result = (!await wizardStep3.open('localhost:3000/?uiversion=2'))
+                        && await wizardStep3.isPresentAlert()
+                        && await wizardStep3.cancelAlert()
+                        && await wizardStep3.waitUntilDisappearAlert()
+                    return await assert.equal(result, true, "alert does not present if user wants to leave TW");
+                });
 
             test.it("Button 'Continue' is disabled if data are wrong",
                 async function () {
@@ -1320,8 +1381,11 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
             test.it('User is able sequental to add several whitelisted addresses  ',
                 async function () {
-                    await wizardStep3.refresh()//for prevent ElementNotVisibleError
-                    const result = await tierPage.fillWhitelist();
+                    const result = await wizardStep3.refresh()//for prevent ElementNotVisibleError
+                        && (await reservedTokensPage.isPresentAlert() ? await reservedTokensPage.acceptAlert() : true)
+                        && await reservedTokensPage.waitUntilDisappearAlert()
+                        && await reservedTokensPage.waitUntilLoaderGone()
+                        && await tierPage.fillWhitelist();
                     return await assert.equal(result, true, "user isn't able to add several whitelisted addresses");
                 });
 
@@ -1411,7 +1475,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                         && await wizardStep3.goForward()
                         && await wizardStep1.waitUntilLoaderGone()
                         && await wizardStep3.waitUntilDisplayedFieldWalletAddress()
-                    await assert.equal(result, true, "Page crashed after go back/forward");
+                    await assert.equal(result, true, "Page crashed after moving back/forward");
                     await assert.equal(await wizardStep3.isSelectedCheckboxGasCustom(), true, "Checkbox gasprice 'Custom' lost state after moving back/forward");
                     await assert.equal(await wizardStep3.getValueFieldGasCustom(), newValue.customGas, "field 'Gas Custom' lost value after moving back/forward");
                     await assert.equal(await wizardStep3.getValueFieldWalletAddress(), Owner.account, "field 'Wallet address' lost value after moving back/forward");
@@ -1435,33 +1499,41 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     await assert.equal(await tierPage.isDisabledFieldMinCap(), false, "Tier#" + tierPage.number + " field 'Mincap' became disabled after moving back/forward");
                 });
 
-            test.it("Refresh - page keep state of checkbox 'Whitelist with mincap'",
+            test.it("Alert is displayed if reload the page",
                 async function () {
                     const result = await wizardStep3.refresh()
-                        && await wizardStep1.waitUntilLoaderGone()
-                        && await wizardStep3.waitUntilDisplayedFieldWalletAddress()
-                    await assert.equal(result, true, "Page crashed after go back/forward");
-                    await assert.equal(await wizardStep3.isSelectedCheckboxGasCustom(), true, "Checkbox gasprice 'Custom' lost state after refreshing");
-                    await assert.equal(await wizardStep3.getValueFieldGasCustom(), newValue.customGas, "field 'Gas Custom' lost value after refreshing");
-                    await assert.equal(await wizardStep3.getValueFieldWalletAddress(), Owner.account, "field 'Wallet address' lost value after refreshing");
+                        && await wizardStep3.waitUntilLoaderGone()
+                        && await Utils.delay(2000)
+                        && await wizardStep2.isPresentAlert()
+                        && await wizardStep2.acceptAlert()
+                    return await assert.equal(result, true, "alert does not present");
+                });
+
+            test.it("Reload - page keep state of checkbox 'Whitelist with mincap'",
+                async function () {
+                    const result = await wizardStep3.waitUntilDisplayedFieldWalletAddress()
+                    await assert.equal(result, true, "Page crashed after reloading");
+                    await assert.equal(await wizardStep3.isSelectedCheckboxGasCustom(), true, "Checkbox gasprice 'Custom' lost state after reloading");
+                    await assert.equal(await wizardStep3.getValueFieldGasCustom(), newValue.customGas, "field 'Gas Custom' lost value after reloading");
+                    await assert.equal(await wizardStep3.getValueFieldWalletAddress(), Owner.account, "field 'Wallet address' lost value after reloading");
                     tierPage.number = 0
-                    await assert.equal(await tierPage.isSelectedCheckboxAllowModifyNo(), false, "Tier#" + tierPage.number + " Checkbox 'Allow modifying Yes' lost state after refreshing");
-                    await assert.equal(await tierPage.isSelectedCheckboxAllowModifyYes(), true, "Tier#" + tierPage.number + " Checkbox 'Allow modifying No' lost state after refreshing");
+                    await assert.equal(await tierPage.isSelectedCheckboxAllowModifyNo(), false, "Tier#" + tierPage.number + " Checkbox 'Allow modifying Yes' lost state after reloading");
+                    await assert.equal(await tierPage.isSelectedCheckboxAllowModifyYes(), true, "Tier#" + tierPage.number + " Checkbox 'Allow modifying No' lost state after reloading");
 
-                    await assert.equal(await tierPage.isSelectedCheckboxWhitelistYes(), true, "Tier#" + tierPage.number + " Checkbox 'Enable whitelist Yes' lost state after refreshing");
-                    await assert.equal(await tierPage.isSelectedCheckboxWhitelistNo(), false, "Tier#" + tierPage.number + "Checkbox 'Enable whitelist No' lost state after refreshing");
+                    await assert.equal(await tierPage.isSelectedCheckboxWhitelistYes(), true, "Tier#" + tierPage.number + " Checkbox 'Enable whitelist Yes' lost state after reloading");
+                    await assert.equal(await tierPage.isSelectedCheckboxWhitelistNo(), false, "Tier#" + tierPage.number + "Checkbox 'Enable whitelist No' lost state after reloading");
 
-                    await assert.equal(await tierPage.getValueFieldSetupName(), newValue.tier1.name, "Tier#" + tierPage.number + " field 'Setup name' lost value after refreshing");
-                    await assert.equal(await tierPage.getValueFieldRate(), newValue.tier1.rate, "Tier#" + tierPage.number + " field 'Rate' lost value after refreshing");
-                    await assert.equal(await tierPage.getValueFieldSupply(), newValue.tier1.supply, "Tier#" + tierPage.number + " field 'Supply' lost value after refreshing");
-                    await assert.equal(await tierPage.getValueFieldMinCap(), 0, "Tier#" + tierPage.number + " field 'Mincap' lost value after refreshing");
-                    await assert.equal(await tierPage.isDisabledFieldMinCap(), true, "Tier#" + tierPage.number + " field 'Mincap' became enabled after refreshing");
+                    await assert.equal(await tierPage.getValueFieldSetupName(), newValue.tier1.name, "Tier#" + tierPage.number + " field 'Setup name' lost value after reloading");
+                    await assert.equal(await tierPage.getValueFieldRate(), newValue.tier1.rate, "Tier#" + tierPage.number + " field 'Rate' lost value after reloading");
+                    await assert.equal(await tierPage.getValueFieldSupply(), newValue.tier1.supply, "Tier#" + tierPage.number + " field 'Supply' lost value after reloading");
+                    await assert.equal(await tierPage.getValueFieldMinCap(), 0, "Tier#" + tierPage.number + " field 'Mincap' lost value after reloading");
+                    await assert.equal(await tierPage.isDisabledFieldMinCap(), true, "Tier#" + tierPage.number + " field 'Mincap' became enabled after reloading");
                     tierPage.number = 1;
-                    await assert.equal(await tierPage.getValueFieldSetupName(), newValue.tier2.name, "Tier#" + tierPage.number + " field 'Setup name' lost value after refreshing");
-                    await assert.equal(await tierPage.getValueFieldRate(), newValue.tier2.rate, "Tier#" + tierPage.number + " field 'Rate' lost value after refreshing");
-                    await assert.equal(await tierPage.getValueFieldSupply(), newValue.tier2.supply, "Tier#" + tierPage.number + " field 'Supply' lost value after refreshing");
-                    await assert.equal(await tierPage.getValueFieldMinCap(), newValue.tier2.mincap, "Tier#" + tierPage.number + " field 'Mincap' lost value after refreshing");
-                    await assert.equal(await tierPage.isDisabledFieldMinCap(), false, "Tier#" + tierPage.number + " field 'Mincap' became disabled after refreshing");
+                    await assert.equal(await tierPage.getValueFieldSetupName(), newValue.tier2.name, "Tier#" + tierPage.number + " field 'Setup name' lost value after reloading");
+                    await assert.equal(await tierPage.getValueFieldRate(), newValue.tier2.rate, "Tier#" + tierPage.number + " field 'Rate' lost value after reloading");
+                    await assert.equal(await tierPage.getValueFieldSupply(), newValue.tier2.supply, "Tier#" + tierPage.number + " field 'Supply' lost value after reloading");
+                    await assert.equal(await tierPage.getValueFieldMinCap(), newValue.tier2.mincap, "Tier#" + tierPage.number + " field 'Mincap' lost value after reloading");
+                    await assert.equal(await tierPage.isDisabledFieldMinCap(), false, "Tier#" + tierPage.number + " field 'Mincap' became disabled after reloading");
 
                 });
 

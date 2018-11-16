@@ -35,7 +35,7 @@ class Page {
         do {
             await this.driver.sleep(200);
             if ( !await this.isElementDisplayed(element) ) return true;
-        } while ( counter-- > 0 );
+        } while ( wait-- > 0 );
         return false;
     }
 
@@ -188,7 +188,7 @@ class Page {
     }
 
     async waitUntilLoaderGone() {
-        logger.info("wait until loader gone :");
+        logger.info("waitUntilLoaderGone");
         if ( !await this.isLocatedLoader() ) return true;
         else
             return await this.waitUntilLocated(loaderNotDisplayed, 180);
@@ -371,6 +371,7 @@ class Page {
         try {
             let array = await this.findWithWait(titles);
             this.titleElement = array[0];
+            return array
         }
         catch ( err ) {
             logger.info("Error: " + err);
@@ -392,6 +393,16 @@ class Page {
             && await this.waitUntilDisplayed(this.titleElement, Twaiting);
     }
 
+    async waitUntilDisappearAlert(wait) {
+        logger.info("waitUntilDisappearAlert");
+        if ( wait === undefined ) wait = 100;
+        do {
+            await this.driver.sleep(200);
+            if ( !await this.isPresentAlert() ) return true;
+        } while ( wait-- > 0 );
+        return false;
+    }
+
     async isPresentAlert() {
         logger.info("isPresentAlert:")
         try {
@@ -409,6 +420,18 @@ class Page {
         logger.info("acceptAlert ")
         try {
             this.driver.switchTo().alert().accept();
+            return true;
+        }
+        catch ( err ) {
+            logger.info(err);
+            return false;
+        }
+    }
+
+    async cancelAlert() {
+        logger.info("cancelAlert ")
+        try {
+            this.driver.switchTo().alert().dismiss();
             return true;
         }
         catch ( err ) {

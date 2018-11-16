@@ -2,6 +2,7 @@ const logger = require('../entity/Logger.js').logger;
 const key = require('selenium-webdriver').Key;
 const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
+const Utils = require('../utils/Utils.js').Utils;
 const MetamaskId = "nkbihfbeogaeaoehlefnkodbefgpgknn";
 const buttonSubmit = By.className("confirm btn-green");
 const buttonAccept = By.xpath('//*[@id="app-content"]/div/div[4]/div/div[1]/button');
@@ -38,7 +39,17 @@ class MetaMask extends Page {
 		this.name = "Metamask  "
 		this.networks=[0, 3, 42, 4, 8545];
 	}
-
+    async delay(ms) {
+        logger.info('Utils: delay ' + ms + 'ms')
+        try {
+            await new Promise(resolve => setTimeout(resolve, ms))
+            return true
+        }
+        catch ( err ) {
+            logger.info(err);
+            return false;
+        }
+    }
 	async clickButtonSubmitTransaction() {
 		return await this.clickWithWait(buttonSubmit);
 	}
@@ -66,13 +77,15 @@ class MetaMask extends Page {
 	async importAccount(user) {
 		logger.info(this.name + "importAccount ");
 		user.accountOrderInWallet = accountOrderNumber;
-		return await  this.switchToNextPage() &&
-			await  this.setNetwork(user.networkID) &&
-			await  this.clickImportAccount() &&
-			await  this.fillWithWait(fieldPrivateKey, user.privateKey) &&
-			await  this.waitUntilDisplayed(buttonImport) &&
-			await  this.clickWithWait(buttonImport) &&
-			await  this.switchToNextPage();
+		return await  this.switchToNextPage()
+            && await  this.setNetwork(user.networkID)
+            && await  this.clickImportAccount()
+            && await  this.fillWithWait(fieldPrivateKey, user.privateKey)
+            && await  this.waitUntilDisplayed(buttonImport)
+			&& await this.delay(2000)
+            && (await this.isPresentAlert()? await this.cancelAlert():true)
+            && await  this.clickWithWait(buttonImport)
+            && await  this.switchToNextPage();
 	}
 
 	async selectAccount(user) {

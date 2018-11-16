@@ -7,7 +7,6 @@ Step#1:
  - add reserved
  - reserved validator, warnings
  Step#3:
-  - start/end time tests
   - add whitelist
   - whitelist validator, warning
 

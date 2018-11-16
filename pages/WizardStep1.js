@@ -49,11 +49,6 @@ class WizardStep1 extends Page {
         return await super.clickWithWait(buttonContinue);
     }
 
-    async  open() {
-        logger.info(this.name+"open");
-        return  await  super.open (this.URL);
-    }
-
     async clickCheckboxWhitelistWithCap() {
 	    logger.info(this.name + "clickCheckboxWhitelistWithCap: ");
 	    await this.initCheckboxes();
