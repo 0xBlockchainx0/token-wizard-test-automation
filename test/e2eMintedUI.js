@@ -17,6 +17,7 @@ const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
 const Utils = require('../utils/Utils.js').Utils;
 const TEXT = require('../utils/constants.js').TEXT;
+const TITLES = require('../utils/constants.js').TITLES;
 const User = require("../entity/User.js").User;
 const PublishPage = require('../pages/PublishPage.js').PublishPage;
 const CrowdsaleList = require('../pages/CrowdsaleList.js').CrowdsaleList
@@ -193,7 +194,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 async function () {
                     await publishPage.waitUntilDisplayedTitle(180)
                     const result = await publishPage.getTitleText();
-                    return await assert.equal(result.toUpperCase(), publishPage.title.toUpperCase(), "Page's title is incorrect");
+                    return await assert.equal(result.toUpperCase(), TITLES.PUBLISH_PAGE, "Page's title is incorrect");
                 });
             test.it('Name is correct',
                 async function () {
@@ -420,9 +421,9 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         test.it("Title is correct",
             async function () {
                 await Utils.delay(5000)
-                await publishPage.waitUntilDisplayedTitle(180)
+                await crowdsalePage.waitUntilDisplayedTitle(180)
                 const result = await crowdsalePage.getTitleText();
-                return await assert.equal(result.toUpperCase(), crowdsalePage.title.toUpperCase(), "Page's title is incorrect");
+                return await assert.equal(result.toUpperCase(), TITLES.CROWDSALE_PAGE, "Page's title is incorrect");
             });
         test.it("Proxy address is correct",
             async function () {
@@ -591,6 +592,13 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
     describe("Step#1:", async function () {
 
+        test.it("Title is correct",
+            async function () {
+                await wizardStep1.waitUntilDisplayedTitle(180)
+                const result = await wizardStep1.getTitleText();
+                return await assert.equal(result, TITLES.STEP1, "Page's title is incorrect");
+            });
+
         test.it.skip("Move back/forward - page keep state of checkbox 'Whitelist with mincap'",
             async function () {
                 const result = await wizardStep1.clickCheckboxWhitelistWithCap()
@@ -671,6 +679,14 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             address: 'lsdnfoiwd',
             value: '0.00000123134824956234651234234'
         }
+
+        test.it("Title is correct",
+            async function () {
+                await wizardStep2.waitUntilDisplayedTitle(180)
+                const result = await wizardStep2.getTitleText();
+                return await assert.equal(result, TITLES.STEP2, "Page's title is incorrect");
+            });
+
         test.it("Button 'Back' opens Step#1",
             async function () {
                 const result = await wizardStep2.clickButtonBack()
@@ -1035,6 +1051,13 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             walletAddress: '0x56B2e3C3cFf7f3921D2e0F8B8e20d1eEc2926b'
         }
         describe('Crowdsale data', async function () {
+
+            test.it("Title is correct",
+                async function () {
+                    await wizardStep3.waitUntilDisplayedTitle(180)
+                    const result = await wizardStep3.getTitleText();
+                    return await assert.equal(result, TITLES.STEP3, "Page's title is incorrect");
+                });
 
             test.it("Alert if user is going to leave TW",
                 async function () {

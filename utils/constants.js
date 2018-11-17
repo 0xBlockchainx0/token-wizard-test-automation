@@ -1,3 +1,4 @@
+global.testVersion='new Design 3.2.0'
 const WALLET = {
 	METAMASK: 'METAMASK',
 	NIFTY: 'NIFTY'
@@ -16,8 +17,12 @@ const TIME_FORMAT = {
 }
 
 const TITLES = {
-    CROWDSALE_PAGE:'CROWDSALE PAGE',
-    PUBLISH_PAGE:'Publish'
+    STEP1:"Crowdsale Strategy",
+    STEP2:"Token Setup",
+    STEP3:"Crowdsale Setup",
+    PUBLISH_PAGE:"Publish",
+    CROWDSALE_PAGE:"CROWDSALE PAGE",
+
 }
 const placeholders = {
     gasPriceCustom:'0.1',
@@ -57,4 +62,3 @@ module.exports = {
     TIME_FORMAT:TIME_FORMAT,
     TITLES:TITLES
 }
-global.testVersion='new Design 3.1.0'
