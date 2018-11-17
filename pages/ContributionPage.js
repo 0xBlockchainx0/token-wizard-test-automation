@@ -158,8 +158,8 @@ class ContributionPage extends Page {
         return (await super.waitUntilDisplayed(countdownTimerStatus,Twaiting));
     }
 
-/*	async clickButtonOK() {
-		logger.info(this.name + "clickButtonOK ");
+/*	async clickButtonOk() {
+		logger.info(this.name + "clickButtonOk ");
 		return await super.clickWithWait(buttonOk);
 	}
 */

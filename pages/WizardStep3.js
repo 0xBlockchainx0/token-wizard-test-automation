@@ -225,11 +225,6 @@ class WizardStep3 extends Page {
         return await super.isElementDisplayed(fieldGasPriceCustom)
     }
 
-    async clickButtonOk() {
-        logger.info(this.name + "clickButtonOk ");
-        return await super.clickWithWait(buttonOK);
-    }
-
     async isDisplayedButtonContinue() {
         logger.info(this.name + "isDisplayedButtonContinue ");
         return await super.isElementDisplayed(buttonContinue);

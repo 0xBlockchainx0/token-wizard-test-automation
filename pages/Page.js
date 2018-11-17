@@ -7,7 +7,7 @@ const loader = By.className("loading-container");
 const loaderNotDisplayed = By.className("loading-container notdisplayed");
 const titles = By.className("st-StepInfo_Title");
 const buttonOk = By.className("swal2-confirm swal2-styled");
-
+const popup = By.className('swal2-content')
 class Page {
 
     constructor(driver) {
@@ -143,8 +143,13 @@ class Page {
         }
     }
 
+    async getTextPopup() {
+        logger.info("getTextPopup")
+        return await this.getTextForElement(popup)
+    }
+
     async getTextForElement(element, Twaiting) {
-        logger.info("get text for element : ");
+        logger.info("getTextForElement");
         try {
             let field = await this.getElement(element, Twaiting);
             let result = await field.getText();
@@ -445,8 +450,8 @@ class Page {
         return await this.waitUntilDisplayed(buttonOk, Twaiting);
     }
 
-    async clickButtonOK() {
-        logger.info("clickButtonOK ");
+    async clickButtonOk() {
+        logger.info("clickButtonOk ");
         return await this.clickWithWait(buttonOk);
     }
 

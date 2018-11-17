@@ -638,7 +638,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 let wrongUrl = crowdsaleDutchSimple.url.substring(0, 50) + crowdsaleDutchSimple.url.substring(52, crowdsaleDutchSimple.length)
                 let result = await contributionPage.open(wrongUrl)
                     && await contributionPage.waitUntilShowUpButtonOk()
-                    && await contributionPage.clickButtonOK()
+                    && await contributionPage.clickButtonOk()
                 return await assert.equal(result, true, 'Test FAILED. Contribution page: no alert if invalid proxyID in address bar');
             });
 
@@ -649,7 +649,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 wrongCrowdsale.proxyAddress = crowdsaleDutchSimple.proxyAddress.substring(0, crowdsaleDutchSimple.proxyAddress.length - 5)
                 let result = await owner.openCrowdsalePage(wrongCrowdsale)
                     && await contributionPage.waitUntilShowUpButtonOk()
-                    && await contributionPage.clickButtonOK()
+                    && await contributionPage.clickButtonOk()
                 return await assert.equal(result, true, 'Test FAILED. Crowdsale page: no alert if invalid proxyID in address bar');
             });
     })

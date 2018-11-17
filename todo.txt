@@ -1,12 +1,14 @@
 
 - button's names
+- Dutch UI
 
 Step#1:
  - check titles contents
  Step#2:
- - add reserved
- - reserved validator, warnings
+
  Step#3:
-  - add whitelist
-  - whitelist validator, warning
+
+  Publish:
+   - ABI
+   - contract
 

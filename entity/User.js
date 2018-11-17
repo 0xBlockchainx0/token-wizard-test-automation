@@ -288,7 +288,7 @@ class User {
         logger.info("confirmPopup ");
         let investPage = new InvestPage(this.driver);
         return await investPage.waitUntilShowUpButtonOk(60)
-            && await investPage.clickButtonOK();
+            && await investPage.clickButtonOk();
     }
 
     async contribute(amount) {
@@ -303,7 +303,7 @@ class User {
             && await new MetaMask(this.driver).signTransaction(10)
             && await investPage.waitUntilLoaderGone();
         await investPage.waitUntilShowUpButtonOk(20)//3 sec
-        && await investPage.clickButtonOK()
+        && await investPage.clickButtonOk()
         && await investPage.waitUntilLoaderGone();
         return result;
     }
