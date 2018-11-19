@@ -21,7 +21,7 @@ const TITLES = {
     STEP2:"Token Setup",
     STEP3:"Crowdsale Setup",
     PUBLISH_PAGE:"Publish",
-    CROWDSALE_PAGE:"CROWDSALE PAGE",
+    CROWDSALE_PAGE:"Crowdsale Page",
 
 }
 const placeholders = {

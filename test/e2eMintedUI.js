@@ -173,7 +173,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
     })
 
-    describe.skip("Create crowdsale", async function () {
+    describe("Create crowdsale", async function () {
 
         test.it('User is able to create crowdsale(scenarioMintedSimple.json),2 tiers',
             async function () {
@@ -187,14 +187,14 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
             });
     })
-    describe.skip("Publish page", async function () {
+    describe("Publish page", async function () {
         describe('Common data', async function () {
 
             test.it("Title is correct",
                 async function () {
                     await publishPage.waitUntilDisplayedTitle(180)
                     const result = await publishPage.getTitleText();
-                    return await assert.equal(result.toUpperCase(), TITLES.PUBLISH_PAGE, "Page's title is incorrect");
+                    return await assert.equal(result, TITLES.PUBLISH_PAGE, "Page's title is incorrect");
                 });
             test.it('Name is correct',
                 async function () {
@@ -269,7 +269,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(result, 'Yes', 'Publish page: optimized flag name is incorrect ');
                 });
 
-            test.it.skip('Contract source code is displayed and correct ',
+            test.it ('Contract source code is displayed and correct ',
                 async function () {
                     const contract = await publishPage.getTextContract()
                     crowdsaleMintedSimple.sort = 'minted'
@@ -277,7 +277,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(contract, shouldBe, "contract source code isn't correct")
                 })
 
-            test.it.skip('Encoded ABI is displayed and correct ',
+            test.it ('Encoded ABI is displayed and correct ',
                 async function () {
                     const abi = await publishPage.getEncodedABI()
                     return await assert.equal(abi.length, 256, 'Publish page:encoded ABI isn\'t correct ');
@@ -416,14 +416,14 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
     })
-    describe.skip("Crowdsale page:", async function () {
+    describe ("Crowdsale page:", async function () {
 
         test.it("Title is correct",
             async function () {
                 await Utils.delay(5000)
                 await crowdsalePage.waitUntilDisplayedTitle(180)
                 const result = await crowdsalePage.getTitleText();
-                return await assert.equal(result.toUpperCase(), TITLES.CROWDSALE_PAGE, "Page's title is incorrect");
+                return await assert.equal(result, TITLES.CROWDSALE_PAGE, "Page's title is incorrect");
             });
         test.it("Proxy address is correct",
             async function () {
@@ -1042,7 +1042,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 await wizardStep2.clickButtonContinue();
                 await wizardStep3.waitUntilDisplayedTitle(180);
                 const result = await wizardStep3.getTitleText();
-                return await assert.equal(result.toUpperCase(), wizardStep3.title.toUpperCase(), "Page's title is incorrect");
+                return await assert.equal(result, TITLES.STEP3, "Page's title is incorrect");
             });
     })
     describe("Step#3: ", async function () {
