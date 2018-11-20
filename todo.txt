@@ -3,12 +3,11 @@
 - Dutch UI
 
 Step#1:
- - check titles contents
+
  Step#2:
 
  Step#3:
 
   Publish:
-   - ABI
-   - contract
+
 

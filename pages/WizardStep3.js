@@ -50,7 +50,7 @@ class WizardStep3 extends Page {
     async initCheckboxes() {
         logger.info(this.name + "initCheckboxes ");
         try {
-            let locator = By.className("radio-inline");
+            let locator = By.className("sw-RadioButton_Button");
             let array = await super.findWithWait(locator);
             this.burnExcessYes = array[0];
             this.burnExcessNo = array[1];
@@ -175,7 +175,7 @@ class WizardStep3 extends Page {
     async setBurnExcess(burnExcess) {
         logger.info(this.name + "setBurnExcess");
 
-        if (burnExcess === undefined) return true
+        if ( burnExcess === undefined ) return true
         if ( burnExcess ) return await this.clickCheckboxBurnExcessYes();
         else return await this.clickCheckboxBurnExcessNo();
     }

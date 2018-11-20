@@ -11,13 +11,16 @@ const TierPage = require('../pages/TierPage.js').TierPage;
 const ReservedTokensPage = require('../pages/ReservedTokensPage.js').ReservedTokensPage;
 const CrowdsalePage = require('../pages/CrowdsalePage.js').CrowdsalePage;
 const ContributionPage = require('../pages/ContributionPage.js').InvestPage;
+const PublishPage = require('../pages/PublishPage.js').PublishPage;
+const CrowdsaleList = require('../pages/CrowdsaleList.js').CrowdsaleList
 const ManagePage = require('../pages/ManagePage.js').ManagePage;
+
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
 const Utils = require('../utils/Utils.js').Utils;
-const MetaMask = require('../pages/MetaMask.js').MetaMask;
+const TEXT = require('../utils/constants.js').TEXT;
+const TITLES = require('../utils/constants.js').TITLES;
 const User = require("../entity/User.js").User;
-const smallAmount = 0.1;
 
 test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersion} `, async function () {
 
@@ -29,23 +32,26 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
     const scenarioDutchSimple = './scenarios/scenarioDutchSimple.json'
     const user8545_F16AFile = './users/user8545_F16A.json';
 
-    let driver;
-    let Owner;
-    let Investor1;
+    let driver
+    let Owner
+    let Investor1
 
-    let wallet;
-    let welcomePage;
-    let wizardStep1;
-    let wizardStep2;
-    let wizardStep3;
-    let wizardStep4;
-    let tierPage;
-    let mngPage;
-    let reservedTokensPage;
-    let contributionPage;
-    let startURL;
-    let crowdsaleForUItests;
-    let crowdsaleDutchSimple;
+    let wallet
+    let welcomePage
+    let wizardStep1
+    let wizardStep2
+    let wizardStep3
+    let wizardStep4
+    let tierPage
+    let mngPage
+    let reservedTokensPage
+    let contributionPage
+    let startURL
+    let crowdsaleForUItests
+    let crowdsaleDutchSimple
+    let crowdsalePage
+    let crowdsaleListPage
+    let publishPage
 
     const placeholder = {
         gasCustom: '0.1',
@@ -89,19 +95,22 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
         logger.info("Owner's balance = :" + await Utils.getBalance(Owner) / 1e18);
 
         wallet = await Utils.getWalletInstance(driver);
-        await wallet.activate();//return activated Wallet and empty page
-        await Owner.setWalletAccount();
+       // await wallet.activate();//return activated Wallet and empty page
+       // await Owner.setWalletAccount();
 
         welcomePage = new WizardWelcome(driver, startURL);
         wizardStep1 = new WizardStep1(driver);
         wizardStep2 = new WizardStep2(driver);
         wizardStep3 = new WizardStep3(driver);
         wizardStep4 = new WizardStep4(driver);
-        contributionPage = new ContributionPage(driver);
+
         reservedTokensPage = new ReservedTokensPage(driver);
         mngPage = new ManagePage(driver);
         tierPage = new TierPage(driver, crowdsaleForUItests.tiers[0]);
-
+        contributionPage = new ContributionPage(driver);
+        crowdsalePage = new CrowdsalePage(driver);
+        publishPage = new PublishPage(driver)
+        crowdsaleListPage = new CrowdsaleList(driver)
     });
 
     test.after(async function () {
@@ -117,24 +126,289 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 
     //////// UI TESTS ////////////////////////////////////////////////
 
-    describe('Home page', async function () {
+    describe("Welcome page, logged  out from wallet", async function () {
 
-        test.it('User is able to open home page',
+        test.it("User is able to open wizard welcome page",
             async function () {
-                await welcomePage.open();
-                let result = await welcomePage.waitUntilDisplayedButtonNewCrowdsale(180);
-                return await assert.equal(result, true, "Wizard's page is not available ");
+                const result = await welcomePage.open()
+                    && await welcomePage.waitUntilDisplayedButtonNewCrowdsale(180);
+                return await assert.equal(result, true, "welcome page is not available ");
             });
 
-        test.it('User is able to open Step1 by clicking button \'New Crowdsale\'',
+        test.it("Warning present if user logged out from wallet",
             async function () {
-                let result = await welcomePage.clickButtonNewCrowdsale()
-                    && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap();
-                return await assert.equal(result, true, "User is not able to activate Step1 by clicking button NewCrowdsale");
+                const result = await welcomePage.clickButtonNewCrowdsale()
+                    && await welcomePage.waitUntilShowUpWarning(180)
+                return await assert.equal(result, true, "no warning present if user logged out from wallet");
+            });
+
+        test.it("User can confirm warning",
+            async function () {
+                const result = await welcomePage.clickButtonOk()
+                return await assert.equal(result, true, "button Ok doesn't present");
+            });
+
+        test.it("Return back to Home page opens if user confirm warning",
+            async function () {
+                const result = await welcomePage.waitUntilDisplayedButtonNewCrowdsale()
+                return await assert.equal(result, true, "home page  isn't open");
+            });
+
+        test.it("No warning is displayed if user logged into wallet",
+            async function () {
+                const result = await wallet.activate() //return activated Wallet and empty page
+                    && await Owner.setWalletAccount()
+                    && await welcomePage.waitUntilShowUpWarning(10)
+                return await assert.equal(result, false, "no warning present if user logged out from wallet ");
+            });
+    })
+    describe("Create crowdsale", async function () {
+
+        test.it('User is able to create crowdsale(scenarioMintedSimple.json),2 tiers',
+            async function () {
+                const owner = Owner;
+                assert.equal(await owner.setWalletAccount(), true, "Can not set Metamask account");
+                const result = await owner.createDutchAuctionCrowdsale({
+                    crowdsale: crowdsaleDutchSimple,
+                    stop: { publish: true }
+                });
+
+                return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
+            });
+    })
+    describe("Publish page", async function () {
+        let values
+        describe('Common data', async function () {
+
+            test.it("Correct numbers of fields",
+                async function () {
+                    values = await publishPage.getFieldsContent()
+                    return await assert.equal(values.length, 14, "Incorrect amount of fields");
+                });
+            test.it("Title is correct",
+                async function () {
+                    await publishPage.waitUntilDisplayedTitle(180)
+                    const result = await publishPage.getTitleText();
+                    return await assert.equal(result, TITLES.PUBLISH_PAGE, "Page's title is incorrect");
+                });
+            test.it('Name is correct',
+                async function () {
+                    await driver.sleep(5000)
+                    return await assert.equal(crowdsaleDutchSimple.name, values[0], 'Publish page: name is incorrect ');
+                });
+
+            test.it('Ticker is correct',
+                async function () {
+                    return await assert.equal(crowdsaleDutchSimple.ticker, values[1], 'Publish page: ticker is incorrect ');
+                });
+
+            test.it('Decimals is correct',
+                async function () {
+                   return await assert.equal(crowdsaleDutchSimple.decimals, values[2], 'Publish page: decimals is incorrect ');
+                });
+
+            test.it('Supply is correct',
+                async function () {
+                   return await assert.equal(crowdsaleDutchSimple.totalSupply, values[3], 'Publish page: supply is incorrect ');
+                });
+
+            test.it('Wallet address is correct',
+                async function () {
+                   return await assert.equal(crowdsaleDutchSimple.walletAddress, values[4], 'Publish page: wallet address is incorrect ');
+                });
+
+            test.it('Crowdsale start time/date is correct',
+                async function () {
+                    const time = await publishPage.getCrowdsaleStartTime()
+                    console.log(time)
+                    const startDate = crowdsaleDutchSimple.tiers[0].startDate
+                    const startTime = crowdsaleDutchSimple.tiers[0].startTime
+                    const date = await Utils.convertDateToUtc0(startDate, startTime)
+                    const datePublish = await Utils.formatDate(date, 'publish')
+                    console.log('inReal   ' + time)
+                    console.log('shouldBe   ' + datePublish)
+                    await assert.equal(time, datePublish, "crowdsale start time is incorrect")
+                });
+
+            test.it('Crowdsale end time/date is correct',
+                async function () {
+                    const time = await publishPage.getCrowdsaleEndTime()
+                    console.log(time)
+                    const endDate = crowdsaleDutchSimple.tiers[0].endDate
+                    const endTime = crowdsaleDutchSimple.tiers[0].endTime
+                    const date = await Utils.convertDateToUtc0(endDate, endTime)
+                    const datePublish = await Utils.formatDate(date, 'publish')
+                    console.log('inReal   ' + time)
+                    console.log('shouldBe   ' + datePublish)
+                    await assert.equal(time, datePublish, "crowdsale end time is incorrect")
+                });
+
+            test.it('Compiler version is correct',
+                async function () {
+                    return await assert.equal(values[11].includes('0.4.'), true,'Publish page: compiler version is incorrect ');
+                });
+
+            test.it('Contract name is correct',
+                async function () {
+                    return await assert.equal(values[12], 'DutchProxy', 'Publish page: contract name is incorrect ');
+                });
+
+            test.it('Optimized flag is correct',
+                async function () {
+                    return await assert.equal(values[13], 'Yes', 'Publish page: optimized flag name is incorrect ');
+                });
+
+            test.it ('Contract source code is displayed and correct ',
+                async function () {
+                    const contract = await publishPage.getTextContract()
+                    crowdsaleDutchSimple.sort = 'dutch'
+                    const shouldBe = await Utils.getContractSourceCode(crowdsaleDutchSimple)
+                    console.log(shouldBe)
+                    return await assert.equal(contract, shouldBe, "contract source code isn't correct")
+                })
+
+            test.it ('Encoded ABI is displayed and correct ',
+                async function () {
+                    const abi = await publishPage.getEncodedABI()
+                    return await assert.equal(abi.length, 256, 'Publish page:encoded ABI isn\'t correct ');
+                });
+
+            test.it("Tier's start time/date is correct",
+                async function () {
+                    const time = await publishPage.getTierStartTime(1)
+                    const startDate = crowdsaleDutchSimple.tiers[0].startDate
+                    const startTime = crowdsaleDutchSimple.tiers[0].startTime
+                    const date = await Utils.convertDateToUtc0(startDate, startTime)
+                    const datePublish = await Utils.formatDate(date, 'publish')
+                    console.log('inReal   ' + time)
+                    console.log('shouldBe   ' + datePublish)
+                    await assert.equal(time, datePublish, "tier's start time is incorrect")
+                });
+            test.it("Tier's end time/date is correct",
+                async function () {
+                    const time = await publishPage.getTierEndTime(1)
+                    const endDate = crowdsaleDutchSimple.tiers[0].endDate
+                    const endTime = crowdsaleDutchSimple.tiers[0].endTime
+                    const date = await Utils.convertDateToUtc0(endDate, endTime)
+                    const datePublish = await Utils.formatDate(date, 'publish')
+                    console.log('inReal   ' + time)
+                    console.log('shouldBe   ' + datePublish)
+                    await assert.equal(time, datePublish, "tier's end time is incorrect")
+                });
+
+            test.it('Min rate is correct',
+                async function () {
+                    return await assert.equal(crowdsaleDutchSimple.tiers[0].minRate, values[8], 'Publish page: min rate is incorrect ');
+                });
+            test.it('Max rate is correct',
+                async function () {
+                    return await assert.equal(crowdsaleDutchSimple.tiers[0].maxRate, values[9], 'Publish page: max rate is incorrect ');
+                });
+
+            test.it('Mincap is correct',
+                async function () {
+                    return await assert.equal(crowdsaleDutchSimple.tiers[0].minCap, values[6], 'Publish page: mincap is incorrect ');
+                });
+            test.it('Maxcap is correct',
+                async function () {
+                     return await assert.equal(crowdsaleDutchSimple.tiers[0].supply, values[7], 'Publish page: maxcap is incorrect ');
+                });
+            test.it('Whitelisting is correct',
+                async function () {
+                    const result = (values[10] === 'Yes')
+                    return await assert.equal(crowdsaleDutchSimple.tiers[0].isWhitelisted, result, 'Publish page: whitelisting is incorrect ');
+                });
+        })
+        describe ("Check alerts, buttons", async function () {
+
+            test.it("Warning displayed after refreshing",
+                async function () {
+                    const result = await publishPage.refresh()
+                        && await Utils.delay(2000)
+                        && await wizardStep4.isPresentAlert()
+                        && await wizardStep4.acceptAlert()
+                        && await publishPage.waitUntilShowUpWarning()
+                        && await publishPage.clickButtonOk()
+                    return await assert.equal(result, true, "warning does not present");
+                });
+
+            test.it("Button 'Download file' is presented and clickable, notice appears",
+                async function () {
+                    const result = !await publishPage.waitUntilShowUpWarning(15)
+                    await publishPage.clickButtonDownload()
+                    && await publishPage.waitUntilShowUpErrorNotice()
+                    return await assert.equal(result, true, "button 'Download file' isn't present");
+                });
+            test.it("Clicking button 'Continue' opens Crowdsale page",
+                async function () {
+                    const result = await publishPage.clickButtonContinue()
+                        && await publishPage.waitUntilLoaderGone()
+                        && await crowdsalePage.waitUntilShowUpTitle()
+                    return await assert.equal(result, true, "crowdsale page hasn't opened");
+                });
+        })
+    })
+    describe .skip("Crowdsale page:", async function () {
+
+        test.it("Title is correct",
+            async function () {
+                await Utils.delay(5000)
+                await crowdsalePage.waitUntilDisplayedTitle(180)
+                const result = await crowdsalePage.getTitleText();
+                return await assert.equal(result, TITLES.CROWDSALE_PAGE, "Page's title is incorrect");
+            });
+        test.it("Proxy address is correct",
+            async function () {
+
+                const result = await crowdsalePage.getProxyAddress()
+                return await assert.equal(result.length, 42, "proxy address is incorrect");
+            });
+        test.it("Raised funds is correct",
+            async function () {
+                const result = await crowdsalePage.getRaisedFunds()
+                return await assert.equal(result, '0 ETH', "raised funds is incorrect");
+            });
+        test.it("Goal funds is correct",
+            async function () {
+                const result = await crowdsalePage.getGoalFunds()
+                const goal = crowdsaleMintedSimple.tiers[0].supply / crowdsaleMintedSimple.tiers[0].rate + crowdsaleMintedSimple.tiers[1].supply / crowdsaleMintedSimple.tiers[1].rate
+                return await assert.equal(result.includes(goal.toString().slice(0, 15)), true, "goal funds is incorrect");
+            });
+        test.it("Tokens claimed is correct",
+            async function () {
+                const result = await crowdsalePage.getTokensClaimed()
+                return await assert.equal(result, '0', "tokens claimed is incorrect")
+            });
+        test.it("Contributors number is correct",
+            async function () {
+                const result = await crowdsalePage.getContributors()
+                return await assert.equal(result, '0', "contributors number is incorrect")
+            });
+
+        test.it("Rate is correct",
+            async function () {
+                const result = await crowdsalePage.getRate()
+                return await assert.equal(result, crowdsaleMintedSimple.tiers[0].rate, "rate is incorrect")
+            });
+
+        test.it("Total supply is correct",
+            async function () {
+                const result = await crowdsalePage.getTotalSupply()
+                const goal = crowdsaleMintedSimple.tiers[0].supply + crowdsaleMintedSimple.tiers[1].supply
+                return await assert.equal(result, goal, "total supply is incorrect")
+            });
+
+        test.it("Clicking button 'Contribute' opens Contribution page",
+            async function () {
+                const result = await crowdsalePage.clickButtonContribute()
+                    && await crowdsalePage.waitUntilLoaderGone()
+                    && await contributionPage.waitUntilShowUpCountdownTimer()
+                return await assert.equal(result, true, "contribution page hasn't opened");
             });
     })
 
-    describe('Step#1 ', async function () {
+
+    describe.skip('Step#1 ', async function () {
 
         test.it('User is able to click DutchAuction checkbox ',
             async function () {
@@ -192,7 +466,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
             });
     })
 
-    describe('Step#2 ', async function () {
+    describe.skip('Step#2 ', async function () {
         const invalidValues = {
             name: '012345678901234567790123456789f',
             ticker: 'qwe$#',

@@ -451,7 +451,7 @@ class Utils {
 
     static async getContractSourceCode(crowdsale) {
         logger.info("Utils:getContractSourceCode");
-        let path = '../../public/contracts/';
+        let path = './public/contracts/';
         switch ( crowdsale.sort ) {
             case 'minted':
                 path = path + 'MintedCappedProxy.sol';

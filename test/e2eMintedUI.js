@@ -11,7 +11,6 @@ const TierPage = require('../pages/TierPage.js').TierPage;
 const ReservedTokensPage = require('../pages/ReservedTokensPage.js').ReservedTokensPage;
 const CrowdsalePage = require('../pages/CrowdsalePage.js').CrowdsalePage;
 const ContributionPage = require('../pages/ContributionPage.js').InvestPage;
-const InvestPage = require('../pages/ContributionPage.js').InvestPage;
 const ManagePage = require('../pages/ManagePage.js').ManagePage;
 const logger = require('../entity/Logger.js').logger;
 const tempOutputPath = require('../entity/Logger.js').tempOutputPath;
@@ -40,7 +39,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
     let wizardStep4;
     let tierPage;
     let reservedTokensPage;
-    let investPage;
     let contributionPage;
     let crowdsalePage;
     let crowdsaleListPage
@@ -114,7 +112,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         wizardStep2 = new WizardStep2(driver);
         wizardStep3 = new WizardStep3(driver);
         wizardStep4 = new WizardStep4(driver);
-        investPage = new InvestPage(driver);
         reservedTokensPage = new ReservedTokensPage(driver);
         mngPage = new ManagePage(driver);
         tierPage = new TierPage(driver, crowdsaleForUItests.tiers[0]);
@@ -218,7 +215,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             test.it('Supply is correct',
                 async function () {
                     const result = await publishPage.getSupply()
-                    return await assert.equal(result, '0', 'Publish page: wallet address is incorrect ');
+                    return await assert.equal(result, '0', 'Publish page: supply is incorrect ');
                 });
 
             test.it('Wallet address is correct',

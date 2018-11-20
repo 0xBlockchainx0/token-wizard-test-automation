@@ -9,9 +9,10 @@ const fields = By.className('display-container')
 const values = By.className('pb-DisplayField_Value pb-DisplayField_Value-MobileTextSizeMedium')
 const valuesTime = By.className('pb-DisplayField_Value pb-DisplayField_Value-MobileTextSizeSmall')
 
-const buttonContinue= By.className('sw-ButtonContinue_Text')
+const buttonContinue = By.className('sw-ButtonContinue_Text')
 const buttonDownload = By.className('sw-ButtonDownload ')
 const errorNotice = By.className("css-6bx4c3");
+
 class PublishPage extends Page {
 
     constructor(driver) {
@@ -19,6 +20,18 @@ class PublishPage extends Page {
         this.name = 'PublishPage '
         this.title = TITLES.PUBLISH_PAGE
     }
+
+    async getFieldsContent() {
+        logger.info(this.name + "getFieldsContent")
+        const val = await super.findWithWait(values)
+        const array = []
+        for ( let i = 0; i < val.length; i++ ) {
+            array[i] = await val[i].getText()
+        }
+        return array
+
+    }
+
 
     async getAmountFields() {
         logger.info(this.name + "getAmountFields ");
@@ -81,46 +94,47 @@ class PublishPage extends Page {
         const value = await super.findWithWait(valuesTime)
         return await value[1].getText()
     }
+
     async getTierStartTime(tier) {
         logger.info(this.name + "getTierStartTime ");
         const value = await super.findWithWait(valuesTime)
-        return await value[2+2*(tier-1)].getText()
+        return await value[2 + 2 * (tier - 1)].getText()
     }
 
     async getTierEndTime(tier) {
         logger.info(this.name + "getTierEndTime ");
         const value = await super.findWithWait(valuesTime)
-        return await value[3+2*(tier-1)].getText()
+        return await value[3 + 2 * (tier - 1)].getText()
     }
 
     async getWhitelisting(tier) {
         logger.info(this.name + "getWhitelisting ");
         const value = await super.findWithWait(values)
-        return await value[5+5*(tier-1)].getText()
+        return await value[5 + 5 * (tier - 1)].getText()
     }
 
     async getAllowModifying(tier) {
         logger.info(this.name + "getAllowModifying ");
         const value = await super.findWithWait(values)
-        return await value[6+5*(tier-1)].getText()
+        return await value[6 + 5 * (tier - 1)].getText()
     }
 
     async getMincap(tier) {
         logger.info(this.name + "getMincap ");
         const value = await super.findWithWait(values)
-        return await value[7+5*(tier-1)].getText()
+        return await value[7 + 5 * (tier - 1)].getText()
     }
 
     async getMaxcap(tier) {
         logger.info(this.name + "getMaxcap ");
         const value = await super.findWithWait(values)
-        return await value[8+5*(tier-1)].getText()
+        return await value[8 + 5 * (tier - 1)].getText()
     }
 
     async getRate(tier) {
         logger.info(this.name + "getRate ");
         const value = await super.findWithWait(values)
-        return await value[9+5*(tier-1)].getText()
+        return await value[9 + 5 * (tier - 1)].getText()
     }
 
     async getCompilerVersion() {

@@ -9,14 +9,14 @@
   "tiers": [
     {
       "isWhitelisted": false,
-      "startDate": "",
-      "startTime": "",
-      "endDate": "",
-      "endTime": "",
+      "startDate": "01/02/2030",
+      "startTime": "05:16",
+      "endDate":"02/03/2031",
+      "endTime":"07:28",
       "minCap": 100,
       "minRate": 1000000,
       "maxRate": 1000001,
-      "supply": 1000000,
+      "supply": 500000,
       "whitelist": []
     }
   ]

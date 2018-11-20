@@ -422,7 +422,7 @@ class User {
         return result && obj.crowdsale.proxyAddress !== "";
     }
 
-    async createDutchAuctionCrowdsale(crowdsale, isFillBulkWhitelistAddresses, pathCSVWhitelist) {
+    async createDutchAuctionCrowdsale(obj) {
 
         logger.info(" createDutchAuctionCrowdsale ");
 
@@ -456,10 +456,10 @@ class User {
 
         result = result
             && await wizardStep2.waitUntilLoaderGone()
-            && await wizardStep2.fillPage(crowdsale)
+            && await wizardStep2.fillPage(obj.crowdsale)
             && await wizardStep2.clickButtonContinue()
             && await wizardStep2.waitUntilLoaderGone()
-            && await await wizardStep3.fillPage(crowdsale, isFillBulkWhitelistAddresses, pathCSVWhitelist);
+            && await await wizardStep3.fillPage(obj.crowdsale, obj.isFillBulkWhitelistAddresses, obj.pathCSVWhitelist);
 
         if ( !result ) return false;
         counter = 200;
@@ -477,12 +477,14 @@ class User {
         } while ( counter-- >= 0 );
 
         result = result &&
-            await wizardStep4.deployContracts(crowdsale) &&
+            await wizardStep4.deployContracts(obj.crowdsale)
+        if (obj.stop.publish)  return result
+        result = result &&
             await wizardStep4.waitUntilDisplayedButtonContinue() &&
             await wizardStep4.clickButtonContinue() &&
             await wizardStep4.waitUntilLoaderGone();
         if ( !result ) return false;
-        crowdsale.proxyAddress = await crowdsalePage.getProxyAddress();
+        obj.crowdsale.proxyAddress = await crowdsalePage.getProxyAddress();
 
         counter = 200;
         do {
@@ -498,17 +500,17 @@ class User {
         } while ( counter-- >= 0 );
 
         result = result && await investPage.waitUntilLoaderGone();
-        crowdsale.url = await investPage.getURL();
+        obj.crowdsale.url = await investPage.getURL();
 
-        logger.info("Final invest page link: " + crowdsale.url);
-        logger.info("proxyAddress: " + crowdsale.proxyAddress);
-        crowdsale.networkID = this.networkID;
-        logger.info("crowdsale.networkID " + crowdsale.networkID);
-        crowdsale.networkID = this.networkID;
-        crowdsale.sort = 'dutch';
-        crowdsale.executionID = await Utils.getProxyExecID(crowdsale);
-        logger.info("executionID " + crowdsale.executionID);
-        return result && crowdsale.proxyAddress !== "";
+        logger.info("Final invest page link: " + obj.crowdsale.url);
+        logger.info("proxyAddress: " + obj.crowdsale.proxyAddress);
+        obj.crowdsale.networkID = this.networkID;
+        logger.info("crowdsale.networkID " + obj.crowdsale.networkID);
+        obj.crowdsale.networkID = this.networkID;
+        obj.crowdsale.sort = 'dutch';
+        obj.crowdsale.executionID = await Utils.getProxyExecID(obj.crowdsale);
+        logger.info("executionID " + obj.crowdsale.executionID);
+        return result && obj.crowdsale.proxyAddress !== "";
     }
 
     async changeMinCapFromManagePage(tier, value) {
@@ -524,8 +526,6 @@ class User {
             && await this.confirmPopup()
             && await mngPage.waitUntilLoaderGone();
     }
-
-
 }
 
 module.exports.User = User;
