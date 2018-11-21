@@ -23,8 +23,7 @@ class CrowdsalePage extends Page {
 
     async waitUntilShowUpTitle(Twaiting) {
         logger.info(this.name + "waitUntilShowUpTitle ");
-        return await super.waitUntilDisplayed(title, Twaiting)
-            && ((await super.getTitleText()).toString().toUpperCase() === TITLES.CROWDSALE_PAGE.toUpperCase());
+        return ((await super.getTitleText()).toString() === TITLES.CROWDSALE_PAGE);
     }
 
     async isDisplayedButtonInvest() {

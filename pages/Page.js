@@ -5,7 +5,7 @@ const webdriver = require('selenium-webdriver');
 const By = require('selenium-webdriver/lib/by').By;
 const loader = By.className("loading-container");
 const loaderNotDisplayed = By.className("loading-container notdisplayed");
-const titles = By.className("st-StepInfo_Title");
+const titles = By.className("st-SectionInfo_Title");
 const buttonOk = By.className("swal2-confirm swal2-styled");
 const popup = By.className('swal2-content')
 class Page {
@@ -382,6 +382,11 @@ class Page {
             logger.info("Error: " + err);
             return null;
         }
+    }
+
+    async waitUntilShowUpTitle(Twaiting) {
+        logger.info("waitUntilShowUpTitle ");
+        return await super.waitUntilDisplayed(titles, Twaiting)
     }
 
     async getTitleText() {

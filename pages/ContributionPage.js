@@ -3,17 +3,18 @@ const Page = require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
 const statusTimer = require('../utils/constants.js').statusTimer;
 
-const buttonContribute = By.className("button button_fill");
+const buttonContribute = By.className("cnt-ContributeForm_ContributeButton");
 const fieldContribute = By.id("contribute");
 const buttonOk = By.className("swal2-confirm swal2-styled");
-const fieldBalance = By.className("balance-title");
+const fieldBalance = By.className("ba-BalanceTokens_Title");
+const countdownTimer = By.className("cnt-CountdownTimer");
+const countdownTimerValue = By.className("cnt-CountdownTimer_Time");
+const countdownTimerStatus = By.className("cnt-CountdownTimer_Message");
+
 const fields = By.className("hashes-title");
 const warningText = By.id("swal2-content");
 const errorNotice = By.className("css-6bx4c3");
-const countdownTimer = By.className("timer");
-const countdownTimerValue = By.className("timer-count");
-const countdownTimerStatus = By.className("timer-interval");
-const fieldsHashTitles = By.className("hashes-title");
+
 
 class ContributionPage extends Page {
 
