@@ -132,7 +132,7 @@ class Utils {
             let provider = await Utils.getProviderUrl(user.networkID);
             let web3 = await new Web3(new Web3.providers.HttpProvider(provider));
             let account0 = await web3.eth.getAccounts().then((accounts) => {
-                return accounts[3];
+                return accounts[4];
             });
 
             logger.info("Send " + amount + " Eth from " + account0 + " to " + user.account);

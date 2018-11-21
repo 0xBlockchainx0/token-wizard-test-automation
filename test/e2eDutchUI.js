@@ -258,7 +258,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     return await assert.equal(values[13], 'Yes', 'Publish page: optimized flag name is incorrect ');
                 });
 
-            test.it ('Contract source code is displayed and correct ',
+            test.it.skip ('Contract source code is displayed and correct ',
                 async function () {
                     const contract = await publishPage.getTextContract()
                     crowdsaleDutchSimple.sort = 'dutch'
