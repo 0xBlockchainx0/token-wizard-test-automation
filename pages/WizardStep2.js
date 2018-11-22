@@ -29,7 +29,7 @@ class WizardStep2 extends Page {
         logger.info(this.name + " :init warnings");
         try {
             const locator = By.className("error");
-            let array = await super.findWithWait(locator);
+            let array = await super.findWithWait(locator,30);
             this.warningName = array[0];
             this.warningTicker = array[1];
             this.warningDecimals = array[2];
@@ -127,9 +127,12 @@ class WizardStep2 extends Page {
     async isDisplayedWarningSupply() {
         logger.info(this.name + "isDisplayedWarningSupply ");
         return (await this.initWarnings() !== null) &&
-            (await this.getTextForElement(this.warningSupply) !== "");
+            ( this.warningSupply === undefined);
     }
-
+    async getValueFieldSupply() {
+        logger.info(this.name + "getValueFieldSupply ");
+        return await super.getAttribute(fieldSupply, "value");
+    }
     async getValueFieldDecimals() {
         logger.info(this.name + "getValueFieldDecimals ");
         return await super.getAttribute(fieldDecimals, "value");

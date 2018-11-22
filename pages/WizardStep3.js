@@ -12,7 +12,11 @@ const checkboxGasNormal = By.id('normal')
 const checkboxGasFast = By.id('fast')
 const checkboxGasCustom = By.id('custom')
 const fieldGasPriceCustom = By.id('gas-price-custom-value')
-const inputFields = By.className('sw-InputField2 ')
+const inputFields = By.className('sw-InputField2')
+
+const checkboxBurnYes = By.id('burnExcessRadioButtons.enable_whitelisting_yes')
+const checkboxBurnNo = By.id('burnExcessRadioButtons.enable_whitelisting_no')
+
 
 class WizardStep3 extends Page {
 
@@ -54,6 +58,7 @@ class WizardStep3 extends Page {
             let array = await super.findWithWait(locator);
             this.burnExcessYes = array[0];
             this.burnExcessNo = array[1];
+            console.log('array.length '+ array.length)
             return array;
         }
         catch ( err ) {
@@ -156,6 +161,7 @@ class WizardStep3 extends Page {
 
     async isSelectedCheckboxBurnYes() {
         logger.info(this.name + "isSelectedCheckboxBurnYes: ");
+        console.log(this.burnExcessYes)
         return (await this.initCheckboxes() !== null)
             && await super.isElementSelected(this.burnExcessYes)
     }
