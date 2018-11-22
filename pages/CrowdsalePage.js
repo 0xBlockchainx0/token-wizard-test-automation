@@ -76,6 +76,16 @@ class CrowdsalePage extends Page {
         return await super.getTextForElement(field);
     }
 
+    async getFieldsContent() {
+        logger.info(this.name + "getFieldsContent")
+        const val = await super.findWithWait(values)
+        const array = []
+        for ( let i = 0; i < val.length; i++ ) {
+            array[i] = await val[i].getText()
+        }
+        return array
+    }
+
     async clickButtonContribute() {
         logger.info(this.name + "clickButtonContribute ");
         return await super.clickWithWait(buttonContribute);

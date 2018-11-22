@@ -29,7 +29,6 @@ class PublishPage extends Page {
             array[i] = await val[i].getText()
         }
         return array
-
     }
 
 

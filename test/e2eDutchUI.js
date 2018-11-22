@@ -95,8 +95,8 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
         logger.info("Owner's balance = :" + await Utils.getBalance(Owner) / 1e18);
 
         wallet = await Utils.getWalletInstance(driver);
-       // await wallet.activate();//return activated Wallet and empty page
-       // await Owner.setWalletAccount();
+        // await wallet.activate();//return activated Wallet and empty page
+        // await Owner.setWalletAccount();
 
         welcomePage = new WizardWelcome(driver, startURL);
         wizardStep1 = new WizardStep1(driver);
@@ -182,6 +182,8 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 
             test.it("Correct numbers of fields",
                 async function () {
+                    await publishPage.waitUntilLoaderGone()
+                    await Utils.delay(5000)
                     values = await publishPage.getFieldsContent()
                     return await assert.equal(values.length, 14, "Incorrect amount of fields");
                 });
@@ -204,17 +206,17 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 
             test.it('Decimals is correct',
                 async function () {
-                   return await assert.equal(crowdsaleDutchSimple.decimals, values[2], 'Publish page: decimals is incorrect ');
+                    return await assert.equal(crowdsaleDutchSimple.decimals, values[2], 'Publish page: decimals is incorrect ');
                 });
 
             test.it('Supply is correct',
                 async function () {
-                   return await assert.equal(crowdsaleDutchSimple.totalSupply, values[3], 'Publish page: supply is incorrect ');
+                    return await assert.equal(crowdsaleDutchSimple.totalSupply, values[3], 'Publish page: supply is incorrect ');
                 });
 
             test.it('Wallet address is correct',
                 async function () {
-                   return await assert.equal(crowdsaleDutchSimple.walletAddress, values[4], 'Publish page: wallet address is incorrect ');
+                    return await assert.equal(crowdsaleDutchSimple.walletAddress, values[4], 'Publish page: wallet address is incorrect ');
                 });
 
             test.it('Crowdsale start time/date is correct',
@@ -245,7 +247,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 
             test.it('Compiler version is correct',
                 async function () {
-                    return await assert.equal(values[11].includes('0.4.'), true,'Publish page: compiler version is incorrect ');
+                    return await assert.equal(values[11].includes('0.4.'), true, 'Publish page: compiler version is incorrect ');
                 });
 
             test.it('Contract name is correct',
@@ -258,7 +260,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     return await assert.equal(values[13], 'Yes', 'Publish page: optimized flag name is incorrect ');
                 });
 
-            test.it.skip ('Contract source code is displayed and correct ',
+            test.it.skip('Contract source code is displayed and correct ',
                 async function () {
                     const contract = await publishPage.getTextContract()
                     crowdsaleDutchSimple.sort = 'dutch'
@@ -267,7 +269,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     return await assert.equal(contract, shouldBe, "contract source code isn't correct")
                 })
 
-            test.it ('Encoded ABI is displayed and correct ',
+            test.it('Encoded ABI is displayed and correct ',
                 async function () {
                     const abi = await publishPage.getEncodedABI()
                     return await assert.equal(abi.length, 256, 'Publish page:encoded ABI isn\'t correct ');
@@ -311,7 +313,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 });
             test.it('Maxcap is correct',
                 async function () {
-                     return await assert.equal(crowdsaleDutchSimple.tiers[0].supply, values[7], 'Publish page: maxcap is incorrect ');
+                    return await assert.equal(crowdsaleDutchSimple.tiers[0].supply, values[7], 'Publish page: maxcap is incorrect ');
                 });
             test.it('Whitelisting is correct',
                 async function () {
@@ -319,7 +321,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     return await assert.equal(crowdsaleDutchSimple.tiers[0].isWhitelisted, result, 'Publish page: whitelisting is incorrect ');
                 });
         })
-        describe ("Check alerts, buttons", async function () {
+        describe("Check alerts, buttons", async function () {
 
             test.it("Warning displayed after refreshing",
                 async function () {
@@ -348,7 +350,15 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 });
         })
     })
-    describe .skip("Crowdsale page:", async function () {
+    describe("Crowdsale page:", async function () {
+        let values
+        test.it("Correct numbers of fields",
+            async function () {
+                await crowdsalePage.waitUntilLoaderGone()
+                await Utils.delay(5000)
+                values = await crowdsalePage.getFieldsContent()
+                return await assert.equal(values.length, 6, "Incorrect amount of fields");
+            })
 
         test.it("Title is correct",
             async function () {
@@ -356,47 +366,59 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 await crowdsalePage.waitUntilDisplayedTitle(180)
                 const result = await crowdsalePage.getTitleText();
                 return await assert.equal(result, TITLES.CROWDSALE_PAGE, "Page's title is incorrect");
-            });
+            })
+
         test.it("Proxy address is correct",
             async function () {
-
                 const result = await crowdsalePage.getProxyAddress()
                 return await assert.equal(result.length, 42, "proxy address is incorrect");
-            });
+            })
+
         test.it("Raised funds is correct",
             async function () {
                 const result = await crowdsalePage.getRaisedFunds()
                 return await assert.equal(result, '0 ETH', "raised funds is incorrect");
-            });
-        test.it("Goal funds is correct",
+            })
+
+        test.it.skip("Goal funds is correct",
             async function () {
                 const result = await crowdsalePage.getGoalFunds()
-                const goal = crowdsaleMintedSimple.tiers[0].supply / crowdsaleMintedSimple.tiers[0].rate + crowdsaleMintedSimple.tiers[1].supply / crowdsaleMintedSimple.tiers[1].rate
+                const goal = crowdsaleDutchSimple.tiers[0].supply / crowdsaleDutchSimple.tiers[0].rate + crowdsaleDutchSimple.tiers[1].supply / crowdsaleDutchSimple.tiers[1].rate
                 return await assert.equal(result.includes(goal.toString().slice(0, 15)), true, "goal funds is incorrect");
-            });
+            })
+
         test.it("Tokens claimed is correct",
             async function () {
                 const result = await crowdsalePage.getTokensClaimed()
                 return await assert.equal(result, '0', "tokens claimed is incorrect")
-            });
+            })
+
         test.it("Contributors number is correct",
             async function () {
                 const result = await crowdsalePage.getContributors()
                 return await assert.equal(result, '0', "contributors number is incorrect")
-            });
+            })
 
-        test.it("Rate is correct",
+        test.it("Current rate is correct",
             async function () {
-                const result = await crowdsalePage.getRate()
-                return await assert.equal(result, crowdsaleMintedSimple.tiers[0].rate, "rate is incorrect")
-            });
+                return await assert.equal(values[4], crowdsaleDutchSimple.tiers[0].minRate, "current rate is incorrect")
+            })
+
+        test.it("Start rate is correct",
+            async function () {
+                return await assert.equal(values[3], crowdsaleDutchSimple.tiers[0].minRate, "start rate is incorrect")
+            })
+
+        test.it("End rate is correct",
+            async function () {
+                return await assert.equal(values[5], crowdsaleDutchSimple.tiers[0].maxRate, "end rate is incorrect")
+            })
 
         test.it("Total supply is correct",
             async function () {
-                const result = await crowdsalePage.getTotalSupply()
-                const goal = crowdsaleMintedSimple.tiers[0].supply + crowdsaleMintedSimple.tiers[1].supply
-                return await assert.equal(result, goal, "total supply is incorrect")
-            });
+                const goal = crowdsaleDutchSimple.tiers[0].supply
+                return await assert.equal(values[2], goal, "total supply is incorrect")
+            })
 
         test.it("Clicking button 'Contribute' opens Contribution page",
             async function () {
@@ -404,11 +426,11 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     && await crowdsalePage.waitUntilLoaderGone()
                     && await contributionPage.waitUntilShowUpCountdownTimer()
                 return await assert.equal(result, true, "contribution page hasn't opened");
-            });
+            })
     })
 
 
-    describe.skip('Step#1 ', async function () {
+    describe ('Step#1 ', async function () {
 
         test.it('User is able to click DutchAuction checkbox ',
             async function () {

@@ -10,4 +10,10 @@ Step#1:
 
   Publish:
 
+  Crowdsal;
+   - if changed number of contributors
+    - if changed number of tokens claimed
+    - if changed total raised funds
+    - if changed total current rate
+
 
