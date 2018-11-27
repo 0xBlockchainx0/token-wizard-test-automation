@@ -11,7 +11,8 @@ const countdownTimer = By.className("cnt-CountdownTimer");
 const countdownTimerValue = By.className("cnt-CountdownTimer_Time");
 const countdownTimerStatus = By.className("cnt-CountdownTimer_Message");
 
-const fields = By.className("hashes-title");
+const fieldsAddresses = By.className('cnt-ContributeDataList_ItemDataValue')
+const fields = By.className("cnt-ContributeDataColumns_ItemTitle");
 const warningText = By.id("swal2-content");
 const errorNotice = By.className("css-6bx4c3");
 
@@ -159,11 +160,7 @@ class ContributionPage extends Page {
         return (await super.waitUntilDisplayed(countdownTimerStatus,Twaiting));
     }
 
-/*	async clickButtonOk() {
-		logger.info(this.name + "clickButtonOk ");
-		return await super.clickWithWait(buttonOk);
-	}
-*/
+
 	async fillContribute(amount) {
 		logger.info(this.name + "fillContribute");
 		return await super.fillWithWait(fieldContribute, amount);
@@ -185,18 +182,34 @@ class ContributionPage extends Page {
 	}
 
 	async getProxyAddress() {
-		logger.info(this.name + "getProxyAddress");
-		return (await  this.initFields() !== null) &&
-			await super.getTextForElement(this.fieldExecutionID);
+		logger.info(this.name + "getProxyAddress")
+        const fields = await super.findWithWait(fieldsAddresses)
+		return  await super.getTextForElement(fields[1]);
 	}
 
 	async getCurrentAccount() {
 		logger.info(this.name + "getCurrentAccount ");
-		return (await  this.initFields() !== null) &&
-			await super.getTextForElement(this.fieldCurrentAccount);
+        const fields = await super.findWithWait(fieldsAddresses)
+        return  await super.getTextForElement(fields[0]);
 	}
 
-	async getMinContribution() {
+    async getFieldsText(field) {
+        logger.info(this.name + "getField ");
+        const elements = await super.findWithWait(fields)
+		let element
+		switch (field){
+			case 'name': element = elements[0]; break;
+            case 'ticker': element = elements[1]; break;
+            case 'supply': element = elements[2]; break;
+            case 'minContribution': element = elements[3]; break;
+            case 'maxContribution': element = elements[4]; break;
+			default: element = elements[0]; break;
+		}
+        return  await super.getTextForElement(element);
+    }
+
+
+    async getMinContribution() {
 		logger.info(this.name + "getMinContribution ");
 		if (await  this.initFields() === null) return false;
 		let result = await super.getTextForElement(this.fieldMinContribution);

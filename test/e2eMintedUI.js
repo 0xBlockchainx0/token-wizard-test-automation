@@ -170,7 +170,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
     })
 
-    describe.skip("Create crowdsale", async function () {
+    describe ("Create crowdsale", async function () {
 
         test.it('User is able to create crowdsale(scenarioMintedSimple.json),2 tiers',
             async function () {
@@ -184,7 +184,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
             });
     })
-    describe.skip("Publish page", async function () {
+    describe ("Publish page", async function () {
         describe('Common data', async function () {
 
             test.it("Title is correct",
@@ -413,7 +413,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
     })
-    describe.skip ("Crowdsale page:", async function () {
+    describe  ("Crowdsale page:", async function () {
 
         test.it("Title is correct",
             async function () {
@@ -472,27 +472,79 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
     })
 
-    describe.skip("Contribution page:", async function () {
-        test.it('Should be alert if invalid proxyID in address bar',
+    describe ("Contribution page:", async function () {
+
+        test.it("Current account is correct",
             async function () {
-                crowdsaleMintedSimple.url = await contributionPage.getURL()
-                let wrongUrl = crowdsaleMintedSimple.url.substring(0, 50) + crowdsaleMintedSimple.url.substring(52, crowdsaleMintedSimple.length)
-                let result = await contributionPage.open(wrongUrl)
+                const result =  await contributionPage.getCurrentAccount()
+                console.log(result)
+                return await assert.equal(result, Owner.account, "current account isn't correct");
+            });
+
+        test.it("Proxy address is displayed and has correct length",
+            async function () {
+                const result =  await contributionPage.getProxyAddress()
+                console.log(result)
+                return await assert.equal(result.length, 42, "proxy address isn't correct");
+            });
+
+        test.it("Name is correct",
+            async function () {
+                const result =  await contributionPage.getFieldsText('name')
+                console.log(result)
+                return await assert.equal(result, crowdsaleMintedSimple.name, "name isn't correct");
+            });
+
+        test.it("Ticker is correct",
+            async function () {
+                const result = await contributionPage.getFieldsText('ticker')
+                return await assert.equal(crowdsaleMintedSimple.ticker.toUpperCase(), result, "ticker isn't correct");
+            });
+        test.it("Supply is correct",
+            async function () {
+                const result = await contributionPage.getFieldsText('supply')
+                const shouldBe = crowdsaleMintedSimple.tiers[0].supply +crowdsaleMintedSimple.tiers[1].supply
+                return await assert.equal(result, shouldBe.toString() + ' TEST', "total supply isn't correct");
+            });
+
+        test.it("Minimum contribution is correct",
+            async function () {
+                const result = await contributionPage.getFieldsText('minContribution')
+                const shouldBe = 'You are not allowed'
+                return await assert.equal(result, shouldBe, "minimum contribution isn't correct");
+            });
+
+        test.it("Maximum contribution is correct",
+            async function () {
+                const result = await contributionPage.getFieldsText('maxContribution')
+                const shouldBe = 'You are not allowed'
+                return await assert.equal(result, shouldBe, "maximum contribution isn't correct");
+            });
+
+
+        test.it ("Should be alert if invalid proxyID in address bar",
+            async function () {
+              crowdsaleMintedSimple.url = await contributionPage.getURL()
+                const wrongUrl = crowdsaleMintedSimple.url.substring(0, 50) + crowdsaleMintedSimple.url.substring(52, crowdsaleMintedSimple.length)
+                const result = await contributionPage.open(wrongUrl)
                     && await contributionPage.waitUntilShowUpButtonOk()
                     && await contributionPage.clickButtonOk()
-                return await assert.equal(result, true, 'Test FAILED. Contribution page: no alert if invalid proxyID in address bar');
+                return await assert.equal(result, true, "no alert if invalid proxyID in address bar");
             });
-        test.it('Should be alert if invalid proxyID in address bar',
+        test.it.skip ("Should be alert if invalid proxy address in address bar",
             async function () {
-                let owner = Owner;
+                const owner = Owner;
                 crowdsaleMintedSimple.proxyAddress = await contributionPage.getProxyAddress()
-                let wrongCrowdsale = crowdsaleMintedSimple;
+                console.log(crowdsaleMintedSimple.proxyAddress)
+                const wrongCrowdsale = crowdsaleMintedSimple;
                 wrongCrowdsale.proxyAddress = crowdsaleMintedSimple.proxyAddress.substring(0, crowdsaleMintedSimple.proxyAddress.length - 5)
-                let result = await owner.openCrowdsalePage(wrongCrowdsale)
+                const result = await owner.openCrowdsalePage(wrongCrowdsale)
                     && await contributionPage.waitUntilShowUpButtonOk()
                     && await contributionPage.clickButtonOk()
-                return await assert.equal(result, true, 'Test FAILED. Crowdsale page: no alert if invalid proxyID in address bar');
+                return await assert.equal(result, true, "no alert if invalid proxyID in address bar");
             });
+
+
     })
     describe.skip("Not empty crowdsale list", async function () {
 

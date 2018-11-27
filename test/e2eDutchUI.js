@@ -201,7 +201,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 
             test.it('Ticker is correct',
                 async function () {
-                    return await assert.equal(crowdsaleDutchSimple.ticker, values[1], 'Publish page: ticker is incorrect ');
+                    return await assert.equal(crowdsaleDutchSimple.ticker, values[1].toUpperCase(), 'Publish page: ticker is incorrect ');
                 });
 
             test.it('Decimals is correct',
