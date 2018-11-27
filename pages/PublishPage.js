@@ -6,8 +6,8 @@ const Utils = require('../utils/Utils.js').Utils;
 const TITLES = require('../utils/constants.js').TITLES;
 const textArea = By.className('pb-DisplayTextArea_Content')
 const fields = By.className('display-container')
-const values = By.className('pb-DisplayField_Value pb-DisplayField_Value-MobileTextSizeMedium')
-const valuesTime = By.className('pb-DisplayField_Value pb-DisplayField_Value-MobileTextSizeSmall')
+const values = By.className('pb-DisplayField_Value pb-DisplayField_Value-mobile-text-size-medium')
+const valuesTime = By.className('pb-DisplayField_Value pb-DisplayField_Value-mobile-text-size-small')
 
 const buttonContinue = By.className('sw-ButtonContinue_Text')
 const buttonDownload = By.className('sw-ButtonDownload ')

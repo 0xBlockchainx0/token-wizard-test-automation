@@ -5,6 +5,8 @@
 Step#1:
 
  Step#2:
+  - dimension of reserved
+  - comma isn't allowed for reserved value
 
  Step#3:
   - burn excess for dutch
@@ -17,4 +19,5 @@ Step#1:
     - if changed total raised funds
     - if changed total current rate
 
-
+Nifty:
+ - check add tokens with various decimlas

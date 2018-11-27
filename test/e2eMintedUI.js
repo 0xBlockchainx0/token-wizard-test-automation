@@ -170,7 +170,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
     })
 
-    describe("Create crowdsale", async function () {
+    describe.skip("Create crowdsale", async function () {
 
         test.it('User is able to create crowdsale(scenarioMintedSimple.json),2 tiers',
             async function () {
@@ -184,7 +184,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
             });
     })
-    describe("Publish page", async function () {
+    describe.skip("Publish page", async function () {
         describe('Common data', async function () {
 
             test.it("Title is correct",
@@ -203,7 +203,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             test.it('Ticker is correct',
                 async function () {
                     const result = await publishPage.getTicker()
-                    return await assert.equal(crowdsaleMintedSimple.ticker, result, 'Publish page: ticker is incorrect ');
+                    return await assert.equal(crowdsaleMintedSimple.ticker.toUpperCase(), result, 'Publish page: ticker is incorrect ');
                 });
 
             test.it('Decimals is correct',
@@ -413,7 +413,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
     })
-    describe ("Crowdsale page:", async function () {
+    describe.skip ("Crowdsale page:", async function () {
 
         test.it("Title is correct",
             async function () {
@@ -947,7 +947,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     && await reservedTokensPage.waitUntilDisappearAlert()
                     && await reservedTokensPage.waitUntilLoaderGone()
                     && await reservedTokensPage.fillReservedTokens(crowdsaleForUItests)
-                    && await reservedTokensPage.amountAddedReservedTokens();
+                    && await reservedTokensPage.amountAddedReservedTokens()
                 return await assert.equal(result, crowdsaleForUItests.reservedTokens.length, "user isn't able to add reserved tokens");
             });
 
