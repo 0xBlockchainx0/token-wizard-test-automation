@@ -162,7 +162,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 return await assert.equal(result, false, "no warning present if user logged out from wallet ");
             });
     })
-    describe ("Create crowdsale", async function () {
+    describe("Create crowdsale", async function () {
 
         test.it('User is able to create crowdsale(scenarioMintedSimple.json),2 tiers',
             async function () {
@@ -176,7 +176,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
             });
     })
-    describe ("Publish page", async function () {
+    describe("Publish page", async function () {
         let values
         describe('Common data', async function () {
 
@@ -201,7 +201,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 
             test.it('Ticker is correct',
                 async function () {
-                    return await assert.equal(crowdsaleDutchSimple.ticker, values[1].toUpperCase(), 'Publish page: ticker is incorrect ');
+                    return await assert.equal(crowdsaleDutchSimple.ticker.toUpperCase(), values[1].toUpperCase(), 'Publish page: ticker is incorrect ');
                 });
 
             test.it('Decimals is correct',
@@ -356,7 +356,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 });
         })
     })
-    describe ("Crowdsale page:", async function () {
+    describe("Crowdsale page:", async function () {
         let values
         test.it("Correct numbers of fields",
             async function () {
@@ -377,6 +377,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
         test.it("Proxy address is correct",
             async function () {
                 const result = await crowdsalePage.getProxyAddress()
+                crowdsaleDutchSimple.proxyAddress = result
                 return await assert.equal(result.length, 42, "proxy address is incorrect");
             })
 
@@ -434,6 +435,153 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "contribution page hasn't opened");
             })
     })
+    describe("Contribution page:", async function () {
+
+        test.it("Title is correct",
+            async function () {
+                await Utils.delay(10000)
+                await crowdsalePage.waitUntilDisplayedTitle(180)
+                const result = await crowdsalePage.getTitleText();
+                return await assert.equal(result, TITLES.CONTRIBUTE_PAGE, "Page's title is incorrect");
+            });
+        test.it("Current account is correct",
+            async function () {
+                const result = await contributionPage.getCurrentAccount()
+                return await assert.equal(result, Owner.account, "current account isn't correct");
+            });
+
+        test.it("Proxy address is displayed and has correct length",
+            async function () {
+                const result = await contributionPage.getProxyAddress()
+                return await assert.equal(result, crowdsaleDutchSimple.proxyAddress, "proxy address isn't correct");
+            });
+
+        test.it("Name is correct",
+            async function () {
+                const result = await contributionPage.getFieldsText('name')
+                return await assert.equal(result, crowdsaleDutchSimple.name, "name isn't correct");
+            });
+
+        test.it("Ticker is correct",
+            async function () {
+                const result = await contributionPage.getFieldsText('ticker')
+                return await assert.equal(crowdsaleDutchSimple.ticker.toUpperCase(), result, "ticker isn't correct");
+            });
+        test.it("Supply is correct",
+            async function () {
+                const result = await contributionPage.getFieldsText('supply')
+                const shouldBe = crowdsaleDutchSimple.tiers[0].supply + ' ' + crowdsaleDutchSimple.ticker.toUpperCase()
+                return await assert.equal(result, shouldBe, "total supply isn't correct");
+            });
+
+        test.it("Minimum contribution is correct",
+            async function () {
+                const result = await contributionPage.getFieldsText('minContribution')
+                const shouldBe = '0.000000000001 ' + crowdsaleDutchSimple.ticker.toUpperCase()
+                return await assert.equal(result, shouldBe, "minimum contribution isn't correct");
+            });
+
+        test.it("Maximum contribution is correct",
+            async function () {
+                const result = await contributionPage.getFieldsText('maxContribution')
+                const shouldBe = crowdsaleDutchSimple.tiers[0].supply + ' ' + crowdsaleDutchSimple.ticker.toUpperCase()
+                return await assert.equal(result, shouldBe, "maximum contribution isn't correct");
+            });
+
+        test.it("Balance is correct",
+            async function () {
+                const result = await contributionPage.getBalance()
+                const shouldBe = (crowdsaleDutchSimple.totalSupply - crowdsaleDutchSimple.tiers[0].supply) + ' ' + crowdsaleDutchSimple.ticker.toUpperCase()
+                return await assert.equal(result, shouldBe, "balance isn't correct");
+            });
+
+        test.it("Button 'Contribute' is disabled by default",
+            async function () {
+                const result = await contributionPage.isDisabledButtonContribute()
+                return await assert.equal(result, true, "button 'Contribute' is enabled by default");
+            });
+
+        test.it.skip("Check error if incorrect contribution amount",
+            async function () {
+                await contributionPage.fillContribute('qwerty')
+                const result = await contributionPage.getWarningText('contribute')
+                console.log(result)
+                const shouldBe = 'You are not allowed'
+                await assert.notEqual(result, '', "error isn't displayed");
+                return await assert.equal(result, shouldBe, "error's text isn't correct");
+            });
+
+        test.it("No error if contribution's amount is correct",
+            async function () {
+                await contributionPage.fillContribute('123')
+                const result = await contributionPage.getWarningText('contribute')
+                console.log(result)
+                return await assert.equal(result, '', "unexpected error message");
+            });
+
+        test.it("Popup if contributes before start",
+            async function () {
+                const result = await contributionPage.clickButtonContribute()
+                    && await contributionPage.waitUntilShowUpButtonOk()
+                return await assert.equal(result, true, "no popup if contributes before start");
+            });
+
+        test.it("Popup has correct text",
+            async function () {
+                const text = await contributionPage.getTextPopup()
+                console.log(text)
+                const shouldBe = "Wait, please. Crowdsale company hasn't started yet. It'll start from Fri Feb 01 2030"
+                console.log(shouldBe)
+                await assert.equal(text.includes(shouldBe), true, "popup has incorrect text")
+                const result = await contributionPage.clickButtonOk()
+                return await assert.equal(result, true, "can't confirm popup");
+            });
+
+        test.it("Payment's option is displayed",
+            async function () {
+                const field = await contributionPage.getPaymentOption()
+                await assert.notEqual(field, null, "payment's option isn't displayed")
+            });
+
+        test.it("Select QR option",
+            async function () {
+                const result = await contributionPage.clickQRoption()
+                return await assert.equal(result, true, "payment's option isn't displayed")
+            });
+
+        test.it("QR: proxy address is correct",
+            async function () {
+                const result = await contributionPage.getQRaddress()
+                console.log(result)
+                console.log(crowdsaleDutchSimple.proxyAddress)
+                await assert.equal(result, crowdsaleDutchSimple.proxyAddress, "QR: proxy address is incorrect")
+            });
+
+        test.it("QR: payment's data is correct",
+            async function () {
+                const result = await contributionPage.getQRdata()
+                const shouldBe = '0x55f8650100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000004a6f2ae3a00000000000000000000000000000000000000000000000000000000'
+                await assert.equal(result, shouldBe, "QR:  payment's data is incorrect")
+            });
+
+        test.it("Select Wallet payment option",
+            async function () {
+                const result = await contributionPage.clickWalletOption()
+                return await assert.equal(result, true, "payment's option isn't displayed")
+            });
+
+
+        test.it("Should be alert if invalid proxyID in address bar",
+            async function () {
+                crowdsaleDutchSimple.url = await contributionPage.getURL()
+                const wrongUrl = crowdsaleDutchSimple.url.substring(0, 50) + crowdsaleDutchSimple.url.substring(52, crowdsaleDutchSimple.length)
+                const result = await contributionPage.open(wrongUrl)
+                    && await contributionPage.waitUntilShowUpButtonOk()
+                    && await contributionPage.clickButtonOk()
+                return await assert.equal(result, true, "no alert if invalid proxyID in address bar");
+            });
+    })
+
 
     describe("Welcome page", async function () {
 
@@ -629,7 +777,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "field 'Name' was changed");
             });
 
-        test.it ("Move back/forward - page keep state of field 'Name'",
+        test.it("Move back/forward - page keep state of field 'Name'",
             async function () {
                 const result = await wizardStep2.goBack()
                     && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap()
@@ -853,14 +1001,14 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
     describe("Step#3: ", async function () {
         const invalidValues = {
             walletAddress: '0x56B2e3C3cFf7f3921D2e0F8B8e20d1eEc2926b',
-            supply:'2000'
+            supply: '2000'
         }
 
-        const validValues={
-            mincap:'13',
-            minRate:'1000',
-            maxRate:'10000',
-            supply:'500'
+        const validValues = {
+            mincap: '13',
+            minRate: '1000',
+            maxRate: '10000',
+            supply: '500'
         }
         describe("Crowdsale data", async function () {
 
@@ -981,15 +1129,15 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     await assert.equal(result, '', 'Unexpected error message');
                 });
 
-            test.it.skip ("Checkbox 'Burn express' is 'No' by default",
+            test.it.skip("Checkbox 'Burn express' is 'No' by default",
                 async function () {
 
-                 const result = await wizardStep3.isSelectedCheckboxBurnNo()
-                        && ! await wizardStep3.isSelectedCheckboxBurnYes();
+                    const result = await wizardStep3.isSelectedCheckboxBurnNo()
+                        && !await wizardStep3.isSelectedCheckboxBurnYes();
                     return await assert.equal(result, true, "Checkbox 'Burn express' isn't 'No' by default ");
                 });
 
-            test.it.skip ("User is able to set checkbox 'Burn express' to  'Yes'",
+            test.it.skip("User is able to set checkbox 'Burn express' to  'Yes'",
                 async function () {
                     const result = await wizardStep3.clickCheckboxBurnExcessYes()
                         && await wizardStep3.isSelectedCheckboxBurnYes()
@@ -1170,7 +1318,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                 });
         })
 
-        describe.skip("Check persistant", async function () {
+        describe("Check persistant", async function () {
 
             test.it.skip("Move back/forward - page keep state",
                 async function () {
@@ -1204,7 +1352,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     await assert.equal(await tierPage.isDisabledFieldMinCap(), false, "Tier#" + tierPage.number + " field 'Mincap' became disabled after moving back/forward");
                 });
 
-            test.it("Alert is displayed if reload the page",
+            test.it.skip("Alert is displayed if reload the page",
                 async function () {
                     const result = await wizardStep3.refresh()
                         && await wizardStep3.waitUntilLoaderGone()
@@ -1214,7 +1362,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     return await assert.equal(result, true, "alert does not present");
                 });
 
-            test.it("Reload - page keep state of checkbox 'Whitelist with mincap'",
+            test.it.skip("Reload - page keep state of checkbox 'Whitelist with mincap'",
                 async function () {
                     const result = await wizardStep3.waitUntilDisplayedFieldWalletAddress()
                     await assert.equal(result, true, "Page crashed after reloading");
@@ -1242,7 +1390,7 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
 
                 });
 
-            test.it("Change network - page keep state of checkbox 'Whitelist with mincap'",
+            test.it.skip("Change network - page keep state of checkbox 'Whitelist with mincap'",
                 async function () {
                     const result = await Investor1.setWalletAccount()
                         && await wizardStep1.waitUntilLoaderGone()
@@ -1288,6 +1436,164 @@ test.describe(`e2e test for TokenWizard2.0/DutchAuctionCrowdsale. v ${testVersio
                     return await assert.equal(result, true, "Modal isn't displayed");
                 });
         })
+    })
+
+    describe("Step#4:", async function () {
+
+        test.it("Check status of transaction, should be 'Please confirm Tx'",
+            async function () {
+                await Utils.delay(2000)
+                if ( await wizardStep4.isPresentAlert() ) await wizardStep4.acceptAlert()
+                const result = await wizardStep4.getTxStatus()
+                console.log(result)
+                return await assert.equal(result.includes('Please confirm Tx'), true, "tx status is incorrect");
+            });
+
+        test.it("Alert present if user reload the page",
+            async function () {
+                await wizardStep4.refresh();
+                await driver.sleep(2000);
+                const result = await wizardStep4.isPresentAlert();
+                return await assert.equal(result, true, "alert does not present if user refresh the page");
+            });
+
+        test.it("Warning after accepting alert",
+            async function () {
+                const result = await wizardStep4.acceptAlert()
+                    && await wizardStep4.waitUntilShowUpWarning(80);
+                return await assert.equal(result, true, "alert isn't displayed");
+            });
+
+        test.it("Check warning's text",
+            async function () {
+                const result = await wizardStep4.getTextWarning()
+                const shouldBe = 'Please cancel pending transaction, if there\'s any, in your wallet (Nifty Wallet or Metamask) and Continue'
+                return await assert.equal(result, shouldBe, "warning's text is incorrect");
+            });
+
+        test.it("Modal is displayed after confirm warning",
+            async function () {
+                const result = await wizardStep4.clickButtonOk()
+                    && await wizardStep4.waitUntilDisplayedModal(80);
+                return await assert.equal(result, true, "modal isn't displayed");
+            });
+
+        test.it("Check status of transaction, should be 'Please confirm Tx'",
+            async function () {
+                const result = await wizardStep4.getTxStatus()
+                console.log(result)
+                return await assert.equal(result.includes('Please confirm Tx'), true, 'tx status is incorrect');
+            });
+
+        test.it("Button 'Skip transaction' is displayed if user reject a transaction",
+            async function () {
+                const result = await wallet.rejectTransaction(20)
+                    && await wizardStep4.isDisplayedButtonSkipTransaction();
+                return await assert.equal(result, true, "button 'Skip transaction' isn't displayed if user rejected the transaction");
+            });
+
+        test.it("Button 'Retry transaction' is displayed if user reject a transaction",
+            async function () {
+                const result = await wizardStep4.isDisplayedButtonRetryTransaction()
+                return await assert.equal(result, true, "button 'Retry transaction' isn't displayed if user rejected the transaction");
+            });
+
+        test.it("User is able to retry transaction",
+            async function () {
+                const result = await wizardStep4.clickButtonRetryTransaction()
+                return await assert.equal(result, true, "user is not able to retry transaction");
+            });
+
+        test.it("user able to confirm transaction",
+            async function () {
+                const result = await Utils.delay(5000)
+                    && await wallet.signTransaction(20)
+                    && await wizardStep4.isDisplayedModal()
+                return await assert.equal(result, true, "user is not able to confirm transaction");
+            });
+
+        test.it("Warning if user skipped transaction",
+            async function () {
+
+                const result = await wizardStep4.refresh()
+                    && await Utils.delay(5000)
+                    && await wizardStep4.isPresentAlert()
+                    && await wizardStep4.acceptAlert()
+                    && await wizardStep4.waitUntilShowUpWarning(80)
+                    && await wizardStep4.clickButtonOk()
+                    && await Utils.delay(5000)
+                    && await wallet.rejectTransaction(20)
+                    // && await wizardStep4.waitUntilLoaderGone(20)
+                    && await wizardStep4.clickButtonSkipTransaction()
+                    && await wizardStep4.waitUntilShowUpWarning(80)
+                return await assert.equal(result, true, "button 'Skip transaction' isn't clickable");
+            });
+
+        test.it("Check warning's text",
+            async function () {
+                const result = await wizardStep4.getTextWarning()
+                const shouldBe = 'Are you sure you want to skip the transaction? This can leave the whole crowdsale in an invalid state, only do this if you are sure of what you are doing.'
+                return await assert.equal(result, shouldBe, "warning's text is incorrect");
+            });
+
+        test.it("Confirm warning",
+            async function () {
+                const result = await wizardStep4.clickButtonOk()
+                    && await wizardStep4.waitUntilDisplayedModal(80);
+                return await assert.equal(result, true, "can not confirm warning");
+            });
+
+        test.it("Alert if user leaves TW",
+            async function () {
+                await wizardStep4.open('localhost:3000/?uiversion=2')
+                const result = await wizardStep4.acceptAlert();
+                return await assert.equal(result, true, "alert does not present if user wants to leave TW");
+            });
+
+        test.it("Welcome page: button 'Resume crowdsale' is displayed if pending deployment ",
+            async function () {
+                const result = await welcomePage.waitUntilDisplayedButtonResume(180)
+                return await assert.equal(result, true, "welcome page is not available ")
+            });
+
+        test.it("Welcome page: button 'Cancel crowdsale' is displayed if pending deployment ",
+            async function () {
+                const result = await welcomePage.isDisplayedButtonCancel(180)
+                return await assert.equal(result, true, "welcome page is not available ")
+            });
+
+        test.it("Welcome page: user able to resume a pending crowdsale",
+            async function () {
+                const result = await welcomePage.clickButtonResume(180)
+                    && await wizardStep4.waitUntilDisplayedModal()
+                return await assert.equal(result, true, "user isn't able to resume crowdsale")
+            });
+        test.it("Alert if user leaves TW",
+            async function () {
+                await wizardStep4.open('localhost:3000/?uiversion=2')
+                await Utils.delay(2000)
+                if ( await wizardStep4.isPresentAlert() ) await wizardStep4.acceptAlert()
+                //return await assert.equal(result, true, "alert does not present if user wants to leave TW");
+            });
+
+        test.it("Welcome page: user is able to cancel a pending crowdsale",
+            async function () {
+                const result = await welcomePage.waitUntilLoaderGone()
+                    && await welcomePage.waitUntilDisplayedButtonResume(180)
+                    && await welcomePage.clickButtonCancel(180)
+                    && await welcomePage.waitUntilShowUpWarning(180)
+                    && await welcomePage.clickButtonOk()
+                    && await welcomePage.waitUntilDisplayedButtonNewCrowdsale()
+                    && await welcomePage.isDisplayedButtonChooseContract()
+                return await assert.equal(result, true, "user isn't able to cancel a pending crowdsale")
+            });
+        test.it("User is able to start new crowdsale after cancelation of pending crowdsale",
+            async function () {
+                const result = await welcomePage.clickButtonNewCrowdsale()
+                    && await wizardStep1.waitUntilDisplayedCheckboxWhitelistWithCap();
+                return await assert.equal(result, true, "user is not able to activate Step1 by clicking button 'New crowdsale'");
+            });
+
     })
 
 });

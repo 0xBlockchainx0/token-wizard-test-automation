@@ -518,8 +518,8 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         test.it("Supply is correct",
             async function () {
                 const result = await contributionPage.getFieldsText('supply')
-                const shouldBe = crowdsaleMintedSimple.tiers[0].supply + crowdsaleMintedSimple.tiers[1].supply
-                return await assert.equal(result, shouldBe.toString() + ' TEST', "total supply isn't correct");
+                const shouldBe = crowdsaleMintedSimple.tiers[0].supply + crowdsaleMintedSimple.tiers[1].supply + ' ' + crowdsaleMintedSimple.ticker.toUpperCase()
+                return await assert.equal(result, shouldBe, "total supply isn't correct");
             });
 
         test.it("Minimum contribution is correct",
@@ -817,7 +817,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "user is not able to open Step2 by clicking button 'Continue'");
             });
     })
-
     describe("Step#2:", async function () {
         const invalidValues = {
             name: '012345678901234567790123456789f',
@@ -1776,7 +1775,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
     })
-
     describe("Step#4:", async function () {
 
         test.it("Check status of transaction, should be 'Please confirm Tx'",
