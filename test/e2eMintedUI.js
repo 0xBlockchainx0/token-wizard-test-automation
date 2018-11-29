@@ -56,7 +56,8 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         setupNameTier1: 'Tier 1',
         setupNameTier2: 'Tier 2',
         decimals: '18',
-        mincap: '0'
+        mincap: '0',
+        contribute: '0'
     }
 
     const newValue = {
@@ -120,7 +121,6 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         publishPage = new PublishPage(driver)
         crowdsaleListPage = new CrowdsaleList(driver)
 
-        // await Utils.delay(100000000)
     });
 
     test.after(async function () {
@@ -170,7 +170,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
     })
 
-    describe ("Create crowdsale", async function () {
+    describe("Create crowdsale", async function () {
 
         test.it('User is able to create crowdsale(scenarioMintedSimple.json),2 tiers',
             async function () {
@@ -184,7 +184,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, 'Test FAILED. Crowdsale has not created ');
             });
     })
-    describe ("Publish page", async function () {
+    describe("Publish page", async function () {
         describe('Common data', async function () {
 
             test.it("Title is correct",
@@ -266,7 +266,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(result, 'Yes', 'Publish page: optimized flag name is incorrect ');
                 });
 
-            test.it.skip ('Contract source code is displayed and correct ',
+            test.it.skip('Contract source code is displayed and correct ',
                 async function () {
                     const contract = await publishPage.getTextContract()
                     crowdsaleMintedSimple.sort = 'minted'
@@ -274,7 +274,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                     return await assert.equal(contract, shouldBe, "contract source code isn't correct")
                 })
 
-            test.it ('Encoded ABI is displayed and correct ',
+            test.it('Encoded ABI is displayed and correct ',
                 async function () {
                     const abi = await publishPage.getEncodedABI()
                     return await assert.equal(abi.length, 256, 'Publish page:encoded ABI isn\'t correct ');
@@ -413,7 +413,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
     })
-    describe  ("Crowdsale page:", async function () {
+    describe("Crowdsale page:", async function () {
 
         test.it("Title is correct",
             async function () {
@@ -424,8 +424,8 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
         test.it("Proxy address is correct",
             async function () {
-
                 const result = await crowdsalePage.getProxyAddress()
+                crowdsaleMintedSimple.proxyAddress = result
                 return await assert.equal(result.length, 42, "proxy address is incorrect");
             });
         test.it("Raised funds is correct",
@@ -463,6 +463,17 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, goal, "total supply is incorrect")
             });
 
+        test.it("Should be alert if invalid proxyID in address bar",
+            async function () {
+                crowdsaleMintedSimple.url = await contributionPage.getURL()
+                const wrongUrl = crowdsaleMintedSimple.url.substring(0, 50) + crowdsaleMintedSimple.url.substring(52, crowdsaleMintedSimple.length)
+                const result = await contributionPage.open(wrongUrl)
+                    && await contributionPage.waitUntilShowUpButtonOk()
+                    && await contributionPage.clickButtonOk()
+                    && await Utils.delay(5000)
+                return await assert.equal(result, true, "no alert if invalid proxyID in address bar");
+            });
+
         test.it("Clicking button 'Contribute' opens Contribution page",
             async function () {
                 const result = await crowdsalePage.clickButtonContribute()
@@ -472,26 +483,30 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
             });
     })
 
-    describe ("Contribution page:", async function () {
+    describe("Contribution page:", async function () {
 
+        test.it("Title is correct",
+            async function () {
+                await Utils.delay(10000)
+                await crowdsalePage.waitUntilDisplayedTitle(180)
+                const result = await crowdsalePage.getTitleText();
+                return await assert.equal(result, TITLES.CONTRIBUTE_PAGE, "Page's title is incorrect");
+            });
         test.it("Current account is correct",
             async function () {
-                const result =  await contributionPage.getCurrentAccount()
-                console.log(result)
+                const result = await contributionPage.getCurrentAccount()
                 return await assert.equal(result, Owner.account, "current account isn't correct");
             });
 
         test.it("Proxy address is displayed and has correct length",
             async function () {
-                const result =  await contributionPage.getProxyAddress()
-                console.log(result)
-                return await assert.equal(result.length, 42, "proxy address isn't correct");
+                const result = await contributionPage.getProxyAddress()
+                return await assert.equal(result, crowdsaleMintedSimple.proxyAddress, "proxy address isn't correct");
             });
 
         test.it("Name is correct",
             async function () {
-                const result =  await contributionPage.getFieldsText('name')
-                console.log(result)
+                const result = await contributionPage.getFieldsText('name')
                 return await assert.equal(result, crowdsaleMintedSimple.name, "name isn't correct");
             });
 
@@ -503,7 +518,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         test.it("Supply is correct",
             async function () {
                 const result = await contributionPage.getFieldsText('supply')
-                const shouldBe = crowdsaleMintedSimple.tiers[0].supply +crowdsaleMintedSimple.tiers[1].supply
+                const shouldBe = crowdsaleMintedSimple.tiers[0].supply + crowdsaleMintedSimple.tiers[1].supply
                 return await assert.equal(result, shouldBe.toString() + ' TEST', "total supply isn't correct");
             });
 
@@ -521,17 +536,100 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, shouldBe, "maximum contribution isn't correct");
             });
 
-
-        test.it ("Should be alert if invalid proxyID in address bar",
+        test.it("Balance is correct",
             async function () {
-              crowdsaleMintedSimple.url = await contributionPage.getURL()
+                const result = await contributionPage.getBalance()
+                const shouldBe = '0 ' + crowdsaleMintedSimple.ticker.toUpperCase()
+                return await assert.equal(result, shouldBe, "maximum contribution isn't correct");
+            });
+
+        test.it("Button 'Contribute' is disabled by default",
+            async function () {
+                const result = await contributionPage.isDisabledButtonContribute()
+                return await assert.equal(result, true, "button 'Contribute' is enabled by default");
+            });
+
+        test.it.skip("Check error if incorrect contribution amount",
+            async function () {
+                await contributionPage.fillContribute('qwerty')
+                const result = await contributionPage.getWarningText('contribute')
+                console.log(result)
+                const shouldBe = 'You are not allowed'
+                await assert.notEqual(result, '', "error isn't displayed");
+                return await assert.equal(result, shouldBe, "error's text isn't correct");
+            });
+
+        test.it("No error if contribution's amount is correct",
+            async function () {
+                await contributionPage.fillContribute('123')
+                const result = await contributionPage.getWarningText('contribute')
+                console.log(result)
+                return await assert.equal(result, '', "unexpected error message");
+            });
+
+        test.it("Popup if contributes before start",
+            async function () {
+                const result = await contributionPage.clickButtonContribute()
+                    && await contributionPage.waitUntilShowUpButtonOk()
+                return await assert.equal(result, true, "no popup if contributes before start");
+            });
+
+        test.it("Popup has correct text",
+            async function () {
+                const text = await contributionPage.getTextPopup()
+                console.log(text)
+                const shouldBe = "Wait, please. Crowdsale company hasn't started yet. It'll start from Fri Feb 01 2030"
+                console.log(shouldBe)
+                await assert.equal(text.includes(shouldBe), true, "popup has incorrect text")
+                const result = await contributionPage.clickButtonOk()
+                return await assert.equal(result, true, "can't confirm popup");
+            });
+
+        test.it("Payment's option is displayed",
+            async function () {
+                const field = await contributionPage.getPaymentOption()
+                await assert.notEqual(field, null, "payment's option isn't displayed")
+            });
+
+        test.it("Select QR option",
+            async function () {
+                const result = await contributionPage.clickQRoption()
+                return await assert.equal(result, true, "payment's option isn't displayed")
+            });
+
+        test.it("QR: proxy address is correct",
+            async function () {
+                const result = await contributionPage.getQRaddress()
+                console.log(result)
+                console.log(crowdsaleMintedSimple.proxyAddress)
+                await assert.equal(result, crowdsaleMintedSimple.proxyAddress, "QR: proxy address is incorrect")
+            });
+
+        test.it("QR: payment's data is correct",
+            async function () {
+                const result = await contributionPage.getQRdata()
+                const shouldBe = '0x55f8650100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000004a6f2ae3a00000000000000000000000000000000000000000000000000000000'
+                await assert.equal(result, shouldBe, "QR:  payment's data is incorrect")
+            });
+
+        test.it("Select Wallet payment option",
+            async function () {
+                const result = await contributionPage.clickWalletOption()
+                return await assert.equal(result, true, "payment's option isn't displayed")
+            });
+
+
+        test.it("Should be alert if invalid proxyID in address bar",
+            async function () {
+                crowdsaleMintedSimple.url = await contributionPage.getURL()
                 const wrongUrl = crowdsaleMintedSimple.url.substring(0, 50) + crowdsaleMintedSimple.url.substring(52, crowdsaleMintedSimple.length)
                 const result = await contributionPage.open(wrongUrl)
                     && await contributionPage.waitUntilShowUpButtonOk()
                     && await contributionPage.clickButtonOk()
                 return await assert.equal(result, true, "no alert if invalid proxyID in address bar");
             });
-        test.it.skip ("Should be alert if invalid proxy address in address bar",
+
+        test.it.skip("Should be alert if invalid proxy address in address bar",
             async function () {
                 const owner = Owner;
                 crowdsaleMintedSimple.proxyAddress = await contributionPage.getProxyAddress()
@@ -921,7 +1019,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 const fileName = './public/reservedAddressesTestValidation.csv'
                 const result = await reservedTokensPage.uploadReservedCSVFile(fileName)
                     && await reservedTokensPage.waitUntilShowUpWarning(20)
-               return await assert.equal(result, true, "user isn't able to download CVS file with whitelisted addresses");
+                return await assert.equal(result, true, "user isn't able to download CVS file with whitelisted addresses");
             })
 
         test.it("Check validator for *.csv files with reserved addresses",

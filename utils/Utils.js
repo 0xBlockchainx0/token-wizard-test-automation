@@ -682,7 +682,7 @@ class Utils {
         if ( registryBin.slice(0, 2) !== '0x' && registryBin.slice(0, 2) !== '0X' ) {
             registryBin = '0x' + registryBin;
         }
-
+x
         let abstractStorage = await Utils.getFromEnvAbstractStorageAddress();
         let mintedIdx = await Utils.getFromEnvMintedIDXAddress();
         let dutchIdx = await Utils.getFromEnvDutchIDXAddress();
