@@ -45,7 +45,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
     let startURL;
     let crowdsaleForUItests;
-    let mngPage;
+    let managePage;
     let balanceEthOwnerBefore;
     let crowdsaleMintedSimple;
     let publishPage;
@@ -114,7 +114,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         wizardStep3 = new WizardStep3(driver);
         wizardStep4 = new WizardStep4(driver);
         reservedTokensPage = new ReservedTokensPage(driver);
-        mngPage = new ManagePage(driver);
+        managePage = new ManagePage(driver);
         tierPage = new TierPage(driver, crowdsaleForUItests.tiers[0]);
         contributionPage = new ContributionPage(driver);
         crowdsalePage = new CrowdsalePage(driver);
@@ -169,7 +169,36 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, false, "no warning present if user logged out from wallet ");
             });
     })
+    describe ("Empty crowdsale list ", async function () {
 
+        test.it("Crowdsale list opens if clicks button 'Choose contract'",
+            async function () {
+                const result = await welcomePage.clickButtonChooseContract()
+                    && await crowdsaleListPage.waitUntilDisplayed(await crowdsaleListPage.getCrowdsaleList())
+                    && await crowdsaleListPage.isElementDisplayed(await crowdsaleListPage.getCrowdsaleList())
+                return await assert.equal(result, true, "crowdsale list isn't displayed");
+            });
+
+        test.it("Title is correct",
+            async function () {
+                await crowdsaleListPage.waitUntilDisplayedTitle(180)
+                const result = await crowdsaleListPage.getTitleText();
+                return await assert.equal(result, TITLES.CROWDSALE_LIST, "page's title is incorrect");
+            });
+
+        test.it ('Crowdsale list is empty',
+            async function () {
+                const result = await crowdsaleListPage.getNumberCrowdsales(15)
+                return await assert.equal(result, 0, "crowdsale list contains unexpected address");
+            });
+
+        test.it ('Owner address is displayed and correct',
+            async function () {
+                const result = await crowdsaleListPage.getCrowdsaleListAddressOwner(15)
+                return await assert.equal(result, Owner.account, "owner's address is incorrect");
+            });
+
+    })
     describe("Create crowdsale", async function () {
 
         test.it('User is able to create crowdsale(scenarioMintedSimple.json),2 tiers',
@@ -518,7 +547,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
         test.it("Supply is correct",
             async function () {
                 const result = await contributionPage.getFieldsText('supply')
-                const shouldBe = crowdsaleMintedSimple.tiers[0].supply + crowdsaleMintedSimple.tiers[1].supply + ' ' + crowdsaleMintedSimple.ticker.toUpperCase()
+                const shouldBe = crowdsaleMintedSimple.tiers[0].supply + crowdsaleMintedSimple.tiers[1].supply+' '+crowdsaleMintedSimple.ticker.toUpperCase()
                 return await assert.equal(result, shouldBe, "total supply isn't correct");
             });
 
@@ -644,7 +673,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
 
 
     })
-    describe.skip("Not empty crowdsale list", async function () {
+    describe ("Not empty crowdsale list", async function () {
 
         test.it("User is able to open wizard welcome page",
             async function () {
@@ -661,16 +690,16 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "crowdsale list isn't displayed");
             });
 
-        test.it.skip('Crowdsale list contains 1 address',
+        test.it ('Crowdsale list contains 1 address',
             async function () {
                 const result = await crowdsaleListPage.getNumberCrowdsales()
                 return await assert.equal(result, 1, "crowdsale list is empty or contains more than 1 address");
             });
 
-        test.it.skip("Address is correct",
+        test.it ("Proxy address is correct",
             async function () {
                 const result = await crowdsaleListPage.getAddress(0)
-                return await assert.equal(result, crowdsaleMintedSimple.proxyAddress, "crowdsale address is incorrect");
+                return await assert.equal(result.toUpperCase(), crowdsaleMintedSimple.proxyAddress.toUpperCase(), "crowdsale address is incorrect");
             });
 
         test.it("Button 'Continue' is displayed",
@@ -679,7 +708,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "button 'Continue' isn't displayed");
             });
 
-        test.it.skip("Button 'Continue' is disabled if nothing has selected",
+        test.it ("Button 'Continue' is disabled if nothing has selected",
             async function () {
                 const result = await crowdsaleListPage.isDisabledButtonContinue()
                 return await assert.equal(result, true, "button 'Continue' enabled by default");
@@ -694,13 +723,27 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 const result = await crowdsaleListPage.clickButtonContinue()
                 return await assert.equal(result, true, "can't click button 'Continue'");
             });
-        test.it("Cancel unfinished deployment",
+        test.it("Manage page opens by clicking button 'Continue'",
             async function () {
-                const result = await crowdsaleListPage.clickWithWait(await crowdsaleListPage.getButtonCancel())
-                    && await crowdsaleListPage.clickButtonOk()
-                return await assert.equal(result, true, "can't cancel unfinished deployment");
+                await crowdsaleListPage.clickButtonContinue();
+                await managePage.waitUntilDisplayedTitle(180);
+                const result = await managePage.getTitleText();
+                return await assert.equal(result, TITLES.MANAGE_PAGE, "page's title is incorrect");
             });
     })
+
+    describe("Manage page", async function (){
+
+        test.it("Title is correct",
+            async function () {
+                await Utils.delay(10000)
+                await managePage.waitUntilDisplayedTitle(180)
+                const result = await managePage.getTitleText();
+                return await assert.equal(result, TITLES.MANAGE_PAGE, "Page's title is incorrect");
+            });
+
+    })
+
     describe("Welcome page", async function () {
 
         test.it("User is able to open wizard welcome page",
@@ -734,8 +777,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "user is not able to activate Step1 by clicking button 'New crowdsale'");
             });
     })
-    describe.skip("Empty crowdsale list ", async function () {
-    })
+
 
     describe("Step#1:", async function () {
 
@@ -817,6 +859,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 return await assert.equal(result, true, "user is not able to open Step2 by clicking button 'Continue'");
             });
     })
+
     describe("Step#2:", async function () {
         const invalidValues = {
             name: '012345678901234567790123456789f',
@@ -1775,6 +1818,7 @@ test.describe(`e2e test for TokenWizard2.0/MintedCappedCrowdsale. v ${testVersio
                 });
         })
     })
+
     describe("Step#4:", async function () {
 
         test.it("Check status of transaction, should be 'Please confirm Tx'",

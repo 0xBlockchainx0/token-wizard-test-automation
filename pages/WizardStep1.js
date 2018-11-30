@@ -1,7 +1,7 @@
 const logger= require('../entity/Logger.js').logger;
 const Page=require('./Page.js').Page;
 const By = require('selenium-webdriver/lib/by').By;
-const  buttonContinue= By.className("sw-ButtonContinue");
+const  buttonContinue= By.className("sw-ButtonContinue_Text");
 const checkboxWhitelistWithCap =By.id('white-list-with-cap');
 const checkboxDutchAuction = By.id('dutch-auction');
 
@@ -18,7 +18,7 @@ class WizardStep1 extends Page {
     async initCheckboxes() {
 		try {
 			logger.info(this.name + "initCheckboxes ");
-			let locator = By.className("sw-RadioItems_Radio");
+			let locator = By.className("st-StrategyItem_Radio");
 			let array = await super.findWithWait(locator);
 			this.checkboxWhitelistWithCap = array[0];
 			this.checkboxDutchAuction = array[1];

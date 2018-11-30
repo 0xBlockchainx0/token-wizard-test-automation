@@ -22,7 +22,9 @@ const TITLES = {
     STEP3:"Crowdsale Setup",
     PUBLISH_PAGE:"Publish",
     CROWDSALE_PAGE:"Crowdsale Page",
-    CONTRIBUTE_PAGE:"Contribute Page"
+    CONTRIBUTE_PAGE:"Contribute Page",
+    CROWDSALE_LIST:"Crowdsale List",
+    MANAGE_PAGE:"Manage Crowdsale"
 
 }
 const placeholders = {
